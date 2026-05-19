@@ -2,17 +2,18 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeft, Bookmark, BookOpen, Check, Copy, Menu, Palette, Play, Search, Settings, Share2, Undo2, X } from 'lucide-react';
 import { db, saveLastRead } from '../lib/db';
-import { findPageForReference, getPage, getPageMeta, getSurah, totalPages } from '../lib/quran';
+import { findPageForReference, getMushafPageNumber, getPage, getPageMeta, getSurah, totalPages } from '../lib/quran';
 import { getJuzPartByPage } from '../data/quranMeta';
 import { getUrduTranslation } from '../lib/translations';
 import { generateAyahImage } from '../lib/shareCanvas';
 import { useAppStore } from '../store/useAppStore';
-import { getDisplayLineText, getHizbLabel, getJuzLabel } from '../utils/quranLabels';
+import { basmallahText, getDisplayLineText, getHizbLabel, getJuzLabel } from '../utils/quranLabels';
 
 export default function ReaderScreen() {
   const { page, goPage, controlsVisible, toggleControls, settings, setView, selectedLine, setSelectedLine, pendingAyah, clearPendingAyah } = useAppStore();
   const pageData = getPage(page);
   const meta = getPageMeta(page);
+  const displayPage = getMushafPageNumber(page);
   const touchStart = useRef(null);
   const [markedRefs, setMarkedRefs] = useState(new Set());
 
@@ -52,12 +53,12 @@ export default function ReaderScreen() {
       <div className="reader-shell relative mx-auto flex h-dvh max-w-[576px] flex-col overflow-hidden bg-[#fffaf1] text-[#13100a] shadow-2xl shadow-slate-900/10">
         <div className="reader-passive-header pointer-events-none absolute inset-x-0 top-0 z-10 flex items-center justify-between px-8">
           <span>{meta.surah.name}</span>
-          <span>{getJuzLabel(meta.juz)}</span>
+          <span>{displayPage}</span>
         </div>
 
         <header className={`reader-topbar ${controlsVisible ? 'reader-topbar-visible' : ''}`} onClick={(e) => e.stopPropagation()}>
           <div className="reader-control-row">
-            <button className="reader-back-pill" onClick={() => setView('home')} aria-label="Back to home"><ArrowLeft size={24} /></button>
+            <button className="reader-back-pill" onClick={() => setView('home', 'back')} aria-label="Back to home"><ArrowLeft size={24} /></button>
             <div className="reader-top-actions">
               <button className="reader-top-icon" onClick={() => addBookmark(pageData)} aria-label="Bookmark"><Bookmark size={30} strokeWidth={1.7} /></button>
               <button className="reader-top-icon" onClick={() => setView('index')} aria-label="Index"><Menu size={32} strokeWidth={1.7} /></button>
@@ -67,42 +68,47 @@ export default function ReaderScreen() {
         </header>
 
         <div className="reader-page grid flex-1 grid-rows-16 px-4" style={{ '--font-scale': settings.fontScale }}>
-          {pageData.lines.map((line) => (
-            <QuranLine
-              key={line.line}
-              line={line}
-              onSelect={() => setSelectedLine(line)}
-              marked={line.ayahStart ? markedRefs.has(`${line.surahNumber}:${line.ayahStart}`) : false}
-              jumped={Boolean(pendingAyah && line.surahNumber === pendingAyah.surahNumber && line.ayahStart <= pendingAyah.ayahNumber && (!line.ayahEnd || line.ayahEnd >= pendingAyah.ayahNumber))}
-            />
-          ))}
+          {pageData.lines.map((line, index) => {
+            const nextLine = pageData.lines[index + 1];
+            const hasSeparateBasmallah = nextLine?.type === 'basmallah' || nextLine?.type === 'bismillah';
+            return (
+              <QuranLine
+                key={line.line}
+                line={line}
+                hasSeparateBasmallah={hasSeparateBasmallah}
+                onSelect={() => setSelectedLine(line)}
+                marked={line.ayahStart ? markedRefs.has(`${line.surahNumber}:${line.ayahStart}`) : false}
+                jumped={Boolean(pendingAyah && line.surahNumber === pendingAyah.surahNumber && line.ayahStart <= pendingAyah.ayahNumber && (!line.ayahEnd || line.ayahEnd >= pendingAyah.ayahNumber))}
+              />
+            );
+          })}
         </div>
 
         <div className="reader-footer-meta pointer-events-none absolute inset-x-0 bottom-8 z-10 flex items-center justify-between px-8">
-          <span>{page}</span>
+          <span>{displayPage}</span>
           <span>{getHizbLabel(page)}</span>
         </div>
       </div>
 
       <AnimatePresence>
         {controlsVisible && (
-          <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 18 }} className="reader-bottom-controls" onClick={(e) => e.stopPropagation()}>
-            <button className="reader-listen-pill" onClick={() => setView('audio')}>
+          <motion.div initial={{ opacity: 1 }} animate={{ opacity: 1 }} exit={{ opacity: 1 }} className="reader-bottom-controls" onClick={(e) => e.stopPropagation()}>
+            <motion.button initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 16 }} transition={{ type: 'spring', stiffness: 400, damping: 30 }} className="reader-listen-pill" onClick={() => setView('audio')}>
               <span className="reader-listen-play"><Play size={26} fill="currentColor" /></span>
               <span>Listen to the Holy Qur'an</span>
-            </button>
-            <div className="reader-bottom-sheet">
+            </motion.button>
+            <motion.div initial={{ opacity: 0, y: 42 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 42 }} transition={{ delay: 0.05, type: 'spring', stiffness: 340, damping: 32 }} className="reader-bottom-sheet">
               <div className="reader-bottom-meta">
-                <span>{page}</span>
+                <span>{displayPage}</span>
                 <span>{getHizbLabel(page)}</span>
               </div>
               <PageSlider page={page} goPage={goPage} />
               <div className="reader-bottom-actions">
-                <button onClick={() => setView('home')} aria-label="Return"><Undo2 size={34} strokeWidth={1.8} /></button>
-                <span>1</span>
+                <button onClick={() => setView('home', 'back')} aria-label="Return"><Undo2 size={34} strokeWidth={1.8} /></button>
+                <span>{displayPage}</span>
                 <button onClick={() => setView('search')} aria-label="Search"><Search size={34} strokeWidth={1.8} /></button>
               </div>
-            </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -112,18 +118,20 @@ export default function ReaderScreen() {
   );
 }
 
-function QuranLine({ line, onSelect, marked = false, jumped = false }) {
+function QuranLine({ line, onSelect, marked = false, jumped = false, hasSeparateBasmallah = false }) {
   const lineRef = useRef(null);
   const textRef = useRef(null);
   const longPressTimer = useRef(null);
   const longPressed = useRef(false);
   const [fitScale, setFitScale] = useState(1);
-  const centered = line.isCentered || line.type === 'surah_name';
+  const isBasmallah = line.type === 'basmallah' || line.type === 'bismillah';
+  const centered = line.isCentered || line.type === 'surah_name' || isBasmallah;
   const text = getDisplayLineText(line);
+  const inlineBasmallah = line.type === 'surah_name' && line.surahNumber !== 1 && line.surahNumber !== 9 && !hasSeparateBasmallah;
 
   useLayoutEffect(() => {
     const measure = () => {
-      if (!lineRef.current || !textRef.current || centered || line.type === 'spacer') {
+      if (!lineRef.current || !textRef.current || centered || line.type === 'spacer' || line.type === 'surah_name' || isBasmallah) {
         setFitScale(1);
         return;
       }
@@ -145,7 +153,7 @@ function QuranLine({ line, onSelect, marked = false, jumped = false }) {
       resizeObserver?.disconnect();
       window.removeEventListener('resize', measure);
     };
-  }, [text, centered, line.type]);
+  }, [text, centered, line.type, isBasmallah]);
 
   function startLongPress(event) {
     if (line.type === 'spacer') return;
@@ -153,7 +161,7 @@ function QuranLine({ line, onSelect, marked = false, jumped = false }) {
     window.clearTimeout(longPressTimer.current);
     longPressTimer.current = window.setTimeout(() => {
       longPressed.current = true;
-      if (navigator.vibrate) navigator.vibrate(12);
+      if (navigator.vibrate) navigator.vibrate([24]);
       onSelect();
     }, 430);
   }
@@ -177,18 +185,34 @@ function QuranLine({ line, onSelect, marked = false, jumped = false }) {
         }
       }}
       onContextMenu={(event) => { event.preventDefault(); if (line.type !== 'spacer') onSelect(); }}
-      className={`quran-line quran-line-${line.type} ${marked ? 'quran-line-marked' : ''} ${jumped ? 'quran-line-jumped' : ''} ${line.type === 'spacer' ? 'opacity-0' : ''} ${centered ? 'justify-center text-center' : 'justify-end text-right'}`}
+      className={`quran-line quran-line-${isBasmallah ? 'basmallah' : line.type} ${marked ? 'quran-line-marked' : ''} ${jumped ? 'quran-line-jumped' : ''} ${line.type === 'spacer' ? 'opacity-0' : ''} ${centered ? 'justify-center text-center' : 'justify-end text-right'}`}
       aria-label={line.type === 'spacer' ? 'Blank line' : text}
       tabIndex={line.type === 'spacer' ? -1 : 0}
     >
-      <span
-        ref={textRef}
-        className="quran-line-text"
-        style={{ transform: `scaleX(${fitScale})` }}
-      >
-        {text}
-      </span>
+      {line.type === 'surah_name' ? (
+        <SurahHeader line={line} inlineBasmallah={inlineBasmallah} />
+      ) : (
+        <span
+          ref={textRef}
+          className="quran-line-text"
+          style={{ transform: `scaleX(${fitScale})` }}
+        >
+          {text}
+        </span>
+      )}
     </button>
+  );
+}
+
+
+function SurahHeader({ line, inlineBasmallah }) {
+  const surah = getSurah(line.surahNumber);
+  return (
+    <div className={`surah-banner ${inlineBasmallah ? 'surah-banner-inline' : ''}`}>
+      <span className="surah-banner-ayahs">آياتها {surah?.verses}</span>
+      {inlineBasmallah && <span className="surah-banner-basmallah">{basmallahText}</span>}
+      <span className="surah-banner-name">{getDisplayLineText(line)}</span>
+    </div>
   );
 }
 
@@ -343,9 +367,14 @@ function LineActions({ line, onClose }) {
   return (
     <div className="ayah-action-backdrop" onClick={onClose}>
       <motion.div
-        initial={{ y: 160, opacity: 0 }}
+        initial={{ y: '100%', opacity: 1 }}
         animate={{ y: 0, opacity: 1 }}
-        exit={{ y: 160, opacity: 0 }}
+        exit={{ y: '100%', opacity: 1 }}
+        transition={{ type: 'spring', stiffness: 380, damping: 38, mass: 0.9 }}
+        drag="y"
+        dragConstraints={{ top: 0 }}
+        dragElastic={0.18}
+        onDragEnd={(_, info) => { if (info.offset.y > 120) onClose(); }}
         className="ayah-action-sheet"
         onClick={(e) => e.stopPropagation()}
       >

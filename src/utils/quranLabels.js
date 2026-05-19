@@ -1,4 +1,4 @@
-import { getPage } from '../lib/quran';
+import { getPage, getMushafPageNumber } from '../lib/quran';
 import { quranRub } from '../data/quranRub';
 
 export const surahArabicNames = [
@@ -16,9 +16,14 @@ export const surahArabicNames = [
   'ٱلنَّصْر', 'ٱلْمَسَد', 'ٱلْإِخْلَاص', 'ٱلْفَلَق', 'ٱلنَّاس',
 ];
 
+export const basmallahText = 'بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِیْمِ';
+
 export function getDisplayLineText(line) {
   if (line.type === 'surah_name') {
     return `سُورَةُ ${surahArabicNames[line.surahNumber] || line.surahNumber}`;
+  }
+  if (line.type === 'basmallah' || line.type === 'bismillah') {
+    return basmallahText;
   }
   return line.text || '\u00A0';
 }

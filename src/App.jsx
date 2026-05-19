@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { BookOpen, Home, Library, Search, Settings } from 'lucide-react';
 import { getLastRead, getSettings, upsertSetting } from './lib/db';
 import { useAppStore } from './store/useAppStore';
-import { Shell, NavIcon } from './components/common/AppChrome';
+import { Shell } from './components/common/AppChrome';
 import { panel } from './components/common/ui';
 import HomeScreen from './pages/HomeScreen';
 import ReaderScreen from './pages/ReaderScreen';
@@ -15,7 +14,7 @@ import AudioScreen from './pages/AudioScreen';
 import SettingsScreen from './pages/SettingsScreen';
 
 export default function App() {
-  const { view, setView, page, goPage, settings, updateSettings } = useAppStore();
+  const { view, page, goPage, settings, updateSettings } = useAppStore();
   const [booted, setBooted] = useState(false);
 
   useEffect(() => {
@@ -30,7 +29,7 @@ export default function App() {
     upsertSetting('app', settings);
   }, [settings]);
 
-  if (!booted) return <Shell><div className={`${panel} p-8`}>Preparing your reader...</div></Shell>;
+  if (!booted) return <Shell><div className={`${panel} p-8 text-center`}><div className="mx-auto mb-4 h-12 w-12 animate-pulse rounded-full bg-[#d4a843]/25" /><p className="font-medium text-slate-600">Preparing your reader...</p></div></Shell>;
 
   return (
     <Shell>
@@ -46,15 +45,6 @@ export default function App() {
         {view === 'audio' && <AudioScreen key="audio" />}
         {view === 'settings' && <SettingsScreen key="settings" />}
       </AnimatePresence>
-      {view !== 'reader' && (
-        <nav className="fixed inset-x-4 bottom-4 z-40 mx-auto grid max-w-md grid-cols-5 rounded-[28px] border border-white/70 bg-white/75 p-2 shadow-fluent backdrop-blur-2xl">
-          <NavIcon icon={Home} active={view === 'home'} onClick={() => setView('home')} />
-          <NavIcon icon={BookOpen} active={view === 'reader'} onClick={() => goPage(page)} />
-          <NavIcon icon={Library} active={view === 'index' || view === 'surah' || view === 'info'} onClick={() => setView('index')} />
-          <NavIcon icon={Search} active={view === 'search'} onClick={() => setView('search')} />
-          <NavIcon icon={Settings} active={view === 'settings'} onClick={() => setView('settings')} />
-        </nav>
-      )}
-    </Shell>
+   </Shell>
   );
 }
