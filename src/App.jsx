@@ -1,0 +1,60 @@
+import React, { useEffect, useState } from 'react';
+import { AnimatePresence } from 'framer-motion';
+import { BookOpen, Home, Library, Search, Settings } from 'lucide-react';
+import { getLastRead, getSettings, upsertSetting } from './lib/db';
+import { useAppStore } from './store/useAppStore';
+import { Shell, NavIcon } from './components/common/AppChrome';
+import { panel } from './components/common/ui';
+import HomeScreen from './pages/HomeScreen';
+import ReaderScreen from './pages/ReaderScreen';
+import IndexScreen from './pages/IndexScreen';
+import SearchScreen from './pages/SearchScreen';
+import BookmarksScreen from './pages/BookmarksScreen';
+import TafsirScreen from './pages/TafsirScreen';
+import AudioScreen from './pages/AudioScreen';
+import SettingsScreen from './pages/SettingsScreen';
+
+export default function App() {
+  const { view, setView, page, goPage, settings, updateSettings } = useAppStore();
+  const [booted, setBooted] = useState(false);
+
+  useEffect(() => {
+    Promise.all([getLastRead(), getSettings()]).then(([lastRead, storedSettings]) => {
+      if (lastRead?.page) goPage(lastRead.page);
+      if (storedSettings.app) updateSettings(storedSettings.app);
+      setBooted(true);
+    });
+  }, []);
+
+  useEffect(() => {
+    upsertSetting('app', settings);
+  }, [settings]);
+
+  if (!booted) return <Shell><div className={`${panel} p-8`}>Preparing your reader...</div></Shell>;
+
+  return (
+    <Shell>
+      <AnimatePresence mode="wait">
+        {view === 'home' && <HomeScreen key="home" />}
+        {view === 'reader' && <ReaderScreen key="reader" />}
+        {view === 'index' && <IndexScreen key="index" />}
+        {view === 'surah' && <IndexScreen key="surah" />}
+        {view === 'info' && <IndexScreen key="info" />}
+        {view === 'search' && <SearchScreen key="search" />}
+        {view === 'bookmarks' && <BookmarksScreen key="bookmarks" />}
+        {view === 'tafsir' && <TafsirScreen key="tafsir" />}
+        {view === 'audio' && <AudioScreen key="audio" />}
+        {view === 'settings' && <SettingsScreen key="settings" />}
+      </AnimatePresence>
+      {view !== 'reader' && (
+        <nav className="fixed inset-x-4 bottom-4 z-40 mx-auto grid max-w-md grid-cols-5 rounded-[28px] border border-white/70 bg-white/75 p-2 shadow-fluent backdrop-blur-2xl">
+          <NavIcon icon={Home} active={view === 'home'} onClick={() => setView('home')} />
+          <NavIcon icon={BookOpen} active={view === 'reader'} onClick={() => goPage(page)} />
+          <NavIcon icon={Library} active={view === 'index' || view === 'surah' || view === 'info'} onClick={() => setView('index')} />
+          <NavIcon icon={Search} active={view === 'search'} onClick={() => setView('search')} />
+          <NavIcon icon={Settings} active={view === 'settings'} onClick={() => setView('settings')} />
+        </nav>
+      )}
+    </Shell>
+  );
+}

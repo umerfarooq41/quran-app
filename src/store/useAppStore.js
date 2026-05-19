@@ -1,0 +1,35 @@
+import { create } from 'zustand';
+
+export const useAppStore = create((set) => ({
+  view: 'home',
+  page: 1,
+  selectedSurah: 1,
+  controlsVisible: false,
+  selectedLine: null,
+  audioTarget: null,
+  tafsirTarget: null,
+  pendingAyah: null,
+  settings: {
+    fontScale: 1,
+    theme: 'light',
+    reciter: null,
+    playbackRate: 1,
+    autoplay: false,
+  },
+  setView: (view) => set({ view }),
+  goPage: (page) => set({ page: Math.min(548, Math.max(1, Number(page) || 1)), view: 'reader' }),
+  setSelectedSurah: (selectedSurah) => set({ selectedSurah, view: 'surah' }),
+  setControlsVisible: (controlsVisible) => set({ controlsVisible }),
+  toggleControls: () => set((state) => ({ controlsVisible: !state.controlsVisible })),
+  setSelectedLine: (selectedLine) => set({ selectedLine }),
+  setAudioTarget: (audioTarget) => set({ audioTarget }),
+  setTafsirTarget: (tafsirTarget) => set({ tafsirTarget, view: 'tafsir' }),
+  goAyah: (surahNumber, ayahNumber, page) => set({
+    page: Math.min(548, Math.max(1, Number(page) || 1)),
+    pendingAyah: { surahNumber: Number(surahNumber), ayahNumber: Number(ayahNumber) },
+    view: 'reader',
+    controlsVisible: false,
+  }),
+  clearPendingAyah: () => set({ pendingAyah: null }),
+  updateSettings: (patch) => set((state) => ({ settings: { ...state.settings, ...patch } })),
+}));
