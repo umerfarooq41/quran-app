@@ -55,6 +55,7 @@ button {
 
 .reader-shell {
   isolation: isolate;
+  overflow: hidden !important;
 }
 
 .reader-passive-header {
@@ -1322,9 +1323,11 @@ body {
   min-width: 0;
   display: flex;
   align-items: center;
-  justify-content: center !important;
-  text-align: center !important;
-  overflow: hidden !important;
+  /* RTL Quranic text: right-aligned, not centered */
+  justify-content: flex-end !important;
+  text-align: right !important;
+  /* Allow scaleX measurement — do NOT clip here */
+  overflow: visible !important;
   padding: 0 !important;
   margin: 0 !important;
   border: 0 !important;
@@ -1342,14 +1345,15 @@ body {
   min-width: 0;
   display: inline-block !important;
   white-space: nowrap !important;
-  text-align: center !important;
-  transform-origin: center center !important;
+  text-align: right !important;
+  /* Must match JSX: scaleX shrinks from right-center so text stays in bounds */
+  transform-origin: right center !important;
   letter-spacing: -0.01em;
   word-spacing: -0.10em;
   will-change: transform;
 }
 
-/* Keep special lines clean */
+/* Keep special lines clean — basmallah / surah name stay centered */
 .quran-line-surah_name,
 .quran-line-basmallah,
 .quran-line-bismillah {
@@ -1365,12 +1369,14 @@ body {
   display: none !important;
 }
 
+/* Centered lines shrink from center, not from the right edge */
 .quran-line-surah_name .quran-line-text,
 .quran-line-basmallah .quran-line-text,
 .quran-line-bismillah .quran-line-text {
   letter-spacing: 0 !important;
   word-spacing: normal !important;
   transform-origin: center center !important;
+  text-align: center !important;
 }
 
 /* Remove green manuscript strip from previous styling */
