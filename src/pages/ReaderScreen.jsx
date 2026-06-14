@@ -229,8 +229,11 @@ function QuranLine({ line, onSelect, marked = false, jumped = false, hasSeparate
   const inlineBasmallah = line.type === 'surah_name' && line.surahNumber !== 1 && line.surahNumber !== 9 && !hasSeparateBasmallah;
 
   useLayoutEffect(() => {
+    let cancelled = false;
+
     const measure = () => {
       if (
+        cancelled ||
         !lineRef.current ||
         !textRef.current ||
         centered ||
@@ -238,7 +241,7 @@ function QuranLine({ line, onSelect, marked = false, jumped = false, hasSeparate
         line.type === 'surah_name' ||
         isBasmallah
       ) {
-        setWordSpacing(0);
+        if (!cancelled) setWordSpacing(0);
         return;
       }
 
@@ -262,7 +265,14 @@ function QuranLine({ line, onSelect, marked = false, jumped = false, hasSeparate
       setWordSpacing(Number(Math.max(-18, adjustment).toFixed(2)));
     };
 
+    // Measure immediately (handles cases where font is already loaded)
     measure();
+
+    // Re-measure once fonts are guaranteed ready — fixes stale reads on page
+    // navigation where IndopakNastaleeq hasn't re-rendered at full metrics yet
+    document.fonts.ready.then(() => {
+      if (!cancelled) measure();
+    });
 
     const resizeObserver = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(measure) : null;
 
@@ -273,6 +283,7 @@ function QuranLine({ line, onSelect, marked = false, jumped = false, hasSeparate
     window.addEventListener('resize', measure);
 
     return () => {
+      cancelled = true;
       resizeObserver?.disconnect();
       window.removeEventListener('resize', measure);
     };
