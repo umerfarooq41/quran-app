@@ -1336,3 +1336,80 @@ body,
   }
 }
 
+html,
+body,
+#root {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden !important;
+}
+
+.reader-shell,
+.reader-page {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden !important;
+}
+
+.reader-page {
+  direction: rtl;
+  padding-inline: clamp(14px, 3.4vw, 22px) !important;
+  padding-top: calc(env(safe-area-inset-top, 0px) + 82px) !important;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 58px) !important;
+  gap: 0 !important;
+}
+
+.quran-line {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden !important;
+  justify-content: center !important;
+  text-align: center !important;
+  padding-inline: 0 !important;
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+  white-space: nowrap;
+  font-size: calc(clamp(1.22rem, 3.02vh, 1.92rem) * var(--font-scale, 1)) !important;
+  line-height: 1.08 !important;
+}
+
+.quran-line-text {
+  max-width: 100%;
+  display: inline-block !important;
+  white-space: nowrap !important;
+  text-align: center !important;
+  transform-origin: center center !important;
+  letter-spacing: -0.012em;
+  word-spacing: -0.12em;
+}
+
+@media (max-width: 420px) {
+  .reader-page {
+    padding-inline: 12px !important;
+  }
+
+  .quran-line {
+    font-size: calc(clamp(1.16rem, 2.92vh, 1.78rem) * var(--font-scale, 1)) !important;
+  }
+
+  .quran-line-text {
+    word-spacing: -0.14em;
+    letter-spacing: -0.014em;
+  }
+}
+
+@media (max-width: 380px) {
+  .reader-page {
+    padding-inline: 10px !important;
+  }
+
+  .quran-line {
+    font-size: calc(clamp(1.08rem, 2.78vh, 1.66rem) * var(--font-scale, 1)) !important;
+  }
+
+  .quran-line-text {
+    word-spacing: -0.16em;
+    letter-spacing: -0.016em;
+  }
+}
