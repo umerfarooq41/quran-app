@@ -221,73 +221,40 @@ function QuranLine({ line, onSelect, marked = false, jumped = false, hasSeparate
   const textRef = useRef(null);
   const longPressTimer = useRef(null);
   const longPressed = useRef(false);
-  const [wordSpacing, setWordSpacing] = useState(0);
-
   const isBasmallah = line.type === 'basmallah' || line.type === 'bismillah';
   const centered = line.isCentered || line.type === 'surah_name' || isBasmallah;
   const text = getDisplayLineText(line);
   const inlineBasmallah = line.type === 'surah_name' && line.surahNumber !== 1 && line.surahNumber !== 9 && !hasSeparateBasmallah;
 
+  // Write word-spacing directly to the DOM — no React state, no re-render,
+  // instant on every page flip with no async gap.
   useLayoutEffect(() => {
-    let cancelled = false;
+    const el = textRef.current;
+    const container = lineRef.current;
 
-    const measure = () => {
-      if (
-        cancelled ||
-        !lineRef.current ||
-        !textRef.current ||
-        centered ||
-        line.type === 'spacer' ||
-        line.type === 'surah_name' ||
-        isBasmallah
-      ) {
-        if (!cancelled) setWordSpacing(0);
-        return;
-      }
-
-      // Reset to natural spacing before measuring
-      textRef.current.style.wordSpacing = '0px';
-
-      const available = lineRef.current.offsetWidth;
-      const actual = textRef.current.scrollWidth;
-
-      if (!available || !actual || actual <= available) {
-        setWordSpacing(0);
-        return;
-      }
-
-      // Spread the deficit across the inter-word gaps
-      const spaces = Math.max(1, (text.match(/\s+/g) || []).length);
-      const deficit = actual - available;
-      const adjustment = -(deficit / spaces);
-
-      // Clamp: don't compress more than -18px per gap (glyphs start touching)
-      setWordSpacing(Number(Math.max(-18, adjustment).toFixed(2)));
-    };
-
-    // Measure immediately (handles cases where font is already loaded)
-    measure();
-
-    // Re-measure once fonts are guaranteed ready — fixes stale reads on page
-    // navigation where IndopakNastaleeq hasn't re-rendered at full metrics yet
-    document.fonts.ready.then(() => {
-      if (!cancelled) measure();
-    });
-
-    const resizeObserver = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(measure) : null;
-
-    if (resizeObserver && lineRef.current) {
-      resizeObserver.observe(lineRef.current);
+    if (!el || !container || centered || line.type === 'spacer' || line.type === 'surah_name' || isBasmallah) {
+      if (el) el.style.wordSpacing = '';
+      return;
     }
 
-    window.addEventListener('resize', measure);
+    // Reset first so scrollWidth reflects natural glyph widths
+    el.style.wordSpacing = '0px';
 
-    return () => {
-      cancelled = true;
-      resizeObserver?.disconnect();
-      window.removeEventListener('resize', measure);
-    };
-  }, [text, centered, line.type, isBasmallah]);
+    const available = container.offsetWidth;
+    const actual = el.scrollWidth;
+
+    if (!available || !actual || actual <= available) {
+      el.style.wordSpacing = '';
+      return;
+    }
+
+    const spaces = Math.max(1, (text.match(/\s+/g) || []).length);
+    const deficit = actual - available;
+    const adjustment = -(deficit / spaces);
+
+    // Clamp at -12px: tighter than before to prevent glyph overlap
+    el.style.wordSpacing = Math.max(-12, adjustment).toFixed(2) + 'px';
+  });  // No dep array — runs after every render, instant on every page change
 
   function startLongPress() {
     if (line.type === 'spacer') return;
@@ -342,7 +309,6 @@ function QuranLine({ line, onSelect, marked = false, jumped = false, hasSeparate
           ref={textRef}
           className="quran-line-text"
           style={{
-            wordSpacing: `${wordSpacing}px`,
             display: 'inline-block',
             whiteSpace: 'nowrap',
           }}
