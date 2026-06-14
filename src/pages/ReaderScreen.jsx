@@ -244,12 +244,12 @@ function QuranLine({ line, onSelect, marked = false, jumped = false, hasSeparate
 
       textRef.current.style.transform = 'scaleX(1)';
 
-      const available = lineRef.current.clientWidth - 8;
+      const available = lineRef.current.clientWidth;
       const actual = textRef.current.scrollWidth;
 
       if (!available || !actual) return;
 
-      const nextScale = Math.min(1, Math.max(0.52, available / actual));
+      const nextScale = Math.max(0.55, Math.min(1, available / actual));
       setFitScale(Number(nextScale.toFixed(3)));
     };
 
@@ -323,7 +323,7 @@ function QuranLine({ line, onSelect, marked = false, jumped = false, hasSeparate
           className="quran-line-text"
           style={{
             transform: `scaleX(${fitScale})`,
-            transformOrigin: 'right center',
+            transformOrigin: 'center center',
             maxWidth: '100%',
             display: 'inline-block',
             whiteSpace: 'nowrap',
