@@ -242,9 +242,11 @@ function QuranLine({ line, onSelect, marked = false, jumped = false, hasSeparate
         return;
       }
 
+      // Reset transform so we measure the natural (unscaled) text width
       textRef.current.style.transform = 'scaleX(1)';
 
-      const available = lineRef.current.clientWidth;
+      const available = lineRef.current.offsetWidth;
+      // scrollWidth gives the full natural width of the text span
       const actual = textRef.current.scrollWidth;
 
       if (!available || !actual) return;
@@ -323,7 +325,7 @@ function QuranLine({ line, onSelect, marked = false, jumped = false, hasSeparate
           className="quran-line-text"
           style={{
             transform: `scaleX(${fitScale})`,
-            transformOrigin: 'center center',
+            transformOrigin: centered ? 'center center' : 'right center',
             maxWidth: '100%',
             display: 'inline-block',
             whiteSpace: 'nowrap',
