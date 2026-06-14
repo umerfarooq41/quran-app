@@ -55,7 +55,6 @@ button {
 
 .reader-shell {
   isolation: isolate;
-  overflow: hidden !important;
 }
 
 .reader-passive-header {
@@ -152,7 +151,7 @@ button {
 .quran-line-text {
   display: inline-block;
   transform-origin: right center;
-  will-change: transform;
+  will-change: word-spacing;
 }
 
 .quran-line-surah_name {
@@ -1323,11 +1322,9 @@ body {
   min-width: 0;
   display: flex;
   align-items: center;
-  /* RTL Quranic text: right-aligned, not centered */
-  justify-content: flex-end !important;
-  text-align: right !important;
-  /* Allow scaleX measurement — do NOT clip here */
-  overflow: visible !important;
+  justify-content: center !important;
+  text-align: center !important;
+  overflow: hidden !important;
   padding: 0 !important;
   margin: 0 !important;
   border: 0 !important;
@@ -1345,15 +1342,12 @@ body {
   min-width: 0;
   display: inline-block !important;
   white-space: nowrap !important;
-  text-align: right !important;
-  /* Must match JSX: scaleX shrinks from right-center so text stays in bounds */
-  transform-origin: right center !important;
+  /* word-spacing is driven by JS measurement — no hardcoded value here */
   letter-spacing: -0.01em;
-  word-spacing: -0.10em;
-  will-change: transform;
+  will-change: word-spacing;
 }
 
-/* Keep special lines clean — basmallah / surah name stay centered */
+/* Keep special lines clean — basmallah / surah name stay centered, no JS spacing */
 .quran-line-surah_name,
 .quran-line-basmallah,
 .quran-line-bismillah {
@@ -1369,14 +1363,11 @@ body {
   display: none !important;
 }
 
-/* Centered lines shrink from center, not from the right edge */
 .quran-line-surah_name .quran-line-text,
 .quran-line-basmallah .quran-line-text,
 .quran-line-bismillah .quran-line-text {
   letter-spacing: 0 !important;
   word-spacing: normal !important;
-  transform-origin: center center !important;
-  text-align: center !important;
 }
 
 /* Remove green manuscript strip from previous styling */
@@ -1404,7 +1395,6 @@ body {
   }
 
   .quran-line-text {
-    word-spacing: -0.12em;
     letter-spacing: -0.012em;
   }
 }
@@ -1419,7 +1409,6 @@ body {
   }
 
   .quran-line-text {
-    word-spacing: -0.14em;
     letter-spacing: -0.014em;
   }
 }
