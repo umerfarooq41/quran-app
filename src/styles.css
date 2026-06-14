@@ -1332,8 +1332,8 @@ body {
   background: transparent !important;
   color: #171717;
   font-family: IndopakNastaleeq, serif;
-  font-size: calc(clamp(1.18rem, 3.0vh, 1.86rem) * var(--font-scale, 1)) !important;
-  line-height: 1.14 !important;
+  font-size: calc(clamp(1.02rem, 2.6vh, 1.58rem) * var(--font-scale, 1)) !important;
+  line-height: 1.18 !important;
   white-space: nowrap;
 }
 
@@ -1390,8 +1390,8 @@ body {
   }
 
   .quran-line {
-    font-size: calc(clamp(1.10rem, 2.86vh, 1.72rem) * var(--font-scale, 1)) !important;
-    line-height: 1.15 !important;
+    font-size: calc(clamp(0.96rem, 2.54vh, 1.48rem) * var(--font-scale, 1)) !important;
+    line-height: 1.18 !important;
   }
 
   .quran-line-text {
@@ -1405,7 +1405,7 @@ body {
   }
 
   .quran-line {
-    font-size: calc(clamp(1.04rem, 2.74vh, 1.62rem) * var(--font-scale, 1)) !important;
+    font-size: calc(clamp(0.90rem, 2.44vh, 1.40rem) * var(--font-scale, 1)) !important;
   }
 
   .quran-line-text {
