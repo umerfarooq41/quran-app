@@ -1253,3 +1253,126 @@ button {
 .tab-menu button:active { background: #f5f2ec; }
 .tab-menu .danger { color: #b42318; }
 .tabs-status { border-radius: 18px; background: rgba(255,255,255,.7); padding: 10px 14px; color: #655d54; }
+
+
+/* =========================================================
+   SCREEN-FIT FIX: keep 16-line Mushaf inside mobile viewport
+   Add this at the end so it overrides earlier duplicate rules.
+   ========================================================= */
+html,
+body,
+#root {
+  width: 100%;
+  max-width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+}
+
+body {
+  min-width: 0;
+}
+
+.reader-shell {
+  width: 100%;
+  max-width: 576px;
+  overflow: hidden;
+}
+
+.reader-page {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  contain: layout paint size;
+  padding-inline: clamp(6px, 2.1vw, 12px);
+  padding-top: calc(env(safe-area-inset-top, 0px) + clamp(74px, 10.6dvh, 90px));
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + clamp(48px, 7.2dvh, 62px));
+}
+
+.quran-line {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  padding-inline: clamp(2px, 0.9vw, 5px);
+  font-size: calc(clamp(1.18rem, 3.02dvh, 2.18rem) * var(--font-scale, 1));
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.quran-line-text {
+  display: inline-block;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transform-origin: right center;
+}
+
+.quran-line-surah_name,
+.quran-line-basmallah {
+  overflow: hidden;
+}
+
+.surah-banner {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  padding-inline: clamp(6px, 2vw, 12px);
+}
+
+.surah-banner-name,
+.surah-banner-ayahs,
+.surah-banner-basmallah {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: clip;
+  white-space: nowrap;
+}
+
+.reader-passive-header,
+.reader-footer-meta {
+  padding-inline: clamp(18px, 6vw, 38px);
+}
+
+@media (max-width: 420px) {
+  .reader-page {
+    padding-inline: 6px;
+    padding-top: calc(env(safe-area-inset-top, 0px) + clamp(70px, 10dvh, 82px));
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + clamp(44px, 6.8dvh, 54px));
+  }
+
+  .quran-line {
+    padding-inline: 2px;
+    font-size: calc(clamp(1.06rem, 2.9dvh, 1.92rem) * var(--font-scale, 1));
+  }
+
+  .quran-line-basmallah {
+    font-size: calc(clamp(1rem, 2.72dvh, 1.72rem) * var(--font-scale, 1));
+  }
+
+  .surah-banner {
+    gap: 4px;
+    padding-inline: 6px;
+  }
+
+  .surah-banner-name,
+  .surah-banner-ayahs,
+  .surah-banner-basmallah {
+    font-size: calc(clamp(.78rem, 2.1dvh, 1.16rem) * var(--font-scale, 1));
+  }
+}
+
+@media (max-height: 720px) {
+  .reader-page {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 68px);
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 42px);
+  }
+
+  .quran-line {
+    font-size: calc(clamp(1rem, 2.72dvh, 1.82rem) * var(--font-scale, 1));
+  }
+}
