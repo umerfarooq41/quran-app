@@ -1,14 +1,15 @@
 import { create } from 'zustand';
-
-const clampPage = (page) => Math.min(548, Math.max(1, Number(page) || 1));
+import { VIEWS, normalizeView } from '../app/routes';
+import { clampPage } from '../lib/quran';
 
 export const useAppStore = create((set) => ({
-  view: 'home',
+  view: VIEWS.HOME,
   navDirection: 'forward',
   page: 1,
   selectedSurah: 1,
   controlsVisible: false,
   selectedLine: null,
+  selectedAyah: null,
   audioTarget: null,
   tafsirTarget: null,
   pendingAyah: null,
@@ -19,24 +20,26 @@ export const useAppStore = create((set) => ({
     playbackRate: 1,
     autoplay: false,
   },
-  setView: (view, navDirection = 'forward') => set({ view, navDirection, controlsVisible: false }),
+  setView: (view, navDirection = 'forward') => set({ view: normalizeView(view), navDirection, controlsVisible: false }),
   goPage: (page, pendingAyah = null) => set({
     page: clampPage(page),
     pendingAyah,
-    view: 'reader',
+    view: VIEWS.READER,
     navDirection: 'forward',
     controlsVisible: false,
   }),
-  setSelectedSurah: (selectedSurah) => set({ selectedSurah, view: 'surah', navDirection: 'forward', controlsVisible: false }),
+  setSelectedSurah: (selectedSurah) => set({ selectedSurah: Number(selectedSurah) || 1, view: VIEWS.SURAH, navDirection: 'forward', controlsVisible: false }),
   setControlsVisible: (controlsVisible) => set({ controlsVisible }),
   toggleControls: () => set((state) => ({ controlsVisible: !state.controlsVisible })),
   setSelectedLine: (selectedLine) => set({ selectedLine }),
+  setSelectedAyah: (selectedAyah) => set({ selectedAyah }),
+  clearSelectedAyah: () => set({ selectedAyah: null }),
   setAudioTarget: (audioTarget) => set({ audioTarget }),
-  setTafsirTarget: (tafsirTarget) => set({ tafsirTarget, view: 'tafsir', navDirection: 'modal', controlsVisible: false }),
+  setTafsirTarget: (tafsirTarget) => set({ tafsirTarget, view: VIEWS.TAFSIR, navDirection: 'modal', controlsVisible: false }),
   goAyah: (surahNumber, ayahNumber, page) => set({
     page: clampPage(page),
     pendingAyah: { surahNumber: Number(surahNumber), ayahNumber: Number(ayahNumber) },
-    view: 'reader',
+    view: VIEWS.READER,
     navDirection: 'forward',
     controlsVisible: false,
   }),

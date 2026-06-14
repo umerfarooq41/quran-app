@@ -5,18 +5,13 @@ import {
   findPageForReference,
   getJuzQuarterTargets,
   getMushafPageNumber,
-  getSurah,
-  getSurahAyahs,
   surahs,
 } from '../lib/quran';
 import { Header, Screen, Segment } from '../components/common/AppChrome';
 import { panel } from '../components/common/ui';
 
 export default function IndexScreen() {
-  const { view } = useAppStore();
   const [tab, setTab] = useState('surahs');
-  if (view === 'surah') return <SurahDetail />;
-  if (view === 'info') return <SurahInfo />;
   return (
     <Screen className="space-y-4">
       <Header title="Index" />
@@ -85,45 +80,4 @@ function JuzIndex() {
       ))}
     </div>
   );
-}
-
-function SurahDetail() {
-  const { selectedSurah, goAyah, setView } = useAppStore();
-  const surah = getSurah(selectedSurah);
-  const ayahs = getSurahAyahs(selectedSurah);
-  return (
-    <Screen className="space-y-4">
-      <Header title={surah.name} back="index" />
-      <div className={`${panel} p-5`}>
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <p className="text-sm text-slate-500">{surah.revelation} · {surah.verses} verses</p>
-            <h2 className="text-2xl font-semibold">Surah {surah.number}</h2>
-          </div>
-          <button className="rounded-2xl bg-[#2d6e5e] px-4 py-3 font-semibold text-white" onClick={() => setView('info')}>Surah Info</button>
-        </div>
-      </div>
-      <div className={`${panel} max-h-[68dvh] overflow-auto p-3`}>
-        {ayahs.map((ayah) => {
-          const page = findPageForReference(ayah.surahNumber, ayah.ayahNumber);
-          return (
-            <button
-              key={ayah.key}
-              onClick={() => goAyah(ayah.surahNumber, ayah.ayahNumber, page)}
-              className="mb-2 w-full rounded-2xl bg-white/70 p-3 text-left transition active:scale-[0.99]"
-            >
-              <span className="font-semibold">{ayah.surahNumber}:{ayah.ayahNumber} · p. {getMushafPageNumber(page)}</span>
-              <span dir="rtl" className="block font-quran text-2xl leading-loose">{ayah.text}</span>
-            </button>
-          );
-        })}
-      </div>
-    </Screen>
-  );
-}
-
-function SurahInfo() {
-  const { selectedSurah } = useAppStore();
-  const surah = getSurah(selectedSurah);
-  return <Screen className="space-y-4"><Header title={`${surah.name} Info`} back="surah" /><article className={`${panel} prose max-w-none p-5 prose-headings:text-slate-900 prose-p:text-slate-700`} dangerouslySetInnerHTML={{ __html: surah.text }} /></Screen>;
 }

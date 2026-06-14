@@ -9,6 +9,18 @@ export const quranPages = pages;
 export const quranAyahs = ayahs;
 export const totalPages = pages.length;
 
+export function clampPage(pageNumber) {
+  return Math.min(totalPages, Math.max(1, Number(pageNumber) || 1));
+}
+
+export function getDisplayPageNumber(pageNumber) {
+  return clampPage(pageNumber);
+}
+
+export function formatReference(surahNumber, ayahNumber) {
+  return `${Number(surahNumber) || 1}:${Number(ayahNumber) || 1}`;
+}
+
 function parseVerseKey(key) {
   const [surahNumber, ayahNumber] = String(key || '').split(':').map(Number);
   return { surahNumber, ayahNumber };
@@ -33,14 +45,14 @@ export const surahs = Object.values(surahInfo).map((info) => {
 });
 
 export function getPage(pageNumber) {
-  return pages[Math.min(totalPages, Math.max(1, pageNumber)) - 1];
+  return pages[clampPage(pageNumber) - 1];
 }
 
 export function getPageMeta(pageNumber) {
   const page = getPage(pageNumber);
   const firstLine = firstLineForPage(page);
   const surah = surahs.find((item) => item.number === firstLine?.surahNumber) ?? surahs[0];
-  const juz = firstLine ? getJuzForReference(firstLine.surahNumber, firstLine.ayahStart) : getPageJuz(pageNumber);
+  const juz = firstLine ? getJuzForReference(firstLine.surahNumber, firstLine.ayahStart) : getPageJuz(pageNumber, totalPages);
   return { surah, juz };
 }
 
@@ -94,10 +106,7 @@ export function getJuzQuarterTargets(juzNumber) {
 }
 
 export function getMushafPageNumber(pageNumber) {
-  // The 16-line IndoPak data starts after the opening display page, while many printed/mobile
-  // IndoPak layouts show the visible page number one higher. Keep internal navigation 1-548,
-  // but display the familiar reader page number.
-  return Math.min(totalPages + 1, Math.max(1, Number(pageNumber) + 1));
+  return getDisplayPageNumber(pageNumber);
 }
 
 export function searchQuran(query) {
@@ -105,7 +114,10 @@ export function searchQuran(query) {
   if (!normalized) return [];
 
   const pageMatch = normalized.match(/^p(?:age)?\s*(\d+)$/);
-  if (pageMatch) return [{ type: 'page', page: Math.max(1, Number(pageMatch[1]) - 1), title: `Page ${pageMatch[1]}`, subtitle: 'Open page' }];
+  if (pageMatch) {
+    const page = clampPage(pageMatch[1]);
+    return [{ type: 'page', page, title: `Page ${getDisplayPageNumber(page)}`, subtitle: 'Open page' }];
+  }
 
   const refMatch = normalized.match(/^(\d{1,3})\s*[:.]\s*(\d{1,3})$/);
   if (refMatch) {

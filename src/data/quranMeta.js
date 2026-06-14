@@ -26,8 +26,9 @@ export function getJuzForReference(surahNumber, ayahNumber = 1) {
   return juz;
 }
 
-export function getJuzPartByPage(page, totalPages = 548) {
-  const pagesPerJuz = totalPages / 30;
+export function getJuzPartByPage(page, totalPages) {
+  const safeTotalPages = Math.max(1, Number(totalPages) || Number(page) || 1);
+  const pagesPerJuz = safeTotalPages / 30;
   const within = ((page - 1) % pagesPerJuz) / pagesPerJuz;
   if (within < 0.25) return 'Start';
   if (within < 0.5) return "Ar-Ruba'";
@@ -35,6 +36,7 @@ export function getJuzPartByPage(page, totalPages = 548) {
   return 'Ath-Thalatha';
 }
 
-export function getPageJuz(page, totalPages = 548) {
-  return Math.min(30, Math.max(1, Math.ceil((page / totalPages) * 30)));
+export function getPageJuz(page, totalPages) {
+  const safeTotalPages = Math.max(1, Number(totalPages) || Number(page) || 1);
+  return Math.min(30, Math.max(1, Math.ceil((Number(page) / safeTotalPages) * 30)));
 }

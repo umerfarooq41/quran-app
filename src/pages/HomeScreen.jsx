@@ -12,7 +12,7 @@ export default function HomeScreen() {
   const actions = [
     ['Index', Library, () => setView('index')],
     ['Search', Search, () => setView('search')],
-    ['Bookmarks', Bookmark, () => setView('bookmarks')],
+    ['Bookmarks', Bookmark, () => setView('tabs')],
     ['Audio', Headphones, () => setView('audio')],
     ['Settings', SlidersHorizontal, () => setView('settings')],
   ];
