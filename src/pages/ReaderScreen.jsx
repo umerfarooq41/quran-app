@@ -221,7 +221,7 @@ function QuranLine({ line, onSelect, marked = false, jumped = false, hasSeparate
   const textRef = useRef(null);
   const longPressTimer = useRef(null);
   const longPressed = useRef(false);
-  const [fitScale, setFitScale] = useState(1);
+  const [wordSpacing, setWordSpacing] = useState(0);
 
   const isBasmallah = line.type === 'basmallah' || line.type === 'bismillah';
   const centered = line.isCentered || line.type === 'surah_name' || isBasmallah;
@@ -238,21 +238,28 @@ function QuranLine({ line, onSelect, marked = false, jumped = false, hasSeparate
         line.type === 'surah_name' ||
         isBasmallah
       ) {
-        setFitScale(1);
+        setWordSpacing(0);
         return;
       }
 
-      // Reset transform so we measure the natural (unscaled) text width
-      textRef.current.style.transform = 'scaleX(1)';
+      // Reset to natural spacing before measuring
+      textRef.current.style.wordSpacing = '0px';
 
       const available = lineRef.current.offsetWidth;
-      // scrollWidth gives the full natural width of the text span
       const actual = textRef.current.scrollWidth;
 
-      if (!available || !actual) return;
+      if (!available || !actual || actual <= available) {
+        setWordSpacing(0);
+        return;
+      }
 
-      const nextScale = Math.max(0.55, Math.min(1, available / actual));
-      setFitScale(Number(nextScale.toFixed(3)));
+      // Spread the deficit across the inter-word gaps
+      const spaces = Math.max(1, (text.match(/\s+/g) || []).length);
+      const deficit = actual - available;
+      const adjustment = -(deficit / spaces);
+
+      // Clamp: don't compress more than -18px per gap (glyphs start touching)
+      setWordSpacing(Number(Math.max(-18, adjustment).toFixed(2)));
     };
 
     measure();
@@ -313,7 +320,7 @@ function QuranLine({ line, onSelect, marked = false, jumped = false, hasSeparate
           onSelect();
         }
       }}
-      className={`quran-line quran-line-${isBasmallah ? 'basmallah' : line.type} ${marked ? 'quran-line-marked' : ''} ${jumped ? 'quran-line-jumped' : ''} ${line.type === 'spacer' ? 'opacity-0' : ''} ${centered ? 'justify-center text-center' : 'justify-end text-right'} overflow-hidden`}
+      className={`quran-line quran-line-${isBasmallah ? 'basmallah' : line.type} ${marked ? 'quran-line-marked' : ''} ${jumped ? 'quran-line-jumped' : ''} ${line.type === 'spacer' ? 'opacity-0' : ''} ${centered ? 'justify-center text-center' : 'justify-end text-right'}`}
       aria-label={line.type === 'spacer' ? 'Blank line' : text}
       tabIndex={line.type === 'spacer' ? -1 : 0}
     >
@@ -324,9 +331,7 @@ function QuranLine({ line, onSelect, marked = false, jumped = false, hasSeparate
           ref={textRef}
           className="quran-line-text"
           style={{
-            transform: `scaleX(${fitScale})`,
-            transformOrigin: centered ? 'center center' : 'right center',
-            maxWidth: '100%',
+            wordSpacing: `${wordSpacing}px`,
             display: 'inline-block',
             whiteSpace: 'nowrap',
           }}
