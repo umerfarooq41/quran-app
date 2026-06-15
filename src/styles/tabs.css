@@ -1,0 +1,278 @@
+/* Saved Tabs screen and tab-card menu styles. */
+.tabs-screen {
+  min-height: calc(100dvh - 4rem);
+}
+
+.tabs-header {
+  position: relative;
+  min-height: calc(env(safe-area-inset-top, 0px) + 112px);
+  display: grid;
+  place-items: center;
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.tabs-header h1 {
+  font-size: clamp(1.42rem, 5.2vw, 1.85rem);
+  font-weight: 500;
+  color: #2c2b2a;
+}
+
+.tabs-back-pill {
+  position: absolute;
+  left: 0;
+  top: calc(env(safe-area-inset-top, 0px) + 24px);
+  display: grid;
+  height: 66px;
+  min-width: 104px;
+  place-items: center;
+  border-radius: 30px;
+  background: rgba(223, 224, 226, .82);
+  color: #171717;
+}
+
+.tabs-list {
+  display: grid;
+  gap: 14px;
+  padding-bottom: 64px;
+}
+
+.tab-card {
+  width: 100%;
+  background: rgba(255, 255, 255, .9);
+  padding: 28px 28px 30px;
+  text-align: left;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, .02);
+}
+
+.tab-card-top {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.tab-bookmark {
+  display: grid;
+  place-items: center;
+}
+
+.tab-bookmark-amber { color: #f3b83e; }
+.tab-bookmark-rose { color: #d4144e; }
+.tab-bookmark-emerald { color: #227d68; }
+
+.tab-type {
+  color: #2f2f2f;
+  font-size: 1.04rem;
+  font-weight: 500;
+}
+
+.tab-surah {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #454545;
+  font-size: .98rem;
+}
+
+.tab-more {
+  color: #1a1a1a;
+}
+
+.ayah-medallion {
+  display: inline-grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  color: #6f4e25;
+  font-size: .78rem;
+  line-height: 1;
+  background:
+    radial-gradient(circle, #fff 49%, transparent 50%),
+    conic-gradient(from 0deg, transparent 0 8deg, #a87537 8deg 15deg, transparent 15deg 30deg, #a87537 30deg 38deg, transparent 38deg 52deg, #a87537 52deg 60deg, transparent 60deg 360deg);
+  border-radius: 999px;
+}
+
+.tab-arabic {
+  margin: 24px 0 0;
+  color: #11100c;
+  font-family: IndopakNastaleeq, serif;
+  font-size: clamp(2rem, 7vw, 3.2rem);
+  line-height: 1.55;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 420px) {
+  .ayah-action-sheet {
+    border-radius: 26px;
+    padding-inline: 22px;
+  }
+
+  .ayah-main-action-row {
+    gap: 12px;
+  }
+
+  .tab-card {
+    padding-inline: 22px;
+  }
+}
+
+.tabs-filter-row {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 0 2px 4px;
+  scrollbar-width: none;
+}
+
+.tabs-filter-row::-webkit-scrollbar { display: none; }
+
+.tabs-filter-row button {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .8);
+  padding: 10px 16px;
+  color: rgba(45, 45, 45, .64);
+  font-size: .95rem;
+  font-weight: 500;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, .02);
+}
+
+.tabs-filter-row button.active {
+  background: #050505;
+  color: #fff;
+}
+
+.tabs-status {
+  margin: 0;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, .8);
+  padding: 10px 14px;
+  color: rgba(20, 20, 20, .62);
+  font-size: .95rem;
+}
+
+.tab-card {
+  position: relative;
+  display: block;
+  border-radius: 0;
+}
+
+.tab-card-hit {
+  display: block;
+  width: 100%;
+  text-align: left;
+}
+
+.tab-more-button {
+  position: absolute;
+  right: 20px;
+  top: 28px;
+  z-index: 2;
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 999px;
+  color: #1a1a1a;
+}
+
+.tab-card-hit .tab-card-top {
+  padding-right: 42px;
+}
+
+.tab-menu {
+  position: absolute;
+  right: 20px;
+  top: 70px;
+  z-index: 4;
+  min-width: 190px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, .98);
+  padding: 8px;
+  box-shadow: 0 18px 46px rgba(0, 0, 0, .16);
+}
+
+.tab-menu button {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 10px;
+  border-radius: 16px;
+  padding: 10px 12px;
+  color: #202020;
+  text-align: left;
+  font-size: .94rem;
+}
+
+.tab-menu button:hover,
+.tab-menu button:active {
+  background: #f4f4f4;
+}
+
+.tab-menu button.danger {
+  color: #dc2626;
+}
+
+.tab-bookmark-sky { color: #0284c7; }
+.tab-bookmark-violet { color: #7c3aed; }
+
+.tabs-header.compact {
+  min-height: calc(env(safe-area-inset-top, 0px) + 92px);
+}
+
+.tab-card {
+  position: relative;
+  border-radius: 28px;
+  overflow: visible;
+  box-shadow: 0 10px 28px rgba(31, 24, 15, .055);
+}
+
+.tab-card-hit {
+  display: block;
+  width: 100%;
+  text-align: inherit;
+}
+
+.tab-more-button {
+  position: absolute;
+  top: 20px;
+  right: 18px;
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 999px;
+  color: #1f1f1f;
+}
+
+.tab-menu {
+  position: absolute;
+  right: 18px;
+  top: 66px;
+  z-index: 20;
+  display: grid;
+  min-width: 178px;
+  gap: 2px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, .98);
+  padding: 8px;
+  box-shadow: 0 18px 48px rgba(20, 20, 20, .16);
+}
+
+.tab-menu button {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border-radius: 14px;
+  padding: 10px 12px;
+  color: #30302f;
+  font-size: .92rem;
+  text-align: left;
+}
+
+.tab-menu button:active { background: #f5f2ec; }
+.tab-menu .danger { color: #b42318; }
+.tabs-status { border-radius: 18px; background: rgba(255,255,255,.7); padding: 10px 14px; color: #655d54; }

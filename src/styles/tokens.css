@@ -1,0 +1,22 @@
+@font-face {
+  font-family: IndopakNastaleeq;
+  src: url('/fonts/nastaleeq-font.woff2') format('woff2');
+  font-display: swap;
+}
+
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color-scheme: light;
+
+  --mushaf-bg: #fbf7ef;
+  --mushaf-paper: #ffffff;
+  --app-bg: #f1f2f3;
+  --ink: #12110e;
+  --muted: rgba(62, 57, 49, .42);
+  --gold: #a87537;
+  --sheet: #ffffff;
+  --pill: #ececec;
+  --reader-max-width: 576px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
