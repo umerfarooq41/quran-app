@@ -1,14 +1,14 @@
-/* Nusuk-style Index screen. Compact cards, no extra background container, with preserved Surah/Juz collapses. */
+/* Nusuk-style compact Index screen with collapsible Juz quarters and Surah ayahs. */
 .index-replica-shell {
   min-height: 100dvh;
   overflow-x: hidden;
   background: #eef0f2;
   color: #17181b;
-  padding: calc(env(safe-area-inset-top, 0px) + 56px) 10px calc(env(safe-area-inset-bottom, 0px) + 22px);
+  padding: calc(env(safe-area-inset-top, 0px) + 58px) 8px calc(env(safe-area-inset-bottom, 0px) + 26px);
 }
 
 .index-replica-inner {
-  width: min(100%, 430px);
+  width: min(100%, 390px);
   margin: 0 auto;
 }
 
@@ -16,25 +16,25 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 22px;
-  margin-bottom: 36px;
-  padding-inline: 10px;
+  gap: 18px;
+  margin-bottom: 34px;
+  padding-inline: 12px;
 }
 
 .index-replica-header h1 {
   margin: 0;
   font-family: Georgia, 'Times New Roman', serif;
-  font-size: clamp(2.1rem, 9.2vw, 2.8rem);
+  font-size: clamp(2.05rem, 9.8vw, 2.72rem);
   font-weight: 500;
-  line-height: .98;
+  line-height: .95;
   letter-spacing: -.055em;
   color: #24262b;
 }
 
 .index-close-pill {
   display: grid;
-  width: clamp(76px, 21vw, 92px);
-  height: clamp(50px, 13.2vw, 62px);
+  width: clamp(68px, 20vw, 86px);
+  height: clamp(48px, 13vw, 58px);
   place-items: center;
   flex: 0 0 auto;
   border: 0;
@@ -46,12 +46,12 @@
 .index-segment {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  height: clamp(54px, 13.5vw, 66px);
-  margin: 0 0 26px;
+  height: clamp(48px, 13vw, 58px);
+  margin: 0 0 28px;
   border-radius: 999px;
   background: #e0e2e5;
-  padding: 4px;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.32);
+  padding: 3px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.35);
 }
 
 .index-segment button {
@@ -59,14 +59,14 @@
   border-radius: 999px;
   background: transparent;
   color: #111315;
-  font-size: clamp(.96rem, 3.7vw, 1.08rem);
+  font-size: clamp(.88rem, 3.45vw, 1rem);
   font-weight: 400;
   letter-spacing: -.02em;
 }
 
 .index-segment button.is-active {
   background: #fff;
-  box-shadow: 3px 0 0 rgba(0,0,0,.035), 0 2px 8px rgba(0,0,0,.035);
+  box-shadow: 3px 0 0 rgba(0,0,0,.025), 0 2px 6px rgba(0,0,0,.035);
 }
 
 .index-list {
@@ -81,7 +81,7 @@
 
 .index-card {
   width: 100%;
-  min-height: clamp(70px, 17.8vw, 84px);
+  min-height: clamp(66px, 17.5vw, 78px);
   border: 0;
   border-radius: 22px;
   background: #fff;
@@ -95,19 +95,19 @@
   grid-template-columns: auto 1fr auto;
   align-items: center;
   column-gap: 18px;
-  padding: 14px 17px;
+  padding: 14px 16px;
   text-align: left;
 }
 
 .index-number-badge {
   display: grid;
-  width: clamp(38px, 9.8vw, 46px);
-  height: clamp(38px, 9.8vw, 46px);
+  width: clamp(38px, 10vw, 46px);
+  height: clamp(38px, 10vw, 46px);
   place-items: center;
-  border: 2px solid #d2d4d6;
+  border: 2px solid #d6d7d9;
   border-radius: 999px;
   color: #17181b;
-  font-size: clamp(1rem, 3.8vw, 1.16rem);
+  font-size: clamp(.98rem, 3.9vw, 1.12rem);
   font-weight: 400;
   line-height: 1;
 }
@@ -115,7 +115,7 @@
 .index-card-title {
   min-width: 0;
   color: #111315;
-  font-size: clamp(1.18rem, 5vw, 1.42rem);
+  font-size: clamp(1.06rem, 4.55vw, 1.28rem);
   font-weight: 400;
   letter-spacing: -.045em;
 }
@@ -129,9 +129,9 @@
 }
 
 .index-section-title {
-  margin: 10px 0 10px 16px;
+  margin: 0 0 12px 14px;
   color: #111315;
-  font-size: clamp(.82rem, 3.3vw, .96rem);
+  font-size: clamp(.82rem, 3.25vw, .94rem);
   font-weight: 500;
   line-height: 1;
   letter-spacing: -.025em;
@@ -140,19 +140,6 @@
 .index-surah-stack {
   display: grid;
   gap: 14px;
-}
-
-.index-surah-main {
-  grid-column: 1 / 3;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: center;
-  column-gap: 16px;
-  min-width: 0;
-  border: 0;
-  background: transparent;
-  padding: 0;
-  text-align: left;
 }
 
 .index-surah-text {
@@ -164,9 +151,9 @@
 .index-surah-text strong {
   overflow: hidden;
   color: #08090a;
-  font-size: clamp(1.08rem, 4.6vw, 1.32rem);
+  font-size: clamp(1.04rem, 4.45vw, 1.28rem);
   font-weight: 650;
-  line-height: 1.06;
+  line-height: 1.04;
   letter-spacing: -.045em;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -174,8 +161,8 @@
 
 .index-surah-text small {
   overflow: hidden;
-  color: #9b9da1;
-  font-size: clamp(.78rem, 3.35vw, .94rem);
+  color: #9c9da1;
+  font-size: clamp(.78rem, 3.2vw, .92rem);
   font-weight: 400;
   line-height: 1.08;
   letter-spacing: -.035em;
@@ -183,21 +170,10 @@
   white-space: nowrap;
 }
 
-.index-arrow-btn {
-  display: grid;
-  width: 36px;
-  height: 36px;
-  place-items: center;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  color: #070707;
-}
-
 .index-collapse-panel {
   margin-inline: 6px;
   border-radius: 22px;
-  background: rgba(255,255,255,.82);
+  background: rgba(255,255,255,.72);
   padding: 12px;
 }
 
@@ -231,60 +207,56 @@
 .index-quarter-btn span {
   margin-top: 3px;
   color: #8c8d91;
-  font-size: .71rem;
+  font-size: .7rem;
+}
+
+.index-surah-collapse {
+  display: grid;
+  gap: 12px;
 }
 
 .index-surah-info-card {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 8px 10px;
-  align-items: start;
-  margin-bottom: 11px;
+  gap: 12px;
+  align-items: center;
   border-radius: 18px;
-  background: #f3f4f5;
+  background: #f5f4ef;
   padding: 12px;
 }
 
-.index-surah-info-card strong,
-.index-surah-info-card span,
-.index-surah-info-card p {
-  display: block;
-}
-
-.index-surah-info-card strong {
-  color: #111315;
-  font-size: .98rem;
-  font-weight: 650;
-  letter-spacing: -.035em;
-}
-
 .index-surah-info-card span {
-  margin-top: 3px;
-  color: #8d8f93;
-  font-size: .78rem;
-  letter-spacing: -.025em;
+  display: block;
+  color: #7f8b9f;
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
 }
 
 .index-surah-info-card p {
-  grid-column: 1 / -1;
-  margin: 0;
-  color: #696b70;
-  font-size: .76rem;
+  display: -webkit-box;
+  margin: 5px 0 0;
+  overflow: hidden;
+  color: #5f6673;
+  font-size: .78rem;
   line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .index-surah-info-card button {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  height: 32px;
+  height: 34px;
   border: 0;
   border-radius: 999px;
   background: #fff;
-  padding: 0 10px;
-  color: #111315;
+  padding: 0 12px;
+  color: #15171b;
   font-size: .78rem;
-  font-weight: 550;
+  font-weight: 600;
 }
 
 .index-ayah-grid {
@@ -305,7 +277,7 @@
 
 @media (max-width: 420px) {
   .index-replica-shell {
-    padding-top: calc(env(safe-area-inset-top, 0px) + 52px);
+    padding-top: calc(env(safe-area-inset-top, 0px) + 54px);
   }
 
   .index-replica-header {
@@ -314,33 +286,7 @@
 
   .index-juz-card,
   .index-surah-card {
-    column-gap: 15px;
+    column-gap: 16px;
     padding: 13px 15px;
   }
-}
-
-/* Surah rows now collapse exactly like Juz rows: chevron rotates when open. */
-.index-surah-card {
-  appearance: none;
-  text-align: left;
-  cursor: pointer;
-}
-
-.index-surah-card .index-chevron {
-  justify-self: end;
-}
-
-.index-arrow-btn {
-  display: none;
-}
-
-.index-surah-info-actions {
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 7px;
-}
-
-.index-surah-info-actions button {
-  margin: 0;
 }
