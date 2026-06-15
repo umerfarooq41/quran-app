@@ -4,11 +4,34 @@
 }
 
 .reader-passive-header {
-  height: calc(env(safe-area-inset-top, 0px) + 74px);
-  padding-top: calc(env(safe-area-inset-top, 0px) + 30px);
-  color: rgba(62, 57, 49, .42);
-  font-size: clamp(1.02rem, 3.8vw, 1.22rem);
-  font-weight: 500;
+  pointer-events: none;
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: calc(env(safe-area-inset-top, 0px) + 58px);
+  padding: calc(env(safe-area-inset-top, 0px) + 18px) 20px 0;
+  color: var(--reader-meta, rgba(62, 57, 49, .58));
+  font-size: clamp(1.05rem, 3.75vw, 1.22rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.reader-meta-label {
+  display: inline-flex;
+  min-width: 3ch;
+  align-items: center;
+  line-height: 1;
+}
+
+.reader-meta-page,
+.reader-meta-rub {
+  justify-content: flex-end;
+  font-variant-numeric: tabular-nums;
 }
 
 .reader-page {
@@ -72,9 +95,20 @@
 }
 
 .reader-footer-meta {
-  color: rgba(62, 57, 49, .42);
-  font-size: clamp(1.02rem, 3.8vw, 1.2rem);
-  font-weight: 500;
+  pointer-events: none;
+  position: absolute;
+  inset-inline: 0;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-inline: 26px;
+  color: var(--reader-meta, rgba(62, 57, 49, .58));
+  font-size: clamp(1.05rem, 3.75vw, 1.22rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.01em;
 }
 
 .quran-line {
