@@ -18,6 +18,12 @@ export const surahArabicNames = [
 
 export const basmallahText = 'بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِیْمِ';
 
+const ordinalJuzNames = [
+  '', 'First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth',
+  'Eleventh', 'Twelfth', 'Thirteenth', 'Fourteenth', 'Fifteenth', 'Sixteenth', 'Seventeenth', 'Eighteenth', 'Nineteenth', 'Twentieth',
+  'Twenty-first', 'Twenty-second', 'Twenty-third', 'Twenty-fourth', 'Twenty-fifth', 'Twenty-sixth', 'Twenty-seventh', 'Twenty-eighth', 'Twenty-ninth', 'Thirtieth',
+];
+
 export function getDisplayLineText(line) {
   if (line.type === 'surah_name') {
     return `سُورَةُ ${surahArabicNames[line.surahNumber] || line.surahNumber}`;
@@ -28,16 +34,25 @@ export function getDisplayLineText(line) {
   return line.text || '\u00A0';
 }
 
-
-export function getJuzLabel(juz) {
-  const names = [
-    '', 'First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth',
-    'Eleventh', 'Twelfth', 'Thirteenth', 'Fourteenth', 'Fifteenth', 'Sixteenth', 'Seventeenth', 'Eighteenth', 'Nineteenth', 'Twentieth',
-    'Twenty-first', 'Twenty-second', 'Twenty-third', 'Twenty-fourth', 'Twenty-fifth', 'Twenty-sixth', 'Twenty-seventh', 'Twenty-eighth', 'Twenty-ninth', 'Thirtieth',
-  ];
-  return `${names[juz] || `Juz ${juz}`} Juz`;
+export function getJuzName(juz) {
+  return ordinalJuzNames[Number(juz)] || `Juz ${juz}`;
 }
 
+export function getJuzLabel(juz) {
+  return `${getJuzName(juz)} Juz`;
+}
+
+export function getReaderJuzLabel(juz) {
+  return `'${getJuzName(juz)} Juz`;
+}
+
+export function getIndexJuzLabel(juz) {
+  return `${getJuzName(juz)} Juz'`;
+}
+
+export function getIndexJuzHeading(juz) {
+  return getIndexJuzLabel(juz).toUpperCase();
+}
 
 export function findRubForReference(surahNumber, ayahNumber) {
   let current = null;
@@ -72,5 +87,4 @@ export function getHizbLabel(page) {
   const first = pageData.lines.find((line) => line.surahNumber && line.ayahStart);
   if (first) return getRubLabelForAyah(first.surahNumber, first.ayahStart) || 'Hizb';
   return 'Hizb';
-
 }

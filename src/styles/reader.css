@@ -12,13 +12,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: calc(env(safe-area-inset-top, 0px) + 58px);
-  padding: calc(env(safe-area-inset-top, 0px) + 18px) 20px 0;
-  color: var(--reader-meta, rgba(62, 57, 49, .58));
-  font-size: clamp(1.05rem, 3.75vw, 1.22rem);
-  font-weight: 600;
+  height: calc(env(safe-area-inset-top, 0px) + 70px);
+  padding: calc(env(safe-area-inset-top, 0px) + 34px) 32px 0;
+  color: var(--reader-meta, rgba(52, 55, 59, .42));
+  font-size: clamp(.92rem, 2.8vw, 1.08rem);
+  font-weight: 400;
   line-height: 1;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
 }
 
 .reader-meta-label {
