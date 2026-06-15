@@ -318,3 +318,29 @@
     padding: 13px 15px;
   }
 }
+
+/* Surah rows now collapse exactly like Juz rows: chevron rotates when open. */
+.index-surah-card {
+  appearance: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.index-surah-card .index-chevron {
+  justify-self: end;
+}
+
+.index-arrow-btn {
+  display: none;
+}
+
+.index-surah-info-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+.index-surah-info-actions button {
+  margin: 0;
+}
