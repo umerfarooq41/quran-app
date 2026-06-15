@@ -12,13 +12,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: calc(env(safe-area-inset-top, 0px) + 70px);
-  padding: calc(env(safe-area-inset-top, 0px) + 34px) 32px 0;
-  color: var(--reader-meta, rgba(52, 55, 59, .42));
-  font-size: clamp(.92rem, 2.8vw, 1.08rem);
-  font-weight: 400;
+  height: calc(env(safe-area-inset-top, 0px) + 58px);
+  padding: calc(env(safe-area-inset-top, 0px) + 18px) 20px 0;
+  color: var(--reader-meta, rgba(62, 57, 49, .58));
+  font-size: clamp(1.05rem, 3.75vw, 1.22rem);
+  font-weight: 600;
   line-height: 1;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.01em;
 }
 
 .reader-meta-label {
@@ -930,4 +930,28 @@ body {
   .quran-line-text {
     letter-spacing: -0.014em;
   }
+}
+
+/* Step 5 correction: reference-small muted reader header/footer only. */
+.reader-passive-header {
+  height: calc(env(safe-area-inset-top, 0px) + 72px) !important;
+  padding-top: calc(env(safe-area-inset-top, 0px) + 28px) !important;
+  padding-inline: clamp(22px, 6vw, 36px) !important;
+  color: rgba(35, 35, 35, .50) !important;
+  font-size: clamp(.86rem, 3.05vw, 1rem) !important;
+  font-weight: 500 !important;
+  letter-spacing: -.025em !important;
+}
+
+.reader-meta-label {
+  font-weight: inherit !important;
+}
+
+.reader-footer-meta {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 16px) !important;
+  padding-inline: clamp(26px, 7vw, 42px) !important;
+  color: rgba(35, 35, 35, .45) !important;
+  font-size: clamp(.92rem, 3.4vw, 1.08rem) !important;
+  font-weight: 500 !important;
+  letter-spacing: -.025em !important;
 }

@@ -5,10 +5,10 @@ import './styles.css';
 import './styles/tokens.css';
 import './styles/base.css';
 import './styles/reader.css';
-import './styles/index.css';
 import './styles/tabs.css';
 import './styles/tafsir.css';
 import './styles/home.css';
+import './styles/index.css';
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
