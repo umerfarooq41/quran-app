@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { ChevronDown, Info, X } from 'lucide-react';
+import { ChevronDown, X } from 'lucide-react';
 import { VIEWS } from '../app/routes';
 import { useAppStore } from '../store/useAppStore';
 import {
@@ -17,6 +17,11 @@ function formatJuzName(juz) {
 
 function formatJuzHeading(juz) {
   return formatJuzName(juz).toUpperCase();
+}
+
+function shortInfoText(surah) {
+  const fallback = `${surah.name} has ${surah.verses} ayahs and begins in ${formatJuzName(surah.juz)}.`;
+  return (surah.shortText || fallback).replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
 }
 
 export default function IndexScreen() {
@@ -72,7 +77,7 @@ function JuzIndex() {
 
         return (
           <article key={juz} className={`index-card-wrap ${isOpen ? 'is-open' : ''}`}>
-            <button className="index-card index-juz-card" onClick={() => setExpandedJuz(isOpen ? null : juz)} type="button">
+            <button className="index-card index-juz-card" onClick={() => setExpandedJuz(isOpen ? null : juz)} type="button" aria-expanded={isOpen}>
               <NumberBadge>{juz}</NumberBadge>
               <span className="index-card-title">{formatJuzName(juz)}</span>
               <ChevronDown className="index-chevron" size={19} strokeWidth={2.3} />
@@ -141,14 +146,13 @@ function SurahIndex() {
                   {isOpen && (
                     <div className="index-collapse-panel index-surah-collapse" aria-label={`${surah.name} ayahs`}>
                       <div className="index-surah-info-card">
-                        <div>
-                          <span>Surah info</span>
-                          <p>{surah.shortText || `${surah.name} has ${surah.verses} ayahs and begins in ${formatJuzName(surah.juz)}.`}</p>
-                        </div>
-                        <button type="button" onClick={() => openSurahInfo(surah.number)}>
-                          <Info size={15} strokeWidth={2.2} />
-                          Read
-                        </button>
+                        <span>Surah info</span>
+                        <p>
+                          {shortInfoText(surah)}{' '}
+                          <button type="button" onClick={() => openSurahInfo(surah.number)}>
+                            Read more
+                          </button>
+                        </p>
                       </div>
 
                       <div className="index-ayah-grid">
