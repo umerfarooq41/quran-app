@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import { ChevronDown, ArrowRight, Info, X } from 'lucide-react';
+import { ChevronDown, ArrowRight, X, Info } from 'lucide-react';
 import { useAppStore } from '../store/useAppStore';
-import { VIEWS } from '../app/routes';
 import {
   findPageForReference,
   getJuzQuarterTargets,
@@ -102,7 +101,7 @@ function JuzIndex() {
 
 function SurahIndex() {
   const [expandedSurah, setExpandedSurah] = useState(null);
-  const { goAyah, setSelectedSurah, setView } = useAppStore();
+  const { goAyah, setSelectedSurah } = useAppStore();
 
   const grouped = useMemo(() => surahs.reduce((groups, surah) => {
     const key = surah.juz;
@@ -151,22 +150,19 @@ function SurahIndex() {
                     <div className="index-collapse-panel" aria-label={`${surah.name} ayahs`}>
                       <div className="index-surah-info-card">
                         <div>
-                          <span>Surah info</span>
                           <strong>{surah.name}</strong>
-                          <small>{surah.verses} ayahs · {surah.revelation} · {formatJuzName(surah.juz)}</small>
+                          <span>Page {getMushafPageNumber(page)} . {surah.verses} verses . {surah.revelation}</span>
                         </div>
                         <button
                           type="button"
-                          onClick={() => {
-                            setSelectedSurah(surah.number);
-                            setView(VIEWS.SURAH_INFO);
-                          }}
-                          aria-label={`Read ${surah.name} information`}
+                          onClick={() => setSelectedSurah(surah.number)}
+                          aria-label={`Open ${surah.name} information`}
                         >
-                          <Info size={17} strokeWidth={2.2} />
+                          <Info size={16} strokeWidth={2.2} />
+                          Info
                         </button>
+                        {surah.shortText && <p>{surah.shortText}</p>}
                       </div>
-
                       <div className="index-ayah-grid">
                         {ayahs.map((ayah) => (
                           <button
