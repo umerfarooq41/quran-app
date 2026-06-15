@@ -29,6 +29,7 @@ export const useAppStore = create((set) => ({
     controlsVisible: false,
   }),
   setSelectedSurah: (selectedSurah) => set({ selectedSurah: Number(selectedSurah) || 1, view: VIEWS.SURAH, navDirection: 'forward', controlsVisible: false }),
+  openSurahInfo: (selectedSurah) => set({ selectedSurah: Number(selectedSurah) || 1, view: VIEWS.SURAH_INFO, navDirection: 'forward', controlsVisible: false }),
   setControlsVisible: (controlsVisible) => set({ controlsVisible }),
   toggleControls: () => set((state) => ({ controlsVisible: !state.controlsVisible })),
   setSelectedLine: (selectedLine) => set({ selectedLine }),
