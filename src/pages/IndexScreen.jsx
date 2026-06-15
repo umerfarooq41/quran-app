@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { ChevronDown, ArrowRight, X, Info } from 'lucide-react';
+import { ChevronDown, X, Info } from 'lucide-react';
 import { useAppStore } from '../store/useAppStore';
 import {
   findPageForReference,
@@ -123,28 +123,20 @@ function SurahIndex() {
 
               return (
                 <article key={surah.number} className={`index-card-wrap ${isOpen ? 'is-open' : ''}`}>
-                  <div className="index-card index-surah-card">
-                    <button
-                      className="index-surah-main"
-                      onClick={() => setExpandedSurah(isOpen ? null : surah.number)}
-                      type="button"
-                    >
-                      <NumberBadge>{surah.number}</NumberBadge>
-                      <span className="index-surah-text">
-                        <strong>{surah.name}</strong>
-                        <small>Page {getMushafPageNumber(page)} . {surah.verses} verses . {surah.revelation}</small>
-                      </span>
-                    </button>
-                    <button
-                      className="index-arrow-btn"
-                      onClick={() => goAyah(surah.number, 1, page)}
-                      onDoubleClick={() => setSelectedSurah(surah.number)}
-                      type="button"
-                      aria-label={`Open ${surah.name}`}
-                    >
-                      <ArrowRight size={24} strokeWidth={2.3} />
-                    </button>
-                  </div>
+                  <button
+                    className="index-card index-surah-card"
+                    onClick={() => setExpandedSurah(isOpen ? null : surah.number)}
+                    type="button"
+                    aria-expanded={isOpen}
+                    aria-label={`${isOpen ? 'Hide' : 'Show'} ${surah.name} ayahs`}
+                  >
+                    <NumberBadge>{surah.number}</NumberBadge>
+                    <span className="index-surah-text">
+                      <strong>{surah.name}</strong>
+                      <small>Page {getMushafPageNumber(page)} . {surah.verses} verses . {surah.revelation}</small>
+                    </span>
+                    <ChevronDown className="index-chevron" size={20} strokeWidth={2.35} />
+                  </button>
 
                   {isOpen && (
                     <div className="index-collapse-panel" aria-label={`${surah.name} ayahs`}>
@@ -153,14 +145,23 @@ function SurahIndex() {
                           <strong>{surah.name}</strong>
                           <span>Page {getMushafPageNumber(page)} . {surah.verses} verses . {surah.revelation}</span>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => setSelectedSurah(surah.number)}
-                          aria-label={`Open ${surah.name} information`}
-                        >
-                          <Info size={16} strokeWidth={2.2} />
-                          Info
-                        </button>
+                        <div className="index-surah-info-actions">
+                          <button
+                            type="button"
+                            onClick={() => setSelectedSurah(surah.number)}
+                            aria-label={`Open ${surah.name} information`}
+                          >
+                            <Info size={16} strokeWidth={2.2} />
+                            Info
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => goAyah(surah.number, 1, page)}
+                            aria-label={`Go to ${surah.name}`}
+                          >
+                            Open
+                          </button>
+                        </div>
                         {surah.shortText && <p>{surah.shortText}</p>}
                       </div>
                       <div className="index-ayah-grid">
