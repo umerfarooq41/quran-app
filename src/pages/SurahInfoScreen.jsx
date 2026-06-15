@@ -1,6 +1,6 @@
 import React from 'react';
-import { BookOpen } from 'lucide-react';
-import { Header, Screen } from '../components/common/AppChrome';
+import { ArrowLeft, BookOpen } from 'lucide-react';
+import { Screen } from '../components/common/AppChrome';
 import { useAppStore } from '../store/useAppStore';
 import { getSurah } from '../lib/quran';
 import { VIEWS } from '../app/routes';
@@ -15,21 +15,26 @@ function SurahInfoBody({ html }) {
 
 export default function SurahInfoScreen() {
   const selectedSurah = useAppStore((state) => state.selectedSurah);
+  const setView = useAppStore((state) => state.setView);
   const surah = getSurah(selectedSurah);
 
   return (
     <Screen className="surah-info-screen">
-      <Header title="Surah Info" back={VIEWS.INDEX} />
+      <header className="surah-info-topbar">
+        <button type="button" onClick={() => setView(VIEWS.INDEX, 'back')} aria-label="Back to index">
+          <ArrowLeft size={25} strokeWidth={2.4} />
+        </button>
+        <h1>Surah Info</h1>
+      </header>
 
-      <article className="surah-info-card">
-        <div className="surah-info-card-glow" aria-hidden="true" />
+      <article className="surah-info-content">
         <header className="surah-info-hero">
           <div>
             <p className="surah-info-kicker">SURAH {surah?.number}</p>
-            <h1>{surah?.name}</h1>
+            <h2>{surah?.name}</h2>
             <p className="surah-info-meta">{surah?.verses} ayahs · {surah?.revelation} · Juz {surah?.juz}</p>
           </div>
-          <span className="surah-info-icon" aria-hidden="true"><BookOpen size={24} /></span>
+          <span className="surah-info-icon" aria-hidden="true"><BookOpen size={22} /></span>
         </header>
 
         <SurahInfoBody html={surah?.text} />
