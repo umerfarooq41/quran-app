@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
-import { ChevronDown, ArrowRight, X } from 'lucide-react';
+import { ChevronDown, ArrowRight, Info, X } from 'lucide-react';
 import { useAppStore } from '../store/useAppStore';
+import { VIEWS } from '../app/routes';
 import {
   findPageForReference,
   getJuzQuarterTargets,
@@ -101,7 +102,7 @@ function JuzIndex() {
 
 function SurahIndex() {
   const [expandedSurah, setExpandedSurah] = useState(null);
-  const { goAyah, setSelectedSurah } = useAppStore();
+  const { goAyah, setSelectedSurah, setView } = useAppStore();
 
   const grouped = useMemo(() => surahs.reduce((groups, surah) => {
     const key = surah.juz;
@@ -147,16 +148,36 @@ function SurahIndex() {
                   </div>
 
                   {isOpen && (
-                    <div className="index-collapse-panel index-ayah-grid" aria-label={`${surah.name} ayahs`}>
-                      {ayahs.map((ayah) => (
+                    <div className="index-collapse-panel" aria-label={`${surah.name} ayahs`}>
+                      <div className="index-surah-info-card">
+                        <div>
+                          <span>Surah info</span>
+                          <strong>{surah.name}</strong>
+                          <small>{surah.verses} ayahs · {surah.revelation} · {formatJuzName(surah.juz)}</small>
+                        </div>
                         <button
-                          key={ayah.ayahNumber}
-                          onClick={() => goAyah(surah.number, ayah.ayahNumber, findPageForReference(surah.number, ayah.ayahNumber))}
                           type="button"
+                          onClick={() => {
+                            setSelectedSurah(surah.number);
+                            setView(VIEWS.SURAH_INFO);
+                          }}
+                          aria-label={`Read ${surah.name} information`}
                         >
-                          {ayah.ayahNumber}
+                          <Info size={17} strokeWidth={2.2} />
                         </button>
-                      ))}
+                      </div>
+
+                      <div className="index-ayah-grid">
+                        {ayahs.map((ayah) => (
+                          <button
+                            key={ayah.ayahNumber}
+                            onClick={() => goAyah(surah.number, ayah.ayahNumber, findPageForReference(surah.number, ayah.ayahNumber))}
+                            type="button"
+                          >
+                            {ayah.ayahNumber}
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </article>
