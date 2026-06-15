@@ -216,77 +216,73 @@
 }
 
 .index-surah-info-card {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 12px;
-  align-items: center;
   border-radius: 18px;
-  background: #f5f4ef;
-  padding: 12px;
+  background: #f4f2ec;
+  padding: 14px 16px;
+  color: #6b7280;
 }
 
 .index-surah-info-card span {
   display: block;
-  color: #7f8b9f;
-  font-size: .72rem;
+  margin-bottom: 6px;
+  color: #9aa5b5;
+  font-size: .76rem;
   font-weight: 700;
-  letter-spacing: .12em;
+  letter-spacing: .22em;
   text-transform: uppercase;
 }
 
 .index-surah-info-card p {
   display: -webkit-box;
-  margin: 5px 0 0;
+  margin: 0;
   overflow: hidden;
-  color: #5f6673;
-  font-size: .78rem;
-  line-height: 1.45;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 4;
+  color: #6b7280;
+  font-size: .86rem;
+  line-height: 1.45;
 }
 
 .index-surah-info-card button {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  height: 34px;
+  display: inline;
   border: 0;
-  border-radius: 999px;
-  background: #fff;
-  padding: 0 12px;
-  color: #15171b;
-  font-size: .78rem;
-  font-weight: 600;
+  background: transparent;
+  color: #111315;
+  font-size: .86rem;
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 0 0 0 3px;
 }
 
 .index-ayah-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
-  gap: 7px;
+  grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
+  gap: 8px;
 }
 
 .index-ayah-grid button {
-  height: 38px;
+  height: 42px;
   border: 0;
   border-radius: 999px;
   background: #f0f1f3;
   color: #111315;
-  font-size: .86rem;
+  font-size: .95rem;
   font-weight: 500;
 }
 
 @media (max-width: 420px) {
   .index-replica-shell {
-    padding-top: calc(env(safe-area-inset-top, 0px) + 54px);
+    padding-top: calc(env(safe-area-inset-top, 0px) + 52px);
   }
 
   .index-replica-header {
-    margin-bottom: 32px;
+    margin-bottom: 30px;
   }
 
   .index-juz-card,
   .index-surah-card {
-    column-gap: 16px;
-    padding: 13px 15px;
+    column-gap: 15px;
+    padding: 13px 14px;
   }
 }
