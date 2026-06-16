@@ -11,7 +11,6 @@ export function ReaderBottomControls({ page, displayPage, goPage, onHome, onSear
       animate={{ opacity: 1 }}
       exit={{ opacity: 1 }}
       className="reader-bottom-controls"
-      onClick={(event) => event.stopPropagation()}
     >
       <motion.button
         initial={{ opacity: 0, y: 24 }}

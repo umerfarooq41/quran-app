@@ -5,7 +5,6 @@ export function ReaderTopControls({ visible, onBack, onBookmark, onIndex, onSett
   return (
     <header
       className={`reader-topbar ${visible ? 'reader-topbar-visible' : ''}`}
-      onClick={(event) => event.stopPropagation()}
     >
       <div className="reader-control-row">
         <button className="reader-back-pill" onClick={onBack} aria-label="Back to home">
