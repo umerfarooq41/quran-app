@@ -1,7 +1,7 @@
 import React from 'react';
 import { QuranLine } from './QuranLine';
 
-export function MushafPage({ pageData, settings, markedRefs, pendingAyah, onSelectLine }) {
+export function MushafPage({ pageData, settings, markedRefs, pendingAyah, activeAudioAyah, onSelectLine }) {
   return (
     <div
       className="reader-page grid flex-1 grid-rows-16 overflow-hidden px-4"
@@ -23,6 +23,12 @@ export function MushafPage({ pageData, settings, markedRefs, pendingAyah, onSele
                 line.surahNumber === pendingAyah.surahNumber &&
                 line.ayahStart <= pendingAyah.ayahNumber &&
                 (!line.ayahEnd || line.ayahEnd >= pendingAyah.ayahNumber)
+            )}
+            activeAudio={Boolean(
+              activeAudioAyah &&
+                line.surahNumber === activeAudioAyah.surahNumber &&
+                line.ayahStart <= activeAudioAyah.ayahNumber &&
+                (!line.ayahEnd || line.ayahEnd >= activeAudioAyah.ayahNumber)
             )}
           />
         );

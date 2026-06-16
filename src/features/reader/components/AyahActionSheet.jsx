@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Bookmark, Check, Copy, Palette, Play, Share2, X } from 'lucide-react';
+import { Bookmark, Copy, Play, Share2 } from 'lucide-react';
 import { db } from '../../../lib/db';
 import { findPageForReference, getSurah } from '../../../lib/quran';
 import { getUrduTranslation } from '../../../lib/translations';
-import { useAppStore } from '../../../store/useAppStore';
 
-export function AyahActionSheet({ line, onClose }) {
-  const { setAudioTarget } = useAppStore();
+export function AyahActionSheet({ line, onClose, onPlay }) {
   const [status, setStatus] = useState('');
   const [translation, setTranslation] = useState('');
-  const [showColors, setShowColors] = useState(false);
-  const [selectedColor, setSelectedColor] = useState('amber');
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
@@ -19,7 +15,6 @@ export function AyahActionSheet({ line, onClose }) {
 
     if (!line?.surahNumber || !line?.ayahStart) {
       setTranslation('');
-      setExpanded(false);
       return () => {
         mounted = false;
       };
@@ -45,18 +40,9 @@ export function AyahActionSheet({ line, onClose }) {
   const reference = line.ayahStart
     ? `${line.surahNumber}:${line.ayahStart}${line.ayahEnd !== line.ayahStart ? `-${line.ayahEnd}` : ''}`
     : `Surah ${line.surahNumber}`;
-
   const surah = getSurah(line.surahNumber);
-  const tafsirText = translation || surah?.shortText || 'Translation/tafsir not available for this ayah.';
+  const tafsirText = translation || surah?.shortText || 'Tafsir is not available for this ayah yet.';
   const shareText = `${line.text}\n${tafsirText ? `${tafsirText}\n` : ''}${reference}`;
-
-  const colorOptions = [
-    ['amber', 'Amber'],
-    ['emerald', 'Green'],
-    ['rose', 'Rose'],
-    ['sky', 'Blue'],
-    ['violet', 'Purple'],
-  ];
 
   async function addBookmark() {
     await db.bookmarks.add({
@@ -68,22 +54,7 @@ export function AyahActionSheet({ line, onClose }) {
       preview: line.text,
       createdAt: Date.now(),
     });
-
     setStatus('Bookmark saved');
-  }
-
-  async function addHighlight(color = selectedColor) {
-    await db.highlights.add({
-      page,
-      surahNumber: line.surahNumber,
-      ayahNumber: line.ayahStart,
-      color,
-      preview: line.text,
-      createdAt: Date.now(),
-    });
-
-    setSelectedColor(color);
-    setStatus(`${colorOptions.find(([id]) => id === color)?.[1] || 'Color'} highlight saved`);
   }
 
   async function copyAyah() {
@@ -98,30 +69,24 @@ export function AyahActionSheet({ line, onClose }) {
   async function shareAyah() {
     try {
       if (navigator.share) {
-        await navigator.share({
-          title: `Qur’an ${reference}`,
-          text: shareText,
-        });
-
+        await navigator.share({ title: `Qur’an ${reference}`, text: shareText });
         setStatus('Share sheet opened');
       } else {
         await copyAyah();
       }
     } catch (error) {
-      if (error?.name !== 'AbortError') {
-        setStatus('Share was not completed');
-      }
+      if (error?.name !== 'AbortError') setStatus('Share was not completed');
     }
   }
 
   function playAyah() {
-    setAudioTarget({
+    onPlay?.({
+      page,
       surahNumber: line.surahNumber,
       ayahNumber: line.ayahStart,
-      page,
+      reference,
+      arabic: line.text,
     });
-
-    setStatus(`Ready to play ${reference}`);
   }
 
   return (
@@ -137,67 +102,44 @@ export function AyahActionSheet({ line, onClose }) {
         onDragEnd={(_, info) => {
           if (info.offset.y > 120) onClose();
         }}
-        className={`ayah-action-sheet ayah-action-sheet-compact ${expanded ? 'ayah-action-sheet-expanded' : ''}`}
+        className="ayah-action-sheet ayah-action-sheet-compact"
         onClick={(event) => event.stopPropagation()}
-        onPointerDown={(event) => event.stopPropagation()}
       >
         <div className="sheet-grabber" />
 
-        <div className="ayah-main-action-row ayah-main-action-row-compact" aria-label="Ayah actions">
-          <button className="ayah-round-action" onClick={() => setShowColors((value) => !value)} aria-label="Highlight">
-            <Palette size={22} strokeWidth={1.8} />
-            <span>Highlight</span>
+        <div className="ayah-main-action-row ayah-main-action-row-compact">
+          <button className="ayah-round-action gradient" aria-label="App">
+            <span className="brand-dot" />
           </button>
 
-          <button className="ayah-round-action active" onClick={addBookmark} aria-label="Bookmark">
+          <button className="ayah-round-action" onClick={addBookmark} aria-label="Bookmark">
             <Bookmark size={22} strokeWidth={1.8} />
-            <span>Bookmark</span>
           </button>
 
           <button className="ayah-round-action" onClick={playAyah} aria-label="Play">
-            <Play size={22} strokeWidth={1.8} />
-            <span>Play</span>
+            <Play size={22} strokeWidth={1.8} fill="currentColor" />
           </button>
 
           <button className="ayah-round-action" onClick={shareAyah} aria-label="Share">
             <Share2 size={22} strokeWidth={1.8} />
-            <span>Share</span>
           </button>
 
           <button className="ayah-round-action" onClick={copyAyah} aria-label="Copy">
             <Copy size={22} strokeWidth={1.8} />
-            <span>Copy</span>
           </button>
         </div>
 
-        {showColors && (
-          <div className="highlight-color-row highlight-color-row-compact">
-            {colorOptions.map(([id, label]) => (
-              <button
-                key={id}
-                onClick={() => addHighlight(id)}
-                className={`highlight-color-button highlight-${id}`}
-                aria-label={`${label} highlight`}
-              >
-                {selectedColor === id && <Check size={16} />}
-              </button>
-            ))}
-          </div>
-        )}
-
-        <section className="ayah-tafsir-block ayah-tafsir-block-compact">
-          <div className="ayah-tafsir-title-row">
-            <h3>Translation / Tafsir</h3>
+        <section className={`ayah-tafsir-block ${expanded ? 'ayah-tafsir-expanded' : ''}`}>
+          <div className="flex items-center justify-between gap-3">
+            <h3>Tafsir</h3>
             <span className="ayah-ref-pill">{reference}</span>
           </div>
 
-          <p dir={translation ? 'rtl' : 'ltr'} className={expanded ? '' : 'ayah-tafsir-preview'}>
-            {tafsirText}
-          </p>
+          <p className={!expanded ? 'tafsir-preview-text' : ''} dir={translation ? 'rtl' : 'ltr'}>{tafsirText}</p>
 
-          <button onClick={() => setExpanded((value) => !value)}>
-            {expanded ? 'Show less' : 'Read more'}
-          </button>
+          {!expanded && (
+            <button type="button" onClick={() => setExpanded(true)}>Read more</button>
+          )}
         </section>
 
         {status && <p className="ayah-action-status">{status}</p>}

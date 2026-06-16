@@ -1,7 +1,10 @@
-import React from 'react';
-import { totalPages } from '../../../lib/quran';
+import React, { useState } from 'react';
+import { getPageMeta, totalPages } from '../../../lib/quran';
 
 export function PageWaveSlider({ page, goPage }) {
+  const [dragPage, setDragPage] = useState(page);
+  const [dragging, setDragging] = useState(false);
+  const previewMeta = getPageMeta(dragPage || page);
   const bars = Array.from({ length: 33 }, (_, index) => {
     const center = 16;
     const distance = Math.abs(index - center);
@@ -11,8 +14,20 @@ export function PageWaveSlider({ page, goPage }) {
     return { height, opacity };
   });
 
+  function commit(nextPage) {
+    const value = Number(nextPage) || page;
+    setDragPage(value);
+    goPage(value);
+  }
+
   return (
     <div className="reader-wave-slider">
+      {dragging && (
+        <div className="reader-wave-tooltip">
+          {previewMeta?.surah?.name || 'Qur’an'} / {dragPage}/{totalPages}
+        </div>
+      )}
+
       <div className="reader-wave-bars" aria-hidden="true">
         {bars.map((bar, index) => (
           <span
@@ -32,8 +47,17 @@ export function PageWaveSlider({ page, goPage }) {
         type="range"
         min="1"
         max={totalPages}
-        value={page}
-        onChange={(e) => goPage(Number(e.target.value))}
+        value={dragging ? dragPage : page}
+        onPointerDown={() => {
+          setDragPage(page);
+          setDragging(true);
+        }}
+        onPointerUp={(event) => {
+          setDragging(false);
+          commit(event.currentTarget.value);
+        }}
+        onPointerCancel={() => setDragging(false)}
+        onChange={(event) => setDragPage(Number(event.target.value))}
       />
     </div>
   );

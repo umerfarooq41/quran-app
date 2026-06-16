@@ -2,7 +2,7 @@ import React, { useLayoutEffect, useRef } from 'react';
 import { basmallahText, getDisplayLineText } from '../../../utils/quranLabels';
 import { SurahHeader } from './SurahHeader';
 
-export function QuranLine({ line, onSelect, marked = false, jumped = false, hasSeparateBasmallah = false }) {
+export function QuranLine({ line, onSelect, marked = false, jumped = false, activeAudio = false, hasSeparateBasmallah = false }) {
   const lineRef = useRef(null);
   const textRef = useRef(null);
   const longPressTimer = useRef(null);
@@ -79,7 +79,7 @@ export function QuranLine({ line, onSelect, marked = false, jumped = false, hasS
           onSelect();
         }
       }}
-      className={`quran-line quran-line-${isBasmallah ? 'basmallah' : line.type} ${marked ? 'quran-line-marked' : ''} ${jumped ? 'quran-line-jumped' : ''} ${line.type === 'spacer' ? 'opacity-0' : ''} ${centered ? 'justify-center text-center' : 'justify-end text-right'}`}
+      className={`quran-line quran-line-${isBasmallah ? 'basmallah' : line.type} ${marked ? 'quran-line-marked' : ''} ${jumped ? 'quran-line-jumped' : ''} ${activeAudio ? 'quran-line-audio-active' : ''} ${line.type === 'spacer' ? 'opacity-0' : ''} ${centered ? 'justify-center text-center' : 'justify-end text-right'}`}
       aria-label={line.type === 'spacer' ? 'Blank line' : text}
       tabIndex={line.type === 'spacer' ? -1 : 0}
     >

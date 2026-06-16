@@ -5,6 +5,7 @@ import { getMushafPageNumber, getPage, getPageMeta } from '../../lib/quran';
 import { useAppStore } from '../../store/useAppStore';
 import { AyahActionSheet } from './components/AyahActionSheet';
 import { MushafPage } from './components/MushafPage';
+import { ReaderAudioPanel } from './components/ReaderAudioPanel';
 import { ReaderBottomControls } from './components/ReaderBottomControls';
 import { ReaderFooterMeta, ReaderPassiveHeader } from './components/ReaderPassiveMeta';
 import { ReaderTopControls } from './components/ReaderTopControls';
@@ -17,7 +18,9 @@ export default function ReaderScreen() {
     goPage,
     controlsVisible,
     toggleControls,
+    setControlsVisible,
     settings,
+    updateSettings,
     setView,
     selectedLine,
     setSelectedLine,
@@ -28,6 +31,10 @@ export default function ReaderScreen() {
   const meta = getPageMeta(page);
   const displayPage = getMushafPageNumber(page);
   const [markedRefs, setMarkedRefs] = useState(new Set());
+  const [audioPanelOpen, setAudioPanelOpen] = useState(false);
+  const [audioAyah, setAudioAyah] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [activeAudioAyah, setActiveAudioAyah] = useState(null);
   const { handleTouchStart, handleTouchEnd } = useReaderGestures({ page, goPage });
 
   usePagePersistence({ page, pageData });
@@ -65,6 +72,32 @@ export default function ReaderScreen() {
     return () => window.clearTimeout(timer);
   }, [pendingAyah?.surahNumber, pendingAyah?.ayahNumber, clearPendingAyah]);
 
+  function openAudioPanel(targetLine = null) {
+    const firstLine = pageData.lines.find((line) => line.surahNumber && line.ayahStart);
+    const target = targetLine || (firstLine ? {
+      page,
+      surahNumber: firstLine.surahNumber,
+      ayahNumber: firstLine.ayahStart,
+      reference: `${firstLine.surahNumber}:${firstLine.ayahStart}`,
+      arabic: firstLine.text,
+    } : null);
+
+    if (!target) return;
+
+    setAudioAyah(target);
+    setActiveAudioAyah(target);
+    setSelectedLine(null);
+    setAudioPanelOpen(true);
+    setIsPlaying(true);
+    setControlsVisible(true);
+  }
+
+  function closeAudioPanel() {
+    setAudioPanelOpen(false);
+    setIsPlaying(false);
+    setActiveAudioAyah(null);
+  }
+
   return (
     <section
       className="fixed inset-0 overflow-hidden bg-reader text-slate-950"
@@ -76,7 +109,7 @@ export default function ReaderScreen() {
         <ReaderPassiveHeader meta={meta} displayPage={displayPage} />
 
         <ReaderTopControls
-          visible={controlsVisible}
+          visible={controlsVisible || audioPanelOpen}
           onBack={() => setView('home', 'back')}
           onBookmark={() => addBookmark(pageData)}
           onIndex={() => setView('index')}
@@ -88,6 +121,7 @@ export default function ReaderScreen() {
           settings={settings}
           markedRefs={markedRefs}
           pendingAyah={pendingAyah}
+          activeAudioAyah={activeAudioAyah}
           onSelectLine={setSelectedLine}
         />
 
@@ -95,18 +129,42 @@ export default function ReaderScreen() {
       </div>
 
       <AnimatePresence>
-        {controlsVisible && (
+        {(controlsVisible || audioPanelOpen) && (
           <ReaderBottomControls
             page={page}
             displayPage={displayPage}
             goPage={goPage}
             onHome={() => setView('home', 'back')}
             onSearch={() => setView('search')}
+            onAudio={() => openAudioPanel()}
+            compact={audioPanelOpen}
           />
         )}
       </AnimatePresence>
 
-      <AyahActionSheet line={selectedLine} onClose={() => setSelectedLine(null)} />
+      <AnimatePresence>
+        {audioPanelOpen && (
+          <ReaderAudioPanel
+            ayah={audioAyah}
+            settings={settings}
+            updateSettings={updateSettings}
+            isPlaying={isPlaying}
+            setIsPlaying={setIsPlaying}
+            onClose={closeAudioPanel}
+            onActiveAyahChange={setActiveAudioAyah}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {selectedLine && (
+          <AyahActionSheet
+            line={selectedLine}
+            onClose={() => setSelectedLine(null)}
+            onPlay={openAudioPanel}
+          />
+        )}
+      </AnimatePresence>
     </section>
   );
 }
