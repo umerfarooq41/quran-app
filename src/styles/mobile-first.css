@@ -266,10 +266,6 @@ select, input[type='text'], input:not([type]), .screen-shell input { min-height:
     border-radius: 14px !important;
   }
 
-  .reader-page {
-    padding-top: calc(env(safe-area-inset-top, 0px) + 54px) !important;
-    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 46px) !important;
-  }
 
   .reader-footer-meta {
     bottom: calc(env(safe-area-inset-bottom, 0px) + 8px) !important;
