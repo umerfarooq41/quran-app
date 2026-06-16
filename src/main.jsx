@@ -9,6 +9,7 @@ import './styles/tabs.css';
 import './styles/tafsir.css';
 import './styles/home.css';
 import './styles/index.css';
+import './styles/mobile-first.css';
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>

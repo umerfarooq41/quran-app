@@ -1,0 +1,214 @@
+
+/* Mobile-first compact responsive layer.
+   Keep mobile as the default density; expand only on larger screens. */
+:root {
+  --app-inline: 12px;
+  --mobile-card-radius: 18px;
+  --mobile-card-pad: 12px;
+  --mobile-control-h: 40px;
+  --mobile-icon-btn: 38px;
+  --mobile-gap: 10px;
+  --mobile-text: 14px;
+  --mobile-title: 22px;
+}
+
+html { font-size: 15px; }
+body { -webkit-text-size-adjust: 100%; }
+
+.app-shell {
+  padding-left: max(var(--app-inline), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--app-inline), env(safe-area-inset-right, 0px));
+}
+
+.screen-shell { width: min(100%, 460px); }
+.screen-shell.space-y-5 > :not([hidden]) ~ :not([hidden]) { margin-top: 1rem; }
+.screen-shell.space-y-4 > :not([hidden]) ~ :not([hidden]) { margin-top: .75rem; }
+
+.rounded-\[28px\] { border-radius: var(--mobile-card-radius) !important; }
+.p-8 { padding: 1.25rem !important; }
+.p-5 { padding: .9rem !important; }
+.p-4 { padding: .8rem !important; }
+.p-3 { padding: .7rem !important; }
+.gap-4 { gap: .8rem !important; }
+.gap-3 { gap: .65rem !important; }
+.text-3xl { font-size: 1.45rem !important; line-height: 1.18 !important; }
+.text-2xl { font-size: 1.25rem !important; line-height: 1.22 !important; }
+
+.app-header { min-height: 42px; }
+.app-header-title { font-size: var(--mobile-title) !important; }
+.app-segment button { min-height: 36px; }
+
+/* Home */
+.home-subtitle { font-size: clamp(.96rem, 3.7vw, 1.18rem); margin: 0; }
+.home-title { font-size: clamp(2rem, 8vw, 2.7rem); line-height: .98; }
+.home-hero-card {
+  gap: 12px;
+  padding: 18px 16px 18px 18px;
+  border-radius: 22px;
+  box-shadow: 0 12px 30px rgba(30, 68, 56, 0.22);
+}
+.home-hero-label { font-size: .68rem; }
+.home-hero-surah { font-size: clamp(1.25rem, 5vw, 1.65rem); margin: 5px 0 4px; }
+.home-hero-meta { font-size: .8rem; }
+.home-hero-ornament { width: 52px; height: 52px; }
+.home-hero-ornament svg { width: 22px; height: 22px; }
+.home-actions-row { gap: 7px; }
+.home-action-chip {
+  gap: 6px;
+  padding: 11px 4px;
+  min-height: 64px;
+  border-radius: 16px;
+  font-size: .64rem;
+  line-height: 1.05;
+}
+.home-action-chip svg { width: 18px; height: 18px; }
+.nav-icon-btn { width: 38px; height: 38px; border-radius: 19px; }
+.nav-icon-active-bg { border-radius: 19px; }
+
+/* Index */
+.index-replica-shell {
+  padding: calc(env(safe-area-inset-top, 0px) + 24px) 10px calc(env(safe-area-inset-bottom, 0px) + 18px);
+}
+.index-replica-inner { width: min(100%, 420px); }
+.index-replica-header {
+  margin-bottom: 18px;
+  padding-inline: 2px;
+  gap: 14px;
+}
+.index-replica-header h1 { font-size: clamp(1.85rem, 8vw, 2.35rem); }
+.index-close-pill { width: 54px; height: 38px; border-radius: 999px; }
+.index-close-pill svg { width: 18px; height: 18px; }
+.index-segment { height: 44px; margin-bottom: 16px; padding: 3px; }
+.index-segment button { font-size: .9rem; }
+.index-list, .index-surah-stack, .index-card-wrap, .index-surah-collapse { gap: 8px; }
+.index-card { min-height: 54px; border-radius: 17px; }
+.index-juz-card, .index-surah-card { column-gap: 12px; padding: 9px 12px; }
+.index-number-badge { width: 34px; height: 34px; border-width: 1.5px; font-size: .9rem; }
+.index-card-title { font-size: 1rem; }
+.index-section-title { margin: 4px 0 6px 10px; font-size: .74rem; }
+.index-surah-text { gap: 2px; }
+.index-surah-text strong { font-size: 1rem; line-height: 1.05; }
+.index-surah-text small { font-size: .72rem; }
+.index-chevron { width: 17px; height: 17px; }
+.index-collapse-panel { margin-inline: 2px; border-radius: 16px; padding: 10px; }
+.index-quarter-grid { gap: 7px; }
+.index-quarter-btn { min-height: 46px; border-radius: 13px; padding: 8px 9px; }
+.index-quarter-btn strong { font-size: .78rem; }
+.index-quarter-btn span { font-size: .66rem; }
+.index-surah-info-preview { border-radius: 15px; padding: 10px; }
+.index-surah-info-preview p { font-size: .78rem; line-height: 1.55; }
+.index-surah-info-label { font-size: .68rem; }
+.index-ayah-grid { gap: 6px; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); }
+.index-ayah-grid button { min-height: 36px; border-radius: 12px; font-size: .78rem; }
+
+/* Reader */
+.reader-shell { width: 100vw; max-width: 576px; box-shadow: none; }
+.reader-passive-header { height: calc(env(safe-area-inset-top, 0px) + 44px); padding-inline: 13px; }
+.reader-meta-label { font-size: .68rem; }
+.reader-topbar { padding: calc(env(safe-area-inset-top, 0px) + 8px) 10px 0; }
+.reader-control-row { min-height: 40px; }
+.reader-back-pill { height: 38px; min-width: 72px; border-radius: 18px; gap: 5px; font-size: .78rem; }
+.reader-back-pill svg { width: 16px; height: 16px; }
+.reader-top-actions { gap: 6px; padding: 4px; border-radius: 18px; }
+.reader-top-icon { width: 34px; height: 34px; border-radius: 15px; }
+.reader-top-icon svg { width: 17px; height: 17px; }
+.reader-page {
+  padding-inline: 6px !important;
+  padding-top: calc(env(safe-area-inset-top, 0px) + 52px) !important;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 46px) !important;
+}
+.quran-line {
+  padding-inline: 4px !important;
+  min-height: 0 !important;
+  font-size: calc(clamp(1.18rem, 3.02vh, 1.78rem) * var(--font-scale, 1)) !important;
+}
+.quran-line-text { word-spacing: .05em; }
+.quran-line-surah_name .quran-line-text,
+.quran-line-basmallah .quran-line-text,
+.quran-line-bismillah .quran-line-text { padding: .25rem .75rem .42rem !important; }
+.reader-footer-meta { bottom: 8px; padding-inline: 12px; }
+.reader-listen-pill { min-height: 52px; gap: 10px; margin-bottom: -12px; padding: 6px 16px 6px 7px; border-radius: 26px; font-size: .9rem; }
+.reader-listen-play { width: 40px; height: 40px; }
+.reader-listen-play svg { width: 18px; height: 18px; }
+.reader-bottom-sheet { border-radius: 20px 20px 0 0; padding: 18px 14px 12px; }
+.reader-bottom-meta { font-size: .78rem; }
+.reader-bottom-actions { gap: 9px; }
+.reader-bottom-actions button { min-height: 38px; border-radius: 16px; font-size: .8rem; }
+.reader-wave-slider { height: 34px; }
+
+/* Action/share sheets */
+.ayah-action-sheet { padding: 18px 14px calc(env(safe-area-inset-bottom, 0px) + 14px); border-radius: 22px 22px 0 0; }
+.ayah-tab-row { gap: 7px; margin-inline: -4px; padding-inline: 4px; }
+.ayah-tab-pill { padding: 8px 11px; font-size: .78rem; }
+.ayah-main-action-row { gap: 9px; }
+.ayah-round-action { width: 46px; height: 46px; border-radius: 16px; }
+.ayah-round-action svg { width: 18px; height: 18px; }
+.ayah-highlight-panel, .ayah-tafsir-block, .share-preview-panel { border-radius: 16px; padding: 12px; }
+.ayah-tafsir-block h3 { font-size: 1rem; }
+.ayah-tafsir-block p { font-size: .88rem; line-height: 1.65; }
+
+/* Tabs / bookmarks */
+.tabs-header { min-height: calc(env(safe-area-inset-top, 0px) + 70px); }
+.tabs-header h1 { font-size: 1.25rem; }
+.tabs-back-pill { top: calc(env(safe-area-inset-top, 0px) + 14px); height: 40px; min-width: 66px; border-radius: 18px; }
+.tabs-list { gap: 9px; padding-bottom: 44px; }
+.tabs-filter-row { gap: 7px; }
+.tabs-filter-row button { padding: 8px 12px; font-size: .82rem; }
+.tab-card { padding: 16px 14px 17px !important; }
+.tab-card-top { gap: 8px; }
+.tab-type { font-size: .88rem; }
+.tab-surah { font-size: .82rem; }
+.ayah-medallion { width: 34px; height: 34px; font-size: .7rem; }
+.tab-more-button { top: 12px; right: 10px; width: 36px; height: 36px; }
+.tab-card-hit .tab-card-top { padding-right: 34px; }
+.tab-arabic { margin-top: 14px; font-size: clamp(1.38rem, 6vw, 2.2rem); line-height: 1.45; }
+.tab-menu { right: 10px; top: 50px; min-width: 168px; border-radius: 16px; }
+.tab-menu button { padding: 9px 10px; font-size: .84rem; }
+
+/* Tafsir and Surah info */
+.tafsir-card { border-radius: 20px; padding: 14px; }
+.tafsir-card-head { gap: 10px; }
+.tafsir-card-head h2 { font-size: 1.35rem; }
+.tafsir-card-head p { font-size: .78rem; }
+.tafsir-card-head button { padding: 8px 11px; font-size: .82rem; }
+.tafsir-arabic { margin: 16px 0; font-size: clamp(1.45rem, 6vw, 2.25rem); line-height: 1.65; }
+.tafsir-section { margin-top: 13px; padding-top: 13px; }
+.tafsir-section h3 { font-size: 1rem; }
+.tafsir-section p, .tafsir-section div { font-size: .9rem; line-height: 1.65; }
+.surah-info-screen { padding: calc(env(safe-area-inset-top, 0px) + 20px) 12px calc(env(safe-area-inset-bottom, 0px) + 20px); }
+.surah-info-topbar { gap: 8px; margin-bottom: 10px; }
+.surah-info-topbar button { width: 34px; height: 34px; }
+.surah-info-topbar h1 { font-size: clamp(1.55rem, 7vw, 2.2rem); }
+.surah-info-content { border-radius: 22px 22px 0 0; padding: 18px 16px 28px; }
+.surah-info-title-row { gap: 10px; }
+.surah-info-kicker { font-size: .68rem; margin-bottom: 5px; }
+.surah-info-title-row h2 { font-size: clamp(1.65rem, 8vw, 2.35rem); }
+.surah-info-meta { margin-top: 8px; font-size: .88rem; }
+.surah-info-icon { width: 44px; height: 44px; border-radius: 16px; }
+.surah-info-html { margin-top: 18px; font-size: .9rem; line-height: 1.68; }
+.surah-info-html h2 { margin: 20px 0 8px; font-size: 1.12rem; }
+.surah-info-html p { margin-bottom: 13px; }
+
+/* Forms / generic screens */
+input, select, textarea { font-size: 16px; }
+select, input[type='text'], input:not([type]), .screen-shell input { min-height: 40px; }
+.screen-shell button { touch-action: manipulation; }
+.screen-shell .h-16.w-16 { width: 48px !important; height: 48px !important; border-radius: 18px !important; }
+.screen-shell .h-11.w-11 { width: var(--mobile-icon-btn) !important; height: var(--mobile-icon-btn) !important; border-radius: 15px !important; }
+.screen-shell label { font-size: .9rem; }
+.screen-shell p.text-sm, .screen-shell span.text-sm { font-size: .78rem !important; }
+
+@media (min-width: 640px) {
+  :root { --app-inline: 20px; --mobile-card-radius: 24px; }
+  html { font-size: 16px; }
+  .screen-shell { width: min(100%, 720px); }
+  .home-hero-card { padding: 26px 28px 26px 30px; border-radius: 30px; }
+  .home-action-chip { padding: 15px 6px; border-radius: 21px; font-size: .72rem; }
+  .index-replica-shell { padding-top: calc(env(safe-area-inset-top, 0px) + 48px); }
+  .index-card { min-height: 66px; border-radius: 22px; }
+  .index-juz-card, .index-surah-card { padding: 14px 18px; column-gap: 18px; }
+  .index-number-badge { width: 44px; height: 44px; font-size: 1.05rem; }
+  .reader-shell { border-radius: 28px; width: min(100%, 576px); margin-block: 10px; height: calc(100dvh - 20px); box-shadow: 0 24px 80px rgba(15, 23, 42, .16); }
+  .reader-page { padding-inline: 14px !important; }
+  .quran-line { font-size: calc(clamp(1.35rem, 3.16vh, 2.05rem) * var(--font-scale, 1)) !important; }
+}
