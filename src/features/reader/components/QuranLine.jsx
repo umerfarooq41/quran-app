@@ -66,9 +66,7 @@ export function QuranLine({ line, onSelect, marked = false, jumped = false, hasS
       onPointerUp={cancelLongPress}
       onPointerLeave={cancelLongPress}
       onPointerCancel={cancelLongPress}
-      onClick={(event) => {
-        event.stopPropagation();
-
+      onClick={() => {
         if (longPressed.current) {
           longPressed.current = false;
         }

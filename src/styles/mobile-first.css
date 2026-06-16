@@ -112,20 +112,6 @@ body { -webkit-text-size-adjust: 100%; }
 .reader-top-actions { gap: 6px; padding: 4px; border-radius: 18px; }
 .reader-top-icon { width: 34px; height: 34px; border-radius: 15px; }
 .reader-top-icon svg { width: 17px; height: 17px; }
-.reader-page {
-  padding-inline: 6px !important;
-  padding-top: calc(env(safe-area-inset-top, 0px) + 52px) !important;
-  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 46px) !important;
-}
-.quran-line {
-  padding-inline: 4px !important;
-  min-height: 0 !important;
-  font-size: calc(clamp(1.18rem, 3.02vh, 1.78rem) * var(--font-scale, 1)) !important;
-}
-.quran-line-text { word-spacing: .05em; }
-.quran-line-surah_name .quran-line-text,
-.quran-line-basmallah .quran-line-text,
-.quran-line-bismillah .quran-line-text { padding: .25rem .75rem .42rem !important; }
 .reader-footer-meta { bottom: 8px; padding-inline: 12px; }
 .reader-listen-pill { min-height: 52px; gap: 10px; margin-bottom: -12px; padding: 6px 16px 6px 7px; border-radius: 26px; font-size: .9rem; }
 .reader-listen-play { width: 40px; height: 40px; }
@@ -209,8 +195,6 @@ select, input[type='text'], input:not([type]), .screen-shell input { min-height:
   .index-juz-card, .index-surah-card { padding: 14px 18px; column-gap: 18px; }
   .index-number-badge { width: 44px; height: 44px; font-size: 1.05rem; }
   .reader-shell { border-radius: 28px; width: min(100%, 576px); margin-block: 10px; height: calc(100dvh - 20px); box-shadow: 0 24px 80px rgba(15, 23, 42, .16); }
-  .reader-page { padding-inline: 14px !important; }
-  .quran-line { font-size: calc(clamp(1.35rem, 3.16vh, 2.05rem) * var(--font-scale, 1)) !important; }
 }
 
 /* =========================================================
