@@ -3,29 +3,29 @@ import { motion } from 'framer-motion';
 import { Bookmark, Check, Copy, Palette, Play, Share2, X } from 'lucide-react';
 import { db } from '../../../lib/db';
 import { findPageForReference, getSurah } from '../../../lib/quran';
-import { generateAyahImage } from '../../../lib/shareCanvas';
 import { getUrduTranslation } from '../../../lib/translations';
 import { useAppStore } from '../../../store/useAppStore';
 
 export function AyahActionSheet({ line, onClose }) {
-  const { setView, goPage, setAudioTarget, setTafsirTarget } = useAppStore();
+  const { setAudioTarget } = useAppStore();
   const [status, setStatus] = useState('');
-  const [previewImage, setPreviewImage] = useState(null);
-  const [activeTab, setActiveTab] = useState('Recitation');
   const [translation, setTranslation] = useState('');
   const [showColors, setShowColors] = useState(false);
   const [selectedColor, setSelectedColor] = useState('amber');
+  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     let mounted = true;
 
     if (!line?.surahNumber || !line?.ayahStart) {
       setTranslation('');
+      setExpanded(false);
       return () => {
         mounted = false;
       };
     }
 
+    setExpanded(false);
     getUrduTranslation(line.surahNumber, line.ayahStart)
       .then((text) => {
         if (mounted) setTranslation(text || '');
@@ -58,18 +58,18 @@ export function AyahActionSheet({ line, onClose }) {
     ['violet', 'Purple'],
   ];
 
-  async function addTaggedBookmark(category = activeTab) {
+  async function addBookmark() {
     await db.bookmarks.add({
       page,
       surahNumber: line.surahNumber,
       ayahNumber: line.ayahStart,
-      category,
+      category: 'Reading',
       note: '',
       preview: line.text,
       createdAt: Date.now(),
     });
 
-    setStatus(`${category} bookmark saved`);
+    setStatus('Bookmark saved');
   }
 
   async function addHighlight(color = selectedColor) {
@@ -86,19 +86,6 @@ export function AyahActionSheet({ line, onClose }) {
     setStatus(`${colorOptions.find(([id]) => id === color)?.[1] || 'Color'} highlight saved`);
   }
 
-  async function addMemorize() {
-    await db.memorizationProgress.add({
-      page,
-      surahNumber: line.surahNumber,
-      ayahNumber: line.ayahStart,
-      status: 'memorize',
-      preview: line.text,
-      updatedAt: Date.now(),
-    });
-
-    setStatus('Added to memorization');
-  }
-
   async function copyAyah() {
     try {
       await navigator.clipboard?.writeText(shareText);
@@ -106,16 +93,6 @@ export function AyahActionSheet({ line, onClose }) {
     } catch {
       setStatus('Copy is not available in this browser');
     }
-  }
-
-  async function createDesignPreview() {
-    const image = await generateAyahImage({
-      reference,
-      text: line.text,
-    });
-
-    setPreviewImage(image);
-    setStatus('Design preview created');
   }
 
   async function shareAyah() {
@@ -144,28 +121,8 @@ export function AyahActionSheet({ line, onClose }) {
       page,
     });
 
-    goPage(page);
-    setView('audio');
-    onClose();
+    setStatus(`Ready to play ${reference}`);
   }
-
-  function openFullTafsir() {
-    setTafsirTarget({
-      page,
-      surahNumber: line.surahNumber,
-      ayahNumber: line.ayahStart,
-      reference,
-      arabic: line.text,
-    });
-
-    onClose();
-  }
-
-  const tabs = [
-    { label: 'Recitation', color: 'emerald' },
-    { label: 'Memorize', color: 'amber' },
-    { label: 'Tadabbur', color: 'rose' },
-  ];
 
   return (
     <div className="ayah-action-backdrop" onClick={onClose}>
@@ -173,120 +130,77 @@ export function AyahActionSheet({ line, onClose }) {
         initial={{ y: '100%', opacity: 1 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: '100%', opacity: 1 }}
-        transition={{
-          type: 'spring',
-          stiffness: 380,
-          damping: 38,
-          mass: 0.9,
-        }}
+        transition={{ type: 'spring', stiffness: 380, damping: 38, mass: 0.9 }}
         drag="y"
         dragConstraints={{ top: 0 }}
         dragElastic={0.18}
         onDragEnd={(_, info) => {
           if (info.offset.y > 120) onClose();
         }}
-        className="ayah-action-sheet"
+        className={`ayah-action-sheet ayah-action-sheet-compact ${expanded ? 'ayah-action-sheet-expanded' : ''}`}
         onClick={(event) => event.stopPropagation()}
+        onPointerDown={(event) => event.stopPropagation()}
       >
         <div className="sheet-grabber" />
 
-        <div className="ayah-tab-row">
-          {tabs.map((tab) => (
-            <button
-              key={tab.label}
-              className={`ayah-tab-pill ayah-tab-${tab.color} ${activeTab === tab.label ? 'ayah-tab-active' : ''}`}
-              onClick={() => {
-                setActiveTab(tab.label);
-
-                if (tab.label === 'Memorize') {
-                  addMemorize();
-                } else {
-                  addTaggedBookmark(tab.label);
-                }
-              }}
-            >
-              <Bookmark size={23} strokeWidth={1.8} />
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        <div className="ayah-main-action-row">
-          <button className="ayah-round-action gradient" onClick={createDesignPreview} aria-label="Design preview">
-            <span className="gradient-check">⌃</span>
+        <div className="ayah-main-action-row ayah-main-action-row-compact" aria-label="Ayah actions">
+          <button className="ayah-round-action" onClick={() => setShowColors((value) => !value)} aria-label="Highlight">
+            <Palette size={22} strokeWidth={1.8} />
+            <span>Highlight</span>
           </button>
 
-          <button className="ayah-round-action active" onClick={() => addTaggedBookmark(activeTab)} aria-label="Bookmark">
-            <Bookmark size={31} strokeWidth={1.8} />
+          <button className="ayah-round-action active" onClick={addBookmark} aria-label="Bookmark">
+            <Bookmark size={22} strokeWidth={1.8} />
+            <span>Bookmark</span>
           </button>
 
           <button className="ayah-round-action" onClick={playAyah} aria-label="Play">
-            <Play size={29} strokeWidth={1.8} />
+            <Play size={22} strokeWidth={1.8} />
+            <span>Play</span>
           </button>
 
           <button className="ayah-round-action" onClick={shareAyah} aria-label="Share">
-            <Share2 size={29} strokeWidth={1.8} />
+            <Share2 size={22} strokeWidth={1.8} />
+            <span>Share</span>
           </button>
 
           <button className="ayah-round-action" onClick={copyAyah} aria-label="Copy">
-            <Copy size={29} strokeWidth={1.8} />
+            <Copy size={22} strokeWidth={1.8} />
+            <span>Copy</span>
           </button>
         </div>
 
-        <div className="ayah-highlight-panel">
-          <button className="ayah-highlight-toggle" onClick={() => setShowColors((value) => !value)}>
-            <Palette size={22} />
-            Highlight color
-            <span className={`highlight-dot highlight-${selectedColor}`} />
-          </button>
+        {showColors && (
+          <div className="highlight-color-row highlight-color-row-compact">
+            {colorOptions.map(([id, label]) => (
+              <button
+                key={id}
+                onClick={() => addHighlight(id)}
+                className={`highlight-color-button highlight-${id}`}
+                aria-label={`${label} highlight`}
+              >
+                {selectedColor === id && <Check size={16} />}
+              </button>
+            ))}
+          </div>
+        )}
 
-          {showColors && (
-            <div className="highlight-color-row">
-              {colorOptions.map(([id, label]) => (
-                <button
-                  key={id}
-                  onClick={() => addHighlight(id)}
-                  className={`highlight-color-button highlight-${id}`}
-                  aria-label={`${label} highlight`}
-                >
-                  {selectedColor === id && <Check size={18} />}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <section className="ayah-tafsir-block">
-          <div className="flex items-center justify-between gap-3">
+        <section className="ayah-tafsir-block ayah-tafsir-block-compact">
+          <div className="ayah-tafsir-title-row">
             <h3>Translation / Tafsir</h3>
             <span className="ayah-ref-pill">{reference}</span>
           </div>
 
-          <p dir={translation ? 'rtl' : 'ltr'}>{tafsirText}</p>
+          <p dir={translation ? 'rtl' : 'ltr'} className={expanded ? '' : 'ayah-tafsir-preview'}>
+            {tafsirText}
+          </p>
 
-          <button onClick={openFullTafsir}>Read more</button>
+          <button onClick={() => setExpanded((value) => !value)}>
+            {expanded ? 'Show less' : 'Read more'}
+          </button>
         </section>
 
         {status && <p className="ayah-action-status">{status}</p>}
-
-        {previewImage && (
-          <div className="share-preview-panel">
-            <div className="share-preview-header">
-              <span>Design preview</span>
-              <button onClick={() => setPreviewImage(null)}>
-                <X size={18} />
-              </button>
-            </div>
-
-            <div className="share-color-dots" aria-hidden="true">
-              {['#dfa9ce', '#acd9ba', '#e5aaaa', '#dedb82', '#b8c5d1', '#c0afd9', '#b2d8b8'].map((color) => (
-                <span key={color} style={{ background: color }} />
-              ))}
-            </div>
-
-            <img src={previewImage} alt="Share design preview" />
-          </div>
-        )}
       </motion.div>
     </div>
   );

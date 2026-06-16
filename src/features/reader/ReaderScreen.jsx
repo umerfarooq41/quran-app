@@ -68,9 +68,7 @@ export default function ReaderScreen() {
   return (
     <section
       className="fixed inset-0 overflow-hidden bg-reader text-slate-950"
-      onClick={() => {
-        toggleControls();
-      }}
+      onClick={toggleControls}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
@@ -104,7 +102,6 @@ export default function ReaderScreen() {
             goPage={goPage}
             onHome={() => setView('home', 'back')}
             onSearch={() => setView('search')}
-            onAudio={() => setView('audio')}
           />
         )}
       </AnimatePresence>
