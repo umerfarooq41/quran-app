@@ -125,6 +125,32 @@
   color: inherit;
 }
 
+::highlight(reader-highlight-amber) { background: rgba(243, 184, 62, .30); }
+::highlight(reader-highlight-emerald) { background: rgba(34, 125, 104, .22); }
+::highlight(reader-highlight-rose) { background: rgba(212, 20, 78, .18); }
+::highlight(reader-highlight-sky) { background: rgba(2, 132, 199, .20); }
+::highlight(reader-highlight-violet) { background: rgba(124, 58, 237, .18); }
+
+::highlight(reader-bookmark-reading) {
+  color: #26725f;
+  background: rgba(197, 239, 222, .82);
+}
+
+::highlight(reader-bookmark-memorize) {
+  color: #a56d05;
+  background: rgba(252, 228, 171, .88);
+}
+
+::highlight(reader-bookmark-tadabbur) {
+  color: #a83258;
+  background: rgba(250, 207, 220, .88);
+}
+
+::highlight(reader-bookmark-notes) {
+  color: #216d91;
+  background: rgba(202, 231, 244, .90);
+}
+
 .quran-line-selected-fallback {
   background: rgba(250, 204, 21, .24) !important;
   box-shadow: inset 0 0 0 1px rgba(234, 179, 8, .22);

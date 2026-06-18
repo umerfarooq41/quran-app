@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { db } from '../../lib/db';
+import { db, saveAyahBookmark } from '../../lib/db';
 import { getMushafPageNumber, getPage, getPageMeta, getSurahAyahs } from '../../lib/quran';
 import { useAppStore } from '../../store/useAppStore';
 import { AyahActionSheet } from './components/AyahActionSheet';
@@ -9,6 +9,7 @@ import { ReaderAudioPanel } from './components/ReaderAudioPanel';
 import { ReaderBottomControls } from './components/ReaderBottomControls';
 import { ReaderFooterMeta, ReaderPassiveHeader } from './components/ReaderPassiveMeta';
 import { ReaderTopControls } from './components/ReaderTopControls';
+import { ShareAyahSheet } from './components/ShareAyahSheet';
 import { usePagePersistence } from './hooks/usePagePersistence';
 import { useReaderGestures } from './hooks/useReaderGestures';
 
@@ -31,11 +32,14 @@ export default function ReaderScreen() {
   const pageData = getPage(page);
   const meta = getPageMeta(page);
   const displayPage = getMushafPageNumber(page);
-  const [markedRefs, setMarkedRefs] = useState(new Set());
+  const [savedHighlights, setSavedHighlights] = useState(new Map());
+  const [bookmarkMarkers, setBookmarkMarkers] = useState(new Map());
+  const [annotationVersion, setAnnotationVersion] = useState(0);
   const [audioPanelOpen, setAudioPanelOpen] = useState(false);
   const [audioAyah, setAudioAyah] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeAudioAyah, setActiveAudioAyah] = useState(null);
+  const [shareTarget, setShareTarget] = useState(null);
   const suppressTapUntil = useRef(0);
   const { handleTouchStart, handleTouchEnd } = useReaderGestures({ page, goPage });
 
@@ -47,24 +51,33 @@ export default function ReaderScreen() {
     Promise.all([
       db.bookmarks.toArray(),
       db.highlights.toArray(),
-      db.memorizationProgress.toArray(),
-    ]).then(([bookmarks, highlights, progress]) => {
+    ]).then(([bookmarks, highlights]) => {
       if (!mounted) return;
 
-      const next = new Set();
-      [...bookmarks, ...highlights, ...progress].forEach((item) => {
-        if (item?.surahNumber && item?.ayahNumber) {
-          next.add(`${item.surahNumber}:${item.ayahNumber}`);
+      const nextHighlights = new Map();
+      highlights.forEach((item) => {
+        if (item?.surahNumber && item?.ayahNumber && item?.color) {
+          nextHighlights.set(`${item.surahNumber}:${item.ayahNumber}`, item.color);
         }
       });
 
-      setMarkedRefs(next);
+      const nextBookmarks = new Map();
+      [...bookmarks]
+        .sort((a, b) => (a.updatedAt || a.createdAt || 0) - (b.updatedAt || b.createdAt || 0))
+        .forEach((item) => {
+          if (item?.surahNumber && item?.ayahNumber && item?.category) {
+            nextBookmarks.set(`${item.surahNumber}:${item.ayahNumber}`, item.category);
+          }
+        });
+
+      setSavedHighlights(nextHighlights);
+      setBookmarkMarkers(nextBookmarks);
     });
 
     return () => {
       mounted = false;
     };
-  }, [page, selectedAyah]);
+  }, [page, annotationVersion]);
 
   useEffect(() => {
     if (!pendingAyah) return undefined;
@@ -100,6 +113,15 @@ export default function ReaderScreen() {
     setActiveAudioAyah(null);
   }
 
+  function annotationsChanged() {
+    setAnnotationVersion((version) => version + 1);
+  }
+
+  function openShareSheet(targetAyah) {
+    setShareTarget(targetAyah);
+    clearSelectedAyah();
+  }
+
   function selectAyah(line, ayahNumber) {
     const ayah = getSurahAyahs(line.surahNumber)
       .find((candidate) => candidate.ayahNumber === Number(ayahNumber));
@@ -133,7 +155,7 @@ export default function ReaderScreen() {
         <ReaderTopControls
           visible={controlsVisible || audioPanelOpen}
           onBack={() => setView('home', 'back')}
-          onBookmark={() => addBookmark(pageData)}
+          onBookmark={() => addBookmark(pageData).then(annotationsChanged)}
           onIndex={() => setView('index')}
           onSettings={() => setView('settings')}
         />
@@ -141,7 +163,8 @@ export default function ReaderScreen() {
         <MushafPage
           pageData={pageData}
           settings={settings}
-          markedRefs={markedRefs}
+          savedHighlights={savedHighlights}
+          bookmarkMarkers={bookmarkMarkers}
           pendingAyah={pendingAyah}
           selectedAyah={selectedAyah}
           activeAudioAyah={activeAudioAyah}
@@ -185,6 +208,17 @@ export default function ReaderScreen() {
             ayah={selectedAyah}
             onClose={clearSelectedAyah}
             onPlay={openAudioPanel}
+            onShare={openShareSheet}
+            onAnnotationsChanged={annotationsChanged}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {shareTarget && (
+          <ShareAyahSheet
+            ayah={shareTarget}
+            onClose={() => setShareTarget(null)}
           />
         )}
       </AnimatePresence>
@@ -197,7 +231,7 @@ async function addBookmark(pageData) {
 
   if (!first) return;
 
-  await db.bookmarks.add({
+  await saveAyahBookmark({
     page: pageData.page,
     surahNumber: first.surahNumber,
     ayahNumber: first.ayahStart,

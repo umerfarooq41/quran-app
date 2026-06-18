@@ -834,3 +834,469 @@ body {
     border-radius: 24px;
   }
 }
+
+/* Patch 2: storage-backed ayah actions and share sheet. */
+.ayah-action-sheet.ayah-action-sheet-v2 {
+  width: min(100%, 548px);
+  max-height: min(82dvh, 720px) !important;
+  overflow-y: auto !important;
+  border-radius: 28px 28px 0 0 !important;
+  padding: 10px 18px calc(env(safe-area-inset-bottom, 0px) + 18px) !important;
+}
+
+.ayah-action-reference {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  color: #28231e;
+}
+
+.ayah-action-reference strong {
+  font-size: 1rem;
+}
+
+.ayah-action-reference span {
+  border-radius: 999px;
+  background: #f1f1f1;
+  padding: 5px 10px;
+  color: rgba(31, 27, 23, .56);
+  font-size: .78rem;
+}
+
+.ayah-main-actions-v2 {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.ayah-main-action-v2 {
+  display: grid;
+  min-width: 0;
+  justify-items: center;
+  gap: 6px;
+  color: #4a4640;
+}
+
+.ayah-main-action-v2 > span {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border-radius: 18px;
+  background: #f1f1f1;
+  transition: transform .16s ease, background .16s ease, color .16s ease;
+}
+
+.ayah-main-action-v2 small {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: .68rem;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.ayah-main-action-v2.is-active > span {
+  background: #23211e;
+  color: #fff;
+}
+
+.ayah-main-action-v2:active > span {
+  transform: scale(.95);
+}
+
+.ayah-inline-panel {
+  margin-bottom: 12px;
+  border-radius: 20px;
+  background: #f7f7f6;
+  padding: 12px;
+}
+
+.ayah-inline-panel-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.ayah-inline-panel-title strong {
+  font-size: .92rem;
+}
+
+.ayah-inline-panel-title span {
+  color: rgba(32, 29, 25, .48);
+  font-size: .72rem;
+  text-align: right;
+}
+
+.ayah-highlight-colors {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ayah-highlight-colors .highlight-color-button {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 999px !important;
+  transition: transform .16s ease, box-shadow .16s ease;
+}
+
+.ayah-highlight-colors .highlight-color-button.is-selected {
+  transform: scale(1.08);
+  box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgba(35, 33, 30, .18);
+}
+
+.ayah-bookmark-types {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.bookmark-type {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  border-radius: 15px;
+  padding: 8px 10px;
+  font-size: .76rem;
+  font-weight: 650;
+  text-align: left;
+}
+
+.bookmark-type span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bookmark-type-emerald { background: #e4f7ef; color: #2f7462; }
+.bookmark-type-amber { background: #fff2d5; color: #a46f09; }
+.bookmark-type-rose { background: #fbe4eb; color: #a9365b; }
+.bookmark-type-sky { background: #e2f1f8; color: #286f91; }
+
+.bookmark-type.is-selected {
+  box-shadow: inset 0 0 0 2px currentColor;
+}
+
+.ayah-note-editor {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.ayah-note-editor textarea {
+  width: 100%;
+  resize: vertical;
+  border: 1px solid rgba(42, 38, 33, .12);
+  border-radius: 14px;
+  background: #fff;
+  padding: 10px 12px;
+  color: #27231f;
+  outline: none;
+}
+
+.ayah-note-editor button {
+  justify-self: end;
+  border-radius: 999px;
+  background: #25221e;
+  padding: 8px 14px;
+  color: #fff;
+  font-size: .78rem;
+  font-weight: 700;
+}
+
+.ayah-action-sheet-v2 .ayah-tafsir-block {
+  border-radius: 20px;
+  background: #faf9f7;
+  padding: 12px;
+}
+
+.ayah-tafsir-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.ayah-action-sheet-v2 .ayah-tafsir-block h3 {
+  font-size: 1rem !important;
+}
+
+.ayah-action-sheet-v2 .ayah-tafsir-block p {
+  margin: 8px 0 6px !important;
+  color: rgba(29, 26, 22, .62) !important;
+  font-size: .88rem !important;
+  line-height: 1.58 !important;
+}
+
+.ayah-action-sheet-v2 .ayah-tafsir-block > button {
+  margin: 0 !important;
+  font-size: .8rem !important;
+  font-weight: 700;
+}
+
+.ayah-action-sheet-v2 .ayah-action-status {
+  margin: 10px 0 0;
+  padding: 8px 11px;
+  font-size: .78rem;
+}
+
+.share-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 65;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(18, 16, 14, .42);
+  padding: 12px;
+}
+
+.share-sheet {
+  width: min(100%, 576px);
+  max-height: 94dvh;
+  overflow-y: auto;
+  border-radius: 28px 28px 0 0;
+  background: #fff;
+  padding: 18px 16px calc(env(safe-area-inset-bottom, 0px) + 18px);
+  color: #26221e;
+  box-shadow: 0 -24px 70px rgba(0, 0, 0, .20);
+}
+
+.share-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.share-sheet-header p {
+  margin: 0 0 2px;
+  color: rgba(38, 34, 30, .50);
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.share-sheet-header h2 {
+  margin: 0;
+  font-size: 1.32rem;
+}
+
+.share-sheet-header button {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border-radius: 999px;
+  background: #f0f0ef;
+}
+
+.share-range-card {
+  border-radius: 20px;
+  background: #f7f7f6;
+  padding: 12px;
+}
+
+.share-range-card h3,
+.share-background-picker h3 {
+  margin: 0 0 10px;
+  font-size: .9rem;
+}
+
+.share-range-selectors {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.share-range-selectors label {
+  display: grid;
+  gap: 5px;
+}
+
+.share-range-selectors span {
+  color: rgba(38, 34, 30, .54);
+  font-size: .72rem;
+  font-weight: 700;
+}
+
+.share-range-selectors select {
+  width: 100%;
+  border: 1px solid rgba(38, 34, 30, .10);
+  border-radius: 13px;
+  background: #fff;
+  padding: 9px 10px;
+  outline: none;
+}
+
+.share-range-card > p {
+  margin: 8px 0 0;
+  color: rgba(38, 34, 30, .44);
+  font-size: .7rem;
+}
+
+.share-background-picker {
+  margin: 14px 0;
+}
+
+.share-background-picker > div {
+  display: flex;
+  gap: 12px;
+}
+
+.share-background-picker button {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: var(--share-color);
+  box-shadow: inset 0 0 0 1px rgba(31, 27, 23, .09);
+}
+
+.share-background-picker button.is-active {
+  box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgba(31, 27, 23, .24);
+}
+
+.quran-share-preview {
+  aspect-ratio: 4 / 5;
+  width: min(100%, 430px);
+  margin: 0 auto;
+  border-radius: 28px;
+  background: var(--share-background);
+  padding: 20px;
+  box-shadow: 0 18px 42px rgba(37, 31, 24, .14);
+}
+
+.quran-share-frame {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  border: 1px solid rgba(53, 43, 32, .16);
+  border-radius: 22px;
+  background: rgba(255,255,255,.56);
+  padding: 22px;
+}
+
+.quran-share-frame > h3 {
+  margin: 0;
+  color: #30271e;
+  font-family: IndopakNastaleeq, serif;
+  font-size: clamp(1.3rem, 5vw, 1.8rem);
+  font-weight: 600;
+  text-align: center;
+}
+
+.quran-share-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0 14px;
+}
+
+.quran-share-divider::before,
+.quran-share-divider::after {
+  content: '';
+  height: 1px;
+  flex: 1;
+  background: rgba(64, 50, 35, .22);
+}
+
+.quran-share-divider span {
+  width: 10px;
+  height: 10px;
+  transform: rotate(45deg);
+  background: rgba(64, 50, 35, .52);
+}
+
+.quran-share-ayahs {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.quran-share-ayahs p {
+  margin: 0 0 8px;
+  color: #17130f;
+  font-family: IndopakNastaleeq, serif;
+  font-size: var(--share-preview-font, 1.2rem);
+  line-height: 1.75;
+  text-align: right;
+}
+
+.quran-share-ayahs span {
+  color: rgba(55, 42, 29, .72);
+  white-space: nowrap;
+}
+
+.quran-share-frame footer {
+  color: rgba(48, 39, 30, .58);
+  font-size: .72rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.share-image-button {
+  display: flex;
+  width: min(100%, 430px);
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 14px auto 0;
+  border-radius: 16px;
+  background: #25221e;
+  color: #fff;
+  font-weight: 750;
+}
+
+.share-image-button:disabled {
+  opacity: .55;
+}
+
+.share-sheet-status {
+  margin: 10px 0 0;
+  color: rgba(38, 34, 30, .60);
+  font-size: .78rem;
+  text-align: center;
+}
+
+@media (max-width: 420px) {
+  .ayah-main-actions-v2 {
+    gap: 5px;
+  }
+
+  .ayah-main-action-v2 > span {
+    width: 44px;
+    height: 44px;
+    border-radius: 16px;
+  }
+
+  .ayah-main-action-v2 small {
+    font-size: .62rem;
+  }
+
+  .bookmark-type {
+    font-size: .7rem;
+  }
+
+  .quran-share-preview {
+    padding: 14px;
+    border-radius: 22px;
+  }
+
+  .quran-share-frame {
+    padding: 16px;
+    border-radius: 18px;
+  }
+}
