@@ -291,11 +291,10 @@ select, input[type='text'], input:not([type]), .screen-shell input { min-height:
   }
 
   .reader-wave-slider {
-    height: 32px !important;
+    height: 36px !important;
     margin: 8px 42px 0 !important;
   }
 
-  .reader-wave-bars { gap: 5px !important; }
   .reader-wave-bars span { width: 1.5px !important; max-height: 28px !important; }
 
   .reader-wave-marker {
