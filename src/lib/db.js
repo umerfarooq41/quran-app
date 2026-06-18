@@ -112,6 +112,108 @@ export async function saveAyahBookmark(payload) {
   });
 }
 
+export async function removeAyahBookmark(id) {
+  return db.transaction('rw', db.bookmarks, db.notes, async () => {
+    const bookmark = await db.bookmarks.get(id);
+    if (!bookmark) return null;
+
+    await db.bookmarks.delete(id);
+
+    if (bookmark.category === 'Notes') {
+      const noteRows = await db.notes
+        .where('surahNumber')
+        .equals(Number(bookmark.surahNumber))
+        .and((item) => item.ayahNumber === Number(bookmark.ayahNumber))
+        .toArray();
+
+      if (noteRows.length) {
+        await db.notes.bulkDelete(noteRows.map((item) => item.id));
+      }
+    }
+
+    return bookmark;
+  });
+}
+
+export async function changeAyahBookmarkType(id, category) {
+  const nextCategory = category || 'Reading';
+
+  return db.transaction('rw', db.bookmarks, db.notes, async () => {
+    const bookmark = await db.bookmarks.get(id);
+    if (!bookmark || bookmark.category === nextCategory) return bookmark || null;
+
+    const duplicate = await db.bookmarks
+      .where('surahNumber')
+      .equals(Number(bookmark.surahNumber))
+      .and((item) =>
+        item.id !== bookmark.id &&
+        item.ayahNumber === Number(bookmark.ayahNumber) &&
+        item.category === nextCategory)
+      .first();
+
+    let updatedBookmark;
+
+    if (duplicate) {
+      updatedBookmark = {
+        ...duplicate,
+        page: bookmark.page || duplicate.page,
+        preview: bookmark.preview || duplicate.preview,
+        note: bookmark.note || duplicate.note || '',
+        updatedAt: Date.now(),
+      };
+      await db.bookmarks.put(updatedBookmark);
+      await db.bookmarks.delete(bookmark.id);
+    } else {
+      updatedBookmark = {
+        ...bookmark,
+        category: nextCategory,
+        updatedAt: Date.now(),
+      };
+      await db.bookmarks.put(updatedBookmark);
+    }
+
+    const noteRows = await db.notes
+      .where('surahNumber')
+      .equals(Number(bookmark.surahNumber))
+      .and((item) => item.ayahNumber === Number(bookmark.ayahNumber))
+      .toArray();
+
+    if (bookmark.category === 'Notes' && nextCategory !== 'Notes' && noteRows.length) {
+      await db.notes.bulkDelete(noteRows.map((item) => item.id));
+    }
+
+    if (nextCategory === 'Notes') {
+      const existingNote = noteRows[0];
+      await db.notes.put({
+        ...existingNote,
+        ...(existingNote?.id ? { id: existingNote.id } : {}),
+        surahNumber: Number(bookmark.surahNumber),
+        ayahNumber: Number(bookmark.ayahNumber),
+        page: bookmark.page,
+        text: updatedBookmark.note || '',
+        createdAt: existingNote?.createdAt || Date.now(),
+        updatedAt: Date.now(),
+      });
+    }
+
+    return updatedBookmark;
+  });
+}
+
+export async function removeAyahHighlight(surahNumber, ayahNumber) {
+  const matches = await db.highlights
+    .where('surahNumber')
+    .equals(Number(surahNumber))
+    .and((item) => item.ayahNumber === Number(ayahNumber))
+    .toArray();
+
+  if (matches.length) {
+    await db.highlights.bulkDelete(matches.map((item) => item.id));
+  }
+
+  return matches.length;
+}
+
 export async function getAyahAnnotations(surahNumber, ayahNumber) {
   const safeSurah = Number(surahNumber);
   const safeAyah = Number(ayahNumber);

@@ -343,8 +343,7 @@
 }
 
 .ayah-tab-pill:active,
-.ayah-round-action:active,
-.tab-card:active {
+.ayah-round-action:active {
   transform: scale(.98);
 }
 
@@ -951,6 +950,19 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+.ayah-remove-highlight {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 11px;
+  border-radius: 999px;
+  background: #fff0ef;
+  padding: 7px 11px;
+  color: #b42318;
+  font-size: .76rem;
+  font-weight: 700;
 }
 
 .ayah-highlight-colors .highlight-color-button {

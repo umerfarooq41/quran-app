@@ -32,7 +32,7 @@ export default function TafsirScreen() {
   }, [tafsirTarget?.surahNumber, tafsirTarget?.ayahNumber]);
 
   if (!tafsirTarget) {
-    return <Screen className="space-y-4"><Header title="Translation" back="reader" /><Empty text="Long-press an ayah and tap Read more to open its translation here." /></Screen>;
+    return <Screen className="space-y-4"><Header title="Translation" back="reader" /><Empty text="Select an ayah before opening the full Translation mode." /></Screen>;
   }
 
   const surah = getSurah(tafsirTarget.surahNumber);

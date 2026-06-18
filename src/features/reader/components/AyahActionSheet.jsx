@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Bookmark, Check, Copy, Highlighter, Play, Share2 } from 'lucide-react';
-import { getAyahAnnotations, saveAyahBookmark, saveAyahHighlight } from '../../../lib/db';
+import { Bookmark, Check, Copy, Highlighter, Play, Share2, Trash2 } from 'lucide-react';
+import {
+  getAyahAnnotations,
+  removeAyahHighlight,
+  saveAyahBookmark,
+  saveAyahHighlight,
+} from '../../../lib/db';
 import { findPageForReference, getSurah } from '../../../lib/quran';
 import { getJuzForReference } from '../../../data/quranMeta';
 import { getUrduTranslation } from '../../../lib/translations';
@@ -78,6 +83,13 @@ export function AyahActionSheet({
     });
     setHighlightColor(color);
     setStatus('Highlight saved');
+    onAnnotationsChanged?.();
+  }
+
+  async function clearHighlight() {
+    await removeAyahHighlight(ayah.surahNumber, ayah.ayahNumber);
+    setHighlightColor('');
+    setStatus('Highlight removed');
     onAnnotationsChanged?.();
   }
 
@@ -196,6 +208,12 @@ export function AyahActionSheet({
                 </button>
               ))}
             </div>
+            {highlightColor && (
+              <button type="button" className="ayah-remove-highlight" onClick={clearHighlight}>
+                <Trash2 size={16} />
+                Remove Highlight
+              </button>
+            )}
           </section>
         )}
 
@@ -244,8 +262,12 @@ export function AyahActionSheet({
           <p className={!tafsirExpanded ? 'tafsir-preview-text' : ''} dir={translation ? 'rtl' : 'ltr'}>
             {tafsirText}
           </p>
-          <button type="button" onClick={() => setTafsirExpanded((current) => !current)}>
-            {tafsirExpanded ? 'Show less' : 'Read more'}
+          <button
+            type="button"
+            aria-expanded={tafsirExpanded}
+            onClick={() => setTafsirExpanded((current) => !current)}
+          >
+            {tafsirExpanded ? 'Show Less' : 'Read More'}
           </button>
         </section>
 

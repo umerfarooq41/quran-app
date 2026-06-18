@@ -136,20 +136,19 @@ body { -webkit-text-size-adjust: 100%; }
 /* Tabs / bookmarks */
 .tabs-header { min-height: calc(env(safe-area-inset-top, 0px) + 70px); }
 .tabs-header h1 { font-size: 1.25rem; }
-.tabs-back-pill { top: calc(env(safe-area-inset-top, 0px) + 14px); height: 40px; min-width: 66px; border-radius: 18px; }
+.tabs-back-pill { top: calc(env(safe-area-inset-top, 0px) + 14px); width: 48px; height: 40px; min-width: 0; border-radius: 16px; }
 .tabs-list { gap: 9px; padding-bottom: 44px; }
 .tabs-filter-row { gap: 7px; }
-.tabs-filter-row button { padding: 8px 12px; font-size: .82rem; }
-.tab-card { padding: 16px 14px 17px !important; }
+.tabs-filter-row button { padding: 8px 12px; font-size: .78rem; }
+.tab-card { padding: 0 !important; }
+.tab-card-surface { padding: 14px; }
 .tab-card-top { gap: 8px; }
-.tab-type { font-size: .88rem; }
-.tab-surah { font-size: .82rem; }
-.ayah-medallion { width: 34px; height: 34px; font-size: .7rem; }
-.tab-more-button { top: 12px; right: 10px; width: 36px; height: 36px; }
-.tab-card-hit .tab-card-top { padding-right: 34px; }
-.tab-arabic { margin-top: 14px; font-size: clamp(1.38rem, 6vw, 2.2rem); line-height: 1.45; }
-.tab-menu { right: 10px; top: 50px; min-width: 168px; border-radius: 16px; }
-.tab-menu button { padding: 9px 10px; font-size: .84rem; }
+.tab-type { font-size: .72rem; }
+.tab-surah { font-size: .76rem; }
+.tab-more-button { top: 10px; right: 8px; width: 34px; height: 34px; }
+.tab-arabic { margin-top: 10px; font-size: clamp(1.25rem, 5.2vw, 1.8rem); line-height: 1.55; }
+.tab-menu { position: static; min-width: 0; border-radius: 0; }
+.tab-menu button { padding: 9px; font-size: .75rem; }
 
 /* Tafsir and Surah info */
 .tafsir-card { border-radius: 20px; padding: 14px; }
