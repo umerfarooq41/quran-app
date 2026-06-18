@@ -4,6 +4,7 @@ import { ArrowLeft, Bookmark, Menu, Settings } from 'lucide-react';
 export function ReaderTopControls({ visible, onBack, onBookmark, onIndex, onSettings }) {
   return (
     <header
+      data-reader-ui
       className={`reader-topbar ${visible ? 'reader-topbar-visible' : ''}`}
     >
       <div className="reader-control-row">

@@ -101,7 +101,7 @@ body { -webkit-text-size-adjust: 100%; }
 .index-ayah-grid { gap: 6px; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); }
 .index-ayah-grid button { min-height: 36px; border-radius: 12px; font-size: .78rem; }
 
-/* Reader */
+/* Reader chrome only. Mushaf page and Quran line rules are isolated in mushaf.css. */
 .reader-shell { width: 100vw; max-width: 576px; box-shadow: none; }
 .reader-passive-header { height: calc(env(safe-area-inset-top, 0px) + 44px); padding-inline: 13px; }
 .reader-meta-label { font-size: .68rem; }

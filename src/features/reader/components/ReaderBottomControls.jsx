@@ -10,8 +10,8 @@ export function ReaderBottomControls({ page, displayPage, goPage, onHome, onSear
       initial={{ opacity: 1 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 1 }}
+      data-reader-ui
       className="reader-bottom-controls"
-      onClick={(event) => event.stopPropagation()}
     >
 {!compact && (
         <motion.button

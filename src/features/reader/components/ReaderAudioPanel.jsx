@@ -79,7 +79,7 @@ export function ReaderAudioPanel({ ayah, settings, updateSettings, isPlaying, se
   }
 
   return (
-    <div className="reader-audio-panel-wrap" onClick={(event) => event.stopPropagation()}>
+    <div className="reader-audio-panel-wrap" data-reader-ui>
       <section className="reader-audio-panel">
         <audio
           ref={audioRef}

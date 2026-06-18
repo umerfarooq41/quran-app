@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { db } from '../../lib/db';
-import { getMushafPageNumber, getPage, getPageMeta } from '../../lib/quran';
+import { getMushafPageNumber, getPage, getPageMeta, getSurahAyahs } from '../../lib/quran';
 import { useAppStore } from '../../store/useAppStore';
 import { AyahActionSheet } from './components/AyahActionSheet';
 import { MushafPage } from './components/MushafPage';
@@ -22,8 +22,9 @@ export default function ReaderScreen() {
     settings,
     updateSettings,
     setView,
-    selectedLine,
-    setSelectedLine,
+    selectedAyah,
+    setSelectedAyah,
+    clearSelectedAyah,
     pendingAyah,
     clearPendingAyah,
   } = useAppStore();
@@ -35,6 +36,7 @@ export default function ReaderScreen() {
   const [audioAyah, setAudioAyah] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeAudioAyah, setActiveAudioAyah] = useState(null);
+  const suppressTapUntil = useRef(0);
   const { handleTouchStart, handleTouchEnd } = useReaderGestures({ page, goPage });
 
   usePagePersistence({ page, pageData });
@@ -62,7 +64,7 @@ export default function ReaderScreen() {
     return () => {
       mounted = false;
     };
-  }, [page, selectedLine]);
+  }, [page, selectedAyah]);
 
   useEffect(() => {
     if (!pendingAyah) return undefined;
@@ -86,7 +88,7 @@ export default function ReaderScreen() {
 
     setAudioAyah(target);
     setActiveAudioAyah(target);
-    setSelectedLine(null);
+    clearSelectedAyah();
     setAudioPanelOpen(true);
     setIsPlaying(true);
     setControlsVisible(true);
@@ -98,10 +100,30 @@ export default function ReaderScreen() {
     setActiveAudioAyah(null);
   }
 
+  function selectAyah(line, ayahNumber) {
+    const ayah = getSurahAyahs(line.surahNumber)
+      .find((candidate) => candidate.ayahNumber === Number(ayahNumber));
+
+    suppressTapUntil.current = Date.now() + 700;
+    setSelectedAyah({
+      page,
+      surahNumber: line.surahNumber,
+      ayahNumber: Number(ayahNumber),
+      reference: `${line.surahNumber}:${ayahNumber}`,
+      text: ayah?.text || line.text,
+    });
+  }
+
+  function handleReaderTap(event) {
+    if (Date.now() < suppressTapUntil.current) return;
+    if (event.target.closest('[data-reader-ui]')) return;
+    toggleControls();
+  }
+
   return (
     <section
       className="fixed inset-0 overflow-hidden bg-reader text-slate-950"
-      onClick={toggleControls}
+      onClick={handleReaderTap}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
@@ -121,8 +143,9 @@ export default function ReaderScreen() {
           settings={settings}
           markedRefs={markedRefs}
           pendingAyah={pendingAyah}
+          selectedAyah={selectedAyah}
           activeAudioAyah={activeAudioAyah}
-          onSelectLine={setSelectedLine}
+          onSelectAyah={selectAyah}
         />
 
         <ReaderFooterMeta page={page} displayPage={displayPage} />
@@ -157,10 +180,10 @@ export default function ReaderScreen() {
       </AnimatePresence>
 
       <AnimatePresence>
-        {selectedLine && (
+        {selectedAyah && (
           <AyahActionSheet
-            line={selectedLine}
-            onClose={() => setSelectedLine(null)}
+            ayah={selectedAyah}
+            onClose={clearSelectedAyah}
             onPlay={openAudioPanel}
           />
         )}

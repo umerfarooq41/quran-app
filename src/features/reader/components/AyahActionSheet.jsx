@@ -5,7 +5,7 @@ import { db } from '../../../lib/db';
 import { findPageForReference, getSurah } from '../../../lib/quran';
 import { getUrduTranslation } from '../../../lib/translations';
 
-export function AyahActionSheet({ line, onClose, onPlay }) {
+export function AyahActionSheet({ ayah, onClose, onPlay }) {
   const [status, setStatus] = useState('');
   const [translation, setTranslation] = useState('');
   const [expanded, setExpanded] = useState(false);
@@ -13,7 +13,7 @@ export function AyahActionSheet({ line, onClose, onPlay }) {
   useEffect(() => {
     let mounted = true;
 
-    if (!line?.surahNumber || !line?.ayahStart) {
+    if (!ayah?.surahNumber || !ayah?.ayahNumber) {
       setTranslation('');
       return () => {
         mounted = false;
@@ -21,7 +21,7 @@ export function AyahActionSheet({ line, onClose, onPlay }) {
     }
 
     setExpanded(false);
-    getUrduTranslation(line.surahNumber, line.ayahStart)
+    getUrduTranslation(ayah.surahNumber, ayah.ayahNumber)
       .then((text) => {
         if (mounted) setTranslation(text || '');
       })
@@ -32,26 +32,24 @@ export function AyahActionSheet({ line, onClose, onPlay }) {
     return () => {
       mounted = false;
     };
-  }, [line?.surahNumber, line?.ayahStart]);
+  }, [ayah?.surahNumber, ayah?.ayahNumber]);
 
-  if (!line || !line.text) return null;
+  if (!ayah || !ayah.text) return null;
 
-  const page = findPageForReference(line.surahNumber, line.ayahStart);
-  const reference = line.ayahStart
-    ? `${line.surahNumber}:${line.ayahStart}${line.ayahEnd !== line.ayahStart ? `-${line.ayahEnd}` : ''}`
-    : `Surah ${line.surahNumber}`;
-  const surah = getSurah(line.surahNumber);
+  const page = ayah.page || findPageForReference(ayah.surahNumber, ayah.ayahNumber);
+  const reference = ayah.reference || `${ayah.surahNumber}:${ayah.ayahNumber}`;
+  const surah = getSurah(ayah.surahNumber);
   const tafsirText = translation || surah?.shortText || 'Tafsir is not available for this ayah yet.';
-  const shareText = `${line.text}\n${tafsirText ? `${tafsirText}\n` : ''}${reference}`;
+  const shareText = `${ayah.text}\n${tafsirText ? `${tafsirText}\n` : ''}${reference}`;
 
   async function addBookmark() {
     await db.bookmarks.add({
       page,
-      surahNumber: line.surahNumber,
-      ayahNumber: line.ayahStart,
+      surahNumber: ayah.surahNumber,
+      ayahNumber: ayah.ayahNumber,
       category: 'Reading',
       note: '',
-      preview: line.text,
+      preview: ayah.text,
       createdAt: Date.now(),
     });
     setStatus('Bookmark saved');
@@ -82,15 +80,15 @@ export function AyahActionSheet({ line, onClose, onPlay }) {
   function playAyah() {
     onPlay?.({
       page,
-      surahNumber: line.surahNumber,
-      ayahNumber: line.ayahStart,
+      surahNumber: ayah.surahNumber,
+      ayahNumber: ayah.ayahNumber,
       reference,
-      arabic: line.text,
+      arabic: ayah.text,
     });
   }
 
   return (
-    <div className="ayah-action-backdrop" onClick={onClose}>
+    <div className="ayah-action-backdrop" data-reader-ui onClick={onClose}>
       <motion.div
         initial={{ y: '100%', opacity: 1 }}
         animate={{ y: 0, opacity: 1 }}

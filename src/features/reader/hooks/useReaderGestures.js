@@ -4,6 +4,11 @@ export function useReaderGestures({ page, goPage }) {
   const touchStart = useRef(null);
 
   function handleTouchStart(event) {
+    if (event.target.closest('[data-reader-ui]')) {
+      touchStart.current = null;
+      return;
+    }
+
     touchStart.current = event.touches[0].clientX;
   }
 

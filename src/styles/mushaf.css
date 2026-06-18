@@ -1,0 +1,199 @@
+/*
+ * Protected Mushaf rendering contract.
+ * Do not place reader chrome or general responsive UI rules in this file.
+ * Preserve text metrics, spacing, justification, and page fitting.
+ */
+
+.quran-line-marked {
+  background: linear-gradient(90deg, rgba(218, 165, 80, .08), rgba(168, 117, 55, .16), rgba(218, 165, 80, .08));
+}
+
+.quran-line-jumped {
+  background: linear-gradient(90deg, rgba(56, 189, 248, .08), rgba(14, 165, 233, .22), rgba(56, 189, 248, .08));
+  box-shadow: inset 0 0 0 1px rgba(14, 165, 233, .22);
+}
+
+.surah-banner {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  grid-template-columns: minmax(54px, .72fr) 1fr minmax(92px, .95fr);
+  align-items: center;
+  gap: 8px;
+  direction: ltr;
+  padding: 0 12px;
+  font-family: IndopakNastaleeq, serif;
+  background: #b9dfbf;
+  color: #12110c;
+}
+
+.surah-banner:not(.surah-banner-inline) {
+  grid-template-columns: minmax(80px, 1fr) minmax(0, 1fr);
+}
+
+.surah-banner-name {
+  justify-self: end;
+  white-space: nowrap;
+  direction: rtl;
+  font-size: calc(clamp(1rem, 2.45vh, 1.45rem) * var(--font-scale, 1));
+}
+
+.surah-banner-ayahs {
+  justify-self: start;
+  white-space: nowrap;
+  direction: rtl;
+  font-size: calc(clamp(.95rem, 2.35vh, 1.34rem) * var(--font-scale, 1));
+}
+
+.surah-banner-basmallah {
+  justify-self: center;
+  white-space: nowrap;
+  direction: rtl;
+  font-size: calc(clamp(1.02rem, 2.55vh, 1.52rem) * var(--font-scale, 1));
+}
+
+@keyframes ayah-pulse {
+  0% { box-shadow: inset 0 0 0 1px rgba(14,165,233,0); background: rgba(14,165,233,0.12); }
+  40% { box-shadow: inset 0 0 0 2px rgba(14,165,233,0.4); background: rgba(56,189,248,0.22); }
+  100% { box-shadow: inset 0 0 0 1px rgba(14,165,233,0.18); background: rgba(56,189,248,0.09); }
+}
+
+.quran-line-jumped {
+  animation: ayah-pulse 0.9s cubic-bezier(0.4, 0, 0.2, 1) 2;
+}
+
+@media (max-width: 420px) {
+  .surah-banner {
+    padding-inline: 8px;
+    gap: 5px;
+  }
+}
+
+.reader-page {
+  direction: rtl;
+  width: 100%;
+  max-width: 100%;
+  min-height: 0;
+  overflow: hidden !important;
+  padding-inline: clamp(18px, 5.2vw, 34px) !important;
+  padding-top: calc(env(safe-area-inset-top, 0px) + 96px) !important;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 72px) !important;
+  gap: 0 !important;
+  contain: layout paint;
+}
+
+.quran-line {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center !important;
+  text-align: center !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: #171717;
+  font-family: IndopakNastaleeq, serif;
+  font-size: calc(clamp(1.02rem, 2.6vh, 1.58rem) * var(--font-scale, 1)) !important;
+  line-height: 1.18 !important;
+  white-space: nowrap;
+  transition: background .2s ease, transform .2s ease;
+}
+
+.quran-line:active {
+  transform: scale(.995);
+}
+
+.quran-line-text {
+  max-width: 100%;
+  min-width: 0;
+  display: inline-block !important;
+  white-space: nowrap !important;
+  /* Word spacing remains driven by the existing JS measurement. */
+  letter-spacing: -0.01em;
+  transform-origin: right center;
+  will-change: word-spacing;
+}
+
+::highlight(reader-ayah-selection) {
+  background: rgba(250, 204, 21, .32);
+  color: inherit;
+}
+
+.quran-line-selected-fallback {
+  background: rgba(250, 204, 21, .24) !important;
+  box-shadow: inset 0 0 0 1px rgba(234, 179, 8, .22);
+}
+
+.quran-line-surah_name,
+.quran-line-basmallah,
+.quran-line-bismillah {
+  justify-content: center !important;
+  text-align: center !important;
+  overflow: visible !important;
+  letter-spacing: 0 !important;
+  word-spacing: normal !important;
+}
+
+.quran-line-surah_name::before,
+.quran-line-surah_name::after {
+  display: none !important;
+}
+
+.quran-line-surah_name .quran-line-text,
+.quran-line-basmallah .quran-line-text,
+.quran-line-bismillah .quran-line-text {
+  letter-spacing: 0 !important;
+  word-spacing: normal !important;
+}
+
+.quran-line-surah_name,
+.quran-line-basmallah {
+  background: transparent !important;
+  border: 0 !important;
+}
+
+.surah-banner {
+  background: transparent !important;
+}
+
+@media (max-width: 420px) {
+  .reader-page {
+    padding-inline: 16px !important;
+    padding-top: calc(env(safe-area-inset-top, 0px) + 92px) !important;
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 68px) !important;
+  }
+
+  .quran-line {
+    font-size: calc(clamp(0.96rem, 2.54vh, 1.48rem) * var(--font-scale, 1)) !important;
+    line-height: 1.18 !important;
+  }
+
+  .quran-line-text {
+    letter-spacing: -0.012em;
+  }
+}
+
+@media (max-width: 380px) {
+  .reader-page {
+    padding-inline: 14px !important;
+  }
+
+  .quran-line {
+    font-size: calc(clamp(0.90rem, 2.44vh, 1.40rem) * var(--font-scale, 1)) !important;
+  }
+
+  .quran-line-text {
+    letter-spacing: -0.014em;
+  }
+}
+
+.quran-line-audio-active {
+  background: rgba(250, 204, 21, .30) !important;
+  box-shadow: inset 0 0 0 1px rgba(234, 179, 8, .25);
+}
