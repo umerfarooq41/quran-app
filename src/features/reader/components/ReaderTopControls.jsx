@@ -1,7 +1,7 @@
 import React from 'react';
 import { ArrowLeft, Bookmark, Menu, Settings } from 'lucide-react';
 
-export function ReaderTopControls({ visible, onBack, onBookmark, onIndex, onSettings }) {
+export function ReaderTopControls({ visible, onBack, onBookmarks, onIndex, onSettings }) {
   return (
     <header
       data-reader-ui
@@ -13,7 +13,7 @@ export function ReaderTopControls({ visible, onBack, onBookmark, onIndex, onSett
         </button>
 
         <div className="reader-top-actions">
-          <button className="reader-top-icon" onClick={onBookmark} aria-label="Bookmark">
+          <button className="reader-top-icon" onClick={onBookmarks} aria-label="Open bookmarks">
             <Bookmark size={30} strokeWidth={1.7} />
           </button>
 

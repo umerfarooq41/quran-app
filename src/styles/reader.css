@@ -695,6 +695,19 @@ body {
   justify-content: center;
   pointer-events: none;
   padding: 0 14px;
+  transition: opacity .18s ease, transform .18s ease, visibility .18s ease;
+}
+
+.reader-audio-panel-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.reader-audio-panel-hidden {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(18px);
 }
 
 .reader-audio-panel {
@@ -760,6 +773,7 @@ body {
 .reader-audio-progress {
   width: 100%;
   accent-color: #16a34a;
+  direction: rtl;
 }
 
 .reader-audio-times {

@@ -4,7 +4,7 @@ import { Play, Search, Undo2 } from 'lucide-react';
 import { getHizbLabel } from '../../../utils/quranLabels';
 import { PageWaveSlider } from './PageWaveSlider';
 
-export function ReaderBottomControls({ page, displayPage, goPage, onHome, onSearch, onAudio, compact = false }) {
+export function ReaderBottomControls({ page, displayPage, goPage, onPreviousPage, onSearch, onAudio, compact = false }) {
   return (
     <motion.div
       initial={{ opacity: 1 }}
@@ -44,7 +44,7 @@ export function ReaderBottomControls({ page, displayPage, goPage, onHome, onSear
         <PageWaveSlider page={page} goPage={goPage} />
 
         <div className="reader-bottom-actions">
-          <button onClick={onHome} aria-label="Return">
+          <button onClick={onPreviousPage} aria-label="Previous reader page">
             <Undo2 size={34} strokeWidth={1.8} />
           </button>
 

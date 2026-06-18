@@ -103,6 +103,10 @@
   line-height: 1.18 !important;
   white-space: nowrap;
   transition: background .2s ease, transform .2s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  caret-color: transparent;
 }
 
 .quran-line:active {
@@ -118,6 +122,8 @@
   letter-spacing: -0.01em;
   transform-origin: right center;
   will-change: word-spacing;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 ::highlight(reader-ayah-selection) {
@@ -149,6 +155,10 @@
 ::highlight(reader-bookmark-notes) {
   color: #216d91;
   background: rgba(202, 231, 244, .90);
+}
+
+::highlight(reader-audio-active) {
+  background: rgba(250, 204, 21, .30);
 }
 
 .quran-line-selected-fallback {

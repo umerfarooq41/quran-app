@@ -108,6 +108,8 @@ export function QuranLine({
       onPointerUp={finishPress}
       onPointerLeave={cancelLongPress}
       onPointerCancel={finishPress}
+      onSelectStart={(event) => event.preventDefault()}
+      onDragStart={(event) => event.preventDefault()}
       onClick={(event) => {
         if (longPressed.current) {
           event.preventDefault();

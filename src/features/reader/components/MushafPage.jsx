@@ -2,11 +2,13 @@ import React, { useEffect, useRef } from 'react';
 import { QuranLine } from './QuranLine';
 
 const SELECTION_HIGHLIGHT = 'reader-ayah-selection';
+const AUDIO_HIGHLIGHT = 'reader-audio-active';
 const SAVED_HIGHLIGHTS = ['amber', 'emerald', 'rose', 'sky', 'violet'];
 const BOOKMARK_TONES = ['reading', 'memorize', 'tadabbur', 'notes'];
 const MANAGED_HIGHLIGHTS = [
   ...SAVED_HIGHLIGHTS.map((color) => `reader-highlight-${color}`),
   ...BOOKMARK_TONES.map((tone) => `reader-bookmark-${tone}`),
+  AUDIO_HIGHLIGHT,
   SELECTION_HIGHLIGHT,
 ];
 
@@ -49,6 +51,18 @@ export function MushafPage({
       if (ranges.length) CSS.highlights.set(name, new Highlight(...ranges));
     });
 
+    if (activeAudioAyah) {
+      const audioRanges = getAyahRanges(
+        pageRef.current,
+        pageData,
+        activeAudioAyah.surahNumber,
+        activeAudioAyah.ayahNumber,
+      );
+      if (audioRanges.length) {
+        CSS.highlights.set(AUDIO_HIGHLIGHT, new Highlight(...audioRanges));
+      }
+    }
+
     if (selectedAyah) {
       const selectedRanges = getAyahRanges(
         pageRef.current,
@@ -64,7 +78,7 @@ export function MushafPage({
     return () => {
       MANAGED_HIGHLIGHTS.forEach((name) => CSS.highlights.delete(name));
     };
-  }, [pageData, savedHighlights, bookmarkMarkers, selectedAyah, supportsTextHighlights]);
+  }, [pageData, savedHighlights, bookmarkMarkers, selectedAyah, activeAudioAyah, supportsTextHighlights]);
 
   return (
     <div
@@ -90,7 +104,7 @@ export function MushafPage({
                 line.ayahStart <= pendingAyah.ayahNumber &&
                 (!line.ayahEnd || line.ayahEnd >= pendingAyah.ayahNumber)
             )}
-            activeAudio={Boolean(
+            activeAudio={!supportsTextHighlights && Boolean(
               activeAudioAyah &&
                 line.surahNumber === activeAudioAyah.surahNumber &&
                 line.ayahStart <= activeAudioAyah.ayahNumber &&

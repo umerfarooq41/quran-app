@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bookmark, BookOpen, Headphones, Library, Search, SlidersHorizontal } from 'lucide-react';
+import { Bookmark, BookOpen, Library, Search, SlidersHorizontal } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAppStore } from '../store/useAppStore';
 import { getMushafPageNumber, getPageMeta } from '../lib/quran';
@@ -13,7 +13,6 @@ export default function HomeScreen() {
     ['Index', Library, () => setView('index')],
     ['Search', Search, () => setView('search')],
     ['Bookmarks', Bookmark, () => setView('tabs')],
-    ['Audio', Headphones, () => setView('audio')],
     ['Settings', SlidersHorizontal, () => setView('settings')],
   ];
 

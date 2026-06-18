@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { db, saveAyahBookmark } from '../../lib/db';
+import { db } from '../../lib/db';
 import { getMushafPageNumber, getPage, getPageMeta, getSurahAyahs } from '../../lib/quran';
 import { useAppStore } from '../../store/useAppStore';
 import { AyahActionSheet } from './components/AyahActionSheet';
@@ -17,6 +17,7 @@ export default function ReaderScreen() {
   const {
     page,
     goPage,
+    goPreviousReaderPage,
     controlsVisible,
     toggleControls,
     setControlsVisible,
@@ -35,9 +36,8 @@ export default function ReaderScreen() {
   const [savedHighlights, setSavedHighlights] = useState(new Map());
   const [bookmarkMarkers, setBookmarkMarkers] = useState(new Map());
   const [annotationVersion, setAnnotationVersion] = useState(0);
-  const [audioPanelOpen, setAudioPanelOpen] = useState(false);
+  const [audioSessionOpen, setAudioSessionOpen] = useState(false);
   const [audioAyah, setAudioAyah] = useState(null);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [activeAudioAyah, setActiveAudioAyah] = useState(null);
   const [shareTarget, setShareTarget] = useState(null);
   const suppressTapUntil = useRef(0);
@@ -102,15 +102,27 @@ export default function ReaderScreen() {
     setAudioAyah(target);
     setActiveAudioAyah(target);
     clearSelectedAyah();
-    setAudioPanelOpen(true);
-    setIsPlaying(true);
+    setAudioSessionOpen(true);
     setControlsVisible(true);
   }
 
   function closeAudioPanel() {
-    setAudioPanelOpen(false);
-    setIsPlaying(false);
+    setAudioSessionOpen(false);
+    setAudioAyah(null);
     setActiveAudioAyah(null);
+  }
+
+  function changeAudioAyah(target) {
+    if (!target) return;
+
+    const keepControlsVisible = controlsVisible;
+    setAudioAyah(target);
+    setActiveAudioAyah(target);
+
+    if (target.page && target.page !== page) {
+      goPage(target.page);
+      if (keepControlsVisible) setControlsVisible(true);
+    }
   }
 
   function annotationsChanged() {
@@ -153,9 +165,9 @@ export default function ReaderScreen() {
         <ReaderPassiveHeader meta={meta} displayPage={displayPage} />
 
         <ReaderTopControls
-          visible={controlsVisible || audioPanelOpen}
+          visible={controlsVisible}
           onBack={() => setView('home', 'back')}
-          onBookmark={() => addBookmark(pageData).then(annotationsChanged)}
+          onBookmarks={() => setView('tabs')}
           onIndex={() => setView('index')}
           onSettings={() => setView('settings')}
         />
@@ -175,32 +187,30 @@ export default function ReaderScreen() {
       </div>
 
       <AnimatePresence>
-        {(controlsVisible || audioPanelOpen) && (
+        {controlsVisible && (
           <ReaderBottomControls
             page={page}
             displayPage={displayPage}
             goPage={goPage}
-            onHome={() => setView('home', 'back')}
+            onPreviousPage={goPreviousReaderPage}
             onSearch={() => setView('search')}
             onAudio={() => openAudioPanel()}
-            compact={audioPanelOpen}
+            compact={audioSessionOpen}
           />
         )}
       </AnimatePresence>
 
-      <AnimatePresence>
-        {audioPanelOpen && (
+      {audioSessionOpen && (
           <ReaderAudioPanel
             ayah={audioAyah}
+            visible={controlsVisible}
             settings={settings}
             updateSettings={updateSettings}
-            isPlaying={isPlaying}
-            setIsPlaying={setIsPlaying}
             onClose={closeAudioPanel}
-            onActiveAyahChange={setActiveAudioAyah}
+            onAyahChange={changeAudioAyah}
+            onPlaybackStopped={() => setActiveAudioAyah(null)}
           />
-        )}
-      </AnimatePresence>
+      )}
 
       <AnimatePresence>
         {selectedAyah && (
@@ -224,20 +234,4 @@ export default function ReaderScreen() {
       </AnimatePresence>
     </section>
   );
-}
-
-async function addBookmark(pageData) {
-  const first = pageData.lines.find((line) => line.surahNumber && line.ayahStart);
-
-  if (!first) return;
-
-  await saveAyahBookmark({
-    page: pageData.page,
-    surahNumber: first.surahNumber,
-    ayahNumber: first.ayahStart,
-    category: 'Reading',
-    note: '',
-    preview: first.text,
-    createdAt: Date.now(),
-  });
 }
