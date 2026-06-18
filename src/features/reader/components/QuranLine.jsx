@@ -1,14 +1,13 @@
 import React, { useLayoutEffect, useRef } from 'react';
 import { basmallahText, getDisplayLineText } from '../../../utils/quranLabels';
+import { getAyahAtRenderedPoint } from '../utils/ayahDomRange';
 import { SurahHeader } from './SurahHeader';
 
 export function QuranLine({
   line,
   onSelect,
   marked = false,
-  selected = false,
   jumped = false,
-  activeAudio = false,
   hasSeparateBasmallah = false,
 }) {
   const lineRef = useRef(null);
@@ -54,7 +53,7 @@ export function QuranLine({
 
     longPressed.current = false;
     pressPoint.current = { x: event.clientX, y: event.clientY };
-    pressedAyah.current = getAyahAtPoint(line, textRef.current, event.clientX, event.clientY);
+    pressedAyah.current = getAyahAtRenderedPoint(line, textRef.current, event.clientX, event.clientY);
     capturedPointer.current = event.pointerId;
     event.currentTarget.setPointerCapture?.(event.pointerId);
     window.clearTimeout(longPressTimer.current);
@@ -121,10 +120,10 @@ export function QuranLine({
         event.preventDefault();
 
         if (line.type === 'ayah' && line.ayahStart) {
-          onSelect(getAyahAtPoint(line, textRef.current, event.clientX, event.clientY));
+          onSelect(getAyahAtRenderedPoint(line, textRef.current, event.clientX, event.clientY));
         }
       }}
-      className={`quran-line quran-line-${isBasmallah ? 'basmallah' : line.type} ${marked ? 'quran-line-marked' : ''} ${selected ? 'quran-line-selected-fallback' : ''} ${jumped ? 'quran-line-jumped' : ''} ${activeAudio ? 'quran-line-audio-active' : ''} ${line.type === 'spacer' ? 'opacity-0' : ''} ${centered ? 'justify-center text-center' : 'justify-end text-right'}`}
+      className={`quran-line quran-line-${isBasmallah ? 'basmallah' : line.type} ${marked ? 'quran-line-marked' : ''} ${jumped ? 'quran-line-jumped' : ''} ${line.type === 'spacer' ? 'opacity-0' : ''} ${centered ? 'justify-center text-center' : 'justify-end text-right'}`}
       aria-label={line.type === 'spacer' ? 'Blank line' : text}
       tabIndex={line.type === 'spacer' ? -1 : 0}
     >
@@ -144,34 +143,4 @@ export function QuranLine({
       )}
     </button>
   );
-}
-
-function getAyahAtPoint(line, textElement, clientX, clientY) {
-  const offset = getTextOffsetAtPoint(textElement, clientX, clientY);
-  if (offset === null) return line.ayahStart;
-
-  const completedAyahsBeforePoint = [...line.text.slice(0, offset)]
-    .filter((character) => {
-      const codePoint = character.codePointAt(0);
-      return codePoint >= 0xE000 && codePoint <= 0xF8FF;
-    })
-    .length;
-
-  return Math.min(line.ayahEnd, line.ayahStart + completedAyahsBeforePoint);
-}
-
-function getTextOffsetAtPoint(textElement, clientX, clientY) {
-  if (!textElement) return null;
-
-  const caretPosition = document.caretPositionFromPoint?.(clientX, clientY);
-  if (caretPosition?.offsetNode && textElement.contains(caretPosition.offsetNode)) {
-    return caretPosition.offset;
-  }
-
-  const caretRange = document.caretRangeFromPoint?.(clientX, clientY);
-  if (caretRange?.startContainer && textElement.contains(caretRange.startContainer)) {
-    return caretRange.startOffset;
-  }
-
-  return null;
 }

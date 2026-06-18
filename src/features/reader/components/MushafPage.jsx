@@ -1,15 +1,17 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import {
+  createAyahDomRange,
+  createTextDomRange,
+  getAyahEndMarkerOffset,
+  getAyahHighlightRects,
+} from '../utils/ayahDomRange';
 import { QuranLine } from './QuranLine';
 
-const SELECTION_HIGHLIGHT = 'reader-ayah-selection';
-const AUDIO_HIGHLIGHT = 'reader-audio-active';
 const SAVED_HIGHLIGHTS = ['amber', 'emerald', 'rose', 'sky', 'violet'];
 const BOOKMARK_TONES = ['reading', 'memorize', 'tadabbur', 'notes'];
 const MANAGED_HIGHLIGHTS = [
   ...SAVED_HIGHLIGHTS.map((color) => `reader-highlight-${color}`),
   ...BOOKMARK_TONES.map((tone) => `reader-bookmark-${tone}`),
-  AUDIO_HIGHLIGHT,
-  SELECTION_HIGHLIGHT,
 ];
 
 export function MushafPage({
@@ -23,7 +25,82 @@ export function MushafPage({
   onSelectAyah,
 }) {
   const pageRef = useRef(null);
+  const [highlightRects, setHighlightRects] = useState({
+    selection: [],
+    audio: [],
+  });
   const supportsTextHighlights = typeof CSS !== 'undefined' && Boolean(CSS.highlights) && typeof Highlight !== 'undefined';
+
+  useLayoutEffect(() => {
+    const pageElement = pageRef.current;
+    if (!pageElement) {
+      setHighlightRects({ selection: [], audio: [] });
+      return undefined;
+    }
+
+    let disposed = false;
+    let frame = 0;
+
+    const measure = () => {
+      if (disposed) return;
+      setHighlightRects({
+        selection: selectedAyah
+          ? getAyahHighlightRects(
+              pageElement,
+              pageData,
+              selectedAyah.surahNumber,
+              selectedAyah.ayahNumber,
+            )
+          : [],
+        audio: activeAudioAyah
+          ? getAyahHighlightRects(
+              pageElement,
+              pageData,
+              activeAudioAyah.surahNumber,
+              activeAudioAyah.ayahNumber,
+            )
+          : [],
+      });
+    };
+
+    const scheduleMeasure = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(measure);
+    };
+
+    scheduleMeasure();
+
+    const resizeObserver = typeof ResizeObserver === 'undefined'
+      ? null
+      : new ResizeObserver(scheduleMeasure);
+    resizeObserver?.observe(pageElement);
+    pageElement.querySelectorAll('.quran-line-text').forEach((element) => {
+      resizeObserver?.observe(element);
+    });
+
+    document.fonts?.ready?.then(() => {
+      if (!disposed) scheduleMeasure();
+    });
+    window.addEventListener('resize', scheduleMeasure);
+    window.addEventListener('orientationchange', scheduleMeasure);
+    window.visualViewport?.addEventListener('resize', scheduleMeasure);
+
+    return () => {
+      disposed = true;
+      window.cancelAnimationFrame(frame);
+      resizeObserver?.disconnect();
+      window.removeEventListener('resize', scheduleMeasure);
+      window.removeEventListener('orientationchange', scheduleMeasure);
+      window.visualViewport?.removeEventListener('resize', scheduleMeasure);
+    };
+  }, [
+    pageData,
+    selectedAyah?.surahNumber,
+    selectedAyah?.ayahNumber,
+    activeAudioAyah?.surahNumber,
+    activeAudioAyah?.ayahNumber,
+    settings.fontScale,
+  ]);
 
   useEffect(() => {
     if (!supportsTextHighlights) return undefined;
@@ -51,34 +128,10 @@ export function MushafPage({
       if (ranges.length) CSS.highlights.set(name, new Highlight(...ranges));
     });
 
-    if (activeAudioAyah) {
-      const audioRanges = getAyahRanges(
-        pageRef.current,
-        pageData,
-        activeAudioAyah.surahNumber,
-        activeAudioAyah.ayahNumber,
-      );
-      if (audioRanges.length) {
-        CSS.highlights.set(AUDIO_HIGHLIGHT, new Highlight(...audioRanges));
-      }
-    }
-
-    if (selectedAyah) {
-      const selectedRanges = getAyahRanges(
-        pageRef.current,
-        pageData,
-        selectedAyah.surahNumber,
-        selectedAyah.ayahNumber,
-      );
-      if (selectedRanges.length) {
-        CSS.highlights.set(SELECTION_HIGHLIGHT, new Highlight(...selectedRanges));
-      }
-    }
-
     return () => {
       MANAGED_HIGHLIGHTS.forEach((name) => CSS.highlights.delete(name));
     };
-  }, [pageData, savedHighlights, bookmarkMarkers, selectedAyah, activeAudioAyah, supportsTextHighlights]);
+  }, [pageData, savedHighlights, bookmarkMarkers, supportsTextHighlights]);
 
   return (
     <div
@@ -86,6 +139,33 @@ export function MushafPage({
       className="reader-page grid flex-1 grid-rows-16 overflow-hidden px-4"
       style={{ '--font-scale': settings.fontScale }}
     >
+      <div className="reader-ayah-highlight-layer" aria-hidden="true">
+        {highlightRects.audio.map((rect, index) => (
+          <span
+            key={`audio-${rect.top}-${rect.left}-${index}`}
+            className="reader-ayah-highlight-block reader-ayah-highlight-audio"
+            style={{
+              left: `${rect.left}px`,
+              top: `${rect.top}px`,
+              width: `${rect.width}px`,
+              height: `${rect.height}px`,
+            }}
+          />
+        ))}
+        {highlightRects.selection.map((rect, index) => (
+          <span
+            key={`selection-${rect.top}-${rect.left}-${index}`}
+            className="reader-ayah-highlight-block reader-ayah-highlight-selection"
+            style={{
+              left: `${rect.left}px`,
+              top: `${rect.top}px`,
+              width: `${rect.width}px`,
+              height: `${rect.height}px`,
+            }}
+          />
+        ))}
+      </div>
+
       {pageData.lines.map((line, index) => {
         const nextLine = pageData.lines[index + 1];
         const hasSeparateBasmallah = nextLine?.type === 'basmallah' || nextLine?.type === 'bismillah';
@@ -97,18 +177,11 @@ export function MushafPage({
             hasSeparateBasmallah={hasSeparateBasmallah}
             onSelect={(ayahNumber) => onSelectAyah(line, ayahNumber)}
             marked={!supportsTextHighlights && lineHasSavedHighlight(line, savedHighlights)}
-            selected={!supportsTextHighlights && lineContainsAyah(line, selectedAyah)}
             jumped={Boolean(
               pendingAyah &&
                 line.surahNumber === pendingAyah.surahNumber &&
                 line.ayahStart <= pendingAyah.ayahNumber &&
                 (!line.ayahEnd || line.ayahEnd >= pendingAyah.ayahNumber)
-            )}
-            activeAudio={!supportsTextHighlights && Boolean(
-              activeAudioAyah &&
-                line.surahNumber === activeAudioAyah.surahNumber &&
-                line.ayahStart <= activeAudioAyah.ayahNumber &&
-                (!line.ayahEnd || line.ayahEnd >= activeAudioAyah.ayahNumber)
             )}
           />
         );
@@ -121,14 +194,9 @@ function getAyahRanges(pageElement, pageData, surahNumber, ayahNumber) {
   return pageData.lines.flatMap((line) => {
     if (!lineContainsReference(line, surahNumber, ayahNumber)) return [];
 
-    const textNode = getLineTextNode(pageElement, line.line);
-    const offsets = getAyahOffsets(line, ayahNumber);
-    if (!textNode || !offsets) return [];
-
-    const range = new Range();
-    range.setStart(textNode, offsets.start);
-    range.setEnd(textNode, offsets.end);
-    return [range];
+    const textElement = getLineTextElement(pageElement, line.line);
+    const range = createAyahDomRange(line, textElement, ayahNumber);
+    return range ? [range] : [];
   });
 }
 
@@ -136,29 +204,18 @@ function getAyahMarkerRange(pageElement, pageData, surahNumber, ayahNumber) {
   for (const line of pageData.lines) {
     if (!lineContainsReference(line, surahNumber, ayahNumber)) continue;
 
-    const textNode = getLineTextNode(pageElement, line.line);
-    const markerOffset = getAyahMarkerOffset(line, ayahNumber);
-    if (!textNode || markerOffset === null) continue;
+    const textElement = getLineTextElement(pageElement, line.line);
+    const markerOffset = getAyahEndMarkerOffset(line, ayahNumber);
+    if (!textElement || markerOffset === null) continue;
 
-    const range = new Range();
-    range.setStart(textNode, markerOffset);
-    range.setEnd(textNode, markerOffset + 1);
-    return range;
+    return createTextDomRange(textElement, markerOffset, markerOffset + 1);
   }
 
   return null;
 }
 
-function getLineTextNode(pageElement, lineNumber) {
-  const textElement = pageElement.querySelector(`[data-quran-line="${lineNumber}"] .quran-line-text`);
-  return textElement?.firstChild || null;
-}
-
-function lineContainsAyah(line, selectedAyah) {
-  return Boolean(
-    selectedAyah &&
-      lineContainsReference(line, selectedAyah.surahNumber, selectedAyah.ayahNumber)
-  );
+function getLineTextElement(pageElement, lineNumber) {
+  return pageElement.querySelector(`[data-quran-line="${lineNumber}"] .quran-line-text`);
 }
 
 function lineContainsReference(line, surahNumber, ayahNumber) {
@@ -177,49 +234,6 @@ function lineHasSavedHighlight(line, savedHighlights) {
     if (savedHighlights.has(`${line.surahNumber}:${ayahNumber}`)) return true;
   }
   return false;
-}
-
-function getAyahOffsets(line, ayahNumber) {
-  const relativeAyah = Number(ayahNumber) - Number(line.ayahStart);
-  if (relativeAyah < 0) return null;
-
-  const markerOffsets = [];
-  const markerPattern = /[\uE000-\uF8FF]/g;
-  let match = markerPattern.exec(line.text);
-
-  while (match) {
-    markerOffsets.push(match.index);
-    match = markerPattern.exec(line.text);
-  }
-
-  let start = relativeAyah === 0
-    ? 0
-    : (markerOffsets[relativeAyah - 1] ?? -1) + 1;
-  const endMarker = markerOffsets[relativeAyah];
-  const end = endMarker === undefined ? line.text.length : endMarker + 1;
-
-  while (start < end && /\s/.test(line.text[start])) start += 1;
-
-  return start < end ? { start, end } : null;
-}
-
-function getAyahMarkerOffset(line, ayahNumber) {
-  const relativeAyah = Number(ayahNumber) - Number(line.ayahStart);
-  const markerOffsets = getMarkerOffsets(line.text);
-  return markerOffsets[relativeAyah] ?? null;
-}
-
-function getMarkerOffsets(text) {
-  const offsets = [];
-  const markerPattern = /[\uE000-\uF8FF]/g;
-  let match = markerPattern.exec(text);
-
-  while (match) {
-    offsets.push(match.index);
-    match = markerPattern.exec(text);
-  }
-
-  return offsets;
 }
 
 function addRanges(groups, name, ranges) {
