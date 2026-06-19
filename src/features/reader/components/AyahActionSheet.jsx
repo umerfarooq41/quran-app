@@ -15,7 +15,7 @@ import { useAppStore } from '../../../store/useAppStore';
 const HIGHLIGHT_COLORS = ['amber', 'emerald', 'rose', 'sky', 'violet'];
 
 const BOOKMARK_TYPES = [
-  { category: 'Reading', label: 'Recitation / Reading', tone: 'emerald' },
+  { category: 'Reading', label: 'Recitation', tone: 'emerald' },
   { category: 'Memorize', label: 'Memorize', tone: 'amber' },
   { category: 'Tadabbur', label: 'Tadabbur', tone: 'rose' },
   { category: 'Notes', label: 'Add Notes', tone: 'sky' },

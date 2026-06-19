@@ -160,10 +160,16 @@
 [data-theme='dark'] .tabs-back-pill,
 [data-theme='dark'] .tabs-filter-row button,
 [data-theme='dark'] .tabs-status,
-[data-theme='dark'] .tab-card-surface,
 [data-theme='dark'] .settings-card {
   border-color: var(--theme-border);
   background: var(--theme-surface);
+  color: var(--theme-text);
+  box-shadow: 0 9px 28px var(--theme-shadow);
+}
+
+[data-theme='dark'] .tab-card-surface {
+  border-color: var(--theme-border);
+  background: #202521;
   color: var(--theme-text);
   box-shadow: 0 9px 28px var(--theme-shadow);
 }
@@ -175,6 +181,7 @@
 [data-theme='dark'] .search-result-reference strong,
 [data-theme='dark'] .tabs-header h1,
 [data-theme='dark'] .tab-more-button,
+[data-theme='dark'] .tab-type,
 [data-theme='dark'] .tab-surah,
 [data-theme='dark'] .tab-note,
 [data-theme='dark'] .tab-arabic,

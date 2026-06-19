@@ -5,6 +5,27 @@
   overflow-x: hidden;
 }
 
+.tabs-screen .tabs-header {
+  min-height: calc(env(safe-area-inset-top, 0px) + 68px);
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.tabs-screen .tabs-header h1 {
+  font-size: 1.24rem;
+  font-weight: 520;
+  letter-spacing: -.025em;
+}
+
+.tabs-screen .tabs-back-pill {
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
+  width: 62px;
+  height: 44px;
+  border: 1px solid rgba(255, 255, 255, .78);
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 7px 22px rgba(34, 29, 23, .07);
+}
+
 .tabs-header {
   position: relative;
   display: grid;
@@ -41,9 +62,10 @@
 
 .tabs-filter-row {
   display: flex;
-  gap: 7px;
+  gap: 6px;
   max-width: 100%;
   overflow-x: auto;
+  margin-bottom: 10px;
   padding: 0 1px 8px;
   scrollbar-width: none;
 }
@@ -55,12 +77,13 @@
 .tabs-filter-row button {
   flex: 0 0 auto;
   max-width: 190px;
+  min-height: 34px;
   border-radius: 999px;
   background: rgba(255, 255, 255, .8);
-  padding: 8px 12px;
+  padding: 7px 11px;
   color: rgba(45, 42, 38, .62);
-  font-size: .78rem;
-  font-weight: 650;
+  font-size: .75rem;
+  font-weight: 600;
   line-height: 1.1;
   white-space: nowrap;
 }
@@ -81,7 +104,7 @@
 
 .tabs-list {
   display: grid;
-  gap: 10px;
+  gap: 11px;
   width: 100%;
   padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 34px);
 }
@@ -91,10 +114,10 @@
   width: 100%;
   max-width: 100%;
   overflow: hidden;
-  border-radius: 20px;
+  border-radius: 21px;
   background: #c83a35;
   padding: 0 !important;
-  box-shadow: 0 8px 24px rgba(31, 24, 15, .055);
+  box-shadow: 0 9px 26px rgba(31, 24, 15, .07);
 }
 
 .tab-card-remove {
@@ -119,9 +142,9 @@
   z-index: 1;
   width: 100%;
   min-width: 0;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, .94);
-  padding: 14px;
+  border-radius: 21px;
+  background: #fff;
+  padding: 15px;
   transition: transform .2s ease;
   touch-action: pan-y;
 }
@@ -134,71 +157,69 @@
   display: block;
   width: 100%;
   min-width: 0;
-  padding-right: 34px;
+  padding-right: 36px;
   text-align: left;
 }
 
 .tab-card-top {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 9px;
+  gap: 10px;
   min-width: 0;
+}
+
+.tab-card-type {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
 }
 
 .tab-bookmark {
   display: grid;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   place-items: center;
-  border-radius: 10px;
+  flex: 0 0 auto;
 }
 
-.tab-bookmark-emerald { background: #e3f4ec; color: #2f7462; }
-.tab-bookmark-amber { background: #fff1d0; color: #a46f09; }
-.tab-bookmark-rose { background: #f9e1e8; color: #a9365b; }
-.tab-bookmark-sky { background: #dff0f8; color: #286f91; }
-
-.tab-card-heading {
-  display: grid;
-  min-width: 0;
-  gap: 4px;
-}
+.tab-bookmark-emerald { color: #2f8068; }
+.tab-bookmark-amber { color: #b77b09; }
+.tab-bookmark-rose { color: #b73e62; }
+.tab-bookmark-violet { color: #7955b7; }
 
 .tab-type {
-  justify-self: start;
-  max-width: 100%;
-  overflow: hidden;
-  border-radius: 999px;
-  padding: 3px 8px;
-  font-size: .72rem;
-  font-weight: 750;
-  line-height: 1.2;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.tab-type-emerald { background: #e3f4ec; color: #2f7462; }
-.tab-type-amber { background: #fff1d0; color: #9a6808; }
-.tab-type-rose { background: #f9e1e8; color: #a9365b; }
-.tab-type-sky { background: #dff0f8; color: #286f91; }
-
-.tab-surah {
-  display: block;
   min-width: 0;
   overflow: hidden;
-  color: #5d5851;
-  font-size: .76rem;
+  color: #46413b;
+  font-size: .78rem;
+  font-weight: 630;
   line-height: 1.25;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+.tab-surah {
+  display: block;
+  max-width: min(46vw, 185px);
+  min-width: 0;
+  overflow: hidden;
+  color: #625d56;
+  font-size: .75rem;
+  font-weight: 560;
+  line-height: 1.25;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .tab-saved-date {
-  margin: 9px 0 0;
-  color: #918980;
-  font-size: .7rem;
+  margin: 7px 0 0;
+  color: #979087;
+  font-size: .68rem;
   line-height: 1.3;
+  text-align: left;
 }
 
 .tab-note {
@@ -214,24 +235,23 @@
 }
 
 .tab-arabic {
-  display: -webkit-box;
-  margin: 10px 0 0;
+  display: block;
+  width: 100%;
+  margin: 12px 0 1px;
   overflow: hidden;
   color: #17140f;
   font-family: IndopakNastaleeq, serif;
-  font-size: clamp(1.25rem, 5.2vw, 1.8rem);
-  line-height: 1.55;
-  text-align: right;
-  white-space: normal;
-  overflow-wrap: anywhere;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  font-size: clamp(1.32rem, 5.5vw, 1.86rem);
+  line-height: 1.65;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .tab-more-button {
   position: absolute;
-  top: 10px;
-  right: 8px;
+  top: 11px;
+  right: 10px;
   z-index: 2;
   display: grid;
   width: 34px;
@@ -353,9 +373,57 @@
   text-align: left;
 }
 
+.tab-type-option-emerald { background: #e3f4ec; color: #2f7462; }
+.tab-type-option-amber { background: #fff1d0; color: #9a6808; }
+.tab-type-option-rose { background: #f9e1e8; color: #a9365b; }
+.tab-type-option-violet { background: #eee7fa; color: #704ba9; }
+
 .tab-type-option span {
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Keep the premium bookmark density above generic mobile overrides. */
+.tabs-screen .tabs-filter-row {
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.tabs-screen .tabs-filter-row button {
+  min-height: 34px;
+  padding: 7px 11px;
+  font-size: .75rem;
+}
+
+.tabs-screen .tabs-list {
+  gap: 11px;
+}
+
+.tabs-screen .tab-card-surface {
+  padding: 15px;
+}
+
+.tabs-screen .tab-card-top {
+  gap: 10px;
+}
+
+.tabs-screen .tab-type {
+  font-size: .78rem;
+}
+
+.tabs-screen .tab-surah {
+  font-size: .75rem;
+}
+
+.tabs-screen .tab-more-button {
+  top: 11px;
+  right: 10px;
+}
+
+.tabs-screen .tab-arabic {
+  margin-top: 12px;
+  font-size: clamp(1.32rem, 5.5vw, 1.86rem);
+  line-height: 1.65;
 }
 
 @media (max-width: 350px) {

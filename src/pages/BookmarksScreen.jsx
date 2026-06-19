@@ -12,10 +12,10 @@ import { useAppStore } from '../store/useAppStore';
 import { Empty, Screen } from '../components/common/AppChrome';
 
 const BOOKMARK_TYPES = [
-  { category: 'Reading', label: 'Recitation / Reading', tone: 'emerald' },
+  { category: 'Reading', label: 'Recitation', tone: 'emerald' },
   { category: 'Memorize', label: 'Memorize', tone: 'amber' },
   { category: 'Tadabbur', label: 'Tadabbur', tone: 'rose' },
-  { category: 'Notes', label: 'Notes', tone: 'sky' },
+  { category: 'Notes', label: 'Notes', tone: 'violet' },
 ];
 
 export default function BookmarksScreen() {
@@ -207,12 +207,14 @@ export default function BookmarksScreen() {
                     aria-label={`Open ${surah?.name || 'ayah'} ${item.ayahNumber}`}
                   >
                     <div className="tab-card-top">
-                      <span className={`tab-bookmark tab-bookmark-${type.tone}`}>
-                        <Bookmark size={20} fill="currentColor" strokeWidth={0} />
+                      <span className="tab-card-type">
+                        <span className={`tab-bookmark tab-bookmark-${type.tone}`}>
+                          <Bookmark size={20} fill="currentColor" strokeWidth={0} />
+                        </span>
+                        <span className="tab-type">{type.label}</span>
                       </span>
-                      <span className="tab-card-heading">
-                        <span className={`tab-type tab-type-${type.tone}`}>{type.label}</span>
-                        <span className="tab-surah">{surah?.name} - {item.surahNumber}:{item.ayahNumber}</span>
+                      <span className="tab-surah">
+                        {surah?.name} · {item.surahNumber}:{item.ayahNumber}
                       </span>
                     </div>
 
@@ -295,7 +297,7 @@ export default function BookmarksScreen() {
                           <button
                             type="button"
                             key={option.category}
-                            className={`tab-type-option tab-type-${option.tone}`}
+                            className={`tab-type-option tab-type-option-${option.tone}`}
                             onClick={() => changeType(item, option.category)}
                           >
                             <Bookmark size={15} fill="currentColor" />
