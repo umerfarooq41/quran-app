@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Clock3, Search } from 'lucide-react';
-import { getRecentSearches, saveRecentSearch } from '../lib/db';
+import { clearRecentSearches, getRecentSearches, saveRecentSearch } from '../lib/db';
 import { searchQuranImproved } from '../lib/quranSearch';
 import { loadTranslation } from '../lib/translations';
 import { useAppStore } from '../store/useAppStore';
@@ -82,6 +82,12 @@ export default function SearchScreen() {
     persistRecentSearch(item.query);
   }
 
+  async function clearHistory() {
+    window.clearTimeout(debounceTimer.current);
+    await clearRecentSearches();
+    if (mountedRef.current) setRecentSearches([]);
+  }
+
   function openResult(result) {
     if (cleanQuery) persistRecentSearch(cleanQuery);
 
@@ -111,7 +117,10 @@ export default function SearchScreen() {
 
       {!cleanQuery && recentSearches.length > 0 && (
         <section className="search-recent">
-          <h2>Recent searches</h2>
+          <div className="search-recent-heading">
+            <h2>Recent searches</h2>
+            <button type="button" onClick={clearHistory}>Clear</button>
+          </div>
           <div className="search-recent-list">
             {recentSearches.map((item) => (
               <button key={item.id} type="button" onClick={() => chooseRecent(item)}>

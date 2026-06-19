@@ -37,6 +37,10 @@ export async function getRecentSearches(limit = 10) {
     .toArray();
 }
 
+export async function clearRecentSearches() {
+  await db.recentSearches.clear();
+}
+
 export async function saveRecentSearch(query) {
   const cleanQuery = String(query || '').trim().replace(/\s+/g, ' ');
   if (!cleanQuery) return getRecentSearches();

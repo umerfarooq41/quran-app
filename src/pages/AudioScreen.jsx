@@ -105,31 +105,31 @@ export default function AudioScreen() {
   }
 
   return (
-    <Screen className="space-y-4">
+    <Screen className="audio-screen">
       <Header title="Audio" />
-      <div className={`${panel} p-5`}>
-        <p className="text-sm text-slate-500">Selected ayah</p>
-        <h2 className="text-2xl font-semibold">
+      <div className={`${panel} audio-card`}>
+        <p className="audio-kicker">Selected ayah</p>
+        <h2 className="audio-reference">
           {currentRef ? `${currentRef.surahNumber}:${currentRef.ayahNumber}` : 'No ayah'}
         </h2>
-        {currentSurah && <p className="mt-1 text-sm text-slate-500">{currentSurah.name} · Page {currentRef?.page || page}</p>}
-        {currentTranslation && <p dir={translationOption.direction} className="mt-4 rounded-2xl bg-white/60 p-3 text-sm leading-7 text-slate-700">{currentTranslation}</p>}
+        {currentSurah && <p className="audio-meta">{currentSurah.name} · Page {currentRef?.page || page}</p>}
+        {currentTranslation && <p dir={translationOption.direction} className="audio-translation">{currentTranslation}</p>}
 
-        <div className="mt-5 flex items-center gap-3">
-          <button disabled={!hasReciters || !currentRef} className="grid h-16 w-16 place-items-center rounded-3xl bg-sky-600 text-white disabled:cursor-not-allowed disabled:bg-slate-300" onClick={togglePlay}>{playing ? <Pause /> : <Play />}</button>
-          <button className={iconButton} onClick={() => jumpAyah(-1)} aria-label="Previous ayah"><ChevronLeft /></button>
-          <button className={iconButton} onClick={() => jumpAyah(1)} aria-label="Next ayah"><ChevronRight /></button>
+        <div className="audio-controls">
+          <button disabled={!hasReciters || !currentRef} className="audio-play-button" onClick={togglePlay}>{playing ? <Pause /> : <Play />}</button>
+          <button className={`${iconButton} audio-step-button`} onClick={() => jumpAyah(-1)} aria-label="Previous ayah"><ChevronLeft /></button>
+          <button className={`${iconButton} audio-step-button`} onClick={() => jumpAyah(1)} aria-label="Next ayah"><ChevronRight /></button>
         </div>
 
-        <label className="mt-5 block text-sm font-semibold">Reciter</label>
-        <select disabled={!hasReciters} className="mt-2 w-full rounded-2xl bg-white/75 p-3 disabled:text-slate-400" value={selectedReciter || ''} onChange={(e) => updateSettings({ reciter: e.target.value })}>
+        <label className="audio-field-label">Reciter</label>
+        <select disabled={!hasReciters} className="audio-select" value={selectedReciter || ''} onChange={(e) => updateSettings({ reciter: e.target.value })}>
           {reciters.map((reciter) => <option key={reciter.id} value={reciter.id}>{reciter.reciter_name || reciter.name || reciter.id}</option>)}
         </select>
 
-        <label className="mt-5 block text-sm font-semibold">Speed {settings.playbackRate}x</label>
-        <input type="range" min="0.75" max="2" step="0.25" value={settings.playbackRate} onChange={(e) => updateSettings({ playbackRate: Number(e.target.value) })} className="w-full" />
-        <label className="mt-4 flex items-center gap-3"><input type="checkbox" checked={settings.autoplay} onChange={(e) => updateSettings({ autoplay: e.target.checked })} /> Autoplay next ayah</label>
-        <p className="mt-4 rounded-2xl bg-white/60 p-3 text-sm text-slate-600">{status}</p>
+        <label className="audio-field-label">Speed {settings.playbackRate}x</label>
+        <input type="range" min="0.75" max="2" step="0.25" value={settings.playbackRate} onChange={(e) => updateSettings({ playbackRate: Number(e.target.value) })} className="audio-speed-range" />
+        <label className="audio-autoplay"><input type="checkbox" checked={settings.autoplay} onChange={(e) => updateSettings({ autoplay: e.target.checked })} /> Autoplay next ayah</label>
+        <p className="audio-status">{status}</p>
       </div>
     </Screen>
   );

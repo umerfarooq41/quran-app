@@ -8,7 +8,7 @@ import {
   getSurahAyahs,
   surahs,
 } from '../lib/quran';
-import { getJuzLabel } from '../utils/quranLabels';
+import { getJuzLabel, surahArabicNames } from '../utils/quranLabels';
 
 function formatJuzName(juz) {
   return `${getJuzLabel(juz)}'`;
@@ -148,7 +148,10 @@ function SurahIndex() {
                   >
                     <NumberBadge>{surah.number}</NumberBadge>
                     <span className="index-surah-text">
-                      <strong>{surah.name}</strong>
+                      <span className="index-surah-name-row">
+                        <strong>{surah.name}</strong>
+                        <span className="index-surah-arabic" dir="rtl">{surahArabicNames[surah.number]}</span>
+                      </span>
                       <small>Page {getMushafPageNumber(page)} . {surah.verses} verses . {surah.revelation}</small>
                     </span>
                     <ChevronDown className="index-chevron" size={20} strokeWidth={2.35} />
