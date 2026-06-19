@@ -81,6 +81,7 @@ export function MushafPage({
     document.fonts?.ready?.then(() => {
       if (!disposed) scheduleMeasure();
     });
+    window.addEventListener('load', scheduleMeasure);
     window.addEventListener('resize', scheduleMeasure);
     window.addEventListener('orientationchange', scheduleMeasure);
     window.visualViewport?.addEventListener('resize', scheduleMeasure);
@@ -89,6 +90,7 @@ export function MushafPage({
       disposed = true;
       window.cancelAnimationFrame(frame);
       resizeObserver?.disconnect();
+      window.removeEventListener('load', scheduleMeasure);
       window.removeEventListener('resize', scheduleMeasure);
       window.removeEventListener('orientationchange', scheduleMeasure);
       window.visualViewport?.removeEventListener('resize', scheduleMeasure);
