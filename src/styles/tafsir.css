@@ -175,8 +175,33 @@
   margin-top: 0;
 }
 
+.surah-info-html h3 {
+  margin: 18px 0 7px;
+  color: #111827;
+  font-size: 1rem;
+  font-weight: 750;
+  line-height: 1.25;
+}
+
 .surah-info-html p {
   margin: 0 0 18px;
+}
+
+.surah-info-html ul,
+.surah-info-html ol {
+  margin: 0 0 14px;
+  padding-inline-start: 20px;
+}
+
+.surah-info-html li {
+  margin-bottom: 5px;
+}
+
+.surah-info-html a {
+  color: #256b5b;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .surah-info-empty {

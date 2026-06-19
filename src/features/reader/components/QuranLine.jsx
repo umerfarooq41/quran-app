@@ -61,7 +61,7 @@ export function QuranLine({
     longPressTimer.current = window.setTimeout(() => {
       longPressed.current = true;
 
-      if (navigator.vibrate) {
+      if (document.documentElement.dataset.haptics !== 'off' && navigator.vibrate) {
         navigator.vibrate([24]);
       }
 

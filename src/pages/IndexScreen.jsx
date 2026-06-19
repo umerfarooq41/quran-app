@@ -9,7 +9,6 @@ import {
   surahs,
 } from '../lib/quran';
 import { getJuzLabel } from '../utils/quranLabels';
-import { VIEWS } from '../app/routes';
 
 function formatJuzName(juz) {
   return `${getJuzLabel(juz)}'`;
@@ -119,16 +118,7 @@ function JuzIndex() {
 
 function SurahIndex() {
   const [expandedSurah, setExpandedSurah] = useState(null);
-  const { goAyah } = useAppStore();
-
-  const openSurahInfo = (surahNumber) => {
-    useAppStore.setState({
-      selectedSurah: Number(surahNumber) || 1,
-      view: VIEWS.SURAH_INFO,
-      navDirection: 'forward',
-      controlsVisible: false,
-    });
-  };
+  const { goAyah, openSurahInfo } = useAppStore();
 
   const grouped = useMemo(() => surahs.reduce((groups, surah) => {
     const key = surah.juz;

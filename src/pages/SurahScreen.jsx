@@ -7,7 +7,7 @@ import { findPageForReference, getSurah, getSurahAyahs } from '../lib/quran';
 import { VIEWS } from '../app/routes';
 
 export default function SurahScreen() {
-  const { selectedSurah, goPage, setView } = useAppStore();
+  const { selectedSurah, goPage, openSurahInfo } = useAppStore();
   const surah = getSurah(selectedSurah);
   const ayahs = getSurahAyahs(selectedSurah);
   const firstPage = findPageForReference(selectedSurah, 1);
@@ -34,7 +34,7 @@ export default function SurahScreen() {
           <button className="rounded-2xl bg-[#2d6e5e] px-4 py-3 font-semibold text-white" onClick={() => goPage(firstPage, { surahNumber: selectedSurah, ayahNumber: 1 })}>
             Open Surah
           </button>
-          <button className="rounded-2xl bg-white/80 px-4 py-3 font-semibold text-slate-700" onClick={() => setView(VIEWS.SURAH_INFO)}>
+          <button className="rounded-2xl bg-white/80 px-4 py-3 font-semibold text-slate-700" onClick={() => openSurahInfo(selectedSurah)}>
             <span className="inline-flex items-center gap-2"><Info size={18} /> Surah Info</span>
           </button>
         </div>

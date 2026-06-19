@@ -29,6 +29,64 @@ export async function getSettings() {
   return Object.fromEntries(rows.map((row) => [row.id, row.value]));
 }
 
+export async function getRecentSearches(limit = 10) {
+  return db.recentSearches
+    .orderBy('createdAt')
+    .reverse()
+    .limit(Math.max(1, Number(limit) || 10))
+    .toArray();
+}
+
+export async function saveRecentSearch(query) {
+  const cleanQuery = String(query || '').trim().replace(/\s+/g, ' ');
+  if (!cleanQuery) return getRecentSearches();
+
+  const searchKey = cleanQuery.normalize('NFKC').toLocaleLowerCase();
+
+  return db.transaction('rw', db.recentSearches, async () => {
+    const rows = await db.recentSearches.toArray();
+    const matches = rows.filter((row) => (
+      String(row.query || '')
+        .trim()
+        .replace(/\s+/g, ' ')
+        .normalize('NFKC')
+        .toLocaleLowerCase() === searchKey
+    ));
+    const [existing, ...duplicates] = matches;
+    const createdAt = Date.now();
+
+    if (existing?.id) {
+      await db.recentSearches.put({
+        ...existing,
+        query: cleanQuery,
+        createdAt,
+      });
+    } else {
+      await db.recentSearches.add({ query: cleanQuery, createdAt });
+    }
+
+    if (duplicates.length) {
+      await db.recentSearches.bulkDelete(duplicates.map((row) => row.id));
+    }
+
+    const newest = await db.recentSearches
+      .orderBy('createdAt')
+      .reverse()
+      .toArray();
+    const staleIds = newest.slice(10).map((row) => row.id);
+
+    if (staleIds.length) {
+      await db.recentSearches.bulkDelete(staleIds);
+    }
+
+    return db.recentSearches
+      .orderBy('createdAt')
+      .reverse()
+      .limit(10)
+      .toArray();
+  });
+}
+
 export async function saveAyahHighlight(payload) {
   const surahNumber = Number(payload.surahNumber);
   const ayahNumber = Number(payload.ayahNumber);

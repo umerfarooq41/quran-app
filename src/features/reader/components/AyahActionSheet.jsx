@@ -9,7 +9,8 @@ import {
 } from '../../../lib/db';
 import { findPageForReference, getSurah } from '../../../lib/quran';
 import { getJuzForReference } from '../../../data/quranMeta';
-import { getUrduTranslation } from '../../../lib/translations';
+import { getTranslation, getTranslationOption } from '../../../lib/translations';
+import { useAppStore } from '../../../store/useAppStore';
 
 const HIGHLIGHT_COLORS = ['amber', 'emerald', 'rose', 'sky', 'violet'];
 
@@ -27,6 +28,7 @@ export function AyahActionSheet({
   onShare,
   onAnnotationsChanged,
 }) {
+  const translationId = useAppStore((state) => state.settings.translation);
   const [status, setStatus] = useState('');
   const [translation, setTranslation] = useState('');
   const [tafsirExpanded, setTafsirExpanded] = useState(false);
@@ -45,7 +47,7 @@ export function AyahActionSheet({
     setStatus('');
 
     Promise.all([
-      getUrduTranslation(ayah.surahNumber, ayah.ayahNumber).catch(() => ''),
+      getTranslation(translationId, ayah.surahNumber, ayah.ayahNumber).catch(() => ''),
       getAyahAnnotations(ayah.surahNumber, ayah.ayahNumber),
     ]).then(([translationText, annotations]) => {
       if (!mounted) return;
@@ -59,13 +61,14 @@ export function AyahActionSheet({
     return () => {
       mounted = false;
     };
-  }, [ayah?.surahNumber, ayah?.ayahNumber]);
+  }, [ayah?.surahNumber, ayah?.ayahNumber, translationId]);
 
   if (!ayah || !ayah.text) return null;
 
   const page = ayah.page || findPageForReference(ayah.surahNumber, ayah.ayahNumber);
   const reference = ayah.reference || `${ayah.surahNumber}:${ayah.ayahNumber}`;
   const surah = getSurah(ayah.surahNumber);
+  const translationOption = getTranslationOption(translationId);
   const tafsirText = translation || surah?.shortText || 'Tafsir is not available for this ayah yet.';
 
   function togglePanel(panel) {
@@ -117,7 +120,8 @@ export function AyahActionSheet({
   }
 
   async function copyAyah() {
-    const translationText = translation || await getUrduTranslation(
+    const translationText = translation || await getTranslation(
+      translationId,
       ayah.surahNumber,
       ayah.ayahNumber,
     ).catch(() => '');
@@ -259,7 +263,10 @@ export function AyahActionSheet({
             <h3>Tafsir</h3>
             <span className="ayah-ref-pill">{reference}</span>
           </div>
-          <p className={!tafsirExpanded ? 'tafsir-preview-text' : ''} dir={translation ? 'rtl' : 'ltr'}>
+          <p
+            className={!tafsirExpanded ? 'tafsir-preview-text' : ''}
+            dir={translation ? translationOption.direction : 'ltr'}
+          >
             {tafsirText}
           </p>
           <button

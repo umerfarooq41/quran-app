@@ -1,18 +1,35 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ArrowLeft, BookOpen } from 'lucide-react';
 import { useAppStore } from '../store/useAppStore';
-import { getSurah } from '../lib/quran';
-import { VIEWS } from '../app/routes';
+import { findPageForReference, getSurah } from '../lib/quran';
+import { parseQuranInternalHref, sanitizeSurahHtml } from '../lib/sanitizeHtml';
 
 export default function SurahInfoScreen() {
   const selectedSurah = useAppStore((state) => state.selectedSurah);
-  const setView = useAppStore((state) => state.setView);
+  const closeSurahInfo = useAppStore((state) => state.closeSurahInfo);
+  const goAyah = useAppStore((state) => state.goAyah);
   const surah = getSurah(selectedSurah);
+  const cleanHtml = useMemo(() => sanitizeSurahHtml(surah?.text || ''), [surah?.text]);
+
+  function handleContentClick(event) {
+    const link = event.target.closest('a[data-quran-link]');
+    if (!link) return;
+
+    const reference = parseQuranInternalHref(link.getAttribute('href'));
+    if (!reference) return;
+
+    event.preventDefault();
+    goAyah(
+      reference.surahNumber,
+      reference.ayahNumber,
+      findPageForReference(reference.surahNumber, reference.ayahNumber),
+    );
+  }
 
   return (
     <main className="surah-info-screen">
       <header className="surah-info-topbar">
-        <button type="button" onClick={() => setView(VIEWS.INDEX, 'back')} aria-label="Back to index">
+        <button type="button" onClick={closeSurahInfo} aria-label="Back to previous screen">
           <ArrowLeft size={25} strokeWidth={2.35} />
         </button>
         <h1>Surah Info</h1>
@@ -28,8 +45,12 @@ export default function SurahInfoScreen() {
           <span className="surah-info-icon" aria-hidden="true"><BookOpen size={24} /></span>
         </div>
 
-        {surah?.text ? (
-          <div className="surah-info-html" dangerouslySetInnerHTML={{ __html: surah.text }} />
+        {cleanHtml ? (
+          <div
+            className="surah-info-html"
+            onClick={handleContentClick}
+            dangerouslySetInnerHTML={{ __html: cleanHtml }}
+          />
         ) : (
           <p className="surah-info-empty">Surah information will be expanded in the next design pass.</p>
         )}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { getLastRead, getSettings, upsertSetting } from './lib/db';
-import { useAppStore } from './store/useAppStore';
+import { sanitizeSettings, useAppStore } from './store/useAppStore';
 import { Shell } from './components/common/AppChrome';
 import { panel } from './components/common/ui';
 import { VIEWS, normalizeView } from './app/routes';
@@ -24,14 +24,24 @@ export default function App() {
   useEffect(() => {
     Promise.all([getLastRead(), getSettings()]).then(([lastRead, storedSettings]) => {
       if (lastRead?.page) goPage(lastRead.page);
-      if (storedSettings.app) updateSettings(storedSettings.app);
+      if (storedSettings.app) updateSettings(sanitizeSettings(storedSettings.app));
       setBooted(true);
     });
   }, []);
 
   useEffect(() => {
-    upsertSetting('app', settings);
-  }, [settings]);
+    const theme = settings.theme === 'dark' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.dataset.haptics = settings.haptics ? 'on' : 'off';
+    document.documentElement.style.colorScheme = theme;
+    try {
+      window.localStorage.setItem('quran-app-theme', theme);
+    } catch {
+      // IndexedDB remains the persistence fallback when localStorage is unavailable.
+    }
+
+    if (booted) upsertSetting('app', sanitizeSettings(settings));
+  }, [settings, booted]);
 
   if (!booted) return <Shell><div className={`${panel} p-8 text-center`}><div className="mx-auto mb-4 h-12 w-12 animate-pulse rounded-full bg-[#d4a843]/25" /><p className="font-medium text-slate-600">Preparing your reader...</p></div></Shell>;
 

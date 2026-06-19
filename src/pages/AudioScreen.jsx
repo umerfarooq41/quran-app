@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
 import { findPageForReference, getPage, getSurah, quranAyahs } from '../lib/quran';
 import { qfClient } from '../lib/qfClient';
 import { normalizeLocalReciters, getAudioUrl, getDefaultReciterId, getNextAyahRef } from '../lib/localAudio';
-import { getUrduTranslation } from '../lib/translations';
+import { getTranslation, getTranslationOption } from '../lib/translations';
 import { useAppStore } from '../store/useAppStore';
 import { Header, Screen } from '../components/common/AppChrome';
 import { iconButton, panel } from '../components/common/ui';
@@ -19,6 +19,7 @@ export default function AudioScreen() {
   const currentSurah = currentRef ? getSurah(currentRef.surahNumber) : null;
   const [currentTranslation, setCurrentTranslation] = useState('');
   const selectedReciter = settings.reciter || getDefaultReciterId();
+  const translationOption = getTranslationOption(settings.translation);
   const hasReciters = reciters.length > 0;
 
   useEffect(() => {
@@ -27,11 +28,11 @@ export default function AudioScreen() {
       setCurrentTranslation('');
       return () => { mounted = false; };
     }
-    getUrduTranslation(currentRef.surahNumber, currentRef.ayahNumber)
+    getTranslation(settings.translation, currentRef.surahNumber, currentRef.ayahNumber)
       .then((text) => { if (mounted) setCurrentTranslation(text); })
       .catch(() => { if (mounted) setCurrentTranslation(''); });
     return () => { mounted = false; };
-  }, [currentRef?.surahNumber, currentRef?.ayahNumber]);
+  }, [currentRef?.surahNumber, currentRef?.ayahNumber, settings.translation]);
 
   useEffect(() => {
     const local = normalizeLocalReciters();
@@ -123,7 +124,7 @@ export default function AudioScreen() {
           {currentRef ? `${currentRef.surahNumber}:${currentRef.ayahNumber}` : 'No ayah'}
         </h2>
         {currentSurah && <p className="mt-1 text-sm text-slate-500">{currentSurah.name} · Page {currentRef?.page || page}</p>}
-        {currentTranslation && <p dir="rtl" className="mt-4 rounded-2xl bg-white/60 p-3 text-sm leading-7 text-slate-700">{currentTranslation}</p>}
+        {currentTranslation && <p dir={translationOption.direction} className="mt-4 rounded-2xl bg-white/60 p-3 text-sm leading-7 text-slate-700">{currentTranslation}</p>}
 
         <div className="mt-5 flex items-center gap-3">
           <button disabled={!hasReciters || !currentRef} className="grid h-16 w-16 place-items-center rounded-3xl bg-sky-600 text-white disabled:cursor-not-allowed disabled:bg-slate-300" onClick={togglePlay}>{playing ? <Pause /> : <Play />}</button>

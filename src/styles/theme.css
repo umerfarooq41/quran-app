@@ -1,0 +1,420 @@
+/* App theme layer. Mushaf page, Quran lines, Harf rendering, and 16-line layout are excluded. */
+:root {
+  --theme-bg: #f7f2e8;
+  --theme-surface: rgba(255, 255, 255, .78);
+  --theme-surface-solid: #fff;
+  --theme-soft: #efede8;
+  --theme-border: rgba(255, 255, 255, .72);
+  --theme-text: #24272c;
+  --theme-muted: #747b84;
+  --theme-subtle: #9aa0a8;
+  --theme-shadow: rgba(31, 41, 55, .06);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --theme-bg: #111412;
+  --theme-surface: rgba(31, 36, 33, .9);
+  --theme-surface-solid: #202521;
+  --theme-soft: #292f2b;
+  --theme-border: rgba(255, 255, 255, .08);
+  --theme-text: #f1f3ef;
+  --theme-muted: #abb2ac;
+  --theme-subtle: #858d87;
+  --theme-shadow: rgba(0, 0, 0, .28);
+}
+
+[data-theme='dark'] body,
+[data-theme='dark'] #root,
+[data-theme='dark'] .app-shell {
+  background: #111412;
+  color: var(--theme-text);
+}
+
+[data-theme='dark'] .bg-fluent {
+  background:
+    radial-gradient(circle at 16% 8%, rgba(169, 129, 49, .12), transparent 34%),
+    radial-gradient(circle at 85% 15%, rgba(50, 122, 103, .12), transparent 32%),
+    linear-gradient(160deg, #151815 0%, #111412 58%, #171915 100%);
+}
+
+[data-theme='dark'] .bg-reader {
+  background: #090b0a;
+}
+
+[data-theme='dark'] .app-header-title,
+[data-theme='dark'] .home-title,
+[data-theme='dark'] .tabs-header h1,
+[data-theme='dark'] .screen-shell [class~='text-slate-900'],
+[data-theme='dark'] .screen-shell [class~='text-slate-950'] {
+  color: var(--theme-text) !important;
+}
+
+[data-theme='dark'] .screen-shell [class~='text-slate-400'] {
+  color: var(--theme-subtle) !important;
+}
+
+[data-theme='dark'] .screen-shell [class~='text-slate-500'],
+[data-theme='dark'] .screen-shell [class~='text-slate-600'],
+[data-theme='dark'] .screen-shell [class~='text-slate-700'],
+[data-theme='dark'] .screen-shell [class~='text-[#6f6253]'] {
+  color: var(--theme-muted) !important;
+}
+
+[data-theme='dark'] .screen-shell [class~='bg-white/60'],
+[data-theme='dark'] .screen-shell [class~='bg-white/65'],
+[data-theme='dark'] .screen-shell [class~='bg-white/70'],
+[data-theme='dark'] .screen-shell [class~='bg-white/75'],
+[data-theme='dark'] .screen-shell [class~='bg-white/80'],
+[data-theme='dark'] .app-empty,
+[data-theme='dark'] .app-segment {
+  border-color: var(--theme-border) !important;
+  background: var(--theme-surface) !important;
+  color: var(--theme-text);
+  box-shadow: 0 10px 28px var(--theme-shadow);
+}
+
+[data-theme='dark'] .home-subtitle,
+[data-theme='dark'] .home-action-icon {
+  color: #d6ad58;
+}
+
+[data-theme='dark'] .home-action-chip,
+[data-theme='dark'] .nav-icon-btn:not(.active) {
+  border-color: var(--theme-border);
+  background: var(--theme-surface);
+  color: #d5d9d5;
+  box-shadow: 0 8px 22px var(--theme-shadow);
+}
+
+[data-theme='dark'] .home-hero-card {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255,255,255,.1), transparent 36%),
+    linear-gradient(135deg, #286454 0%, #173b32 100%);
+}
+
+/* Index */
+[data-theme='dark'] .index-replica-shell {
+  background: #111412;
+  color: var(--theme-text);
+}
+
+[data-theme='dark'] .index-replica-header h1,
+[data-theme='dark'] .index-card,
+[data-theme='dark'] .index-card-title,
+[data-theme='dark'] .index-section-title,
+[data-theme='dark'] .index-surah-text strong,
+[data-theme='dark'] .index-quarter-btn,
+[data-theme='dark'] .index-ayah-grid button,
+[data-theme='dark'] .index-number-badge {
+  color: var(--theme-text);
+}
+
+[data-theme='dark'] .index-close-pill,
+[data-theme='dark'] .index-segment {
+  background: #272c29;
+  color: var(--theme-text);
+  box-shadow: none;
+}
+
+[data-theme='dark'] .index-segment button {
+  color: #c8cdc9;
+}
+
+[data-theme='dark'] .index-segment button.is-active,
+[data-theme='dark'] .index-card {
+  background: #202521;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .16);
+}
+
+[data-theme='dark'] .index-number-badge {
+  border-color: #4b524d;
+}
+
+[data-theme='dark'] .index-surah-text small,
+[data-theme='dark'] .index-quarter-btn span,
+[data-theme='dark'] .index-surah-info-preview p {
+  color: var(--theme-muted);
+}
+
+[data-theme='dark'] .index-collapse-panel {
+  background: rgba(35, 40, 37, .84);
+}
+
+[data-theme='dark'] .index-quarter-btn,
+[data-theme='dark'] .index-ayah-grid button,
+[data-theme='dark'] .index-surah-info-preview {
+  background: #2b302d;
+}
+
+[data-theme='dark'] .index-surah-info-preview button {
+  color: #dce2dd;
+}
+
+/* Search, bookmarks, settings, cards, and dialogs */
+[data-theme='dark'] .search-form,
+[data-theme='dark'] .search-recent-list button,
+[data-theme='dark'] .search-results-heading span,
+[data-theme='dark'] .search-result-card,
+[data-theme='dark'] .search-empty,
+[data-theme='dark'] .tabs-back-pill,
+[data-theme='dark'] .tabs-filter-row button,
+[data-theme='dark'] .tabs-status,
+[data-theme='dark'] .tab-card-surface,
+[data-theme='dark'] .settings-card {
+  border-color: var(--theme-border);
+  background: var(--theme-surface);
+  color: var(--theme-text);
+  box-shadow: 0 9px 28px var(--theme-shadow);
+}
+
+[data-theme='dark'] .search-form input,
+[data-theme='dark'] .search-recent h2,
+[data-theme='dark'] .search-results-heading h2,
+[data-theme='dark'] .search-result-card,
+[data-theme='dark'] .search-result-reference strong,
+[data-theme='dark'] .tabs-header h1,
+[data-theme='dark'] .tab-more-button,
+[data-theme='dark'] .tab-surah,
+[data-theme='dark'] .tab-note,
+[data-theme='dark'] .tab-arabic,
+[data-theme='dark'] .settings-section-heading span,
+[data-theme='dark'] .settings-rendering-lock strong,
+[data-theme='dark'] .settings-row-copy strong {
+  color: var(--theme-text);
+}
+
+[data-theme='dark'] .search-form,
+[data-theme='dark'] .search-result-preview,
+[data-theme='dark'] .search-result-reference small,
+[data-theme='dark'] .search-result-meta,
+[data-theme='dark'] .search-empty,
+[data-theme='dark'] .search-recent-list button,
+[data-theme='dark'] .tabs-filter-row button,
+[data-theme='dark'] .tabs-status,
+[data-theme='dark'] .tab-saved-date,
+[data-theme='dark'] .settings-section-heading small,
+[data-theme='dark'] .settings-row-copy small,
+[data-theme='dark'] .settings-rendering-lock p {
+  color: var(--theme-muted);
+}
+
+[data-theme='dark'] .tabs-filter-row button.active {
+  background: #e7ebe7;
+  color: #1d211e;
+}
+
+[data-theme='dark'] .tab-menu,
+[data-theme='dark'] .tab-inline-editor {
+  border-color: var(--theme-border);
+}
+
+[data-theme='dark'] .tab-menu button,
+[data-theme='dark'] .tab-inline-editor textarea,
+[data-theme='dark'] .tab-inline-editor .secondary,
+[data-theme='dark'] .tab-editor-cancel {
+  border-color: var(--theme-border);
+  background: var(--theme-soft);
+  color: #d6dbd7;
+}
+
+[data-theme='dark'] .tab-inline-editor label,
+[data-theme='dark'] .tab-inline-title {
+  color: #dce0dd;
+}
+
+[data-theme='dark'] .settings-theme-picker,
+[data-theme='dark'] .settings-select-row,
+[data-theme='dark'] .settings-toggle-row {
+  background: var(--theme-soft);
+}
+
+[data-theme='dark'] .settings-theme-picker button {
+  color: var(--theme-muted);
+}
+
+[data-theme='dark'] .settings-theme-picker button.is-active,
+[data-theme='dark'] .settings-select-row select {
+  background: #3a413c;
+  color: var(--theme-text);
+}
+
+[data-theme='dark'] .settings-row-icon,
+[data-theme='dark'] .settings-rendering-lock {
+  background: rgba(52, 112, 94, .22);
+  color: #8bc7b4;
+}
+
+[data-theme='dark'] .settings-reset-button {
+  background: rgba(173, 56, 48, .18);
+  color: #f09a92;
+}
+
+[data-theme='dark'] .settings-dialog {
+  background: #222724;
+  color: var(--theme-text);
+}
+
+[data-theme='dark'] .settings-dialog p {
+  color: var(--theme-muted);
+}
+
+[data-theme='dark'] .settings-dialog-close,
+[data-theme='dark'] .settings-dialog .secondary {
+  background: var(--theme-soft);
+  color: #d6dbd7;
+}
+
+/* Tafsir and Surah information */
+[data-theme='dark'] .tafsir-card,
+[data-theme='dark'] .surah-info-content {
+  background: rgba(31, 36, 33, .94);
+  color: var(--theme-text);
+  box-shadow: 0 16px 46px rgba(0, 0, 0, .22);
+}
+
+[data-theme='dark'] .tafsir-card-head p,
+[data-theme='dark'] .tafsir-section p,
+[data-theme='dark'] .tafsir-section div {
+  color: var(--theme-muted);
+}
+
+[data-theme='dark'] .tafsir-card-head h2,
+[data-theme='dark'] .tafsir-section h3,
+[data-theme='dark'] .tafsir-arabic {
+  color: var(--theme-text);
+}
+
+[data-theme='dark'] .tafsir-section {
+  border-color: var(--theme-border);
+}
+
+[data-theme='dark'] .surah-info-screen {
+  background:
+    radial-gradient(circle at top left, rgba(154, 120, 54, .13), transparent 34%),
+    linear-gradient(180deg, #151815 0%, #111412 100%);
+  color: var(--theme-text);
+}
+
+[data-theme='dark'] .surah-info-topbar,
+[data-theme='dark'] .surah-info-topbar button,
+[data-theme='dark'] .surah-info-topbar h1,
+[data-theme='dark'] .surah-info-title-row h2,
+[data-theme='dark'] .surah-info-html,
+[data-theme='dark'] .surah-info-html h2,
+[data-theme='dark'] .surah-info-html h3 {
+  color: var(--theme-text);
+}
+
+[data-theme='dark'] .surah-info-meta,
+[data-theme='dark'] .surah-info-empty {
+  color: var(--theme-muted);
+}
+
+[data-theme='dark'] .surah-info-icon {
+  background: rgba(54, 122, 102, .22);
+  color: #8bc7b4;
+}
+
+[data-theme='dark'] .surah-info-html a {
+  color: #8bc7b4;
+}
+
+/* Reader chrome only: the Mushaf paper and Arabic rendering are intentionally untouched. */
+[data-theme='dark'] .reader-topbar {
+  background: linear-gradient(180deg, rgba(17, 20, 18, .98), rgba(17, 20, 18, .78), transparent);
+}
+
+[data-theme='dark'] .reader-back-pill,
+[data-theme='dark'] .reader-top-actions {
+  background: rgba(38, 43, 40, .93);
+  color: #f0f2ef;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+}
+
+[data-theme='dark'] .reader-listen-pill,
+[data-theme='dark'] .reader-bottom-sheet,
+[data-theme='dark'] .reader-audio-panel,
+[data-theme='dark'] .ayah-action-sheet,
+[data-theme='dark'] .share-sheet {
+  background: rgba(30, 35, 32, .98);
+  color: var(--theme-text);
+  box-shadow: 0 -18px 50px rgba(0, 0, 0, .3);
+}
+
+[data-theme='dark'] .reader-bottom-meta,
+[data-theme='dark'] .reader-bottom-actions span,
+[data-theme='dark'] .reader-audio-times,
+[data-theme='dark'] .reader-audio-status,
+[data-theme='dark'] .share-sheet-header p,
+[data-theme='dark'] .share-range-selectors span,
+[data-theme='dark'] .share-range-card > p,
+[data-theme='dark'] .share-sheet-status {
+  color: var(--theme-muted);
+}
+
+[data-theme='dark'] .reader-bottom-actions {
+  color: #e4e8e4;
+}
+
+[data-theme='dark'] .reader-wave-bars span {
+  background: #d9deda;
+}
+
+[data-theme='dark'] .reader-wave-marker,
+[data-theme='dark'] .reader-listen-play,
+[data-theme='dark'] .reader-transport-row .transport-main {
+  background: #f0f2ef;
+  color: #161916;
+}
+
+[data-theme='dark'] .reader-wave-marker::after {
+  background: #161916;
+}
+
+[data-theme='dark'] .reader-audio-head button,
+[data-theme='dark'] .reader-reciter-row,
+[data-theme='dark'] .reader-transport-row button,
+[data-theme='dark'] .ayah-main-action-v2 > span,
+[data-theme='dark'] .ayah-inline-panel,
+[data-theme='dark'] .ayah-action-sheet-v2 .ayah-tafsir-block,
+[data-theme='dark'] .ayah-action-reference span,
+[data-theme='dark'] .ayah-ref-pill,
+[data-theme='dark'] .ayah-action-status,
+[data-theme='dark'] .share-range-card,
+[data-theme='dark'] .share-sheet-header button {
+  background: var(--theme-soft);
+  color: #d8ddd9;
+}
+
+[data-theme='dark'] .reader-reciter-row select,
+[data-theme='dark'] .ayah-action-reference,
+[data-theme='dark'] .ayah-main-action-v2,
+[data-theme='dark'] .ayah-inline-panel-title strong,
+[data-theme='dark'] .ayah-tafsir-block h3,
+[data-theme='dark'] .ayah-tafsir-block button,
+[data-theme='dark'] .share-sheet-header h2,
+[data-theme='dark'] .share-range-card h3,
+[data-theme='dark'] .share-background-picker h3 {
+  color: var(--theme-text);
+}
+
+[data-theme='dark'] .ayah-inline-panel-title span,
+[data-theme='dark'] .ayah-action-sheet-v2 .ayah-tafsir-block p,
+[data-theme='dark'] .ayah-ref-pill {
+  color: var(--theme-muted) !important;
+}
+
+[data-theme='dark'] .ayah-main-action-v2.is-active > span,
+[data-theme='dark'] .ayah-note-editor button,
+[data-theme='dark'] .share-image-button {
+  background: #e8ece8;
+  color: #171a17;
+}
+
+[data-theme='dark'] .ayah-note-editor textarea,
+[data-theme='dark'] .share-range-selectors select {
+  border-color: var(--theme-border);
+  background: #262c28;
+  color: var(--theme-text);
+}
