@@ -4,6 +4,19 @@
  * Preserve text metrics, spacing, justification, and page fitting.
  */
 
+.reader-shell {
+  isolation: isolate;
+  width: 100vw;
+  max-width: 576px;
+  overflow: hidden !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.grid-rows-16 {
+  grid-template-rows: repeat(16, minmax(0, 1fr));
+}
+
 .quran-line-marked {
   background: linear-gradient(90deg, rgba(218, 165, 80, .08), rgba(168, 117, 55, .16), rgba(218, 165, 80, .08));
 }
@@ -218,27 +231,19 @@
     padding-top: calc(env(safe-area-inset-top, 0px) + 92px) !important;
     padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 68px) !important;
   }
-
-  .quran-line {
-    font-size: calc(clamp(0.96rem, 2.54vh, 1.48rem) * var(--font-scale, 1)) !important;
-    line-height: 1.18 !important;
-  }
-
-  .quran-line-text {
-    letter-spacing: -0.012em;
-  }
 }
 
 @media (max-width: 380px) {
   .reader-page {
     padding-inline: 14px !important;
   }
+}
 
-  .quran-line {
-    font-size: calc(clamp(0.90rem, 2.44vh, 1.40rem) * var(--font-scale, 1)) !important;
-  }
-
-  .quran-line-text {
-    letter-spacing: -0.014em;
+@media (min-width: 640px) {
+  .reader-shell {
+    width: min(100%, 576px);
+    height: calc(100dvh - 20px);
+    margin-block: 10px;
+    border-radius: 28px;
   }
 }

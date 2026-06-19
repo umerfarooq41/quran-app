@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import {
   Languages,
   Mic2,
@@ -14,7 +15,11 @@ import { useAppStore } from '../store/useAppStore';
 import { Header, Screen } from '../components/common/AppChrome';
 
 export default function SettingsScreen() {
-  const { settings, updateSettings, resetSettings } = useAppStore();
+  const { settings, updateSettings, resetSettings } = useAppStore(useShallow((state) => ({
+    settings: state.settings,
+    updateSettings: state.updateSettings,
+    resetSettings: state.resetSettings,
+  })));
   const [confirmReset, setConfirmReset] = useState(false);
   const reciters = normalizeLocalReciters();
 
@@ -71,7 +76,7 @@ export default function SettingsScreen() {
         <SettingSelect
           icon={Mic2}
           label="Audio reciter"
-          description="Used by reader audio and the audio screen"
+          description="Used by the persistent Quran audio player"
           value={settings.reciter || reciters[0]?.id || ''}
           onChange={(value) => updateSettings({ reciter: value })}
         >

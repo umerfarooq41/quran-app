@@ -2,7 +2,7 @@ import React from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAppStore } from '../../store/useAppStore';
-import { panel, iconButton } from './ui';
+import { panel } from './ui';
 
 export function Shell({ children }) {
   return <main className="app-shell min-h-dvh overflow-x-hidden bg-fluent px-3 pb-5 pt-3 text-slate-900 sm:px-5 sm:pb-8 sm:pt-5">{children}</main>;
@@ -38,14 +38,30 @@ export function NavIcon({ icon: Icon, active, onClick }) {
   );
 }
 
+export function BackButton({
+  onClick,
+  label = 'Back',
+  className = '',
+}) {
+  return (
+    <button
+      type="button"
+      className={`shared-back-button ${className}`}
+      onClick={onClick}
+      aria-label={label}
+    >
+      <ArrowLeft size={18} strokeWidth={2.2} />
+    </button>
+  );
+}
+
 export function Header({ title, back = 'home' }) {
   const goBack = useAppStore((state) => state.goBack);
   return (
-    <div className="app-header flex items-center gap-2 pt-1 sm:gap-3 sm:pt-2">
-      <button className={iconButton} onClick={() => goBack(back)} aria-label="Back">
-        <ArrowLeft size={20} />
-      </button>
+    <div className="app-header">
+      <BackButton onClick={() => goBack(back)} />
       <h1 className="app-header-title text-2xl font-semibold tracking-tight sm:text-3xl">{title}</h1>
+      <span className="app-header-spacer" aria-hidden="true" />
     </div>
   );
 }

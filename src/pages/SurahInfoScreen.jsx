@@ -1,8 +1,9 @@
 import React, { useMemo } from 'react';
-import { ArrowLeft, BookOpen } from 'lucide-react';
+import { BookOpen } from 'lucide-react';
 import { useAppStore } from '../store/useAppStore';
 import { findPageForReference, getSurah } from '../lib/quran';
 import { parseQuranInternalHref, sanitizeSurahHtml } from '../lib/sanitizeHtml';
+import { BackButton } from '../components/common/AppChrome';
 
 export default function SurahInfoScreen() {
   const selectedSurah = useAppStore((state) => state.selectedSurah);
@@ -29,10 +30,9 @@ export default function SurahInfoScreen() {
   return (
     <main className="surah-info-screen">
       <header className="surah-info-topbar">
-        <button type="button" onClick={closeSurahInfo} aria-label="Back to previous screen">
-          <ArrowLeft size={25} strokeWidth={2.35} />
-        </button>
+        <BackButton onClick={closeSurahInfo} label="Back from Surah info" />
         <h1>Surah Info</h1>
+        <span className="surah-info-header-spacer" aria-hidden="true" />
       </header>
 
       <section className="surah-info-content">

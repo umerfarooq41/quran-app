@@ -102,7 +102,6 @@ body { -webkit-text-size-adjust: 100%; }
 .index-ayah-grid button { min-height: 36px; border-radius: 12px; font-size: .78rem; }
 
 /* Reader chrome only. Mushaf page and Quran line rules are isolated in mushaf.css. */
-.reader-shell { width: 100vw; max-width: 576px; box-shadow: none; }
 .reader-passive-header { height: calc(env(safe-area-inset-top, 0px) + 44px); padding-inline: 13px; }
 .reader-meta-label { font-size: .68rem; }
 .reader-topbar { padding: calc(env(safe-area-inset-top, 0px) + 8px) 10px 0; }
@@ -193,7 +192,6 @@ select, input[type='text'], input:not([type]), .screen-shell input { min-height:
   .index-card { min-height: 66px; border-radius: 22px; }
   .index-juz-card, .index-surah-card { padding: 14px 18px; column-gap: 18px; }
   .index-number-badge { width: 44px; height: 44px; font-size: 1.05rem; }
-  .reader-shell { border-radius: 28px; width: min(100%, 576px); margin-block: 10px; height: calc(100dvh - 20px); box-shadow: 0 24px 80px rgba(15, 23, 42, .16); }
 }
 
 /* =========================================================

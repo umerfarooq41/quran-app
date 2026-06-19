@@ -1,16 +1,26 @@
-import React from 'react';
-import { BookOpen, Info } from 'lucide-react';
+import React, { useMemo } from 'react';
+import { BookOpen } from 'lucide-react';
+import { useShallow } from 'zustand/react/shallow';
 import { Screen, Header } from '../components/common/AppChrome';
 import { panel } from '../components/common/ui';
 import { useAppStore } from '../store/useAppStore';
 import { findPageForReference, getSurah, getSurahAyahs } from '../lib/quran';
+import { sanitizeSurahHtml } from '../lib/sanitizeHtml';
 import { VIEWS } from '../app/routes';
 
 export default function SurahScreen() {
-  const { selectedSurah, goPage, openSurahInfo } = useAppStore();
+  const { selectedSurah, goPage, openSurahInfo } = useAppStore(useShallow((state) => ({
+    selectedSurah: state.selectedSurah,
+    goPage: state.goPage,
+    openSurahInfo: state.openSurahInfo,
+  })));
   const surah = getSurah(selectedSurah);
   const ayahs = getSurahAyahs(selectedSurah);
   const firstPage = findPageForReference(selectedSurah, 1);
+  const cleanShortText = useMemo(
+    () => sanitizeSurahHtml(surah?.shortText || ''),
+    [surah?.shortText],
+  );
 
   return (
     <Screen className="space-y-5">
@@ -28,14 +38,25 @@ export default function SurahScreen() {
           </div>
         </div>
 
-        {surah?.shortText && <p className="mt-5 leading-7 text-slate-600">{surah.shortText}</p>}
+        {cleanShortText && (
+          <div className="surah-short-info mt-5 leading-7 text-slate-600">
+            <div
+              className="surah-short-copy"
+              dangerouslySetInnerHTML={{ __html: cleanShortText }}
+            />{' '}
+            <button
+              type="button"
+              className="inline-read-more"
+              onClick={() => openSurahInfo(selectedSurah)}
+            >
+              Read more
+            </button>
+          </div>
+        )}
 
-        <div className="mt-6 grid gap-3 sm:grid-cols-2">
+        <div className="mt-6 grid gap-3">
           <button className="rounded-2xl bg-[#2d6e5e] px-4 py-3 font-semibold text-white" onClick={() => goPage(firstPage, { surahNumber: selectedSurah, ayahNumber: 1 })}>
             Open Surah
-          </button>
-          <button className="rounded-2xl bg-white/80 px-4 py-3 font-semibold text-slate-700" onClick={() => openSurahInfo(selectedSurah)}>
-            <span className="inline-flex items-center gap-2"><Info size={18} /> Surah Info</span>
           </button>
         </div>
       </section>

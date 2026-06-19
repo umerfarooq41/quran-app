@@ -8,7 +8,6 @@ export const OVERLAY_TYPES = Object.freeze({
   INDEX: 'index',
   AYAH: 'ayah-sheet',
   SHARE: 'share-sheet',
-  AUDIO: 'audio-player',
   SETTINGS: 'settings',
 });
 
@@ -21,7 +20,6 @@ const SCREEN_OVERLAY_BY_VIEW = {
 const LOCAL_OVERLAY_TYPES = new Set([
   OVERLAY_TYPES.AYAH,
   OVERLAY_TYPES.SHARE,
-  OVERLAY_TYPES.AUDIO,
 ]);
 
 export const DEFAULT_SETTINGS = Object.freeze({
@@ -48,6 +46,16 @@ export const useAppStore = create((set, get) => ({
   selectedAyah: null,
   shareTarget: null,
   audioTarget: null,
+  audioQueue: [],
+  audioQueueIndex: -1,
+  audioPosition: 0,
+  audioDuration: 0,
+  audioPlaying: false,
+  audioRepeat: false,
+  audioReciter: null,
+  audioPlaybackRate: 1,
+  audioPlayerActive: false,
+  audioPlayerVisible: false,
   tafsirTarget: null,
   pendingAyah: null,
   settings: { ...DEFAULT_SETTINGS },
@@ -134,17 +142,77 @@ export const useAppStore = create((set, get) => ({
     shareTarget: null,
     overlayStack: removeOverlay(state.overlayStack, OVERLAY_TYPES.SHARE),
   })),
-  openAudioPlayer: (audioTarget) => set((state) => ({
-    audioTarget,
-    controlsVisible: true,
-    overlayStack: pushOverlay(state.overlayStack, OVERLAY_TYPES.AUDIO),
-  })),
-  closeAudioPlayer: () => set((state) => ({
+  openAudioPlayer: (audioTarget) => set((state) => {
+    const target = normalizeAudioTarget(audioTarget);
+    if (!target) return state;
+
+    const sameTarget = sameAudioTarget(state.audioTarget, target);
+
+    return {
+      audioTarget: target,
+      audioQueue: [target],
+      audioQueueIndex: 0,
+      audioPosition: sameTarget ? state.audioPosition : 0,
+      audioDuration: sameTarget ? state.audioDuration : 0,
+      audioPlaying: true,
+      audioReciter: state.settings.reciter,
+      audioPlaybackRate: state.settings.playbackRate,
+      audioPlayerActive: true,
+      audioPlayerVisible: true,
+      controlsVisible: true,
+    };
+  }),
+  closeAudioPlayer: () => set({
     audioTarget: null,
-    overlayStack: removeOverlay(state.overlayStack, OVERLAY_TYPES.AUDIO),
-  })),
+    audioQueue: [],
+    audioQueueIndex: -1,
+    audioPosition: 0,
+    audioDuration: 0,
+    audioPlaying: false,
+    audioRepeat: false,
+    audioPlayerActive: false,
+    audioPlayerVisible: false,
+  }),
   closeTopOverlay: () => set((state) => closeTopOverlay(state)),
-  setAudioTarget: (audioTarget) => set({ audioTarget }),
+  setAudioTarget: (audioTarget) => set((state) => {
+    const target = normalizeAudioTarget(audioTarget);
+    const existingIndex = state.audioQueue.findIndex((item) => sameAudioTarget(item, target));
+
+    return {
+      audioTarget: target,
+      audioQueue: target
+        ? (existingIndex >= 0 ? state.audioQueue : [target])
+        : state.audioQueue,
+      audioQueueIndex: target
+        ? (existingIndex >= 0 ? existingIndex : 0)
+        : state.audioQueueIndex,
+      audioPosition: sameAudioTarget(state.audioTarget, target) ? state.audioPosition : 0,
+      audioDuration: sameAudioTarget(state.audioTarget, target) ? state.audioDuration : 0,
+    };
+  }),
+  setAudioQueue: (audioQueue, audioQueueIndex = 0) => set((state) => {
+    const nextQueue = Array.isArray(audioQueue)
+      ? audioQueue.map(normalizeAudioTarget).filter(Boolean)
+      : [];
+    const nextIndex = Number.isInteger(audioQueueIndex) ? audioQueueIndex : 0;
+    const queueUnchanged = (
+      state.audioQueueIndex === nextIndex &&
+      state.audioQueue.length === nextQueue.length &&
+      state.audioQueue.every((item, index) => sameAudioTarget(item, nextQueue[index]))
+    );
+
+    return queueUnchanged
+      ? state
+      : { audioQueue: nextQueue, audioQueueIndex: nextIndex };
+  }),
+  setAudioProgress: (audioPosition, audioDuration) => set((state) => ({
+    audioPosition: Math.max(0, Number(audioPosition) || 0),
+    audioDuration: Number.isFinite(Number(audioDuration))
+      ? Math.max(0, Number(audioDuration))
+      : state.audioDuration,
+  })),
+  setAudioPlaying: (audioPlaying) => set({ audioPlaying: Boolean(audioPlaying) }),
+  setAudioRepeat: (audioRepeat) => set({ audioRepeat: Boolean(audioRepeat) }),
   setTafsirTarget: (tafsirTarget) => set((state) => ({
     ...transitionToView(state, VIEWS.TAFSIR, { direction: 'modal' }),
     tafsirTarget,
@@ -165,10 +233,19 @@ export const useAppStore = create((set, get) => ({
     };
   }),
   clearPendingAyah: () => set({ pendingAyah: null }),
-  updateSettings: (patch) => set((state) => ({
-    settings: sanitizeSettings({ ...state.settings, ...patch }),
-  })),
-  resetSettings: () => set({ settings: { ...DEFAULT_SETTINGS, theme: 'light' } }),
+  updateSettings: (patch) => set((state) => {
+    const settings = sanitizeSettings({ ...state.settings, ...patch });
+    return {
+      settings,
+      audioReciter: settings.reciter,
+      audioPlaybackRate: settings.playbackRate,
+    };
+  }),
+  resetSettings: () => set({
+    settings: { ...DEFAULT_SETTINGS, theme: 'light' },
+    audioReciter: DEFAULT_SETTINGS.reciter,
+    audioPlaybackRate: DEFAULT_SETTINGS.playbackRate,
+  }),
 }));
 
 function transitionToView(state, targetView, options = {}) {
@@ -238,14 +315,6 @@ function closeTopOverlay(state) {
     };
   }
 
-  if (topOverlay.type === OVERLAY_TYPES.AUDIO) {
-    return {
-      ...state,
-      audioTarget: null,
-      overlayStack: state.overlayStack.slice(0, -1),
-    };
-  }
-
   if (topOverlay.type === OVERLAY_TYPES.AYAH) {
     return {
       ...state,
@@ -262,7 +331,6 @@ function clearReaderOverlays(state) {
     ...state,
     selectedAyah: null,
     shareTarget: null,
-    audioTarget: null,
     overlayStack: state.overlayStack.filter((item) => !LOCAL_OVERLAY_TYPES.has(item.type)),
   };
 }
@@ -276,6 +344,26 @@ function pushOverlay(stack, type, extra = {}) {
 
 function removeOverlay(stack, type) {
   return stack.filter((item) => item.type !== type);
+}
+
+function normalizeAudioTarget(target) {
+  if (!target?.surahNumber || !target?.ayahNumber) return null;
+
+  return {
+    ...target,
+    page: Number(target.page) || null,
+    surahNumber: Number(target.surahNumber),
+    ayahNumber: Number(target.ayahNumber),
+  };
+}
+
+function sameAudioTarget(first, second) {
+  return Boolean(
+    first &&
+    second &&
+    Number(first.surahNumber) === Number(second.surahNumber) &&
+    Number(first.ayahNumber) === Number(second.ayahNumber)
+  );
 }
 
 export function sanitizeSettings(value = {}) {

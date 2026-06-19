@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Clock3, Search } from 'lucide-react';
+import { useShallow } from 'zustand/react/shallow';
 import { clearRecentSearches, getRecentSearches, saveRecentSearch } from '../lib/db';
 import { searchQuranImproved } from '../lib/quranSearch';
 import { loadTranslation } from '../lib/translations';
@@ -9,7 +10,11 @@ import { Header, Screen } from '../components/common/AppChrome';
 const RECENT_SAVE_DELAY = 900;
 
 export default function SearchScreen() {
-  const { goAyah, goPage, settings } = useAppStore();
+  const { goAyah, goPage, settings } = useAppStore(useShallow((state) => ({
+    goAyah: state.goAyah,
+    goPage: state.goPage,
+    settings: state.settings,
+  })));
   const [query, setQuery] = useState('');
   const [recentSearches, setRecentSearches] = useState([]);
   const [translations, setTranslations] = useState(null);

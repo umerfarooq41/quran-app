@@ -1,7 +1,4 @@
 /* Reader chrome and overlays. Protected Quran page rendering lives in mushaf.css. */
-.reader-shell {
-  isolation: isolate;
-}
 
 .reader-passive-header {
   pointer-events: none;
@@ -570,14 +567,6 @@ body {
   background: #ffffff;
 }
 
-.reader-shell {
-  width: 100%;
-  max-width: 576px;
-  overflow: hidden !important;
-  background: #ffffff !important;
-  box-shadow: none !important;
-}
-
 .reader-passive-header {
   height: calc(env(safe-area-inset-top, 0px) + 82px) !important;
   padding-top: calc(env(safe-area-inset-top, 0px) + 30px) !important;
@@ -696,7 +685,7 @@ body {
   position: fixed;
   inset-inline: 0;
   bottom: calc(env(safe-area-inset-bottom, 0px) + 112px);
-  z-index: 52;
+  z-index: 80;
   display: flex;
   justify-content: center;
   pointer-events: none;
@@ -704,16 +693,18 @@ body {
   transition: opacity .18s ease, transform .18s ease, visibility .18s ease;
 }
 
+.reader-audio-over-screen {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
+}
+
+.reader-audio-over-reader {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 112px);
+}
+
 .reader-audio-panel-visible {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
-}
-
-.reader-audio-panel-hidden {
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(18px);
 }
 
 .reader-audio-panel {
@@ -872,8 +863,15 @@ body {
 
 @media (max-width: 420px) {
   .reader-audio-panel-wrap {
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 104px);
     padding-inline: 12px;
+  }
+
+  .reader-audio-over-screen {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
+  }
+
+  .reader-audio-over-reader {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 104px);
   }
 
   .reader-audio-panel {

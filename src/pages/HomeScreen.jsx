@@ -1,6 +1,7 @@
 import React from 'react';
 import { Bookmark, BookOpen, Library, Search, SlidersHorizontal } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../store/useAppStore';
 import { getMushafPageNumber, getPageMeta } from '../lib/quran';
 import { getJuzPartByPage } from '../data/quranMeta';
@@ -14,7 +15,14 @@ export default function HomeScreen() {
     openSearch,
     openBookmarks,
     openSettings,
-  } = useAppStore();
+  } = useAppStore(useShallow((state) => ({
+    page: state.page,
+    goPage: state.goPage,
+    openIndex: state.openIndex,
+    openSearch: state.openSearch,
+    openBookmarks: state.openBookmarks,
+    openSettings: state.openSettings,
+  })));
   const meta = getPageMeta(page);
   const actions = [
     ['Index', Library, openIndex],

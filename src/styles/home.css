@@ -120,13 +120,4 @@
 @media (max-width: 420px) {
   .home-actions-row { gap: 7px; }
   .home-action-chip { padding: 14px 4px; font-size: .68rem; border-radius: 19px; }
-  .reader-page {
-    padding-inline: 7px;
-    padding-top: calc(env(safe-area-inset-top, 0px) + 82px);
-    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 54px);
-  }
-  .quran-line {
-    font-size: calc(clamp(1.36rem, 3.35vh, 2.13rem) * var(--font-scale, 1));
-  }
-  .surah-banner { padding-inline: 8px; gap: 5px; }
 }

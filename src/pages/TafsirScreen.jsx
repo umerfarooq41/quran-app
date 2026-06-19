@@ -1,13 +1,20 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, BookOpen } from 'lucide-react';
+import { BookOpen } from 'lucide-react';
+import { useShallow } from 'zustand/react/shallow';
 import { findPageForReference, getSurah } from '../lib/quran';
 import { getTranslation, getTranslationOption } from '../lib/translations';
 import { parseQuranInternalHref, sanitizeSurahHtml } from '../lib/sanitizeHtml';
 import { useAppStore } from '../store/useAppStore';
-import { Empty, Header, Screen } from '../components/common/AppChrome';
+import { BackButton, Empty, Header, Screen } from '../components/common/AppChrome';
 
 export default function TafsirScreen() {
-  const { tafsirTarget, goBack, goAyah, settings } = useAppStore();
+  const { tafsirTarget, goBack, goAyah, openSurahInfo, settings } = useAppStore(useShallow((state) => ({
+    tafsirTarget: state.tafsirTarget,
+    goBack: state.goBack,
+    goAyah: state.goAyah,
+    openSurahInfo: state.openSurahInfo,
+    settings: state.settings,
+  })));
   const [translation, setTranslation] = useState('');
   const [status, setStatus] = useState('Loading translation...');
   const surah = getSurah(tafsirTarget?.surahNumber);
@@ -58,7 +65,7 @@ export default function TafsirScreen() {
   return (
     <Screen className="tafsir-screen space-y-4">
       <div className="tabs-header compact">
-        <button className="tabs-back-pill" onClick={() => goBack('reader')}><ArrowLeft size={24} /></button>
+        <BackButton className="tabs-back-pill" onClick={() => goBack('reader')} />
         <h1>Translation</h1>
       </div>
       <article className="tafsir-card">
@@ -77,10 +84,20 @@ export default function TafsirScreen() {
         {cleanSurahInfo && (
           <section className="tafsir-section">
             <h3>Surah Context</h3>
-            <div
-              onClick={handleContextClick}
-              dangerouslySetInnerHTML={{ __html: cleanSurahInfo }}
-            />
+            <div className="tafsir-surah-context">
+              <div
+                className="tafsir-surah-preview"
+                onClick={handleContextClick}
+                dangerouslySetInnerHTML={{ __html: cleanSurahInfo }}
+              />
+              <button
+                type="button"
+                className="inline-read-more"
+                onClick={() => openSurahInfo(tafsirTarget.surahNumber)}
+              >
+                Read more
+              </button>
+            </div>
           </section>
         )}
       </article>

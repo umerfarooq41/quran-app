@@ -34,10 +34,6 @@ button {
   background: #f5eee2;
 }
 
-.grid-rows-16 {
-  grid-template-rows: repeat(16, minmax(0, 1fr));
-}
-
 .prose h2 {
   margin-top: 1.3em;
   font-size: 1.25rem;

@@ -1,5 +1,6 @@
 import React from 'react';
-import { ArrowLeft, Bookmark, Menu, Settings } from 'lucide-react';
+import { Bookmark, Menu, Settings } from 'lucide-react';
+import { BackButton } from '../../../components/common/AppChrome';
 
 export function ReaderTopControls({ visible, onBack, onBookmarks, onIndex, onSettings }) {
   return (
@@ -8,9 +9,7 @@ export function ReaderTopControls({ visible, onBack, onBookmarks, onIndex, onSet
       className={`reader-topbar ${visible ? 'reader-topbar-visible' : ''}`}
     >
       <div className="reader-control-row">
-        <button className="reader-back-pill" onClick={onBack} aria-label="Back">
-          <ArrowLeft size={24} />
-        </button>
+        <BackButton className="reader-back-pill" onClick={onBack} />
 
         <div className="reader-top-actions">
           <button className="reader-top-icon" onClick={onBookmarks} aria-label="Open bookmarks">

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
+import { useShallow } from 'zustand/react/shallow';
 import { getLastRead, getSettings, upsertSetting } from './lib/db';
 import { sanitizeSettings, useAppStore } from './store/useAppStore';
 import { Shell } from './components/common/AppChrome';
@@ -11,13 +12,29 @@ import IndexScreen from './pages/IndexScreen';
 import SearchScreen from './pages/SearchScreen';
 import BookmarksScreen from './pages/BookmarksScreen';
 import TafsirScreen from './pages/TafsirScreen';
-import AudioScreen from './pages/AudioScreen';
 import SettingsScreen from './pages/SettingsScreen';
 import SurahScreen from './pages/SurahScreen';
 import SurahInfoScreen from './pages/SurahInfoScreen';
+import { ReaderAudioPanel } from './features/reader/components/ReaderAudioPanel';
 
 export default function App() {
-  const { view, hydrateLastRead, settings, updateSettings, goBack } = useAppStore();
+  const {
+    view,
+    hydrateLastRead,
+    settings,
+    updateSettings,
+    goBack,
+    audioPlayerActive,
+    audioPlayerVisible,
+  } = useAppStore(useShallow((state) => ({
+    view: state.view,
+    hydrateLastRead: state.hydrateLastRead,
+    settings: state.settings,
+    updateSettings: state.updateSettings,
+    goBack: state.goBack,
+    audioPlayerActive: state.audioPlayerActive,
+    audioPlayerVisible: state.audioPlayerVisible,
+  })));
   const activeView = normalizeView(view);
   const [booted, setBooted] = useState(false);
 
@@ -82,9 +99,9 @@ export default function App() {
         {activeView === VIEWS.SEARCH && <SearchScreen key="search" />}
         {activeView === VIEWS.TABS && <BookmarksScreen key="tabs" />}
         {activeView === VIEWS.TAFSIR && <TafsirScreen key="tafsir" />}
-        {activeView === VIEWS.AUDIO && <AudioScreen key="audio" />}
         {activeView === VIEWS.SETTINGS && <SettingsScreen key="settings" />}
       </AnimatePresence>
+      {audioPlayerActive && audioPlayerVisible && <ReaderAudioPanel />}
    </Shell>
   );
 }

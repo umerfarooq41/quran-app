@@ -1,6 +1,8 @@
 import React, { useMemo, useState } from 'react';
-import { ChevronDown, X } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
+import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../store/useAppStore';
+import { BackButton } from '../components/common/AppChrome';
 import {
   findPageForReference,
   getJuzQuarterTargets,
@@ -8,7 +10,7 @@ import {
   getSurahAyahs,
   surahs,
 } from '../lib/quran';
-import { getJuzLabel, surahArabicNames } from '../utils/quranLabels';
+import { getJuzLabel } from '../utils/quranLabels';
 
 function formatJuzName(juz) {
   return `${getJuzLabel(juz)}'`;
@@ -20,6 +22,8 @@ function formatJuzHeading(juz) {
 
 function stripHtml(value = '') {
   return String(value)
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
     .replace(/<h\d[^>]*>/gi, ' ')
     .replace(/<\/h\d>/gi, '. ')
     .replace(/<p[^>]*>/gi, ' ')
@@ -43,10 +47,9 @@ export default function IndexScreen() {
     <main className="index-replica-shell">
       <div className="index-replica-inner">
         <header className="index-replica-header">
+          <BackButton onClick={() => goBack()} label="Back from index" />
           <h1>Index</h1>
-          <button className="index-close-pill" onClick={() => goBack()} aria-label="Close index">
-            <X size={22} strokeWidth={2.5} />
-          </button>
+          <span className="index-header-spacer" aria-hidden="true" />
         </header>
 
         <div className="index-segment" role="tablist" aria-label="Index tabs">
@@ -78,7 +81,7 @@ function NumberBadge({ children }) {
 
 function JuzIndex() {
   const [expandedJuz, setExpandedJuz] = useState(null);
-  const { goAyah } = useAppStore();
+  const goAyah = useAppStore((state) => state.goAyah);
 
   return (
     <section className="index-list index-juz-list">
@@ -118,7 +121,10 @@ function JuzIndex() {
 
 function SurahIndex() {
   const [expandedSurah, setExpandedSurah] = useState(null);
-  const { goAyah, openSurahInfo } = useAppStore();
+  const { goAyah, openSurahInfo } = useAppStore(useShallow((state) => ({
+    goAyah: state.goAyah,
+    openSurahInfo: state.openSurahInfo,
+  })));
 
   const grouped = useMemo(() => surahs.reduce((groups, surah) => {
     const key = surah.juz;
@@ -134,7 +140,6 @@ function SurahIndex() {
           <h2 className="index-section-title">{formatJuzHeading(Number(juz))}</h2>
           <div className="index-surah-stack">
             {list.map((surah) => {
-              const page = findPageForReference(surah.number, 1);
               const isOpen = expandedSurah === surah.number;
               const ayahs = isOpen ? getSurahAyahs(surah.number) : [];
 
@@ -147,13 +152,7 @@ function SurahIndex() {
                     aria-expanded={isOpen}
                   >
                     <NumberBadge>{surah.number}</NumberBadge>
-                    <span className="index-surah-text">
-                      <span className="index-surah-name-row">
-                        <strong>{surah.name}</strong>
-                        <span className="index-surah-arabic" dir="rtl">{surahArabicNames[surah.number]}</span>
-                      </span>
-                      <small>Page {getMushafPageNumber(page)} . {surah.verses} verses . {surah.revelation}</small>
-                    </span>
+                    <span className="index-card-title">{surah.name}</span>
                     <ChevronDown className="index-chevron" size={20} strokeWidth={2.35} />
                   </button>
 
@@ -163,7 +162,13 @@ function SurahIndex() {
                         <p>
                           <span className="index-surah-info-label">Surah Info</span>
                           {previewText(surah)}{' '}
-                          <button type="button" onClick={() => openSurahInfo(surah.number)}>Read more</button>
+                          <button
+                            type="button"
+                            className="inline-read-more"
+                            onClick={() => openSurahInfo(surah.number)}
+                          >
+                            Read more
+                          </button>
                         </p>
                       </div>
 

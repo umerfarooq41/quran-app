@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Share2, X } from 'lucide-react';
+import { Share2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { getSurah, getSurahAyahs } from '../../../lib/quran';
 import { generateQuranShareImage } from '../../../lib/shareCanvas';
 import { surahArabicNames } from '../../../utils/quranLabels';
+import { BackButton } from '../../../components/common/AppChrome';
 
 const BACKGROUNDS = [
   { id: 'sand', color: '#ead8b8', label: 'Sand' },
@@ -133,13 +134,12 @@ export function ShareAyahSheet({ ayah, onClose }) {
         onClick={(event) => event.stopPropagation()}
       >
         <header className="share-sheet-header">
+          <BackButton onClick={onClose} label="Back from share" />
           <div>
             <p>Share Quran image</p>
             <h2>{surah?.name}</h2>
           </div>
-          <button type="button" onClick={onClose} aria-label="Close share sheet">
-            <X size={20} />
-          </button>
+          <span className="share-header-spacer" aria-hidden="true" />
         </header>
 
         <section className="share-range-card">

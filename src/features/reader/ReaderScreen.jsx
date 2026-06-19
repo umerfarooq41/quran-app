@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
+import { useShallow } from 'zustand/react/shallow';
 import { db } from '../../lib/db';
 import { getMushafPageNumber, getPage, getPageMeta, getSurahAyahs } from '../../lib/quran';
 import { OVERLAY_TYPES, useAppStore } from '../../store/useAppStore';
 import { AyahActionSheet } from './components/AyahActionSheet';
 import { MushafPage } from './components/MushafPage';
-import { ReaderAudioPanel } from './components/ReaderAudioPanel';
 import { ReaderBottomControls } from './components/ReaderBottomControls';
 import { ReaderFooterMeta, ReaderPassiveHeader } from './components/ReaderPassiveMeta';
 import { ReaderTopControls } from './components/ReaderTopControls';
@@ -22,7 +22,6 @@ export default function ReaderScreen() {
     toggleControls,
     setControlsVisible,
     settings,
-    updateSettings,
     goBack,
     openBookmarks,
     openIndex,
@@ -36,23 +35,48 @@ export default function ReaderScreen() {
     openShareSheet: pushShareSheet,
     closeShareSheet,
     audioTarget,
-    setAudioTarget,
+    audioPlayerActive,
     openAudioPlayer,
-    closeAudioPlayer,
     pendingAyah,
     clearPendingAyah,
-  } = useAppStore();
+  } = useAppStore(useShallow((state) => ({
+    page: state.page,
+    goPage: state.goPage,
+    goPreviousReaderPage: state.goPreviousReaderPage,
+    controlsVisible: state.controlsVisible,
+    toggleControls: state.toggleControls,
+    setControlsVisible: state.setControlsVisible,
+    settings: state.settings,
+    goBack: state.goBack,
+    openBookmarks: state.openBookmarks,
+    openIndex: state.openIndex,
+    openSearch: state.openSearch,
+    openSettings: state.openSettings,
+    overlayStack: state.overlayStack,
+    selectedAyah: state.selectedAyah,
+    openAyahSheet: state.openAyahSheet,
+    closeAyahSheet: state.closeAyahSheet,
+    shareTarget: state.shareTarget,
+    openShareSheet: state.openShareSheet,
+    closeShareSheet: state.closeShareSheet,
+    audioTarget: state.audioTarget,
+    audioPlayerActive: state.audioPlayerActive,
+    openAudioPlayer: state.openAudioPlayer,
+    pendingAyah: state.pendingAyah,
+    clearPendingAyah: state.clearPendingAyah,
+  })));
   const pageData = getPage(page);
   const meta = getPageMeta(page);
   const displayPage = getMushafPageNumber(page);
   const [savedHighlights, setSavedHighlights] = useState(new Map());
   const [bookmarkMarkers, setBookmarkMarkers] = useState(new Map());
   const [annotationVersion, setAnnotationVersion] = useState(0);
-  const [activeAudioAyah, setActiveAudioAyah] = useState(null);
   const suppressTapUntil = useRef(0);
+  const previousAudioTargetKey = useRef(
+    audioTarget ? `${audioTarget.surahNumber}:${audioTarget.ayahNumber}` : '',
+  );
   const { handleTouchStart, handleTouchEnd } = useReaderGestures({ page, goPage });
   const topOverlay = overlayStack.at(-1)?.type;
-  const audioSessionOpen = overlayStack.some((item) => item.type === OVERLAY_TYPES.AUDIO);
 
   usePagePersistence({ page, pageData });
 
@@ -98,6 +122,20 @@ export default function ReaderScreen() {
     return () => window.clearTimeout(timer);
   }, [pendingAyah?.surahNumber, pendingAyah?.ayahNumber, clearPendingAyah]);
 
+  useEffect(() => {
+    const nextKey = audioTarget
+      ? `${audioTarget.surahNumber}:${audioTarget.ayahNumber}`
+      : '';
+    const targetChanged = nextKey && nextKey !== previousAudioTargetKey.current;
+    previousAudioTargetKey.current = nextKey;
+
+    if (targetChanged && audioPlayerActive && audioTarget?.page && audioTarget.page !== page) {
+      const keepControlsVisible = controlsVisible;
+      goPage(audioTarget.page);
+      if (keepControlsVisible) setControlsVisible(true);
+    }
+  }, [audioTarget?.surahNumber, audioTarget?.ayahNumber]);
+
   function openAudioPanel(targetLine = null) {
     const firstLine = pageData.lines.find((line) => line.surahNumber && line.ayahStart);
     const target = targetLine || (firstLine ? {
@@ -110,26 +148,7 @@ export default function ReaderScreen() {
 
     if (!target) return;
 
-    setActiveAudioAyah(target);
     openAudioPlayer(target);
-  }
-
-  function closeAudioPanel() {
-    closeAudioPlayer();
-    setActiveAudioAyah(null);
-  }
-
-  function changeAudioAyah(target) {
-    if (!target) return;
-
-    const keepControlsVisible = controlsVisible;
-    setAudioTarget(target);
-    setActiveAudioAyah(target);
-
-    if (target.page && target.page !== page) {
-      goPage(target.page);
-      if (keepControlsVisible) setControlsVisible(true);
-    }
   }
 
   function annotationsChanged() {
@@ -185,7 +204,7 @@ export default function ReaderScreen() {
           bookmarkMarkers={bookmarkMarkers}
           pendingAyah={pendingAyah}
           selectedAyah={selectedAyah}
-          activeAudioAyah={activeAudioAyah}
+          activeAudioAyah={audioPlayerActive ? audioTarget : null}
           onSelectAyah={selectAyah}
         />
 
@@ -201,22 +220,10 @@ export default function ReaderScreen() {
             onPreviousPage={goPreviousReaderPage}
             onSearch={openSearch}
             onAudio={() => openAudioPanel()}
-            compact={audioSessionOpen}
+            compact={audioPlayerActive}
           />
         )}
       </AnimatePresence>
-
-      {audioSessionOpen && (
-          <ReaderAudioPanel
-            ayah={audioTarget}
-            visible={controlsVisible && topOverlay === OVERLAY_TYPES.AUDIO}
-            settings={settings}
-            updateSettings={updateSettings}
-            onClose={closeAudioPanel}
-            onAyahChange={changeAudioAyah}
-            onPlaybackStopped={() => setActiveAudioAyah(null)}
-          />
-      )}
 
       <AnimatePresence>
         {selectedAyah && topOverlay === OVERLAY_TYPES.AYAH && (

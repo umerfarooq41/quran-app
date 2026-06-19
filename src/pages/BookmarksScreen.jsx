@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, Bookmark, Check, MoreVertical, Pencil, Tags, Trash2, X } from 'lucide-react';
+import { Bookmark, Check, MoreVertical, Pencil, Tags, Trash2, X } from 'lucide-react';
+import { useShallow } from 'zustand/react/shallow';
 import {
   changeAyahBookmarkType,
   db,
@@ -9,7 +10,7 @@ import {
 } from '../lib/db';
 import { findPageForReference, getSurah, getSurahAyahs } from '../lib/quran';
 import { useAppStore } from '../store/useAppStore';
-import { Empty, Screen } from '../components/common/AppChrome';
+import { BackButton, Empty, Screen } from '../components/common/AppChrome';
 
 const BOOKMARK_TYPES = [
   { category: 'Reading', label: 'Recitation', tone: 'emerald' },
@@ -19,7 +20,10 @@ const BOOKMARK_TYPES = [
 ];
 
 export default function BookmarksScreen() {
-  const { goBack, goAyah } = useAppStore();
+  const { goBack, goAyah } = useAppStore(useShallow((state) => ({
+    goBack: state.goBack,
+    goAyah: state.goAyah,
+  })));
   const [items, setItems] = useState([]);
   const [filter, setFilter] = useState('All');
   const [openMenu, setOpenMenu] = useState(null);
@@ -145,9 +149,7 @@ export default function BookmarksScreen() {
   return (
     <Screen className="tabs-screen">
       <div className="tabs-header compact">
-        <button className="tabs-back-pill" onClick={() => goBack()} aria-label="Back">
-          <ArrowLeft size={21} />
-        </button>
+        <BackButton className="tabs-back-pill" onClick={() => goBack()} />
         <h1>Bookmarks</h1>
       </div>
 

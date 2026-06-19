@@ -7,7 +7,6 @@ export const VIEWS = {
   SEARCH: 'search',
   TABS: 'tabs',
   TAFSIR: 'tafsir',
-  AUDIO: 'audio',
   SETTINGS: 'settings',
 };
 

@@ -1,7 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ChevronDown, Pause, Play, Repeat, SkipBack, SkipForward, X } from 'lucide-react';
+import { useShallow } from 'zustand/react/shallow';
+import { VIEWS } from '../../../app/routes';
 import { findPageForReference, getSurah, quranAyahs } from '../../../lib/quran';
 import { getAudioUrl, getDefaultReciterId, normalizeLocalReciters } from '../../../lib/localAudio';
+import { useAppStore } from '../../../store/useAppStore';
 
 const SPEEDS = [1, 1.25, 1.5, 2];
 const PRELOAD_THRESHOLD_SECONDS = 6;
@@ -13,15 +16,42 @@ function formatTime(seconds = 0) {
   return `${minutes}:${secs}`;
 }
 
-export function ReaderAudioPanel({
-  ayah,
-  visible,
-  settings,
-  updateSettings,
-  onClose,
-  onAyahChange,
-  onPlaybackStopped,
-}) {
+export function ReaderAudioPanel() {
+  const {
+    view,
+    settings,
+    updateSettings,
+    audioTarget: ayah,
+    audioPosition: currentTime,
+    audioDuration: duration,
+    audioPlaying: playing,
+    audioRepeat: repeat,
+    audioReciter,
+    audioPlaybackRate,
+    closeAudioPlayer,
+    setAudioTarget,
+    setAudioQueue,
+    setAudioProgress,
+    setAudioPlaying,
+    setAudioRepeat,
+  } = useAppStore(useShallow((state) => ({
+    view: state.view,
+    settings: state.settings,
+    updateSettings: state.updateSettings,
+    audioTarget: state.audioTarget,
+    audioPosition: state.audioPosition,
+    audioDuration: state.audioDuration,
+    audioPlaying: state.audioPlaying,
+    audioRepeat: state.audioRepeat,
+    audioReciter: state.audioReciter,
+    audioPlaybackRate: state.audioPlaybackRate,
+    closeAudioPlayer: state.closeAudioPlayer,
+    setAudioTarget: state.setAudioTarget,
+    setAudioQueue: state.setAudioQueue,
+    setAudioProgress: state.setAudioProgress,
+    setAudioPlaying: state.setAudioPlaying,
+    setAudioRepeat: state.setAudioRepeat,
+  })));
   const currentAudioRef = useRef(null);
   const currentTargetRef = useRef(null);
   const currentReciterRef = useRef('');
@@ -30,19 +60,13 @@ export function ReaderAudioPanel({
   const loadTokenRef = useRef(0);
   const loadingRef = useRef(null);
   const preloadTokenRef = useRef(0);
-  const playIntentRef = useRef(true);
-  const repeatRef = useRef(false);
-  const playbackRateRef = useRef(settings.playbackRate || 1);
-  const onAyahChangeRef = useRef(onAyahChange);
-  const onPlaybackStoppedRef = useRef(onPlaybackStopped);
+  const playIntentRef = useRef(playing);
+  const repeatRef = useRef(repeat);
+  const playbackRateRef = useRef(audioPlaybackRate || settings.playbackRate || 1);
   const unmountedRef = useRef(false);
 
   const reciters = useMemo(() => normalizeLocalReciters(), []);
-  const selectedReciter = settings.reciter || getDefaultReciterId();
-  const [duration, setDuration] = useState(0);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [repeat, setRepeat] = useState(false);
-  const [playing, setPlaying] = useState(true);
+  const selectedReciter = audioReciter || settings.reciter || getDefaultReciterId();
   const [status, setStatus] = useState('');
 
   const surah = ayah?.surahNumber ? getSurah(ayah.surahNumber) : null;
@@ -51,9 +75,37 @@ export function ReaderAudioPanel({
     : 'Audio player';
 
   repeatRef.current = repeat;
-  playbackRateRef.current = settings.playbackRate || 1;
-  onAyahChangeRef.current = onAyahChange;
-  onPlaybackStoppedRef.current = onPlaybackStopped;
+  playbackRateRef.current = audioPlaybackRate || settings.playbackRate || 1;
+
+  useEffect(() => {
+    unmountedRef.current = false;
+
+    return () => {
+      unmountedRef.current = true;
+      loadTokenRef.current += 1;
+      preloadTokenRef.current += 1;
+      loadingRef.current = null;
+      disposeAudio(currentAudioRef.current);
+      disposePreload();
+      currentAudioRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    playIntentRef.current = playing;
+    const audio = currentAudioRef.current;
+
+    if (
+      playing &&
+      audio?.paused &&
+      !audio.ended &&
+      sameTarget(currentTargetRef.current, ayah)
+    ) {
+      startCurrentAudio();
+    } else if (!playing && audio && !audio.paused) {
+      audio.pause();
+    }
+  }, [playing]);
 
   useEffect(() => {
     if (!settings.reciter && selectedReciter) {
@@ -76,12 +128,13 @@ export function ReaderAudioPanel({
     );
 
     if (!currentMatches && !loadingMatches) {
-      loadTarget(target, selectedReciter, playIntentRef.current);
+      playIntentRef.current = playing;
+      loadTarget(target, selectedReciter, playing);
     }
   }, [ayah?.surahNumber, ayah?.ayahNumber, selectedReciter]);
 
   useEffect(() => {
-    const rate = settings.playbackRate || 1;
+    const rate = audioPlaybackRate || settings.playbackRate || 1;
     playbackRateRef.current = rate;
 
     if (currentAudioRef.current) {
@@ -90,36 +143,31 @@ export function ReaderAudioPanel({
     if (preloadRef.current?.audio) {
       preloadRef.current.audio.playbackRate = rate;
     }
-  }, [settings.playbackRate]);
-
-  useEffect(() => {
-    unmountedRef.current = false;
-
-    return () => {
-      unmountedRef.current = true;
-      loadTokenRef.current += 1;
-      preloadTokenRef.current += 1;
-      loadingRef.current = null;
-      disposeAudio(currentAudioRef.current);
-      disposePreload();
-      currentAudioRef.current = null;
-    };
-  }, []);
+  }, [audioPlaybackRate, settings.playbackRate]);
 
   function bindCurrentAudio(audio) {
     const handlers = {
       loadedmetadata: () => {
         if (audio !== currentAudioRef.current) return;
-        setDuration(Number.isFinite(audio.duration) ? audio.duration : 0);
+        setAudioProgress(
+          audio.currentTime || 0,
+          Number.isFinite(audio.duration) ? audio.duration : 0,
+        );
       },
       durationchange: () => {
         if (audio !== currentAudioRef.current) return;
-        setDuration(Number.isFinite(audio.duration) ? audio.duration : 0);
+        setAudioProgress(
+          audio.currentTime || 0,
+          Number.isFinite(audio.duration) ? audio.duration : 0,
+        );
       },
       timeupdate: () => {
         if (audio !== currentAudioRef.current) return;
 
-        setCurrentTime(audio.currentTime || 0);
+        setAudioProgress(
+          audio.currentTime || 0,
+          Number.isFinite(audio.duration) ? audio.duration : 0,
+        );
         const remaining = (audio.duration || 0) - (audio.currentTime || 0);
         if (remaining > 0 && remaining <= PRELOAD_THRESHOLD_SECONDS) {
           ensureNextPreloaded(currentTargetRef.current, currentReciterRef.current);
@@ -127,12 +175,12 @@ export function ReaderAudioPanel({
       },
       play: () => {
         if (audio !== currentAudioRef.current) return;
-        setPlaying(true);
+        setAudioPlaying(true);
         setStatus('');
       },
       pause: () => {
         if (audio !== currentAudioRef.current || audio.ended) return;
-        setPlaying(false);
+        setAudioPlaying(false);
       },
       ended: () => {
         if (audio !== currentAudioRef.current) return;
@@ -141,9 +189,8 @@ export function ReaderAudioPanel({
       error: () => {
         if (audio !== currentAudioRef.current) return;
         playIntentRef.current = false;
-        setPlaying(false);
+        setAudioPlaying(false);
         setStatus('Audio playback could not continue.');
-        onPlaybackStoppedRef.current?.();
       },
     };
 
@@ -191,8 +238,10 @@ export function ReaderAudioPanel({
     currentReciterRef.current = reciterId;
     audio.playbackRate = playbackRateRef.current;
     bindCurrentAudio(audio);
-    setCurrentTime(audio.currentTime || 0);
-    setDuration(Number.isFinite(audio.duration) ? audio.duration : 0);
+    setAudioProgress(
+      audio.currentTime || 0,
+      Number.isFinite(audio.duration) ? audio.duration : 0,
+    );
   }
 
   async function startCurrentAudio() {
@@ -203,14 +252,13 @@ export function ReaderAudioPanel({
       audio.playbackRate = playbackRateRef.current;
       await audio.play();
       if (audio !== currentAudioRef.current) return;
-      setPlaying(true);
+      setAudioPlaying(true);
       setStatus('');
     } catch (error) {
       if (audio !== currentAudioRef.current) return;
       playIntentRef.current = false;
-      setPlaying(false);
+      setAudioPlaying(false);
       setStatus(error?.message || 'Audio playback could not start.');
-      onPlaybackStoppedRef.current?.();
     }
   }
 
@@ -225,8 +273,7 @@ export function ReaderAudioPanel({
     currentAudioRef.current = null;
     currentTargetRef.current = target;
     currentReciterRef.current = reciterId;
-    setCurrentTime(0);
-    setDuration(0);
+    setAudioProgress(0, 0);
     setStatus('Loading audio...');
 
     try {
@@ -236,9 +283,8 @@ export function ReaderAudioPanel({
       if (!url) {
         loadingRef.current = null;
         playIntentRef.current = false;
-        setPlaying(false);
+        setAudioPlaying(false);
         setStatus('Audio is not available for this ayah and reciter.');
-        onPlaybackStoppedRef.current?.();
         return;
       }
 
@@ -256,15 +302,14 @@ export function ReaderAudioPanel({
         playIntentRef.current = true;
         await startCurrentAudio();
       } else {
-        setPlaying(false);
+        setAudioPlaying(false);
       }
     } catch (error) {
       if (unmountedRef.current || loadToken !== loadTokenRef.current) return;
       loadingRef.current = null;
       playIntentRef.current = false;
-      setPlaying(false);
+      setAudioPlaying(false);
       setStatus(error?.message || 'Audio could not be loaded.');
-      onPlaybackStoppedRef.current?.();
     }
   }
 
@@ -274,8 +319,11 @@ export function ReaderAudioPanel({
     const nextTarget = getAdjacentTarget(target, 1);
     if (!nextTarget || !reciterId) {
       disposePreload();
+      setAudioQueue(target ? [target] : [], target ? 0 : -1);
       return null;
     }
+
+    setAudioQueue([target, nextTarget], 0);
 
     const existing = preloadRef.current;
     if (
@@ -339,8 +387,7 @@ export function ReaderAudioPanel({
     const nextTarget = getAdjacentTarget(currentTargetRef.current, 1);
     if (!nextTarget) {
       playIntentRef.current = false;
-      setPlaying(false);
-      onPlaybackStoppedRef.current?.();
+      setAudioPlaying(false);
       return;
     }
 
@@ -357,7 +404,7 @@ export function ReaderAudioPanel({
     }
 
     if (!preload?.audio || !sameTarget(preload.target, nextTarget)) {
-      onAyahChangeRef.current?.(nextTarget);
+      setAudioTarget(nextTarget);
       await loadTarget(nextTarget, currentReciterRef.current, true);
       return;
     }
@@ -369,7 +416,7 @@ export function ReaderAudioPanel({
     currentAudioRef.current = null;
     installCurrentAudio(preload.audio, nextTarget, preload.reciterId);
     disposeAudio(previousAudio);
-    onAyahChangeRef.current?.(nextTarget);
+    setAudioTarget(nextTarget);
     await startCurrentAudio();
     ensureNextPreloaded(nextTarget, preload.reciterId);
   }
@@ -377,7 +424,7 @@ export function ReaderAudioPanel({
   function seek(value) {
     const audio = currentAudioRef.current;
     const nextTime = Number(value) || 0;
-    setCurrentTime(nextTime);
+    setAudioProgress(nextTime, duration);
     if (audio) audio.currentTime = nextTime;
   }
 
@@ -388,7 +435,7 @@ export function ReaderAudioPanel({
     if (!audio.paused) {
       playIntentRef.current = false;
       audio.pause();
-      setPlaying(false);
+      setAudioPlaying(false);
       return;
     }
 
@@ -402,13 +449,13 @@ export function ReaderAudioPanel({
     if (!nextTarget) return;
 
     playIntentRef.current = true;
-    setPlaying(true);
-    onAyahChangeRef.current?.(nextTarget);
+    setAudioPlaying(true);
+    setAudioTarget(nextTarget);
     loadTarget(nextTarget, selectedReciter, true);
   }
 
   function cycleSpeed() {
-    const current = settings.playbackRate || 1;
+    const current = audioPlaybackRate || settings.playbackRate || 1;
     const index = SPEEDS.indexOf(current);
     const next = SPEEDS[(index + 1) % SPEEDS.length] || 1;
     updateSettings({ playbackRate: next });
@@ -423,15 +470,14 @@ export function ReaderAudioPanel({
     disposePreload();
     currentAudioRef.current = null;
     currentTargetRef.current = null;
-    setPlaying(false);
-    onClose?.();
+    setAudioPlaying(false);
+    closeAudioPlayer();
   }
 
   return (
     <div
-      className={`reader-audio-panel-wrap ${visible ? 'reader-audio-panel-visible' : 'reader-audio-panel-hidden'}`}
+      className={`reader-audio-panel-wrap reader-audio-panel-visible ${view === VIEWS.READER ? 'reader-audio-over-reader' : 'reader-audio-over-screen'}`}
       data-reader-ui
-      aria-hidden={!visible}
     >
       <section className="reader-audio-panel">
         <div className="reader-audio-head">
@@ -466,7 +512,7 @@ export function ReaderAudioPanel({
         </div>
 
         <div className="reader-transport-row">
-          <button className={repeat ? 'transport-active' : ''} onClick={() => setRepeat((value) => !value)} aria-label="Repeat ayah">
+          <button className={repeat ? 'transport-active' : ''} onClick={() => setAudioRepeat(!repeat)} aria-label="Repeat ayah">
             <Repeat size={22} />
           </button>
           <button onClick={() => moveAyah(-1)} aria-label="Previous ayah"><SkipBack size={23} /></button>
@@ -475,7 +521,7 @@ export function ReaderAudioPanel({
           </button>
           <button onClick={() => moveAyah(1)} aria-label="Next ayah"><SkipForward size={23} /></button>
           <button className="transport-speed" onClick={cycleSpeed} aria-label="Playback speed">
-            {settings.playbackRate || 1}x
+            {audioPlaybackRate || settings.playbackRate || 1}x
           </button>
         </div>
 
