@@ -17,23 +17,49 @@ import SurahScreen from './pages/SurahScreen';
 import SurahInfoScreen from './pages/SurahInfoScreen';
 
 export default function App() {
-  const { view, goPage, settings, updateSettings } = useAppStore();
+  const { view, hydrateLastRead, settings, updateSettings, goBack } = useAppStore();
   const activeView = normalizeView(view);
   const [booted, setBooted] = useState(false);
 
   useEffect(() => {
-    Promise.all([getLastRead(), getSettings()]).then(([lastRead, storedSettings]) => {
-      if (lastRead?.page) goPage(lastRead.page);
-      if (storedSettings.app) updateSettings(sanitizeSettings(storedSettings.app));
-      setBooted(true);
-    });
-  }, []);
+    let mounted = true;
+
+    Promise.all([getLastRead(), getSettings()])
+      .then(([lastRead, storedSettings]) => {
+        if (!mounted) return;
+        if (lastRead?.page) hydrateLastRead(lastRead);
+        if (storedSettings.app) updateSettings(sanitizeSettings(storedSettings.app));
+      })
+      .catch(() => {
+        // Start with safe defaults if local persistence is unavailable.
+      })
+      .finally(() => {
+        if (mounted) setBooted(true);
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, [hydrateLastRead, updateSettings]);
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') goBack();
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [goBack]);
 
   useEffect(() => {
     const theme = settings.theme === 'dark' ? 'dark' : 'light';
     document.documentElement.dataset.theme = theme;
     document.documentElement.dataset.haptics = settings.haptics ? 'on' : 'off';
     document.documentElement.style.colorScheme = theme;
+    document.getElementById('app-theme-color')?.setAttribute(
+      'content',
+      theme === 'dark' ? '#111412' : '#2d6e5e',
+    );
     try {
       window.localStorage.setItem('quran-app-theme', theme);
     } catch {

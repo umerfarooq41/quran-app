@@ -39,10 +39,10 @@ export function NavIcon({ icon: Icon, active, onClick }) {
 }
 
 export function Header({ title, back = 'home' }) {
-  const { setView } = useAppStore();
+  const goBack = useAppStore((state) => state.goBack);
   return (
     <div className="app-header flex items-center gap-2 pt-1 sm:gap-3 sm:pt-2">
-      <button className={iconButton} onClick={() => setView(back, 'back')} aria-label="Back">
+      <button className={iconButton} onClick={() => goBack(back)} aria-label="Back">
         <ArrowLeft size={20} />
       </button>
       <h1 className="app-header-title text-2xl font-semibold tracking-tight sm:text-3xl">{title}</h1>

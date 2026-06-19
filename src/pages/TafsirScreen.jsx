@@ -7,7 +7,7 @@ import { useAppStore } from '../store/useAppStore';
 import { Empty, Header, Screen } from '../components/common/AppChrome';
 
 export default function TafsirScreen() {
-  const { tafsirTarget, setView, goAyah, settings } = useAppStore();
+  const { tafsirTarget, goBack, goAyah, settings } = useAppStore();
   const [translation, setTranslation] = useState('');
   const [status, setStatus] = useState('Loading translation...');
   const surah = getSurah(tafsirTarget?.surahNumber);
@@ -58,7 +58,7 @@ export default function TafsirScreen() {
   return (
     <Screen className="tafsir-screen space-y-4">
       <div className="tabs-header compact">
-        <button className="tabs-back-pill" onClick={() => setView('reader')}><ArrowLeft size={24} /></button>
+        <button className="tabs-back-pill" onClick={() => goBack('reader')}><ArrowLeft size={24} /></button>
         <h1>Translation</h1>
       </div>
       <article className="tafsir-card">

@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
 import { findPageForReference, getPage, getSurah, quranAyahs } from '../lib/quran';
-import { qfClient } from '../lib/qfClient';
 import { normalizeLocalReciters, getAudioUrl, getDefaultReciterId, getNextAyahRef } from '../lib/localAudio';
 import { getTranslation, getTranslationOption } from '../lib/translations';
 import { useAppStore } from '../store/useAppStore';
@@ -39,16 +38,6 @@ export default function AudioScreen() {
     setReciters(local);
     if (!settings.reciter && local[0]?.id) updateSettings({ reciter: local[0].id });
     setStatus(local.length ? 'Ready: audio URLs are bundled locally.' : 'No bundled reciter audio found.');
-
-    // Optional API fallback: if Quran Foundation credentials are later added, this can enrich the list.
-    qfClient.reciters()
-      .then((data) => {
-        const apiList = data.recitations || data.data || [];
-        if (apiList.length) setStatus('Ready: bundled audio active; Quran Foundation API also reachable.');
-      })
-      .catch(() => {
-        // Silent: bundled audio is the primary source now.
-      });
   }, []);
 
   useEffect(() => { audioRef.current.playbackRate = settings.playbackRate; }, [settings.playbackRate]);

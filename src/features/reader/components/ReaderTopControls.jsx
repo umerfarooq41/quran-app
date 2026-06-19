@@ -8,7 +8,7 @@ export function ReaderTopControls({ visible, onBack, onBookmarks, onIndex, onSet
       className={`reader-topbar ${visible ? 'reader-topbar-visible' : ''}`}
     >
       <div className="reader-control-row">
-        <button className="reader-back-pill" onClick={onBack} aria-label="Back to home">
+        <button className="reader-back-pill" onClick={onBack} aria-label="Back">
           <ArrowLeft size={24} />
         </button>
 

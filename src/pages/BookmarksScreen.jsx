@@ -19,7 +19,7 @@ const BOOKMARK_TYPES = [
 ];
 
 export default function BookmarksScreen() {
-  const { setView, goAyah } = useAppStore();
+  const { goBack, goAyah } = useAppStore();
   const [items, setItems] = useState([]);
   const [filter, setFilter] = useState('All');
   const [openMenu, setOpenMenu] = useState(null);
@@ -145,7 +145,7 @@ export default function BookmarksScreen() {
   return (
     <Screen className="tabs-screen">
       <div className="tabs-header compact">
-        <button className="tabs-back-pill" onClick={() => setView('home', 'back')} aria-label="Back">
+        <button className="tabs-back-pill" onClick={() => goBack()} aria-label="Back">
           <ArrowLeft size={21} />
         </button>
         <h1>Bookmarks</h1>

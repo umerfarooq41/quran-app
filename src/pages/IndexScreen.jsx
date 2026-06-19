@@ -37,14 +37,14 @@ function previewText(surah) {
 
 export default function IndexScreen() {
   const [tab, setTab] = useState('juz');
-  const setView = useAppStore((state) => state.setView);
+  const goBack = useAppStore((state) => state.goBack);
 
   return (
     <main className="index-replica-shell">
       <div className="index-replica-inner">
         <header className="index-replica-header">
           <h1>Index</h1>
-          <button className="index-close-pill" onClick={() => setView('reader', 'back')} aria-label="Close index">
+          <button className="index-close-pill" onClick={() => goBack()} aria-label="Close index">
             <X size={22} strokeWidth={2.5} />
           </button>
         </header>

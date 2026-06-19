@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { db } from '../../lib/db';
 import { getMushafPageNumber, getPage, getPageMeta, getSurahAyahs } from '../../lib/quran';
-import { useAppStore } from '../../store/useAppStore';
+import { OVERLAY_TYPES, useAppStore } from '../../store/useAppStore';
 import { AyahActionSheet } from './components/AyahActionSheet';
 import { MushafPage } from './components/MushafPage';
 import { ReaderAudioPanel } from './components/ReaderAudioPanel';
@@ -23,10 +23,22 @@ export default function ReaderScreen() {
     setControlsVisible,
     settings,
     updateSettings,
-    setView,
+    goBack,
+    openBookmarks,
+    openIndex,
+    openSearch,
+    openSettings,
+    overlayStack,
     selectedAyah,
-    setSelectedAyah,
-    clearSelectedAyah,
+    openAyahSheet,
+    closeAyahSheet,
+    shareTarget,
+    openShareSheet: pushShareSheet,
+    closeShareSheet,
+    audioTarget,
+    setAudioTarget,
+    openAudioPlayer,
+    closeAudioPlayer,
     pendingAyah,
     clearPendingAyah,
   } = useAppStore();
@@ -36,12 +48,11 @@ export default function ReaderScreen() {
   const [savedHighlights, setSavedHighlights] = useState(new Map());
   const [bookmarkMarkers, setBookmarkMarkers] = useState(new Map());
   const [annotationVersion, setAnnotationVersion] = useState(0);
-  const [audioSessionOpen, setAudioSessionOpen] = useState(false);
-  const [audioAyah, setAudioAyah] = useState(null);
   const [activeAudioAyah, setActiveAudioAyah] = useState(null);
-  const [shareTarget, setShareTarget] = useState(null);
   const suppressTapUntil = useRef(0);
   const { handleTouchStart, handleTouchEnd } = useReaderGestures({ page, goPage });
+  const topOverlay = overlayStack.at(-1)?.type;
+  const audioSessionOpen = overlayStack.some((item) => item.type === OVERLAY_TYPES.AUDIO);
 
   usePagePersistence({ page, pageData });
 
@@ -99,16 +110,12 @@ export default function ReaderScreen() {
 
     if (!target) return;
 
-    setAudioAyah(target);
     setActiveAudioAyah(target);
-    clearSelectedAyah();
-    setAudioSessionOpen(true);
-    setControlsVisible(true);
+    openAudioPlayer(target);
   }
 
   function closeAudioPanel() {
-    setAudioSessionOpen(false);
-    setAudioAyah(null);
+    closeAudioPlayer();
     setActiveAudioAyah(null);
   }
 
@@ -116,7 +123,7 @@ export default function ReaderScreen() {
     if (!target) return;
 
     const keepControlsVisible = controlsVisible;
-    setAudioAyah(target);
+    setAudioTarget(target);
     setActiveAudioAyah(target);
 
     if (target.page && target.page !== page) {
@@ -129,9 +136,8 @@ export default function ReaderScreen() {
     setAnnotationVersion((version) => version + 1);
   }
 
-  function openShareSheet(targetAyah) {
-    setShareTarget(targetAyah);
-    clearSelectedAyah();
+  function showShareSheet(targetAyah) {
+    pushShareSheet(targetAyah);
   }
 
   function selectAyah(line, ayahNumber) {
@@ -139,7 +145,7 @@ export default function ReaderScreen() {
       .find((candidate) => candidate.ayahNumber === Number(ayahNumber));
 
     suppressTapUntil.current = Date.now() + 700;
-    setSelectedAyah({
+    openAyahSheet({
       page,
       surahNumber: line.surahNumber,
       ayahNumber: Number(ayahNumber),
@@ -166,10 +172,10 @@ export default function ReaderScreen() {
 
         <ReaderTopControls
           visible={controlsVisible}
-          onBack={() => setView('home', 'back')}
-          onBookmarks={() => setView('tabs')}
-          onIndex={() => setView('index')}
-          onSettings={() => setView('settings')}
+          onBack={() => goBack()}
+          onBookmarks={openBookmarks}
+          onIndex={openIndex}
+          onSettings={openSettings}
         />
 
         <MushafPage
@@ -193,7 +199,7 @@ export default function ReaderScreen() {
             displayPage={displayPage}
             goPage={goPage}
             onPreviousPage={goPreviousReaderPage}
-            onSearch={() => setView('search')}
+            onSearch={openSearch}
             onAudio={() => openAudioPanel()}
             compact={audioSessionOpen}
           />
@@ -202,8 +208,8 @@ export default function ReaderScreen() {
 
       {audioSessionOpen && (
           <ReaderAudioPanel
-            ayah={audioAyah}
-            visible={controlsVisible}
+            ayah={audioTarget}
+            visible={controlsVisible && topOverlay === OVERLAY_TYPES.AUDIO}
             settings={settings}
             updateSettings={updateSettings}
             onClose={closeAudioPanel}
@@ -213,22 +219,22 @@ export default function ReaderScreen() {
       )}
 
       <AnimatePresence>
-        {selectedAyah && (
+        {selectedAyah && topOverlay === OVERLAY_TYPES.AYAH && (
           <AyahActionSheet
             ayah={selectedAyah}
-            onClose={clearSelectedAyah}
+            onClose={closeAyahSheet}
             onPlay={openAudioPanel}
-            onShare={openShareSheet}
+            onShare={showShareSheet}
             onAnnotationsChanged={annotationsChanged}
           />
         )}
       </AnimatePresence>
 
       <AnimatePresence>
-        {shareTarget && (
+        {shareTarget && topOverlay === OVERLAY_TYPES.SHARE && (
           <ShareAyahSheet
             ayah={shareTarget}
-            onClose={() => setShareTarget(null)}
+            onClose={closeShareSheet}
           />
         )}
       </AnimatePresence>

@@ -7,13 +7,20 @@ import { getJuzPartByPage } from '../data/quranMeta';
 import { Screen } from '../components/common/AppChrome';
 
 export default function HomeScreen() {
-  const { page, goPage, setView } = useAppStore();
+  const {
+    page,
+    goPage,
+    openIndex,
+    openSearch,
+    openBookmarks,
+    openSettings,
+  } = useAppStore();
   const meta = getPageMeta(page);
   const actions = [
-    ['Index', Library, () => setView('index')],
-    ['Search', Search, () => setView('search')],
-    ['Bookmarks', Bookmark, () => setView('tabs')],
-    ['Settings', SlidersHorizontal, () => setView('settings')],
+    ['Index', Library, openIndex],
+    ['Search', Search, openSearch],
+    ['Bookmarks', Bookmark, openBookmarks],
+    ['Settings', SlidersHorizontal, openSettings],
   ];
 
   return (
