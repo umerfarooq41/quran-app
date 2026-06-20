@@ -94,6 +94,12 @@ export async function saveRecentSearch(query) {
 export async function saveAyahHighlight(payload) {
   const surahNumber = Number(payload.surahNumber);
   const ayahNumber = Number(payload.ayahNumber);
+  const lineIndex = Number.isInteger(payload.lineIndex)
+    ? payload.lineIndex
+    : null;
+  const wordIndex = Number.isInteger(payload.wordIndex)
+    ? payload.wordIndex
+    : null;
   const matches = await db.highlights
     .where('surahNumber')
     .equals(surahNumber)
@@ -103,8 +109,14 @@ export async function saveAyahHighlight(payload) {
   const record = {
     ...existing,
     ...payload,
+    page: Number(payload.page) || existing?.page || null,
+    surah: surahNumber,
+    ayah: ayahNumber,
     surahNumber,
     ayahNumber,
+    lineIndex,
+    wordIndex,
+    ayahKey: payload.ayahKey || `${surahNumber}:${ayahNumber}`,
     createdAt: existing?.createdAt || payload.createdAt || Date.now(),
     updatedAt: Date.now(),
   };

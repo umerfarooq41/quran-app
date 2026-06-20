@@ -92,7 +92,7 @@ export default function ReaderScreen() {
       const nextHighlights = new Map();
       highlights.forEach((item) => {
         if (item?.surahNumber && item?.ayahNumber && item?.color) {
-          nextHighlights.set(`${item.surahNumber}:${item.ayahNumber}`, item.color);
+          nextHighlights.set(`${item.surahNumber}:${item.ayahNumber}`, item);
         }
       });
 
@@ -159,16 +159,26 @@ export default function ReaderScreen() {
     pushShareSheet(targetAyah);
   }
 
-  function selectAyah(line, ayahNumber) {
+  function selectAyah(line, lineIndex, selection) {
+    const ayahNumber = Number(selection?.ayahNumber || line.ayahStart);
+    const wordIndex = Number.isInteger(selection?.wordIndex)
+      ? selection.wordIndex
+      : null;
     const ayah = getSurahAyahs(line.surahNumber)
-      .find((candidate) => candidate.ayahNumber === Number(ayahNumber));
+      .find((candidate) => candidate.ayahNumber === ayahNumber);
+    const ayahKey = `${line.surahNumber}:${ayahNumber}`;
 
     suppressTapUntil.current = Date.now() + 700;
     openAyahSheet({
       page,
+      surah: line.surahNumber,
+      ayah: ayahNumber,
       surahNumber: line.surahNumber,
-      ayahNumber: Number(ayahNumber),
-      reference: `${line.surahNumber}:${ayahNumber}`,
+      ayahNumber,
+      lineIndex,
+      wordIndex,
+      ayahKey,
+      reference: ayahKey,
       text: ayah?.text || line.text,
     });
   }

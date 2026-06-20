@@ -27,6 +27,64 @@ export function createTextDomRange(textElement, startOffset, endOffset) {
   return range;
 }
 
+export function createWordDomRange(textElement, value, wordIndex) {
+  const offsets = getWordOffsets(value, wordIndex);
+  if (!offsets) return null;
+  return createTextDomRange(textElement, offsets.start, offsets.end);
+}
+
+export function getRenderedWordTokens(value = '') {
+  const tokens = [];
+  const matcher = /\S+|\s+/gu;
+  let wordIndex = 0;
+  let match = matcher.exec(String(value));
+
+  while (match) {
+    const text = match[0];
+    const isWord = /\S/u.test(text);
+    tokens.push({
+      text,
+      start: match.index,
+      end: match.index + text.length,
+      wordIndex: isWord ? wordIndex : null,
+      isWord,
+    });
+    if (isWord) wordIndex += 1;
+    match = matcher.exec(String(value));
+  }
+
+  return tokens;
+}
+
+export function getWordAtRenderedPoint(textElement, clientX, clientY) {
+  if (!textElement) return null;
+
+  const words = Array.from(textElement.querySelectorAll('[data-quran-word-index]'));
+  let closestIndex = null;
+  let closestDistance = Number.POSITIVE_INFINITY;
+
+  words.forEach((word) => {
+    const rect = word.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+
+    const wordIndex = Number(word.dataset.quranWordIndex);
+    if (pointInsideRect(clientX, clientY, rect)) {
+      closestIndex = wordIndex;
+      closestDistance = -1;
+      return;
+    }
+
+    if (closestDistance < 0) return;
+    const distance = distanceToRect(clientX, clientY, rect);
+    if (distance < closestDistance) {
+      closestDistance = distance;
+      closestIndex = wordIndex;
+    }
+  });
+
+  return Number.isInteger(closestIndex) ? closestIndex : null;
+}
+
 export function getAyahAtRenderedPoint(line, textElement, clientX, clientY) {
   if (!textElement || line.type !== 'ayah') return line.ayahStart;
 
@@ -138,6 +196,16 @@ export function getAyahEndMarkerOffset(line, ayahNumber) {
   return line.text.slice(markerOffset, offsets.end) === marker
     ? markerOffset
     : null;
+}
+
+export function getWordOffsets(value, wordIndex) {
+  const safeIndex = Number(wordIndex);
+  if (!Number.isInteger(safeIndex) || safeIndex < 0) return null;
+
+  const token = getRenderedWordTokens(value)
+    .find((candidate) => candidate.isWord && candidate.wordIndex === safeIndex);
+
+  return token ? { start: token.start, end: token.end } : null;
 }
 
 function getAyahEndMarker(surahNumber, ayahNumber) {

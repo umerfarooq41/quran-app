@@ -79,8 +79,13 @@ export function AyahActionSheet({
   async function chooseHighlight(color) {
     await saveAyahHighlight({
       page,
+      surah: ayah.surahNumber,
+      ayah: ayah.ayahNumber,
       surahNumber: ayah.surahNumber,
       ayahNumber: ayah.ayahNumber,
+      lineIndex: Number.isInteger(ayah.lineIndex) ? ayah.lineIndex : null,
+      wordIndex: Number.isInteger(ayah.wordIndex) ? ayah.wordIndex : null,
+      ayahKey: ayah.ayahKey || `${ayah.surahNumber}:${ayah.ayahNumber}`,
       color,
       preview: ayah.text,
     });

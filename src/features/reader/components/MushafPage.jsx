@@ -2,6 +2,7 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
   createAyahDomRange,
   createTextDomRange,
+  createWordDomRange,
   getAyahEndMarkerOffset,
   getAyahHighlightRects,
 } from '../utils/ayahDomRange';
@@ -11,6 +12,7 @@ const SAVED_HIGHLIGHTS = ['amber', 'emerald', 'rose', 'sky', 'violet'];
 const BOOKMARK_TONES = ['reading', 'memorize', 'tadabbur', 'notes'];
 const MANAGED_HIGHLIGHTS = [
   ...SAVED_HIGHLIGHTS.map((color) => `reader-highlight-${color}`),
+  ...SAVED_HIGHLIGHTS.map((color) => `reader-word-highlight-${color}`),
   ...BOOKMARK_TONES.map((tone) => `reader-bookmark-${tone}`),
 ];
 const LINE_FIT_EVENT = 'quran-line-fit';
@@ -114,11 +116,25 @@ export function MushafPage({
     if (!pageRef.current) return undefined;
 
     const groupedRanges = new Map();
-    savedHighlights.forEach((color, reference) => {
+    savedHighlights.forEach((highlight, reference) => {
+      const color = typeof highlight === 'string' ? highlight : highlight?.color;
       if (!SAVED_HIGHLIGHTS.includes(color)) return;
       const { surahNumber, ayahNumber } = parseReference(reference);
       const ranges = getAyahRanges(pageRef.current, pageData, surahNumber, ayahNumber);
       addRanges(groupedRanges, `reader-highlight-${color}`, ranges);
+
+      const wordRange = getSavedWordRange(
+        pageRef.current,
+        pageData,
+        highlight,
+        surahNumber,
+        ayahNumber,
+      );
+      addRanges(
+        groupedRanges,
+        `reader-word-highlight-${color}`,
+        wordRange ? [wordRange] : [],
+      );
     });
 
     bookmarkMarkers.forEach((category, reference) => {
@@ -130,7 +146,10 @@ export function MushafPage({
     });
 
     groupedRanges.forEach((ranges, name) => {
-      if (ranges.length) CSS.highlights.set(name, new Highlight(...ranges));
+      if (!ranges.length) return;
+      const highlight = new Highlight(...ranges);
+      if (name.startsWith('reader-word-highlight-')) highlight.priority = 1;
+      CSS.highlights.set(name, highlight);
     });
 
     return () => {
@@ -180,7 +199,7 @@ export function MushafPage({
             key={`${pageData.page}:${line.line}`}
             line={line}
             hasSeparateBasmallah={hasSeparateBasmallah}
-            onSelect={(ayahNumber) => onSelectAyah(line, ayahNumber)}
+            onSelect={(selection) => onSelectAyah(line, index, selection)}
             marked={!supportsTextHighlights && lineHasSavedHighlight(line, savedHighlights)}
             jumped={Boolean(
               pendingAyah &&
@@ -219,13 +238,40 @@ function getAyahMarkerRange(pageElement, pageData, surahNumber, ayahNumber) {
   return null;
 }
 
+function getSavedWordRange(
+  pageElement,
+  pageData,
+  highlight,
+  surahNumber,
+  ayahNumber,
+) {
+  if (!highlight || typeof highlight === 'string') return null;
+
+  if (
+    !Number.isInteger(highlight.lineIndex) ||
+    !Number.isInteger(highlight.wordIndex)
+  ) {
+    return null;
+  }
+
+  const lineIndex = highlight.lineIndex;
+  const wordIndex = highlight.wordIndex;
+
+  const line = pageData.lines[lineIndex];
+  if (!lineContainsReference(line, surahNumber, ayahNumber)) return null;
+
+  const textElement = getLineTextElement(pageElement, line.line);
+  return createWordDomRange(textElement, line.text, wordIndex);
+}
+
 function getLineTextElement(pageElement, lineNumber) {
   return pageElement.querySelector(`[data-quran-line="${lineNumber}"] .quran-line-text`);
 }
 
 function lineContainsReference(line, surahNumber, ayahNumber) {
   return Boolean(
-    line.type === 'ayah' &&
+    line &&
+      line.type === 'ayah' &&
       line.surahNumber === Number(surahNumber) &&
       line.ayahStart <= Number(ayahNumber) &&
       line.ayahEnd >= Number(ayahNumber)

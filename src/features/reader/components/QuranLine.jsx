@@ -1,6 +1,10 @@
 import React, { useLayoutEffect, useRef } from 'react';
-import { basmallahText, getDisplayLineText } from '../../../utils/quranLabels';
-import { getAyahAtRenderedPoint } from '../utils/ayahDomRange';
+import { getDisplayLineText } from '../../../utils/quranLabels';
+import {
+  getAyahAtRenderedPoint,
+  getRenderedWordTokens,
+  getWordAtRenderedPoint,
+} from '../utils/ayahDomRange';
 import { SurahHeader } from './SurahHeader';
 
 const LINE_FIT_EVENT = 'quran-line-fit';
@@ -20,7 +24,7 @@ export function QuranLine({
   const longPressTimer = useRef(null);
   const longPressed = useRef(false);
   const pressPoint = useRef(null);
-  const pressedAyah = useRef(null);
+  const pressedSelection = useRef(null);
   const capturedPointer = useRef(null);
   const isBasmallah = line.type === 'basmallah' || line.type === 'bismillah';
   const centered = (
@@ -30,6 +34,7 @@ export function QuranLine({
     isBasmallah
   );
   const text = getDisplayLineText(line);
+  const renderedTokens = getRenderedWordTokens(text);
   const inlineBasmallah = line.type === 'surah_name' && line.surahNumber !== 1 && line.surahNumber !== 9 && !hasSeparateBasmallah;
 
   useLayoutEffect(() => {
@@ -150,7 +155,19 @@ export function QuranLine({
 
     longPressed.current = false;
     pressPoint.current = { x: event.clientX, y: event.clientY };
-    pressedAyah.current = getAyahAtRenderedPoint(line, textRef.current, event.clientX, event.clientY);
+    pressedSelection.current = {
+      ayahNumber: getAyahAtRenderedPoint(
+        line,
+        textRef.current,
+        event.clientX,
+        event.clientY,
+      ),
+      wordIndex: getWordAtRenderedPoint(
+        textRef.current,
+        event.clientX,
+        event.clientY,
+      ),
+    };
     capturedPointer.current = event.pointerId;
     event.currentTarget.setPointerCapture?.(event.pointerId);
     window.clearTimeout(longPressTimer.current);
@@ -162,7 +179,10 @@ export function QuranLine({
         navigator.vibrate([24]);
       }
 
-      onSelect(pressedAyah.current || line.ayahStart);
+      onSelect({
+        ayahNumber: pressedSelection.current?.ayahNumber || line.ayahStart,
+        wordIndex: pressedSelection.current?.wordIndex,
+      });
     }, 430);
   }
 
@@ -217,7 +237,19 @@ export function QuranLine({
         event.preventDefault();
 
         if (line.type === 'ayah' && line.ayahStart) {
-          onSelect(getAyahAtRenderedPoint(line, textRef.current, event.clientX, event.clientY));
+          onSelect({
+            ayahNumber: getAyahAtRenderedPoint(
+              line,
+              textRef.current,
+              event.clientX,
+              event.clientY,
+            ),
+            wordIndex: getWordAtRenderedPoint(
+              textRef.current,
+              event.clientX,
+              event.clientY,
+            ),
+          });
         }
       }}
       className={`quran-line quran-line-${isBasmallah ? 'basmallah' : line.type} ${marked ? 'quran-line-marked' : ''} ${jumped ? 'quran-line-jumped' : ''} ${line.type === 'spacer' ? 'opacity-0' : ''} ${centered ? 'quran-line-centered' : 'quran-line-normal'}`}
@@ -235,7 +267,21 @@ export function QuranLine({
             whiteSpace: 'nowrap',
           }}
         >
-          {text}
+          {renderedTokens.map((token, index) => (
+            token.isWord ? (
+              <span
+                key={`${token.start}-${token.end}`}
+                className="quran-word"
+                data-quran-word-index={token.wordIndex}
+              >
+                {token.text}
+              </span>
+            ) : (
+              <React.Fragment key={`space-${token.start}-${index}`}>
+                {token.text}
+              </React.Fragment>
+            )
+          ))}
         </span>
       )}
     </button>

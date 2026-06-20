@@ -187,6 +187,12 @@
 ::highlight(reader-highlight-sky) { background: rgba(2, 132, 199, .20); }
 ::highlight(reader-highlight-violet) { background: rgba(124, 58, 237, .18); }
 
+::highlight(reader-word-highlight-amber) { background: rgba(202, 128, 16, .52); }
+::highlight(reader-word-highlight-emerald) { background: rgba(22, 101, 82, .46); }
+::highlight(reader-word-highlight-rose) { background: rgba(159, 18, 57, .42); }
+::highlight(reader-word-highlight-sky) { background: rgba(3, 105, 161, .44); }
+::highlight(reader-word-highlight-violet) { background: rgba(91, 33, 182, .42); }
+
 ::highlight(reader-bookmark-reading) {
   color: #26725f;
   background: rgba(197, 239, 222, .82);
