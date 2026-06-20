@@ -106,9 +106,9 @@
   min-height: 0;
   display: flex;
   align-items: center;
-  justify-content: center !important;
-  text-align: center !important;
-  overflow: hidden !important;
+  justify-content: flex-end;
+  text-align: right;
+  overflow: visible !important;
   padding: 0 !important;
   margin: 0 !important;
   border: 0 !important;
@@ -119,28 +119,41 @@
   font-size: calc(clamp(1.02rem, 2.6vh, 1.58rem) * var(--font-scale, 1)) !important;
   line-height: 1.18 !important;
   white-space: nowrap;
-  transition: background .2s ease, transform .2s ease;
+  transition: background .2s ease;
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
   caret-color: transparent;
 }
 
-.quran-line:active {
-  transform: scale(.995);
-}
-
 .quran-line-text {
-  max-width: 100%;
+  position: relative;
+  z-index: 2;
+  width: max-content;
+  max-width: none;
   min-width: 0;
   display: inline-block !important;
+  overflow: visible;
   white-space: nowrap !important;
-  /* Word spacing remains driven by the existing JS measurement. */
   letter-spacing: -0.01em;
   transform-origin: right center;
-  will-change: word-spacing;
+  will-change: transform, word-spacing;
   user-select: none;
   -webkit-user-select: none;
+}
+
+.quran-line-normal {
+  justify-content: flex-end !important;
+  text-align: right !important;
+}
+
+.quran-line-centered {
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+.quran-line-centered .quran-line-text {
+  transform-origin: center center;
 }
 
 .reader-ayah-highlight-layer {
@@ -153,6 +166,7 @@
 
 .reader-ayah-highlight-block {
   position: absolute;
+  z-index: 0;
   display: block;
   border-radius: 5px;
 }
@@ -195,7 +209,8 @@
 
 .quran-line-surah_name,
 .quran-line-basmallah,
-.quran-line-bismillah {
+.quran-line-bismillah,
+.quran-line-spacer {
   justify-content: center !important;
   text-align: center !important;
   overflow: visible !important;

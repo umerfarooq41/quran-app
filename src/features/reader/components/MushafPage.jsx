@@ -13,6 +13,7 @@ const MANAGED_HIGHLIGHTS = [
   ...SAVED_HIGHLIGHTS.map((color) => `reader-highlight-${color}`),
   ...BOOKMARK_TONES.map((tone) => `reader-bookmark-${tone}`),
 ];
+const LINE_FIT_EVENT = 'quran-line-fit';
 
 export function MushafPage({
   pageData,
@@ -69,6 +70,7 @@ export function MushafPage({
     };
 
     scheduleMeasure();
+    pageElement.addEventListener(LINE_FIT_EVENT, scheduleMeasure);
 
     const resizeObserver = typeof ResizeObserver === 'undefined'
       ? null
@@ -90,6 +92,7 @@ export function MushafPage({
       disposed = true;
       window.cancelAnimationFrame(frame);
       resizeObserver?.disconnect();
+      pageElement.removeEventListener(LINE_FIT_EVENT, scheduleMeasure);
       window.removeEventListener('load', scheduleMeasure);
       window.removeEventListener('resize', scheduleMeasure);
       window.removeEventListener('orientationchange', scheduleMeasure);
@@ -174,7 +177,7 @@ export function MushafPage({
 
         return (
           <QuranLine
-            key={line.line}
+            key={`${pageData.page}:${line.line}`}
             line={line}
             hasSeparateBasmallah={hasSeparateBasmallah}
             onSelect={(ayahNumber) => onSelectAyah(line, ayahNumber)}
