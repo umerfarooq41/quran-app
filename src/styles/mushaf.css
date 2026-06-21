@@ -315,58 +315,25 @@
   }
 }
 
-/* Ayah end markers are rendered as a standalone ornament cluster.
- * The shipped private-use circular marker glyph is visually replaced with ۝,
- * while any small signs that came with that marker stay centered above/below it.
- * Normal pause signs attached to words are not changed here.
+/* Ayah end markers use the original Mushaf glyph from the Quran data.
+ * The marker cluster is kept intact, including any tiny signs above/below it,
+ * and is treated as a word-sized ornament so browser word-spacing gives equal
+ * breathing room before and after it. Do not add margins to ordinary pause
+ * symbols such as ۚ ۖ ۛ; they remain attached to their word by mushafText.js.
  */
 .quran-ayah-marker {
-  display: inline-grid;
+  display: inline-block;
   position: relative;
-  place-items: center;
-  width: 1.08em;
-  min-width: 1.08em;
-  height: 1.08em;
-  margin-inline: 0.09em;
+  min-width: 1em;
+  margin-inline: 0;
   padding: 0;
   line-height: 1;
   letter-spacing: 0 !important;
   word-spacing: 0 !important;
   vertical-align: baseline;
-  transform: translateY(-0.06em);
+  transform: translateY(-0.045em);
   transform-origin: center center;
-  text-rendering: geometricPrecision;
-}
-
-.quran-ayah-marker-ornament {
-  grid-area: 1 / 1;
-  display: block;
-  font-size: 1.08em;
-  line-height: 1;
-  letter-spacing: 0 !important;
-  word-spacing: 0 !important;
-}
-
-.quran-ayah-marker-signs {
-  grid-area: 1 / 1;
-  position: absolute;
-  inset-inline: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  direction: rtl;
-  font-size: 0.48em;
-  line-height: 1;
-  letter-spacing: 0 !important;
-  word-spacing: 0 !important;
+  text-align: center;
   white-space: nowrap;
-  pointer-events: none;
-}
-
-.quran-ayah-marker-signs-high {
-  top: -0.38em;
-}
-
-.quran-ayah-marker-signs-low {
-  bottom: -0.34em;
+  text-rendering: geometricPrecision;
 }
