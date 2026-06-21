@@ -314,3 +314,20 @@
     border-radius: 28px;
   }
 }
+
+/* Ayah end markers are rendered as their own inline cluster so the marker can
+ * breathe without changing normal word or pause-symbol spacing. Pause signs
+ * attached above/below the marker stay inside this cluster exactly as supplied.
+ */
+.quran-ayah-marker {
+  display: inline-block;
+  margin-inline: 0.08em;
+  padding-inline: 0.015em;
+  line-height: 1;
+  letter-spacing: 0 !important;
+  word-spacing: 0 !important;
+  vertical-align: baseline;
+  transform: translateY(-0.08em);
+  transform-origin: center center;
+  text-rendering: geometricPrecision;
+}
