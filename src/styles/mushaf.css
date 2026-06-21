@@ -142,6 +142,16 @@
   -webkit-user-select: none;
 }
 
+/* Pause / sajdah / private-use ayah symbols need their own tiny breathing room.
+ * This prevents small Mushaf signs from visually colliding with nearby words
+ * without changing the Quran text, page count, or normal line alignment.
+ */
+.quran-pause-symbol {
+  display: inline-block;
+  padding-inline: 0.075em;
+  letter-spacing: 0 !important;
+  word-spacing: 0 !important;
+}
 
 /* Opening pages contain shorter centered ayah lines with extra pause symbols.
  * Keep this isolated to pages 1 and 2 so normal 16-line Mushaf pages are untouched.
