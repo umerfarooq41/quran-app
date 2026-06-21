@@ -18,6 +18,7 @@ export function QuranLine({
   marked = false,
   jumped = false,
   hasSeparateBasmallah = false,
+  forceCentered = false,
 }) {
   const lineRef = useRef(null);
   const textRef = useRef(null);
@@ -28,6 +29,7 @@ export function QuranLine({
   const capturedPointer = useRef(null);
   const isBasmallah = line.type === 'basmallah' || line.type === 'bismillah';
   const centered = (
+    forceCentered ||
     line.isCentered ||
     line.type === 'surah_name' ||
     line.type === 'spacer' ||
