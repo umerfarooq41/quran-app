@@ -1,5 +1,5 @@
 import React from 'react';
-import { getHizbLabel, getJuzLabel } from '../../../utils/quranLabels';
+import { getJuzLabel } from '../../../utils/quranLabels';
 
 export function ReaderPassiveHeader({ meta }) {
   return (
@@ -10,11 +10,11 @@ export function ReaderPassiveHeader({ meta }) {
   );
 }
 
-export function ReaderFooterMeta({ page, displayPage }) {
+export function ReaderFooterMeta({ displayPage, progress }) {
   return (
     <div className="reader-footer-meta" aria-hidden="true">
       <span className="reader-meta-label reader-meta-page">{displayPage}</span>
-      <span className="reader-meta-label reader-meta-rub">{getHizbLabel(page)}</span>
+      <span className="reader-meta-label reader-meta-progress">{progress}</span>
     </div>
   );
 }

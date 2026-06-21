@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useShallow } from 'zustand/react/shallow';
 import { db } from '../../lib/db';
+import { getCurrentIndoPakJuzProgress } from '../../data/indoPakParaQuarters';
 import { getMushafPageNumber, getPage, getPageMeta, getSurahAyahs } from '../../lib/quran';
 import { OVERLAY_TYPES, useAppStore } from '../../store/useAppStore';
 import { AyahActionSheet } from './components/AyahActionSheet';
@@ -68,6 +69,20 @@ export default function ReaderScreen() {
   const pageData = getPage(page);
   const meta = getPageMeta(page);
   const displayPage = getMushafPageNumber(page);
+  const firstPageAyah = pageData.lines.find((line) => line.surahNumber && line.ayahStart);
+  const footerTarget = getFooterTarget({
+    page,
+    firstPageAyah,
+    pendingAyah,
+    selectedAyah,
+    audioTarget,
+  });
+  const juzProgress = getCurrentIndoPakJuzProgress(
+    page,
+    footerTarget?.surahNumber,
+    footerTarget?.ayahNumber,
+    meta.juz,
+  );
   const [savedHighlights, setSavedHighlights] = useState(new Map());
   const [bookmarkMarkers, setBookmarkMarkers] = useState(new Map());
   const [annotationVersion, setAnnotationVersion] = useState(0);
@@ -218,7 +233,7 @@ export default function ReaderScreen() {
           onSelectAyah={selectAyah}
         />
 
-        <ReaderFooterMeta page={page} displayPage={displayPage} />
+        <ReaderFooterMeta displayPage={displayPage} progress={juzProgress} />
       </div>
 
       <AnimatePresence>
@@ -231,6 +246,7 @@ export default function ReaderScreen() {
             onSearch={openSearch}
             onAudio={() => openAudioPanel()}
             compact={audioPlayerActive}
+            juzProgress={juzProgress}
           />
         )}
       </AnimatePresence>
@@ -257,4 +273,17 @@ export default function ReaderScreen() {
       </AnimatePresence>
     </section>
   );
+}
+
+function getFooterTarget({
+  page,
+  firstPageAyah,
+  pendingAyah,
+  selectedAyah,
+  audioTarget,
+}) {
+  if (pendingAyah?.surahNumber && pendingAyah?.ayahNumber) return pendingAyah;
+  if (selectedAyah?.page === page) return selectedAyah;
+  if (audioTarget?.page === page) return audioTarget;
+  return firstPageAyah;
 }

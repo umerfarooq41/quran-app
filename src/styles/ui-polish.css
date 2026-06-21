@@ -273,29 +273,40 @@
 }
 
 .index-quarter-grid {
-  gap: var(--ui-space-2);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 8px;
 }
 
 .index-quarter-btn {
   min-width: 0;
-  min-height: 40px;
-  border: 0;
-  border-radius: var(--ui-radius-sm);
-  background: #f0f1f3;
-  padding: var(--ui-space-3);
+  height: 38px;
+  min-height: 38px;
+  overflow: hidden;
+  border: 1px solid rgba(77, 72, 65, .08);
+  border-radius: 999px;
+  background: #f5f3ef;
+  padding: 5px 8px;
 }
 
 .index-quarter-btn strong {
+  display: block;
   overflow: hidden;
-  font-size: var(--ui-text-sm);
-  font-weight: 520;
+  font-size: .66rem;
+  font-weight: 560;
+  line-height: 1.05;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .index-quarter-btn span {
+  display: block;
   overflow: hidden;
-  font-size: .64rem;
+  margin-top: 2px;
+  color: #8c8d91;
+  font-size: .54rem;
+  line-height: 1;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -920,6 +931,10 @@
   background: #2b302d;
 }
 
+[data-theme='dark'] .index-quarter-btn {
+  border-color: rgba(255,255,255,.08);
+}
+
 [data-theme='dark'] .shared-back-button,
 [data-theme='dark'] .tabs-back-pill.shared-back-button {
   background: #272c29 !important;
@@ -1004,9 +1019,10 @@
   }
 
   .index-quarter-btn {
-    min-height: 40px !important;
-    border-radius: var(--ui-radius-sm) !important;
-    padding: var(--ui-space-3) !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    border-radius: 999px !important;
+    padding: 5px 8px !important;
   }
 
   .index-ayah-grid button {

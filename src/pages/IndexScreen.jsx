@@ -5,11 +5,10 @@ import { useAppStore } from '../store/useAppStore';
 import { BackButton } from '../components/common/AppChrome';
 import {
   findPageForReference,
-  getJuzQuarterTargets,
-  getMushafPageNumber,
   getSurahAyahs,
   surahs,
 } from '../lib/quran';
+import { getIndoPakParaQuarterTargets } from '../data/indoPakParaQuarters';
 import { getJuzLabel } from '../utils/quranLabels';
 
 function formatJuzName(juz) {
@@ -87,7 +86,7 @@ function JuzIndex() {
     <section className="index-list index-juz-list">
       {Array.from({ length: 30 }, (_, i) => i + 1).map((juz) => {
         const isOpen = expandedJuz === juz;
-        const targets = getJuzQuarterTargets(juz);
+        const targets = getIndoPakParaQuarterTargets(juz);
 
         return (
           <article key={juz} className={`index-card-wrap ${isOpen ? 'is-open' : ''}`}>
@@ -103,11 +102,11 @@ function JuzIndex() {
                   <button
                     key={target.label}
                     className="index-quarter-btn"
-                    onClick={() => goAyah(target.surahNumber, target.ayahNumber, target.page)}
+                    onClick={() => goAyah(target.surah, target.ayah, target.page)}
                     type="button"
                   >
-                    <strong>{target.label}</strong>
-                    <span>{target.surahNumber}:{target.ayahNumber} · Page {getMushafPageNumber(target.page)}</span>
+                    <strong>{getQuarterPillLabel(target.id)}</strong>
+                    <span>{target.surah}:{target.ayah} · {target.page}</span>
                   </button>
                 ))}
               </div>
@@ -117,6 +116,13 @@ function JuzIndex() {
       })}
     </section>
   );
+}
+
+function getQuarterPillLabel(id) {
+  if (id === 'quarter1') return "◔ Ar-Ruba' (¼)";
+  if (id === 'half') return '◑ An-Nisf (½)';
+  if (id === 'quarter3') return '◕ Ath-Thalatha (¾)';
+  return '○ Start (0/4)';
 }
 
 function SurahIndex() {

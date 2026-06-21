@@ -1,10 +1,18 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Play, Search, Undo2 } from 'lucide-react';
-import { getHizbLabel } from '../../../utils/quranLabels';
 import { PageWaveSlider } from './PageWaveSlider';
 
-export function ReaderBottomControls({ page, displayPage, goPage, onPreviousPage, onSearch, onAudio, compact = false }) {
+export function ReaderBottomControls({
+  page,
+  displayPage,
+  goPage,
+  onPreviousPage,
+  onSearch,
+  onAudio,
+  compact = false,
+  juzProgress,
+}) {
   return (
     <motion.div
       initial={{ opacity: 1 }}
@@ -38,7 +46,7 @@ export function ReaderBottomControls({ page, displayPage, goPage, onPreviousPage
       >
         <div className="reader-bottom-meta">
           <span>{displayPage}</span>
-          <span>{getHizbLabel(page)}</span>
+          <span>{juzProgress}</span>
         </div>
 
         <PageWaveSlider page={page} goPage={goPage} />

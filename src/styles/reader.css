@@ -26,9 +26,20 @@
 }
 
 .reader-meta-page,
-.reader-meta-rub {
-  justify-content: flex-end;
+.reader-meta-progress {
+  flex: 0 0 auto;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.reader-meta-page {
+  min-width: 3ch;
+  justify-content: flex-start;
+}
+
+.reader-meta-progress {
+  min-width: 5.5ch;
+  justify-content: flex-end;
 }
 
 .reader-topbar {
@@ -156,6 +167,12 @@
   color: rgba(62, 57, 49, .42);
   font-size: clamp(1rem, 4vw, 1.18rem);
   font-weight: 500;
+}
+
+.reader-bottom-meta span:last-child {
+  min-width: 5.5ch;
+  text-align: right;
+  white-space: nowrap;
 }
 
 .reader-wave-slider {
