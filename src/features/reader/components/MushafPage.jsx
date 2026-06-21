@@ -23,7 +23,7 @@ export function MushafPage({
   savedHighlights,
   bookmarkMarkers,
   pendingAyah,
-  flashLine,
+  quarterFlashTarget,
   selectedAyah,
   activeAudioAyah,
   onSelectAyah,
@@ -33,6 +33,7 @@ export function MushafPage({
     selection: [],
     audio: [],
   });
+  const [quarterMarkerFlashRect, setQuarterMarkerFlashRect] = useState(null);
   const supportsTextHighlights = typeof CSS !== 'undefined' && Boolean(CSS.highlights) && typeof Highlight !== 'undefined';
 
   useLayoutEffect(() => {
@@ -158,6 +159,66 @@ export function MushafPage({
     };
   }, [pageData, savedHighlights, bookmarkMarkers, supportsTextHighlights]);
 
+  useLayoutEffect(() => {
+    const pageElement = pageRef.current;
+    if (
+      !pageElement ||
+      quarterFlashTarget?.flashMode !== 'ayah-marker' ||
+      quarterFlashTarget.page !== pageData.page
+    ) {
+      setQuarterMarkerFlashRect(null);
+      return undefined;
+    }
+
+    let frame = 0;
+    let disposed = false;
+
+    const measureMarker = () => {
+      if (disposed) return;
+
+      const markerRange = getAyahMarkerRange(
+        pageElement,
+        pageData,
+        quarterFlashTarget.surahNumber,
+        quarterFlashTarget.ayahNumber,
+      );
+      const markerRect = markerRange?.getBoundingClientRect();
+      if (!markerRect?.width || !markerRect?.height) {
+        setQuarterMarkerFlashRect(null);
+        return;
+      }
+
+      const pageRect = pageElement.getBoundingClientRect();
+      const padding = 3;
+      setQuarterMarkerFlashRect({
+        left: markerRect.left - pageRect.left - padding,
+        top: markerRect.top - pageRect.top - padding,
+        width: markerRect.width + padding * 2,
+        height: markerRect.height + padding * 2,
+      });
+    };
+
+    const scheduleMeasure = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(measureMarker);
+    };
+
+    scheduleMeasure();
+    pageElement.addEventListener(LINE_FIT_EVENT, scheduleMeasure);
+
+    return () => {
+      disposed = true;
+      window.cancelAnimationFrame(frame);
+      pageElement.removeEventListener(LINE_FIT_EVENT, scheduleMeasure);
+    };
+  }, [
+    pageData,
+    quarterFlashTarget?.page,
+    quarterFlashTarget?.surahNumber,
+    quarterFlashTarget?.ayahNumber,
+    quarterFlashTarget?.flashMode,
+  ]);
+
   return (
     <div
       ref={pageRef}
@@ -165,6 +226,17 @@ export function MushafPage({
       style={{ '--font-scale': settings.fontScale }}
     >
       <div className="reader-ayah-highlight-layer" aria-hidden="true">
+        {quarterMarkerFlashRect && (
+          <span
+            className="reader-quarter-marker-flash"
+            style={{
+              left: `${quarterMarkerFlashRect.left}px`,
+              top: `${quarterMarkerFlashRect.top}px`,
+              width: `${quarterMarkerFlashRect.width}px`,
+              height: `${quarterMarkerFlashRect.height}px`,
+            }}
+          />
+        )}
         {highlightRects.audio.map((rect, index) => (
           <span
             key={`audio-${rect.top}-${rect.left}-${index}`}
@@ -204,8 +276,9 @@ export function MushafPage({
             marked={!supportsTextHighlights && lineHasSavedHighlight(line, savedHighlights)}
             jumped={Boolean(
               (
-                flashLine?.page === pageData.page &&
-                flashLine?.line === line.line
+                quarterFlashTarget?.flashMode === 'first-rendered-line' &&
+                quarterFlashTarget?.page === pageData.page &&
+                quarterFlashTarget?.line === line.line
               ) ||
               (
                 pendingAyah &&

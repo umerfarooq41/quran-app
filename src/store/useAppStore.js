@@ -253,33 +253,7 @@ export const useAppStore = create((set, get) => ({
         targetSurah: Number(target?.surah),
         targetAyah: Number(target?.ayah),
         markerId,
-        flashMode: markerId === 'start' ? 'first-visual-line' : 'next-actual-ayah',
-        allowNextPageFallback: markerId !== 'start',
-        cameFromQuarterFallback: false,
-      },
-      navDirection: 'forward',
-      controlsVisible: false,
-    };
-  }),
-  continueQuarterFlashToNextPage: () => set((state) => {
-    const request = state.pendingQuarterFlash;
-    if (!request?.allowNextPageFallback) return state;
-
-    const nextPage = clampPage(Number(request.targetPage) + 1);
-    if (nextPage === Number(request.targetPage)) {
-      return { pendingQuarterFlash: null };
-    }
-
-    return {
-      page: nextPage,
-      previousReaderPage: state.page,
-      pendingAyah: null,
-      pendingQuarterFlash: {
-        ...request,
-        targetPage: nextPage,
-        flashMode: 'first-actual-ayah',
-        allowNextPageFallback: false,
-        cameFromQuarterFallback: true,
+        flashMode: markerId === 'start' ? 'first-rendered-line' : 'ayah-marker',
       },
       navDirection: 'forward',
       controlsVisible: false,

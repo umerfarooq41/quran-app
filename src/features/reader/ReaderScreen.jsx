@@ -42,7 +42,6 @@ export default function ReaderScreen() {
     pendingQuarterFlash,
     clearPendingAyah,
     clearPendingQuarterFlash,
-    continueQuarterFlashToNextPage,
   } = useAppStore(useShallow((state) => ({
     page: state.page,
     goPage: state.goPage,
@@ -70,7 +69,6 @@ export default function ReaderScreen() {
     pendingQuarterFlash: state.pendingQuarterFlash,
     clearPendingAyah: state.clearPendingAyah,
     clearPendingQuarterFlash: state.clearPendingQuarterFlash,
-    continueQuarterFlashToNextPage: state.continueQuarterFlashToNextPage,
   })));
   const pageData = getPage(page);
   const meta = getPageMeta(page);
@@ -93,7 +91,7 @@ export default function ReaderScreen() {
   const [savedHighlights, setSavedHighlights] = useState(new Map());
   const [bookmarkMarkers, setBookmarkMarkers] = useState(new Map());
   const [annotationVersion, setAnnotationVersion] = useState(0);
-  const [quarterFlashLine, setQuarterFlashLine] = useState(null);
+  const [quarterFlashTarget, setQuarterFlashTarget] = useState(null);
   const suppressTapUntil = useRef(0);
   const previousAudioTargetKey = useRef(
     audioTarget ? `${audioTarget.surahNumber}:${audioTarget.ayahNumber}` : '',
@@ -147,30 +145,30 @@ export default function ReaderScreen() {
 
   useEffect(() => {
     if (!pendingQuarterFlash || Number(pendingQuarterFlash.targetPage) !== page) {
+      setQuarterFlashTarget(null);
       return undefined;
     }
 
     let flashTimer = 0;
     const frame = window.requestAnimationFrame(() => {
-      const flashLine = resolveQuarterFlashLine(pageData, pendingQuarterFlash);
+      if (!pageData?.lines?.length) return;
 
-      if (flashLine) {
-        setQuarterFlashLine({ page, line: flashLine.line });
-        flashTimer = window.setTimeout(() => {
-          setQuarterFlashLine(null);
-          clearPendingQuarterFlash();
-        }, 2200);
-        return;
-      }
-
-      if (pendingQuarterFlash.allowNextPageFallback) {
-        setQuarterFlashLine(null);
-        continueQuarterFlashToNextPage();
-        return;
-      }
-
-      setQuarterFlashLine(null);
-      clearPendingQuarterFlash();
+      setQuarterFlashTarget({
+        page,
+        line: pendingQuarterFlash.flashMode === 'first-rendered-line'
+          ? pageData.lines[0].line
+          : null,
+        surahNumber: pendingQuarterFlash.targetSurah,
+        ayahNumber: pendingQuarterFlash.targetAyah,
+        flashMode: pendingQuarterFlash.flashMode,
+      });
+      const flashDuration = pendingQuarterFlash.flashMode === 'ayah-marker'
+        ? 1400
+        : 1800;
+      flashTimer = window.setTimeout(() => {
+        setQuarterFlashTarget(null);
+        clearPendingQuarterFlash();
+      }, flashDuration);
     });
 
     return () => {
@@ -182,7 +180,6 @@ export default function ReaderScreen() {
     pageData,
     pendingQuarterFlash,
     clearPendingQuarterFlash,
-    continueQuarterFlashToNextPage,
   ]);
 
   useEffect(() => {
@@ -276,7 +273,7 @@ export default function ReaderScreen() {
           savedHighlights={savedHighlights}
           bookmarkMarkers={bookmarkMarkers}
           pendingAyah={pendingAyah}
-          flashLine={quarterFlashLine}
+          quarterFlashTarget={quarterFlashTarget}
           selectedAyah={selectedAyah}
           activeAudioAyah={audioPlayerActive ? audioTarget : null}
           onSelectAyah={selectAyah}
@@ -342,46 +339,4 @@ function getFooterTarget({
   if (selectedAyah?.page === page) return selectedAyah;
   if (audioTarget?.page === page) return audioTarget;
   return firstPageAyah;
-}
-
-function resolveQuarterFlashLine(pageData, request) {
-  if (!pageData?.lines?.length) return null;
-
-  if (request.flashMode === 'first-visual-line') {
-    return pageData.lines[0] || null;
-  }
-
-  if (request.flashMode === 'first-actual-ayah') {
-    return pageData.lines.find(isActualReadableAyahLine) || null;
-  }
-
-  const targetSurah = Number(request.targetSurah);
-  const targetAyah = Number(request.targetAyah);
-  let markerLineIndex = -1;
-
-  pageData.lines.forEach((line, index) => {
-    if (
-      line.type === 'ayah' &&
-      line.surahNumber === targetSurah &&
-      line.ayahStart <= targetAyah &&
-      line.ayahEnd >= targetAyah
-    ) {
-      markerLineIndex = index;
-    }
-  });
-
-  if (markerLineIndex < 0) return null;
-
-  return pageData.lines
-    .slice(markerLineIndex + 1)
-    .find(isActualReadableAyahLine) || null;
-}
-
-function isActualReadableAyahLine(line) {
-  return Boolean(
-    line?.type === 'ayah' &&
-    line.surahNumber &&
-    line.ayahStart &&
-    /[\u0621-\u063A\u0641-\u064A\u066E-\u06D3\u06FA-\u06FF]/u.test(line.text || '')
-  );
 }
