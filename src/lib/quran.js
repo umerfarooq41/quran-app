@@ -76,6 +76,27 @@ export function findPageForReference(surahNumber, ayahNumber = 1) {
   return page?.page ?? 1;
 }
 
+export function getAyahMarkerPage(surahNumber, ayahNumber) {
+  const safeSurah = Number(surahNumber);
+  const safeAyah = Number(ayahNumber);
+  const targetAyah = ayahs.find((ayah) => (
+    ayah.surahNumber === safeSurah &&
+    ayah.ayahNumber === safeAyah
+  ));
+  const marker = findLastPrivateUseCharacter(targetAyah?.text);
+  if (!marker) return null;
+
+  const markerPage = pages.find((candidate) => candidate.lines.some((line) => (
+    line.type === 'ayah' &&
+    line.surahNumber === safeSurah &&
+    line.ayahStart <= safeAyah &&
+    line.ayahEnd >= safeAyah &&
+    line.text.includes(marker)
+  )));
+
+  return markerPage?.page ?? null;
+}
+
 
 
 export function findPageForJuz(juzNumber) {
@@ -147,4 +168,17 @@ export function searchQuran(query) {
     });
 
   return [...surahResults, ...ayahResults].slice(0, 24);
+}
+
+function findLastPrivateUseCharacter(text = '') {
+  const characters = Array.from(text);
+
+  for (let index = characters.length - 1; index >= 0; index -= 1) {
+    const codePoint = characters[index].codePointAt(0);
+    if (codePoint >= 0xE000 && codePoint <= 0xF8FF) {
+      return characters[index];
+    }
+  }
+
+  return '';
 }

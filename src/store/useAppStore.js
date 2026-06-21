@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { VIEWS, normalizeView } from '../app/routes';
-import { clampPage } from '../lib/quran';
+import { clampPage, getAyahMarkerPage } from '../lib/quran';
 import { DEFAULT_TRANSLATION_ID, TRANSLATION_OPTIONS } from '../lib/translations';
 
 export const OVERLAY_TYPES = Object.freeze({
@@ -237,11 +237,16 @@ export const useAppStore = create((set, get) => ({
     };
   }),
   goQuarterTarget: (target) => set((state) => {
-    const nextPage = clampPage(target?.page);
+    const markerId = target?.id || 'start';
+    const sourcePage = clampPage(target?.page);
+    const nextPage = markerId === 'start'
+      ? sourcePage
+      : clampPage(
+          getAyahMarkerPage(target?.surah, target?.ayah) || sourcePage,
+        );
     const nextState = state.view === VIEWS.READER
       ? state
       : transitionToView(state, VIEWS.READER);
-    const markerId = target?.id || 'start';
 
     return {
       ...nextState,
