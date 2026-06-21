@@ -142,13 +142,10 @@
   -webkit-user-select: none;
 }
 
-/* Small Mushaf signs are rendered attached to the previous word, matching the reference app.
- * Do not add artificial symbol padding here; it makes stacked signs drift and collide.
- */
-.quran-pause-symbol {
+.quran-word {
   letter-spacing: 0 !important;
-  word-spacing: 0 !important;
 }
+
 
 /* Opening pages contain shorter centered ayah lines with extra pause symbols.
  * Keep this isolated to pages 1 and 2 so normal 16-line Mushaf pages are untouched.
