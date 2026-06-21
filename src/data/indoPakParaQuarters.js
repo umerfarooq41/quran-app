@@ -26,7 +26,7 @@ const indoPakParaQuarters = {
     { id: "start", label: "Start", surah: 3, ayah: 92, page: 56 },
     { id: "quarter1", label: "¼", surah: 3, ayah: 125, page: 60 },
     { id: "half", label: "½", surah: 3, ayah: 164, page: 64 },
-    { id: "quarter3", label: "¾", surah: 3, ayah: 199, page: 69 },
+    { id: "quarter3", label: "¾", surah: 3, ayah: 198, page: 69 },
   ],
   5: [
     { id: "start", label: "Start", surah: 4, ayah: 24, page: 74 },
@@ -42,7 +42,7 @@ const indoPakParaQuarters = {
   ],
   7: [
     { id: "start", label: "Start", surah: 5, ayah: 83, page: 110 },
-    { id: "quarter1", label: "¼", surah: 5, ayah: 114, page: 114 },
+    { id: "quarter1", label: "¼", surah: 5, ayah: 113, page: 114 },
     { id: "half", label: "½", surah: 6, ayah: 35, page: 118 },
     { id: "quarter3", label: "¾", surah: 6, ayah: 73, page: 123 },
   ],
@@ -78,7 +78,7 @@ const indoPakParaQuarters = {
   ],
   13: [
     { id: "start", label: "Start", surah: 12, ayah: 53, page: 218 },
-    { id: "quarter1", label: "¼", surah: 12, ayah: 93, page: 222 },
+    { id: "quarter1", label: "¼", surah: 12, ayah: 95, page: 222 },
     { id: "half", label: "½", surah: 13, ayah: 18, page: 226 },
     { id: "quarter3", label: "¾", surah: 14, ayah: 9, page: 231 },
   ],
@@ -128,7 +128,7 @@ const indoPakParaQuarters = {
     { id: "start", label: "Start", surah: 29, ayah: 45, page: 362 },
     { id: "quarter1", label: "¼", surah: 30, ayah: 27, page: 366 },
     { id: "half", label: "½", surah: 31, ayah: 14, page: 371 },
-    { id: "quarter3", label: "¾", surah: 32, ayah: 28, page: 376 },
+    { id: "quarter3", label: "¾", surah: 32, ayah: 27, page: 376 },
   ],
   22: [
     { id: "start", label: "Start", surah: 33, ayah: 31, page: 380 },
