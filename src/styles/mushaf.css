@@ -318,7 +318,8 @@
 /* Ayah end markers use the original Mushaf glyph from the Quran data.
  * The marker cluster is kept intact, including any tiny signs above/below it,
  * and is treated as a word-sized ornament so browser word-spacing gives equal
- * breathing room before and after it. Do not add margins to ordinary pause
+ * breathing room before and after it. The marker counter-scales against line
+ * compression so circular ayah ornaments stay visually round. Do not add margins to ordinary pause
  * symbols such as ۚ ۖ ۛ; they remain attached to their word by mushafText.js.
  */
 .quran-ayah-marker {
@@ -331,7 +332,7 @@
   letter-spacing: 0 !important;
   word-spacing: 0 !important;
   vertical-align: baseline;
-  transform: translateY(-0.045em);
+  transform: translateY(-0.045em) scaleX(var(--quran-marker-scale-x, 1));
   transform-origin: center center;
   text-align: center;
   white-space: nowrap;
