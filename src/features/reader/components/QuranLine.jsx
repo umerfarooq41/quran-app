@@ -12,7 +12,10 @@ const LINE_EDGE_GUTTER = 4;
 const MAX_POSITIVE_WORD_SPACING = 6;
 const OPENING_PAGE_WORD_SPACING = 4;
 const MAX_NEGATIVE_WORD_SPACING = 0;
-const AYAH_MARKER_CLUSTER = /([\u06D6-\u06ED\u08E2\u08E3\u08F0-\u08FF]*[\uF500-\uF8FF]+)/gu;
+const AYAH_MARKER_CLUSTER = /([\u06D6-\u06ED\u08E2\u08E3\u08F0-\u08FF]*[\uF500-\uF8FF]+[\u06D6-\u06ED\u08E2\u08E3\u08F0-\u08FF]*)/gu;
+const AYAH_MARKER_CORE = /[\uF500-\uF8FF]+/gu;
+const AYAH_MARKER_LOW_SIGNS = /[\u06E3\u06EA\u06ED]/gu;
+const AYAH_MARKER_SIGN_SPLITTER = /([\u06D6-\u06ED\u08E2\u08E3\u08F0-\u08FF]+)/gu;
 export function QuranLine({
   line,
   onSelect,
@@ -313,19 +316,49 @@ function renderWordText(text = '') {
   const parts = splitAyahMarkerClusters(text);
   if (parts.length === 1 && !parts[0].isMarker) return text;
 
-  return parts.map((part, index) => (
-    part.isMarker ? (
+  return parts.map((part, index) => {
+    if (!part.isMarker) {
+      return <React.Fragment key={`word-text-${index}`}>{part.text}</React.Fragment>;
+    }
+
+    const marker = getAyahMarkerParts(part.text);
+
+    return (
       <span
         key={`ayah-marker-${index}`}
-        className="quran-ayah-marker"
+        className="quran-ayah-marker quran-ayah-marker-ornamented"
         aria-hidden="true"
+        title={part.text}
       >
-        {part.text}
+        {marker.highSigns ? (
+          <span className="quran-ayah-marker-signs quran-ayah-marker-signs-high">
+            {marker.highSigns}
+          </span>
+        ) : null}
+        <span className="quran-ayah-marker-ornament">۝</span>
+        {marker.lowSigns ? (
+          <span className="quran-ayah-marker-signs quran-ayah-marker-signs-low">
+            {marker.lowSigns}
+          </span>
+        ) : null}
       </span>
-    ) : (
-      <React.Fragment key={`word-text-${index}`}>{part.text}</React.Fragment>
-    )
-  ));
+    );
+  });
+}
+
+function getAyahMarkerParts(text = '') {
+  const signs = String(text)
+    .replace(AYAH_MARKER_CORE, '')
+    .match(AYAH_MARKER_SIGN_SPLITTER) || [];
+  const joinedSigns = signs.join('');
+  const lowSigns = joinedSigns.match(AYAH_MARKER_LOW_SIGNS)?.join('') || '';
+  const highSigns = joinedSigns.replace(AYAH_MARKER_LOW_SIGNS, '');
+
+  AYAH_MARKER_CORE.lastIndex = 0;
+  AYAH_MARKER_LOW_SIGNS.lastIndex = 0;
+  AYAH_MARKER_SIGN_SPLITTER.lastIndex = 0;
+
+  return { highSigns, lowSigns };
 }
 
 function splitAyahMarkerClusters(text = '') {
