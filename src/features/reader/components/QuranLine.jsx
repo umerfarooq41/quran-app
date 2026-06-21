@@ -124,8 +124,13 @@ export function QuranLine({
         }
       }
 
-      el.style.transform = `scaleX(${scale.toFixed(5)})`;
-      container.dataset.lineScale = scale.toFixed(5);
+      const scaleValue = scale.toFixed(5);
+      const inverseScaleValue = scale > 0 ? (1 / scale).toFixed(5) : '1.00000';
+
+      el.style.transform = `scaleX(${scaleValue})`;
+      container.style.setProperty('--quran-line-scale', scaleValue);
+      container.style.setProperty('--quran-marker-scale-x', inverseScaleValue);
+      container.dataset.lineScale = scaleValue;
       container.dataset.wordSpacing = wordSpacing.toFixed(2);
 
       const fitSignature = [
