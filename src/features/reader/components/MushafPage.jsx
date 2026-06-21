@@ -219,10 +219,12 @@ export function MushafPage({
     quarterFlashTarget?.flashMode,
   ]);
 
+  const isOpeningMushafPage = pageData.page === 1 || pageData.page === 2;
+
   return (
     <div
       ref={pageRef}
-      className="reader-page grid flex-1 grid-rows-16 overflow-hidden px-4"
+      className={`reader-page grid flex-1 grid-rows-16 overflow-hidden px-4 ${isOpeningMushafPage ? 'reader-page-opening' : ''}`}
       style={{ '--font-scale': settings.fontScale }}
     >
       <div className="reader-ayah-highlight-layer" aria-hidden="true">
@@ -272,6 +274,7 @@ export function MushafPage({
             key={`${pageData.page}:${line.line}`}
             line={line}
             hasSeparateBasmallah={hasSeparateBasmallah}
+            forceCentered={isOpeningMushafPage && line.type === 'ayah'}
             onSelect={(selection) => onSelectAyah(line, index, selection)}
             marked={!supportsTextHighlights && lineHasSavedHighlight(line, savedHighlights)}
             jumped={Boolean(
