@@ -10,6 +10,7 @@ import { SurahHeader } from './SurahHeader';
 const LINE_FIT_EVENT = 'quran-line-fit';
 const LINE_EDGE_GUTTER = 4;
 const MAX_POSITIVE_WORD_SPACING = 6;
+const OPENING_PAGE_WORD_SPACING = 4;
 const MAX_NEGATIVE_WORD_SPACING = -3;
 
 export function QuranLine({
@@ -65,8 +66,26 @@ export function QuranLine({
 
       if (availableWidth > 0 && naturalWidth > 0) {
         if (centered) {
-          if (naturalWidth > availableWidth) {
-            scale = Math.min(1, availableWidth / naturalWidth);
+          if (forceCentered && line.type === 'ayah' && spaceCount > 0 && naturalWidth < availableWidth) {
+            wordSpacing = Math.min(
+              OPENING_PAGE_WORD_SPACING,
+              Math.max(0, (availableWidth - naturalWidth) / spaceCount),
+            );
+            el.style.wordSpacing = `${wordSpacing.toFixed(2)}px`;
+
+            const spacedWidth = measureTextWidth(el);
+            if (spacedWidth > availableWidth) {
+              wordSpacing = Math.max(
+                0,
+                wordSpacing - ((spacedWidth - availableWidth) / spaceCount),
+              );
+              el.style.wordSpacing = `${wordSpacing.toFixed(2)}px`;
+            }
+          }
+
+          const centeredWidth = measureTextWidth(el);
+          if (centeredWidth > availableWidth) {
+            scale = Math.min(1, availableWidth / centeredWidth);
           }
         } else if (naturalWidth > availableWidth) {
           if (spaceCount > 0) {
