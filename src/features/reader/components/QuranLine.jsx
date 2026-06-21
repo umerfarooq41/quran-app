@@ -11,7 +11,12 @@ const LINE_FIT_EVENT = 'quran-line-fit';
 const LINE_EDGE_GUTTER = 4;
 const MAX_POSITIVE_WORD_SPACING = 6;
 const OPENING_PAGE_WORD_SPACING = 4;
-const MAX_NEGATIVE_WORD_SPACING = -3;
+const MAX_NEGATIVE_WORD_SPACING = 0;
+const PAUSE_TOKEN_PATTERN = /^[\u06D6-\u06ED\u08E2\u08E3\u08F0-\u08FF\uF500-\uF8FF]+$/u;
+
+function isPauseSymbolToken(tokenText = '') {
+  return PAUSE_TOKEN_PATTERN.test(String(tokenText).trim());
+}
 
 export function QuranLine({
   line,
@@ -292,7 +297,7 @@ export function QuranLine({
             token.isWord ? (
               <span
                 key={`${token.start}-${token.end}`}
-                className="quran-word"
+                className={`quran-word ${isPauseSymbolToken(token.text) ? 'quran-pause-symbol' : ''}`}
                 data-quran-word-index={token.wordIndex}
               >
                 {token.text}
