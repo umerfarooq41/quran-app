@@ -12,10 +12,7 @@ const LINE_EDGE_GUTTER = 4;
 const MAX_POSITIVE_WORD_SPACING = 6;
 const OPENING_PAGE_WORD_SPACING = 4;
 const MAX_NEGATIVE_WORD_SPACING = 0;
-const AYAH_MARKER_CLUSTER = /([\u06D6-\u06ED\u08E2\u08E3\u08F0-\u08FF]*[\uF500-\uF8FF]+[\u06D6-\u06ED\u08E2\u08E3\u08F0-\u08FF]*)/gu;
-const AYAH_MARKER_CORE = /[\uF500-\uF8FF]+/gu;
-const AYAH_MARKER_LOW_SIGNS = /[\u06E3\u06EA\u06ED]/gu;
-const AYAH_MARKER_SIGN_SPLITTER = /([\u06D6-\u06ED\u08E2\u08E3\u08F0-\u08FF]+)/gu;
+const AYAH_MARKER_CLUSTER = /([\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED\u08D3-\u08FF]*[\uF500-\uF8FF]+[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED\u08D3-\u08FF]*)/gu;
 export function QuranLine({
   line,
   onSelect,
@@ -321,44 +318,17 @@ function renderWordText(text = '') {
       return <React.Fragment key={`word-text-${index}`}>{part.text}</React.Fragment>;
     }
 
-    const marker = getAyahMarkerParts(part.text);
-
     return (
       <span
         key={`ayah-marker-${index}`}
-        className="quran-ayah-marker quran-ayah-marker-ornamented"
+        className="quran-ayah-marker"
         aria-hidden="true"
         title={part.text}
       >
-        {marker.highSigns ? (
-          <span className="quran-ayah-marker-signs quran-ayah-marker-signs-high">
-            {marker.highSigns}
-          </span>
-        ) : null}
-        <span className="quran-ayah-marker-ornament">۝</span>
-        {marker.lowSigns ? (
-          <span className="quran-ayah-marker-signs quran-ayah-marker-signs-low">
-            {marker.lowSigns}
-          </span>
-        ) : null}
+        {part.text}
       </span>
     );
   });
-}
-
-function getAyahMarkerParts(text = '') {
-  const signs = String(text)
-    .replace(AYAH_MARKER_CORE, '')
-    .match(AYAH_MARKER_SIGN_SPLITTER) || [];
-  const joinedSigns = signs.join('');
-  const lowSigns = joinedSigns.match(AYAH_MARKER_LOW_SIGNS)?.join('') || '';
-  const highSigns = joinedSigns.replace(AYAH_MARKER_LOW_SIGNS, '');
-
-  AYAH_MARKER_CORE.lastIndex = 0;
-  AYAH_MARKER_LOW_SIGNS.lastIndex = 0;
-  AYAH_MARKER_SIGN_SPLITTER.lastIndex = 0;
-
-  return { highSigns, lowSigns };
 }
 
 function splitAyahMarkerClusters(text = '') {
