@@ -281,31 +281,21 @@
 
 .index-quarter-btn {
   min-width: 0;
-  height: 38px;
-  min-height: 38px;
+  height: 34px;
+  min-height: 34px;
   overflow: hidden;
   border: 1px solid rgba(77, 72, 65, .08);
   border-radius: 999px;
   background: #f5f3ef;
   padding: 5px 8px;
+  text-align: center;
 }
 
 .index-quarter-btn strong {
   display: block;
   overflow: hidden;
-  font-size: .66rem;
-  font-weight: 560;
-  line-height: 1.05;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.index-quarter-btn span {
-  display: block;
-  overflow: hidden;
-  margin-top: 2px;
-  color: #8c8d91;
-  font-size: .54rem;
+  font-size: .72rem;
+  font-weight: 600;
   line-height: 1;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1019,8 +1009,8 @@
   }
 
   .index-quarter-btn {
-    height: 38px !important;
-    min-height: 38px !important;
+    height: 34px !important;
+    min-height: 34px !important;
     border-radius: 999px !important;
     padding: 5px 8px !important;
   }

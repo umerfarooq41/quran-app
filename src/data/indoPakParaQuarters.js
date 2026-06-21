@@ -203,10 +203,10 @@ export function getCurrentIndoPakJuzProgress(page, surah, ayah, juzNumber) {
   const half = targets.find((target) => target.id === 'half');
   const quarter3 = targets.find((target) => target.id === 'quarter3');
 
-  if (quarter3 && comparePosition(current, quarter3) >= 0) return '◕ 3/4';
-  if (half && comparePosition(current, half) >= 0) return '◑ 1/2';
-  if (quarter1 && comparePosition(current, quarter1) >= 0) return '◔ 1/4';
-  return '○ 0/4';
+  if (quarter3 && comparePosition(current, quarter3) >= 0) return 'Q4';
+  if (half && comparePosition(current, half) >= 0) return 'Q3';
+  if (quarter1 && comparePosition(current, quarter1) >= 0) return 'Q2';
+  return 'Q1';
 }
 
 function comparePosition(current, marker) {

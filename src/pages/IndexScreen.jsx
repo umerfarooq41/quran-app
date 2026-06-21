@@ -106,7 +106,6 @@ function JuzIndex() {
                     type="button"
                   >
                     <strong>{getQuarterPillLabel(target.id)}</strong>
-                    <span>{target.surah}:{target.ayah} · {target.page}</span>
                   </button>
                 ))}
               </div>
@@ -119,10 +118,10 @@ function JuzIndex() {
 }
 
 function getQuarterPillLabel(id) {
-  if (id === 'quarter1') return "◔ Ar-Ruba' (¼)";
-  if (id === 'half') return '◑ An-Nisf (½)';
-  if (id === 'quarter3') return '◕ Ath-Thalatha (¾)';
-  return '○ Start (0/4)';
+  if (id === 'quarter1') return '2nd Quarter';
+  if (id === 'half') return '3rd Quarter';
+  if (id === 'quarter3') return '4th Quarter';
+  return '1st Quarter';
 }
 
 function SurahIndex() {
