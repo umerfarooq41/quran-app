@@ -23,6 +23,7 @@ export function MushafPage({
   savedHighlights,
   bookmarkMarkers,
   pendingAyah,
+  flashLine,
   selectedAyah,
   activeAudioAyah,
   onSelectAyah,
@@ -202,10 +203,16 @@ export function MushafPage({
             onSelect={(selection) => onSelectAyah(line, index, selection)}
             marked={!supportsTextHighlights && lineHasSavedHighlight(line, savedHighlights)}
             jumped={Boolean(
-              pendingAyah &&
-                line.surahNumber === pendingAyah.surahNumber &&
-                line.ayahStart <= pendingAyah.ayahNumber &&
-                (!line.ayahEnd || line.ayahEnd >= pendingAyah.ayahNumber)
+              (
+                flashLine?.page === pageData.page &&
+                flashLine?.line === line.line
+              ) ||
+              (
+                pendingAyah &&
+                  line.surahNumber === pendingAyah.surahNumber &&
+                  line.ayahStart <= pendingAyah.ayahNumber &&
+                  (!line.ayahEnd || line.ayahEnd >= pendingAyah.ayahNumber)
+              )
             )}
           />
         );

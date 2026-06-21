@@ -39,7 +39,10 @@ export default function ReaderScreen() {
     audioPlayerActive,
     openAudioPlayer,
     pendingAyah,
+    pendingQuarterFlash,
     clearPendingAyah,
+    clearPendingQuarterFlash,
+    continueQuarterFlashToNextPage,
   } = useAppStore(useShallow((state) => ({
     page: state.page,
     goPage: state.goPage,
@@ -64,7 +67,10 @@ export default function ReaderScreen() {
     audioPlayerActive: state.audioPlayerActive,
     openAudioPlayer: state.openAudioPlayer,
     pendingAyah: state.pendingAyah,
+    pendingQuarterFlash: state.pendingQuarterFlash,
     clearPendingAyah: state.clearPendingAyah,
+    clearPendingQuarterFlash: state.clearPendingQuarterFlash,
+    continueQuarterFlashToNextPage: state.continueQuarterFlashToNextPage,
   })));
   const pageData = getPage(page);
   const meta = getPageMeta(page);
@@ -74,6 +80,7 @@ export default function ReaderScreen() {
     page,
     firstPageAyah,
     pendingAyah,
+    pendingQuarterFlash,
     selectedAyah,
     audioTarget,
   });
@@ -86,6 +93,7 @@ export default function ReaderScreen() {
   const [savedHighlights, setSavedHighlights] = useState(new Map());
   const [bookmarkMarkers, setBookmarkMarkers] = useState(new Map());
   const [annotationVersion, setAnnotationVersion] = useState(0);
+  const [quarterFlashLine, setQuarterFlashLine] = useState(null);
   const suppressTapUntil = useRef(0);
   const previousAudioTargetKey = useRef(
     audioTarget ? `${audioTarget.surahNumber}:${audioTarget.ayahNumber}` : '',
@@ -136,6 +144,46 @@ export default function ReaderScreen() {
 
     return () => window.clearTimeout(timer);
   }, [pendingAyah?.surahNumber, pendingAyah?.ayahNumber, clearPendingAyah]);
+
+  useEffect(() => {
+    if (!pendingQuarterFlash || Number(pendingQuarterFlash.targetPage) !== page) {
+      return undefined;
+    }
+
+    let flashTimer = 0;
+    const frame = window.requestAnimationFrame(() => {
+      const flashLine = resolveQuarterFlashLine(pageData, pendingQuarterFlash);
+
+      if (flashLine) {
+        setQuarterFlashLine({ page, line: flashLine.line });
+        flashTimer = window.setTimeout(() => {
+          setQuarterFlashLine(null);
+          clearPendingQuarterFlash();
+        }, 2200);
+        return;
+      }
+
+      if (pendingQuarterFlash.allowNextPageFallback) {
+        setQuarterFlashLine(null);
+        continueQuarterFlashToNextPage();
+        return;
+      }
+
+      setQuarterFlashLine(null);
+      clearPendingQuarterFlash();
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(flashTimer);
+    };
+  }, [
+    page,
+    pageData,
+    pendingQuarterFlash,
+    clearPendingQuarterFlash,
+    continueQuarterFlashToNextPage,
+  ]);
 
   useEffect(() => {
     const nextKey = audioTarget
@@ -228,6 +276,7 @@ export default function ReaderScreen() {
           savedHighlights={savedHighlights}
           bookmarkMarkers={bookmarkMarkers}
           pendingAyah={pendingAyah}
+          flashLine={quarterFlashLine}
           selectedAyah={selectedAyah}
           activeAudioAyah={audioPlayerActive ? audioTarget : null}
           onSelectAyah={selectAyah}
@@ -279,11 +328,60 @@ function getFooterTarget({
   page,
   firstPageAyah,
   pendingAyah,
+  pendingQuarterFlash,
   selectedAyah,
   audioTarget,
 }) {
   if (pendingAyah?.surahNumber && pendingAyah?.ayahNumber) return pendingAyah;
+  if (Number(pendingQuarterFlash?.targetPage) === page) {
+    return {
+      surahNumber: pendingQuarterFlash.targetSurah,
+      ayahNumber: pendingQuarterFlash.targetAyah,
+    };
+  }
   if (selectedAyah?.page === page) return selectedAyah;
   if (audioTarget?.page === page) return audioTarget;
   return firstPageAyah;
+}
+
+function resolveQuarterFlashLine(pageData, request) {
+  if (!pageData?.lines?.length) return null;
+
+  if (request.flashMode === 'first-visual-line') {
+    return pageData.lines[0] || null;
+  }
+
+  if (request.flashMode === 'first-actual-ayah') {
+    return pageData.lines.find(isActualReadableAyahLine) || null;
+  }
+
+  const targetSurah = Number(request.targetSurah);
+  const targetAyah = Number(request.targetAyah);
+  let markerLineIndex = -1;
+
+  pageData.lines.forEach((line, index) => {
+    if (
+      line.type === 'ayah' &&
+      line.surahNumber === targetSurah &&
+      line.ayahStart <= targetAyah &&
+      line.ayahEnd >= targetAyah
+    ) {
+      markerLineIndex = index;
+    }
+  });
+
+  if (markerLineIndex < 0) return null;
+
+  return pageData.lines
+    .slice(markerLineIndex + 1)
+    .find(isActualReadableAyahLine) || null;
+}
+
+function isActualReadableAyahLine(line) {
+  return Boolean(
+    line?.type === 'ayah' &&
+    line.surahNumber &&
+    line.ayahStart &&
+    /[\u0621-\u063A\u0641-\u064A\u066E-\u06D3\u06FA-\u06FF]/u.test(line.text || '')
+  );
 }

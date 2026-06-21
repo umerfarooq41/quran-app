@@ -58,6 +58,7 @@ export const useAppStore = create((set, get) => ({
   audioPlayerVisible: false,
   tafsirTarget: null,
   pendingAyah: null,
+  pendingQuarterFlash: null,
   settings: { ...DEFAULT_SETTINGS },
   hydrateLastRead: (lastRead) => set({
     page: clampPage(lastRead?.page || 1),
@@ -95,6 +96,7 @@ export const useAppStore = create((set, get) => ({
       page: nextPage,
       previousReaderPage: nextPage === state.page ? state.previousReaderPage : state.page,
       pendingAyah,
+      pendingQuarterFlash: null,
       navDirection: 'forward',
       controlsVisible: false,
     };
@@ -106,6 +108,7 @@ export const useAppStore = create((set, get) => ({
       page: state.previousReaderPage,
       previousReaderPage: state.page,
       pendingAyah: null,
+      pendingQuarterFlash: null,
       view: VIEWS.READER,
       navDirection: 'back',
       controlsVisible: true,
@@ -228,11 +231,62 @@ export const useAppStore = create((set, get) => ({
       page: nextPage,
       previousReaderPage: nextPage === state.page ? state.previousReaderPage : state.page,
       pendingAyah: { surahNumber: Number(surahNumber), ayahNumber: Number(ayahNumber) },
+      pendingQuarterFlash: null,
+      navDirection: 'forward',
+      controlsVisible: false,
+    };
+  }),
+  goQuarterTarget: (target) => set((state) => {
+    const nextPage = clampPage(target?.page);
+    const nextState = state.view === VIEWS.READER
+      ? state
+      : transitionToView(state, VIEWS.READER);
+    const markerId = target?.id || 'start';
+
+    return {
+      ...nextState,
+      page: nextPage,
+      previousReaderPage: nextPage === state.page ? state.previousReaderPage : state.page,
+      pendingAyah: null,
+      pendingQuarterFlash: {
+        targetPage: nextPage,
+        targetSurah: Number(target?.surah),
+        targetAyah: Number(target?.ayah),
+        markerId,
+        flashMode: markerId === 'start' ? 'first-visual-line' : 'next-actual-ayah',
+        allowNextPageFallback: markerId !== 'start',
+        cameFromQuarterFallback: false,
+      },
+      navDirection: 'forward',
+      controlsVisible: false,
+    };
+  }),
+  continueQuarterFlashToNextPage: () => set((state) => {
+    const request = state.pendingQuarterFlash;
+    if (!request?.allowNextPageFallback) return state;
+
+    const nextPage = clampPage(Number(request.targetPage) + 1);
+    if (nextPage === Number(request.targetPage)) {
+      return { pendingQuarterFlash: null };
+    }
+
+    return {
+      page: nextPage,
+      previousReaderPage: state.page,
+      pendingAyah: null,
+      pendingQuarterFlash: {
+        ...request,
+        targetPage: nextPage,
+        flashMode: 'first-actual-ayah',
+        allowNextPageFallback: false,
+        cameFromQuarterFallback: true,
+      },
       navDirection: 'forward',
       controlsVisible: false,
     };
   }),
   clearPendingAyah: () => set({ pendingAyah: null }),
+  clearPendingQuarterFlash: () => set({ pendingQuarterFlash: null }),
   updateSettings: (patch) => set((state) => {
     const settings = sanitizeSettings({ ...state.settings, ...patch });
     return {
@@ -331,6 +385,7 @@ function clearReaderOverlays(state) {
     ...state,
     selectedAyah: null,
     shareTarget: null,
+    pendingQuarterFlash: null,
     overlayStack: state.overlayStack.filter((item) => !LOCAL_OVERLAY_TYPES.has(item.type)),
   };
 }

@@ -80,7 +80,7 @@ function NumberBadge({ children }) {
 
 function JuzIndex() {
   const [expandedJuz, setExpandedJuz] = useState(null);
-  const goAyah = useAppStore((state) => state.goAyah);
+  const goQuarterTarget = useAppStore((state) => state.goQuarterTarget);
 
   return (
     <section className="index-list index-juz-list">
@@ -102,7 +102,7 @@ function JuzIndex() {
                   <button
                     key={target.label}
                     className="index-quarter-btn"
-                    onClick={() => goAyah(target.surah, target.ayah, target.page)}
+                    onClick={() => goQuarterTarget(target)}
                     type="button"
                   >
                     <strong>{getQuarterPillLabel(target.id)}</strong>
