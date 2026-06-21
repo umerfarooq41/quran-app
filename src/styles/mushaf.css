@@ -147,10 +147,31 @@
  * without changing the Quran text, page count, or normal line alignment.
  */
 .quran-pause-symbol {
-  display: inline-block;
-  padding-inline: 0.075em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.018em;
+  margin-inline: 0.035em;
+  padding-inline: 0.025em;
   letter-spacing: 0 !important;
   word-spacing: 0 !important;
+  white-space: nowrap;
+  vertical-align: baseline;
+  unicode-bidi: isolate;
+}
+
+.quran-pause-symbol-char {
+  display: inline-block;
+  flex: 0 0 auto;
+  min-width: 0.34em;
+  text-align: center;
+  line-height: 1;
+  letter-spacing: 0 !important;
+  word-spacing: 0 !important;
+}
+
+.quran-ayah-marker-char {
+  min-width: 0.56em;
 }
 
 /* Opening pages contain shorter centered ayah lines with extra pause symbols.
