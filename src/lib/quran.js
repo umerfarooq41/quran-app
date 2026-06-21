@@ -1,9 +1,13 @@
-import pages from '../data/quranPages16.json';
-import ayahs from '../data/quranAyahs.json';
+import rawPages from '../data/quranPages16.json';
+import rawAyahs from '../data/quranAyahs.json';
 import surahInfo from '../data/surahInfo.json';
 import { getJuzForReference, getPageJuz, getRevelationType } from '../data/quranMeta';
 import { quranJuz } from '../data/quranJuz';
 import { quranRub } from '../data/quranRub';
+import { normalizeMushafAyah, normalizeMushafPage } from './mushafText';
+
+const pages = rawPages.map(normalizeMushafPage);
+const ayahs = rawAyahs.map(normalizeMushafAyah);
 
 export const quranPages = pages;
 export const quranAyahs = ayahs;
