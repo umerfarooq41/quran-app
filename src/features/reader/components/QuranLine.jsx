@@ -12,34 +12,6 @@ const LINE_EDGE_GUTTER = 4;
 const MAX_POSITIVE_WORD_SPACING = 6;
 const OPENING_PAGE_WORD_SPACING = 4;
 const MAX_NEGATIVE_WORD_SPACING = 0;
-const PAUSE_TOKEN_PATTERN = /^[\u0615\u06D6-\u06ED\u08E2\u08E3\u08F0-\u08FF\uF500-\uF8FF]+$/u;
-const PRIVATE_USE_PATTERN = /[\uE000-\uF8FF]/u;
-
-function isPauseSymbolToken(tokenText = '') {
-  return PAUSE_TOKEN_PATTERN.test(String(tokenText).trim());
-}
-
-function isAyahMarkerCharacter(character = '') {
-  return PRIVATE_USE_PATTERN.test(character);
-}
-
-function renderPauseSymbolToken(token) {
-  const characters = Array.from(token.text);
-
-  if (characters.length <= 1) {
-    return token.text;
-  }
-
-  return characters.map((character, characterIndex) => (
-    <span
-      key={`${token.start}-${character.codePointAt(0)}-${characterIndex}`}
-      className={`quran-pause-symbol-char ${isAyahMarkerCharacter(character) ? 'quran-ayah-marker-char' : ''}`}
-    >
-      {character}
-    </span>
-  ));
-}
-
 export function QuranLine({
   line,
   onSelect,
@@ -319,10 +291,10 @@ export function QuranLine({
             token.isWord ? (
               <span
                 key={`${token.start}-${token.end}`}
-                className={`quran-word ${isPauseSymbolToken(token.text) ? 'quran-pause-symbol' : ''}`}
+                className="quran-word"
                 data-quran-word-index={token.wordIndex}
               >
-                {isPauseSymbolToken(token.text) ? renderPauseSymbolToken(token) : token.text}
+                {token.text}
               </span>
             ) : (
               <React.Fragment key={`space-${token.start}-${index}`}>
