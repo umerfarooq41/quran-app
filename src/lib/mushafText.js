@@ -1,55 +1,117 @@
-const SMALL_PAUSE_SIGNS = '\\u0610-\\u061A\\u064B-\\u065F\\u0670\\u06D6-\\u06ED\\u08D3-\\u08FF\\uF61F-\\uF6FF';
-const AYAH_MARKER_GLYPHS = '\\uF500-\\uF61E';
+import rawAyahs from '../data/quranAyahs.json';
+
+const SMALL_PAUSE_SIGNS = '\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED\u08D3-\u08FF';
+const PRIVATE_USE_GLYPHS = '\uE000-\uF8FF';
 const SMALL_SIGN_CLASS = `[${SMALL_PAUSE_SIGNS}]`;
-const AYAH_MARKER_CLASS = `[${AYAH_MARKER_GLYPHS}]`;
 const SPACE_BEFORE_SMALL_SIGNS = new RegExp(`\\s+(${SMALL_SIGN_CLASS}+)`, 'gu');
-const AYAH_MARKER_CLUSTER = new RegExp(`(${SMALL_SIGN_CLASS}*${AYAH_MARKER_CLASS}+${SMALL_SIGN_CLASS}*)`, 'gu');
 const MULTIPLE_SPACES = /[ \t\f\v]+/g;
-const MARKER_PLACEHOLDER_PREFIX = '%%AYAH_MARKER_';
-const MARKER_PLACEHOLDER_SUFFIX = '%%';
+const TRAILING_AYAH_CLUSTER = new RegExp(`\\s*([${SMALL_PAUSE_SIGNS}${PRIVATE_USE_GLYPHS}]+)\\s*$`, 'u');
+
+const AYAH_END_CLUSTER_MAP = new Map(
+  rawAyahs.map((ayah) => [
+    `${Number(ayah.surahNumber)}:${Number(ayah.ayahNumber)}`,
+    extractAyahEndCluster(ayah.text),
+  ]),
+);
+
+function extractAyahEndCluster(text = '') {
+  const match = String(text).match(TRAILING_AYAH_CLUSTER);
+  return match?.[1] || '';
+}
+
+function collapseSpaces(value = '') {
+  return String(value).replace(MULTIPLE_SPACES, ' ').trim();
+}
+
+function attachSmallPauseSigns(value = '') {
+  return String(value).replace(SPACE_BEFORE_SMALL_SIGNS, '$1');
+}
+
+function escapeRegExp(value = '') {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+export function getAyahEndCluster(surahNumber, ayahNumber) {
+  return AYAH_END_CLUSTER_MAP.get(`${Number(surahNumber)}:${Number(ayahNumber)}`) || '';
+}
+
+export function getLineAyahMarkerTokens(line) {
+  if (!line || line.type !== 'ayah') return [];
+
+  const tokens = [];
+  for (let ayah = Number(line.ayahStart); ayah <= Number(line.ayahEnd); ayah += 1) {
+    const cluster = getAyahEndCluster(line.surahNumber, ayah);
+    if (cluster) tokens.push(cluster);
+  }
+  return tokens;
+}
+
+export function isAyahMarkerToken(value = '', line) {
+  if (!value || !line || line.type !== 'ayah') return false;
+  const token = String(value);
+  return getLineAyahMarkerTokens(line).includes(token);
+}
+
+export function splitAyahMarkerToken(value = '') {
+  const characters = Array.from(String(value));
+  let lastPuaIndex = -1;
+
+  for (let index = characters.length - 1; index >= 0; index -= 1) {
+    const codePoint = characters[index].codePointAt(0);
+    if (codePoint >= 0xE000 && codePoint <= 0xF8FF) {
+      lastPuaIndex = index;
+      break;
+    }
+  }
+
+  if (lastPuaIndex < 0) {
+    return { prefix: String(value), glyph: '', suffix: '' };
+  }
+
+  let runStart = lastPuaIndex;
+  while (runStart > 0) {
+    const previous = characters[runStart - 1].codePointAt(0);
+    if (previous < 0xE000 || previous > 0xF8FF) break;
+    runStart -= 1;
+  }
+
+  return {
+    prefix: characters.slice(0, runStart).join(''),
+    glyph: characters.slice(runStart, lastPuaIndex + 1).join(''),
+    suffix: characters.slice(lastPuaIndex + 1).join(''),
+  };
+}
 
 /**
  * Runtime Mushaf formatter.
  *
- * The reference app keeps ordinary pause signs attached to the previous word,
- * while ayah-end ornaments behave like their own word-sized token between two
- * words. That gives equal word-spacing before and after the ayah ornament and
- * prevents tiny pause signs from becoming separate spaced words.
- *
- * This keeps Quran JSON unchanged:
- * - pause signs such as ۚ ۖ ۛ stay attached to the previous word;
- * - ayah marker clusters, including signs above/below them, are spaced as one
- *   complete marker token;
- * - non-ayah PUA pause marks are treated like pause signs, not ayah markers;
- * - repeated spaces are collapsed without touching Arabic letters.
+ * Keep ordinary pause signs attached to the previous word while turning only
+ * the real ayah-end clusters for the current line into standalone word tokens.
+ * This preserves Quran JSON data and avoids misclassifying private-use glyphs
+ * that belong inside normal words.
  */
 export function normalizeMushafText(value = '') {
-  const markers = [];
-
-  const withMarkerPlaceholders = String(value).replace(AYAH_MARKER_CLUSTER, (marker) => {
-    const index = markers.push(marker) - 1;
-    return ` ${MARKER_PLACEHOLDER_PREFIX}${index}${MARKER_PLACEHOLDER_SUFFIX} `;
-  });
-
-  const withAttachedPauseSigns = withMarkerPlaceholders
-    .replace(SPACE_BEFORE_SMALL_SIGNS, '$1')
-    .replace(MULTIPLE_SPACES, ' ')
-    .trim();
-
-  return withAttachedPauseSigns
-    .replace(
-      new RegExp(`${MARKER_PLACEHOLDER_PREFIX}(\\d+)${MARKER_PLACEHOLDER_SUFFIX}`, 'g'),
-      (_, index) => markers[Number(index)] || '',
-    )
-    .replace(MULTIPLE_SPACES, ' ')
-    .trim();
+  return collapseSpaces(attachSmallPauseSigns(value));
 }
 
 export function normalizeMushafLine(line) {
   if (!line || typeof line !== 'object' || typeof line.text !== 'string') return line;
+
+  let text = attachSmallPauseSigns(line.text);
+
+  if (line.type === 'ayah') {
+    for (let ayah = Number(line.ayahStart); ayah <= Number(line.ayahEnd); ayah += 1) {
+      const cluster = getAyahEndCluster(line.surahNumber, ayah);
+      if (!cluster) continue;
+
+      const escapedCluster = escapeRegExp(cluster);
+      text = text.replace(new RegExp(`\\s*${escapedCluster}\\s*`, 'u'), ` ${cluster} `);
+    }
+  }
+
   return {
     ...line,
-    text: normalizeMushafText(line.text),
+    text: collapseSpaces(text),
   };
 }
 
