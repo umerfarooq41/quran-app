@@ -135,7 +135,7 @@
   display: inline-block !important;
   overflow: visible;
   white-space: nowrap !important;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
   transform-origin: right center;
   will-change: transform, word-spacing;
   user-select: none;
@@ -329,16 +329,9 @@
   line-height: 1;
   letter-spacing: 0 !important;
   word-spacing: 0 !important;
-  vertical-align: baseline;
+  vertical-align: middle;
   white-space: nowrap;
   text-rendering: geometricPrecision;
-}
-
-.quran-ayah-marker-signs {
-  display: inline;
-  letter-spacing: 0 !important;
-  word-spacing: 0 !important;
-  line-height: inherit;
 }
 
 .quran-ayah-marker-glyph {
