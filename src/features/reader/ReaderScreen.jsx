@@ -373,7 +373,11 @@ function getFooterTarget({
   audioTarget,
 }) {
   if (pendingAyah?.surahNumber && pendingAyah?.ayahNumber) return pendingAyah;
-  if (Number(pendingQuarterFlash?.targetPage) === page) {
+  if (
+    Number(pendingQuarterFlash?.targetPage) === page &&
+    pendingQuarterFlash.targetSurah &&
+    pendingQuarterFlash.targetAyah
+  ) {
     return {
       surahNumber: pendingQuarterFlash.targetSurah,
       ayahNumber: pendingQuarterFlash.targetAyah,
