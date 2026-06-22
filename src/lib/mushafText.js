@@ -1,6 +1,6 @@
 import rawAyahs from '../data/quranAyahs.json';
 
-const SMALL_PAUSE_SIGNS = '\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED\u08D3-\u08FF';
+const SMALL_PAUSE_SIGNS = '\u0610-\u061A\u06D6-\u06ED\u08D3-\u08FF';
 const PRIVATE_USE_GLYPHS = '\uE000-\uF8FF';
 const SMALL_SIGN_CLASS = `[${SMALL_PAUSE_SIGNS}]`;
 const SPACE_BEFORE_SMALL_SIGNS = new RegExp(`\\s+(${SMALL_SIGN_CLASS}+)`, 'gu');
