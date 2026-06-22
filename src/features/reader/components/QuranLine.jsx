@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef } from 'react';
+import React, { useMemo, useLayoutEffect, useRef } from 'react';
 import { getDisplayLineText } from '../../../utils/quranLabels';
 import {
   getAyahAtRenderedPoint,
@@ -6,13 +6,13 @@ import {
   getWordAtRenderedPoint,
 } from '../utils/ayahDomRange';
 import { SurahHeader } from './SurahHeader';
+import { isAyahMarkerToken, splitAyahMarkerToken } from '../../../lib/mushafText';
 
 const LINE_FIT_EVENT = 'quran-line-fit';
 const LINE_EDGE_GUTTER = 4;
 const MAX_POSITIVE_WORD_SPACING = 6;
 const OPENING_PAGE_WORD_SPACING = 4;
 const MAX_NEGATIVE_WORD_SPACING = 0;
-const AYAH_MARKER_CLUSTER = /([\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED\u08D3-\u08FF]*[\uF500-\uF61E]+[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED\u08D3-\u08FF]*)/gu;
 export function QuranLine({
   line,
   onSelect,
@@ -38,6 +38,11 @@ export function QuranLine({
   );
   const text = getDisplayLineText(line);
   const renderedTokens = getRenderedWordTokens(text);
+  const markerTokens = useMemo(() => new Set(
+    renderedTokens
+      .filter((token) => token.isWord && isAyahMarkerToken(token.text, line))
+      .map((token) => token.text),
+  ), [line, renderedTokens]);
   const inlineBasmallah = line.type === 'surah_name' && line.surahNumber !== 1 && line.surahNumber !== 9 && !hasSeparateBasmallah;
 
   useLayoutEffect(() => {
@@ -300,7 +305,7 @@ export function QuranLine({
                 className="quran-word"
                 data-quran-word-index={token.wordIndex}
               >
-                {renderWordText(token.text)}
+                {renderWordText(token.text, markerTokens.has(token.text))}
               </span>
             ) : (
               <React.Fragment key={`space-${token.start}-${index}`}>
@@ -314,50 +319,21 @@ export function QuranLine({
   );
 }
 
-function renderWordText(text = '') {
-  const parts = splitAyahMarkerClusters(text);
-  if (parts.length === 1 && !parts[0].isMarker) return text;
+function renderWordText(text = '', isMarkerToken = false) {
+  if (!isMarkerToken) return text;
 
-  return parts.map((part, index) => {
-    if (!part.isMarker) {
-      return <React.Fragment key={`word-text-${index}`}>{part.text}</React.Fragment>;
-    }
-
-    return (
-      <span
-        key={`ayah-marker-${index}`}
-        className="quran-ayah-marker"
-        aria-hidden="true"
-        title={part.text}
-      >
-        {part.text}
-      </span>
-    );
-  });
-}
-
-function splitAyahMarkerClusters(text = '') {
-  const value = String(text);
-  const parts = [];
-  let lastIndex = 0;
-  let match = AYAH_MARKER_CLUSTER.exec(value);
-
-  while (match) {
-    if (match.index > lastIndex) {
-      parts.push({ text: value.slice(lastIndex, match.index), isMarker: false });
-    }
-
-    parts.push({ text: match[0], isMarker: true });
-    lastIndex = match.index + match[0].length;
-    match = AYAH_MARKER_CLUSTER.exec(value);
-  }
-
-  if (lastIndex < value.length) {
-    parts.push({ text: value.slice(lastIndex), isMarker: false });
-  }
-
-  AYAH_MARKER_CLUSTER.lastIndex = 0;
-  return parts.length ? parts : [{ text: value, isMarker: false }];
+  const { prefix, glyph, suffix } = splitAyahMarkerToken(text);
+  return (
+    <span
+      className="quran-ayah-marker"
+      aria-hidden="true"
+      title={text}
+    >
+      {prefix ? <span className="quran-ayah-marker-signs">{prefix}</span> : null}
+      {glyph ? <span className="quran-ayah-marker-glyph">{glyph}</span> : null}
+      {suffix ? <span className="quran-ayah-marker-signs">{suffix}</span> : null}
+    </span>
+  );
 }
 
 function countWordGaps(value = '') {
