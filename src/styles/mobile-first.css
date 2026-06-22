@@ -1,39 +1,40 @@
 /* Reader header/footer balance patch.
-   Chrome only: increases meta readability and reduces reserved top/bottom whitespace
-   without changing Quran font metrics, row gap, line-height, or grid rows. */
+   Chrome only: smaller meta text + edge-aligned header/footer.
+   Does not change Quran font metrics, row gap, line-height, or grid rows. */
+
 .reader-passive-header {
-  height: calc(env(safe-area-inset-top, 0px) + 56px) !important;
-  padding: calc(env(safe-area-inset-top, 0px) + 14px) 30px 0 !important;
-  color: rgba(35, 35, 35, .54) !important;
-  font-size: clamp(15px, 3.8vw, 16px) !important;
+  height: calc(env(safe-area-inset-top, 0px) + 48px) !important;
+  padding: calc(env(safe-area-inset-top, 0px) + 10px) 12px 0 !important;
+  color: rgba(35, 35, 35, .52) !important;
+  font-size: clamp(13px, 3.3vw, 14px) !important;
   font-weight: 500 !important;
-  line-height: 1.2 !important;
-  letter-spacing: -0.018em !important;
+  line-height: 1.15 !important;
+  letter-spacing: -0.012em !important;
 }
 
 .reader-footer-meta {
-  bottom: calc(env(safe-area-inset-bottom, 0px) + 14px) !important;
-  padding-inline: 30px !important;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 10px) !important;
+  padding-inline: 12px !important;
   color: rgba(35, 35, 35, .48) !important;
-  font-size: clamp(15px, 3.8vw, 16px) !important;
+  font-size: clamp(13px, 3.3vw, 14px) !important;
   font-weight: 500 !important;
-  line-height: 1.2 !important;
-  letter-spacing: -0.018em !important;
+  line-height: 1.15 !important;
+  letter-spacing: -0.012em !important;
 }
 
 .reader-page {
-  padding-top: calc(env(safe-area-inset-top, 0px) + 72px) !important;
-  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 54px) !important;
+  padding-top: calc(env(safe-area-inset-top, 0px) + 62px) !important;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 46px) !important;
 }
 
 @media (max-width: 380px) {
   .reader-passive-header,
   .reader-footer-meta {
-    font-size: 15px !important;
+    font-size: 13px !important;
   }
 
   .reader-page {
-    padding-top: calc(env(safe-area-inset-top, 0px) + 68px) !important;
-    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 52px) !important;
+    padding-top: calc(env(safe-area-inset-top, 0px) + 58px) !important;
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 44px) !important;
   }
 }
