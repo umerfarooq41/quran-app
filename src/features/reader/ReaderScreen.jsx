@@ -20,7 +20,6 @@ export default function ReaderScreen() {
     goPage,
     goPreviousReaderPage,
     controlsVisible,
-    toggleControls,
     setControlsVisible,
     settings,
     goBack,
@@ -50,7 +49,6 @@ export default function ReaderScreen() {
     goPage: state.goPage,
     goPreviousReaderPage: state.goPreviousReaderPage,
     controlsVisible: state.controlsVisible,
-    toggleControls: state.toggleControls,
     setControlsVisible: state.setControlsVisible,
     settings: state.settings,
     goBack: state.goBack,
@@ -254,18 +252,39 @@ export default function ReaderScreen() {
     });
   }
 
+  function hideReaderChrome() {
+    setControlsVisible(false);
+    hideAudioPlayer();
+  }
+
+  function showReaderChrome() {
+    if (audioPlayerActive) {
+      showAudioPlayer();
+    } else {
+      setControlsVisible(true);
+    }
+  }
+
+  function toggleReaderChrome() {
+    if (controlsVisible || audioPlayerVisible) {
+      hideReaderChrome();
+      return;
+    }
+
+    showReaderChrome();
+  }
+
   function handleReaderTap(event) {
     if (Date.now() < suppressTapUntil.current) return;
     if (event.target.closest('[data-reader-ui]')) return;
 
     if (event.target.closest('[data-reader-toggle-zone]')) {
-      toggleControls();
+      toggleReaderChrome();
       return;
     }
 
     if (event.target.closest('.reader-page')) {
-      setControlsVisible(false);
-      hideAudioPlayer();
+      hideReaderChrome();
     }
   }
 
@@ -287,6 +306,7 @@ export default function ReaderScreen() {
           onBookmarks={openBookmarks}
           onIndex={openIndex}
           onSettings={openSettings}
+          onChromeTap={hideReaderChrome}
         />
 
         <MushafPage
@@ -315,6 +335,7 @@ export default function ReaderScreen() {
             onAudio={() => openAudioPanel()}
             compact={audioPlayerActive}
             juzProgress={juzProgress}
+            onChromeTap={hideReaderChrome}
           />
         )}
       </AnimatePresence>
