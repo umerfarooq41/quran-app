@@ -324,17 +324,27 @@
  */
 .quran-ayah-marker {
   display: inline-block;
-  position: relative;
-  min-width: 1em;
   margin-inline: 0;
   padding: 0;
   line-height: 1;
   letter-spacing: 0 !important;
   word-spacing: 0 !important;
   vertical-align: baseline;
+  white-space: nowrap;
+  text-rendering: geometricPrecision;
+}
+
+.quran-ayah-marker-signs {
+  display: inline;
+  letter-spacing: 0 !important;
+  word-spacing: 0 !important;
+  line-height: inherit;
+}
+
+.quran-ayah-marker-glyph {
+  display: inline-block;
+  min-width: 1em;
   transform: translateY(-0.045em) scaleX(var(--quran-marker-scale-x, 1));
   transform-origin: center center;
   text-align: center;
-  white-space: nowrap;
-  text-rendering: geometricPrecision;
 }
