@@ -4,6 +4,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../store/useAppStore';
 import { BackButton } from '../components/common/AppChrome';
 import {
+  findPageForJuz,
   findPageForReference,
   getSurahAyahs,
   surahs,
@@ -33,9 +34,9 @@ function stripHtml(value = '') {
 }
 
 function previewText(surah) {
-  const source = stripHtml(surah?.shortText || surah?.text || '');
+  const source = stripHtml(surah?.text || surah?.shortText || '');
   if (!source) return 'Surah information will be expanded soon.';
-  return source.length > 210 ? `${source.slice(0, 210).trim()}…` : source;
+  return source.length > 520 ? `${source.slice(0, 520).trim()}…` : source;
 }
 
 export default function IndexScreen() {
@@ -80,7 +81,10 @@ function NumberBadge({ children }) {
 
 function JuzIndex() {
   const [expandedJuz, setExpandedJuz] = useState(null);
-  const goQuarterTarget = useAppStore((state) => state.goQuarterTarget);
+  const { goPage, goQuarterTarget } = useAppStore(useShallow((state) => ({
+    goPage: state.goPage,
+    goQuarterTarget: state.goQuarterTarget,
+  })));
 
   return (
     <section className="index-list index-juz-list">
@@ -90,10 +94,28 @@ function JuzIndex() {
 
         return (
           <article key={juz} className={`index-card-wrap ${isOpen ? 'is-open' : ''}`}>
-            <button className="index-card index-juz-card" onClick={() => setExpandedJuz(isOpen ? null : juz)} type="button">
+            <button className="index-card index-juz-card" onClick={() => goPage(findPageForJuz(juz))} type="button">
               <NumberBadge>{juz}</NumberBadge>
               <span className="index-card-title">{formatJuzName(juz)}</span>
-              <ChevronDown className="index-chevron" size={20} strokeWidth={2.35} />
+              <ChevronDown
+                className="index-chevron"
+                size={20}
+                strokeWidth={2.35}
+                role="button"
+                tabIndex={0}
+                aria-label={`${isOpen ? 'Collapse' : 'Expand'} ${formatJuzName(juz)}`}
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  setExpandedJuz(isOpen ? null : juz);
+                }}
+                onKeyDown={(event) => {
+                  if (event.key !== 'Enter' && event.key !== ' ') return;
+                  event.preventDefault();
+                  event.stopPropagation();
+                  setExpandedJuz(isOpen ? null : juz);
+                }}
+              />
             </button>
 
             {isOpen && (
@@ -152,13 +174,31 @@ function SurahIndex() {
                 <article key={surah.number} className={`index-card-wrap ${isOpen ? 'is-open' : ''}`}>
                   <button
                     className="index-card index-surah-card"
-                    onClick={() => setExpandedSurah(isOpen ? null : surah.number)}
+                    onClick={() => goAyah(surah.number, 1, findPageForReference(surah.number, 1))}
                     type="button"
                     aria-expanded={isOpen}
                   >
                     <NumberBadge>{surah.number}</NumberBadge>
                     <span className="index-card-title">{surah.name}</span>
-                    <ChevronDown className="index-chevron" size={20} strokeWidth={2.35} />
+                    <ChevronDown
+                      className="index-chevron"
+                      size={20}
+                      strokeWidth={2.35}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`${isOpen ? 'Collapse' : 'Expand'} ${surah.name}`}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        setExpandedSurah(isOpen ? null : surah.number);
+                      }}
+                      onKeyDown={(event) => {
+                        if (event.key !== 'Enter' && event.key !== ' ') return;
+                        event.preventDefault();
+                        event.stopPropagation();
+                        setExpandedSurah(isOpen ? null : surah.number);
+                      }}
+                    />
                   </button>
 
                   {isOpen && (
@@ -166,7 +206,7 @@ function SurahIndex() {
                       <div className="index-surah-info-preview">
                         <p>
                           <span className="index-surah-info-label">Surah Info</span>
-                          {previewText(surah)}{' '}
+                          <span className="index-surah-info-copy">{previewText(surah)}</span>{' '}
                           <button
                             type="button"
                             className="inline-read-more"
