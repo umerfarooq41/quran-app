@@ -238,6 +238,17 @@
   box-shadow: inset 0 0 0 1px rgba(31, 130, 107, .12);
 }
 
+.reader-word-highlight-block {
+  z-index: 0;
+  border-radius: 4px;
+}
+
+.reader-word-highlight-amber { background: rgba(202, 128, 16, .42); }
+.reader-word-highlight-emerald { background: rgba(22, 101, 82, .36); }
+.reader-word-highlight-rose { background: rgba(159, 18, 57, .34); }
+.reader-word-highlight-sky { background: rgba(3, 105, 161, .35); }
+.reader-word-highlight-violet { background: rgba(91, 33, 182, .34); }
+
 ::highlight(reader-highlight-amber) { background: rgba(243, 184, 62, .30); }
 ::highlight(reader-highlight-emerald) { background: rgba(34, 125, 104, .22); }
 ::highlight(reader-highlight-rose) { background: rgba(212, 20, 78, .18); }
