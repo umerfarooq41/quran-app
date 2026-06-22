@@ -94,8 +94,8 @@
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  column-gap: 18px;
-  padding: 14px 18px;
+  column-gap: 14px;
+  padding: 14px 12px 14px 18px;
   text-align: left;
 }
 
@@ -121,11 +121,15 @@
 }
 
 .index-chevron {
+  margin-right: 4px;
+  cursor: pointer;
+  outline: none;
+  transform: translateX(-4px);
   transition: transform .18s ease;
 }
 
 .index-card-wrap.is-open .index-chevron {
-  transform: rotate(180deg);
+  transform: translateX(-4px) rotate(180deg);
 }
 
 .index-section-title {
@@ -226,8 +230,12 @@
   color: #747b88;
   font-size: clamp(.92rem, 3.8vw, 1.05rem);
   font-weight: 400;
-  line-height: 1.45;
+  line-height: 1.52;
   letter-spacing: -.02em;
+}
+
+.index-surah-info-copy {
+  display: inline;
 }
 
 .index-surah-info-label {

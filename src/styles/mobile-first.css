@@ -82,21 +82,21 @@ body { -webkit-text-size-adjust: 100%; }
 .index-segment button { font-size: .9rem; }
 .index-list, .index-surah-stack, .index-card-wrap, .index-surah-collapse { gap: 8px; }
 .index-card { min-height: 54px; border-radius: 17px; }
-.index-juz-card, .index-surah-card { column-gap: 12px; padding: 9px 12px; }
+.index-juz-card, .index-surah-card { column-gap: 10px; padding: 9px 8px 9px 12px; }
 .index-number-badge { width: 34px; height: 34px; border-width: 1.5px; font-size: .9rem; }
 .index-card-title { font-size: 1rem; }
 .index-section-title { margin: 4px 0 6px 10px; font-size: .74rem; }
 .index-surah-text { gap: 2px; }
 .index-surah-text strong { font-size: 1rem; line-height: 1.05; }
 .index-surah-text small { font-size: .72rem; }
-.index-chevron { width: 17px; height: 17px; }
+.index-chevron { width: 17px; height: 17px; margin-right: 2px; transform: translateX(-3px); }
 .index-collapse-panel { margin-inline: 2px; border-radius: 16px; padding: 10px; }
 .index-quarter-grid { gap: 7px; }
 .index-quarter-btn { min-height: 46px; border-radius: 13px; padding: 8px 9px; }
 .index-quarter-btn strong { font-size: .78rem; }
 .index-quarter-btn span { font-size: .66rem; }
-.index-surah-info-preview { border-radius: 15px; padding: 10px; }
-.index-surah-info-preview p { font-size: .78rem; line-height: 1.55; }
+.index-surah-info-preview { border-radius: 15px; padding: 11px 10px; }
+.index-surah-info-preview p { font-size: .8rem; line-height: 1.58; min-height: calc(1em * 1.58 * 4); }
 .index-surah-info-label { font-size: .68rem; }
 .index-ayah-grid { gap: 6px; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); }
 .index-ayah-grid button { min-height: 36px; border-radius: 12px; font-size: .78rem; }
@@ -565,4 +565,9 @@ select, input[type='text'], input:not([type]), .screen-shell input { min-height:
   .reader-bottom-sheet {
     padding-top: 14px !important;
   }
+}
+
+/* Index interaction patch: rows navigate, chevrons expand/collapse. */
+.index-card-wrap.is-open .index-chevron {
+  transform: translateX(-3px) rotate(180deg);
 }
