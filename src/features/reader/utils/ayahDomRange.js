@@ -123,7 +123,6 @@ export function getAyahRangeRects(line, textElement, ayahNumber) {
 export function getAyahHighlightRects(pageElement, pageData, surahNumber, ayahNumber) {
   if (!pageElement || !pageData || !surahNumber || !ayahNumber) return [];
 
-  const pageRect = pageElement.getBoundingClientRect();
   const renderedRects = pageData.lines.flatMap((line) => {
     if (!lineContainsReference(line, surahNumber, ayahNumber)) return [];
 
@@ -133,23 +132,21 @@ export function getAyahHighlightRects(pageElement, pageData, surahNumber, ayahNu
     return getAyahRangeRects(line, textElement, ayahNumber);
   });
 
-  return mergeRectsByVisualLine(renderedRects)
-    .map((rect) => {
-      const horizontalPadding = 2;
-      const verticalInset = Math.min(6, Math.max(3, rect.height * 0.22));
-      const left = Math.max(0, rect.left - pageRect.left - horizontalPadding);
-      const right = Math.min(pageRect.width, rect.right - pageRect.left + horizontalPadding);
-      const top = Math.max(0, rect.top - pageRect.top + verticalInset);
-      const bottom = Math.min(pageRect.height, rect.bottom - pageRect.top - verticalInset);
+  return getHighlightRectsFromClientRects(pageElement, renderedRects, {
+    horizontalPadding: 2,
+    verticalInsetRatio: 0.22,
+    minVerticalInset: 3,
+    maxVerticalInset: 6,
+  });
+}
 
-      return {
-        left,
-        top,
-        width: Math.max(0, right - left),
-        height: Math.max(0, bottom - top),
-      };
-    })
+export function getRangeHighlightRects(pageElement, range, options = {}) {
+  if (!pageElement || !range) return [];
+
+  const renderedRects = Array.from(range.getClientRects())
     .filter((rect) => rect.width > 0 && rect.height > 0);
+
+  return getHighlightRectsFromClientRects(pageElement, renderedRects, options);
 }
 
 export function getAyahOffsets(line, ayahNumber) {
@@ -258,6 +255,43 @@ function distanceToRect(x, y, rect) {
   const deltaX = x < rect.left ? rect.left - x : x > rect.right ? x - rect.right : 0;
   const deltaY = y < rect.top ? rect.top - y : y > rect.bottom ? y - rect.bottom : 0;
   return Math.hypot(deltaX, deltaY);
+}
+
+
+function getHighlightRectsFromClientRects(pageElement, renderedRects, options = {}) {
+  const pageRect = pageElement.getBoundingClientRect();
+  const horizontalPadding = Number.isFinite(options.horizontalPadding)
+    ? options.horizontalPadding
+    : 2;
+  const verticalInsetRatio = Number.isFinite(options.verticalInsetRatio)
+    ? options.verticalInsetRatio
+    : 0.22;
+  const minVerticalInset = Number.isFinite(options.minVerticalInset)
+    ? options.minVerticalInset
+    : 3;
+  const maxVerticalInset = Number.isFinite(options.maxVerticalInset)
+    ? options.maxVerticalInset
+    : 6;
+
+  return mergeRectsByVisualLine(renderedRects)
+    .map((rect) => {
+      const verticalInset = Math.min(
+        maxVerticalInset,
+        Math.max(minVerticalInset, rect.height * verticalInsetRatio),
+      );
+      const left = Math.max(0, rect.left - pageRect.left - horizontalPadding);
+      const right = Math.min(pageRect.width, rect.right - pageRect.left + horizontalPadding);
+      const top = Math.max(0, rect.top - pageRect.top + verticalInset);
+      const bottom = Math.min(pageRect.height, rect.bottom - pageRect.top - verticalInset);
+
+      return {
+        left,
+        top,
+        width: Math.max(0, right - left),
+        height: Math.max(0, bottom - top),
+      };
+    })
+    .filter((rect) => rect.width > 0 && rect.height > 0);
 }
 
 function lineContainsReference(line, surahNumber, ayahNumber) {
