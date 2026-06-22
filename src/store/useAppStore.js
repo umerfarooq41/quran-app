@@ -38,6 +38,9 @@ export const useAppStore = create((set, get) => ({
   navDirection: 'forward',
   overlayStack: [],
   surahInfoReturnView: VIEWS.INDEX,
+  indexTab: 'juz',
+  expandedIndexSurah: null,
+  expandedIndexJuz: null,
   page: 1,
   previousReaderPage: null,
   selectedSurah: 1,
@@ -60,9 +63,11 @@ export const useAppStore = create((set, get) => ({
   pendingAyah: null,
   pendingQuarterFlash: null,
   settings: { ...DEFAULT_SETTINGS },
-  hydrateLastRead: (lastRead) => set({
+  hydrateLastRead: (lastRead) => set((state) => ({
+    ...transitionToView(state, VIEWS.READER, { replace: true }),
     page: clampPage(lastRead?.page || 1),
-  }),
+    controlsVisible: false,
+  })),
   navigateTo: (view, options = {}) => set((state) => transitionToView(
     state,
     normalizeView(view),
@@ -123,7 +128,14 @@ export const useAppStore = create((set, get) => ({
     selectedSurah: Number(selectedSurah) || 1,
     surahInfoReturnView: state.view,
   })),
-  closeSurahInfo: () => get().goBack(get().surahInfoReturnView || VIEWS.INDEX),
+  closeSurahInfo: () => get().navigateTo(get().surahInfoReturnView || VIEWS.INDEX, { direction: 'back', replace: true }),
+  setIndexTab: (indexTab) => set({ indexTab: indexTab === 'surahs' ? 'surahs' : 'juz' }),
+  setExpandedIndexSurah: (expandedIndexSurah) => set({
+    expandedIndexSurah: Number(expandedIndexSurah) || null,
+  }),
+  setExpandedIndexJuz: (expandedIndexJuz) => set({
+    expandedIndexJuz: Number(expandedIndexJuz) || null,
+  }),
   setControlsVisible: (controlsVisible) => set({ controlsVisible }),
   toggleControls: () => set((state) => ({ controlsVisible: !state.controlsVisible })),
   setSelectedLine: (selectedLine) => set({ selectedLine }),
@@ -261,8 +273,8 @@ export const useAppStore = create((set, get) => ({
       pendingAyah: null,
       pendingQuarterFlash: {
         targetPage: nextPage,
-        targetSurah: Number(target?.surah),
-        targetAyah: Number(target?.ayah),
+        targetSurah: Number(target?.surah) || null,
+        targetAyah: Number(target?.ayah) || null,
         markerId,
         flashMode: markerId === 'start' ? 'first-rendered-line' : 'ayah-marker',
       },
