@@ -26,6 +26,7 @@ export function ReaderAudioPanel() {
     audioDuration: duration,
     audioPlaying: playing,
     audioRepeat: repeat,
+    audioPlayerVisible,
     audioReciter,
     audioPlaybackRate,
     closeAudioPlayer,
@@ -43,6 +44,7 @@ export function ReaderAudioPanel() {
     audioDuration: state.audioDuration,
     audioPlaying: state.audioPlaying,
     audioRepeat: state.audioRepeat,
+    audioPlayerVisible: state.audioPlayerVisible,
     audioReciter: state.audioReciter,
     audioPlaybackRate: state.audioPlaybackRate,
     closeAudioPlayer: state.closeAudioPlayer,
@@ -476,7 +478,7 @@ export function ReaderAudioPanel() {
 
   return (
     <div
-      className={`reader-audio-panel-wrap reader-audio-panel-visible ${view === VIEWS.READER ? 'reader-audio-over-reader' : 'reader-audio-over-screen'}`}
+      className={`reader-audio-panel-wrap ${audioPlayerVisible ? 'reader-audio-panel-visible' : 'reader-audio-panel-hidden'} ${view === VIEWS.READER ? 'reader-audio-over-reader' : 'reader-audio-over-screen'}`}
       data-reader-ui
     >
       <section className="reader-audio-panel">
