@@ -1,5 +1,5 @@
-const SMALL_PAUSE_SIGNS = '\\u0610-\\u061A\\u064B-\\u065F\\u0670\\u06D6-\\u06ED\\u08D3-\\u08FF';
-const AYAH_MARKER_GLYPHS = '\\uF500-\\uF8FF';
+const SMALL_PAUSE_SIGNS = '\\u0610-\\u061A\\u064B-\\u065F\\u0670\\u06D6-\\u06ED\\u08D3-\\u08FF\\uF61F-\\uF6FF';
+const AYAH_MARKER_GLYPHS = '\\uF500-\\uF61E';
 const SMALL_SIGN_CLASS = `[${SMALL_PAUSE_SIGNS}]`;
 const AYAH_MARKER_CLASS = `[${AYAH_MARKER_GLYPHS}]`;
 const SPACE_BEFORE_SMALL_SIGNS = new RegExp(`\\s+(${SMALL_SIGN_CLASS}+)`, 'gu');
@@ -20,6 +20,7 @@ const MARKER_PLACEHOLDER_SUFFIX = '%%';
  * - pause signs such as ۚ ۖ ۛ stay attached to the previous word;
  * - ayah marker clusters, including signs above/below them, are spaced as one
  *   complete marker token;
+ * - non-ayah PUA pause marks are treated like pause signs, not ayah markers;
  * - repeated spaces are collapsed without touching Arabic letters.
  */
 export function normalizeMushafText(value = '') {
