@@ -176,6 +176,12 @@ export const useAppStore = create((set, get) => ({
     audioPlayerActive: false,
     audioPlayerVisible: false,
   }),
+  showAudioPlayer: () => set((state) => (
+    state.audioPlayerActive ? { audioPlayerVisible: true, controlsVisible: true } : state
+  )),
+  hideAudioPlayer: () => set((state) => (
+    state.audioPlayerActive ? { audioPlayerVisible: false } : state
+  )),
   closeTopOverlay: () => set((state) => closeTopOverlay(state)),
   setAudioTarget: (audioTarget) => set((state) => {
     const target = normalizeAudioTarget(audioTarget);
