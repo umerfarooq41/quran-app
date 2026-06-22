@@ -37,7 +37,10 @@ export default function ReaderScreen() {
     closeShareSheet,
     audioTarget,
     audioPlayerActive,
+    audioPlayerVisible,
     openAudioPlayer,
+    showAudioPlayer,
+    hideAudioPlayer,
     pendingAyah,
     pendingQuarterFlash,
     clearPendingAyah,
@@ -64,7 +67,10 @@ export default function ReaderScreen() {
     closeShareSheet: state.closeShareSheet,
     audioTarget: state.audioTarget,
     audioPlayerActive: state.audioPlayerActive,
+    audioPlayerVisible: state.audioPlayerVisible,
     openAudioPlayer: state.openAudioPlayer,
+    showAudioPlayer: state.showAudioPlayer,
+    hideAudioPlayer: state.hideAudioPlayer,
     pendingAyah: state.pendingAyah,
     pendingQuarterFlash: state.pendingQuarterFlash,
     clearPendingAyah: state.clearPendingAyah,
@@ -197,6 +203,11 @@ export default function ReaderScreen() {
   }, [audioTarget?.surahNumber, audioTarget?.ayahNumber]);
 
   function openAudioPanel(targetLine = null) {
+    if (!targetLine && audioPlayerActive && !audioPlayerVisible) {
+      showAudioPlayer();
+      return;
+    }
+
     const firstLine = pageData.lines.find((line) => line.surahNumber && line.ayahStart);
     const target = targetLine || (firstLine ? {
       page,
@@ -246,7 +257,16 @@ export default function ReaderScreen() {
   function handleReaderTap(event) {
     if (Date.now() < suppressTapUntil.current) return;
     if (event.target.closest('[data-reader-ui]')) return;
-    toggleControls();
+
+    if (event.target.closest('[data-reader-toggle-zone]')) {
+      toggleControls();
+      return;
+    }
+
+    if (event.target.closest('.reader-page')) {
+      setControlsVisible(false);
+      hideAudioPlayer();
+    }
   }
 
   return (
@@ -257,6 +277,8 @@ export default function ReaderScreen() {
       onTouchEnd={handleTouchEnd}
     >
       <div className="reader-shell relative mx-auto flex h-dvh max-w-[576px] flex-col overflow-hidden bg-[#fffaf1] text-[#13100a] shadow-2xl shadow-slate-900/10">
+        <div className="reader-top-hit-zone" data-reader-toggle-zone aria-hidden="true" />
+        <div className="reader-bottom-hit-zone" data-reader-toggle-zone aria-hidden="true" />
         <ReaderPassiveHeader meta={meta} displayPage={displayPage} />
 
         <ReaderTopControls
