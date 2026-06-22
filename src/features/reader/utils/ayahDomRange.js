@@ -135,10 +135,12 @@ export function getAyahHighlightRects(pageElement, pageData, surahNumber, ayahNu
 
   return mergeRectsByVisualLine(renderedRects)
     .map((rect) => {
-      const left = Math.max(0, rect.left - pageRect.left - 3);
-      const right = Math.min(pageRect.width, rect.right - pageRect.left + 3);
-      const top = Math.max(0, rect.top - pageRect.top - 1);
-      const bottom = Math.min(pageRect.height, rect.bottom - pageRect.top + 1);
+      const horizontalPadding = 3;
+      const verticalInset = Math.min(4, Math.max(1.5, rect.height * 0.14));
+      const left = Math.max(0, rect.left - pageRect.left - horizontalPadding);
+      const right = Math.min(pageRect.width, rect.right - pageRect.left + horizontalPadding);
+      const top = Math.max(0, rect.top - pageRect.top + verticalInset);
+      const bottom = Math.min(pageRect.height, rect.bottom - pageRect.top - verticalInset);
 
       return {
         left,
