@@ -6,13 +6,14 @@ import {
   getWordAtRenderedPoint,
 } from '../utils/ayahDomRange';
 import { SurahHeader } from './SurahHeader';
-import { isAyahMarkerToken, splitAyahMarkerToken } from '../../../lib/mushafText';
+import { isAyahMarkerToken } from '../../../lib/mushafText';
 
 const LINE_FIT_EVENT = 'quran-line-fit';
 const LINE_EDGE_GUTTER = 4;
 const MAX_POSITIVE_WORD_SPACING = 6;
 const OPENING_PAGE_WORD_SPACING = 4;
 const MAX_NEGATIVE_WORD_SPACING = 0;
+
 export function QuranLine({
   line,
   onSelect,
@@ -322,16 +323,13 @@ export function QuranLine({
 function renderWordText(text = '', isMarkerToken = false) {
   if (!isMarkerToken) return text;
 
-  const { prefix, glyph, suffix } = splitAyahMarkerToken(text);
   return (
     <span
       className="quran-ayah-marker"
       aria-hidden="true"
       title={text}
     >
-      {prefix ? <span className="quran-ayah-marker-signs">{prefix}</span> : null}
-      {glyph ? <span className="quran-ayah-marker-glyph">{glyph}</span> : null}
-      {suffix ? <span className="quran-ayah-marker-signs">{suffix}</span> : null}
+      <span className="quran-ayah-marker-glyph">{text}</span>
     </span>
   );
 }
