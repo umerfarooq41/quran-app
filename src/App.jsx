@@ -25,7 +25,6 @@ export default function App() {
     updateSettings,
     goBack,
     audioPlayerActive,
-    audioPlayerVisible,
   } = useAppStore(useShallow((state) => ({
     view: state.view,
     hydrateLastRead: state.hydrateLastRead,
@@ -33,7 +32,6 @@ export default function App() {
     updateSettings: state.updateSettings,
     goBack: state.goBack,
     audioPlayerActive: state.audioPlayerActive,
-    audioPlayerVisible: state.audioPlayerVisible,
   })));
   const activeView = normalizeView(view);
   const [booted, setBooted] = useState(false);
@@ -101,7 +99,7 @@ export default function App() {
         {activeView === VIEWS.TAFSIR && <TafsirScreen key="tafsir" />}
         {activeView === VIEWS.SETTINGS && <SettingsScreen key="settings" />}
       </AnimatePresence>
-      {audioPlayerActive && audioPlayerVisible && <ReaderAudioPanel />}
+      {audioPlayerActive && <ReaderAudioPanel />}
    </Shell>
   );
 }
