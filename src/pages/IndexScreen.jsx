@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../store/useAppStore';
@@ -40,8 +40,11 @@ function previewText(surah) {
 }
 
 export default function IndexScreen() {
-  const [tab, setTab] = useState('juz');
-  const goBack = useAppStore((state) => state.goBack);
+  const { tab, setTab, goBack } = useAppStore(useShallow((state) => ({
+    tab: state.indexTab || 'juz',
+    setTab: state.setIndexTab,
+    goBack: state.goBack,
+  })));
 
   return (
     <main className="index-replica-shell">
@@ -80,11 +83,21 @@ function NumberBadge({ children }) {
 }
 
 function JuzIndex() {
-  const [expandedJuz, setExpandedJuz] = useState(null);
-  const { goPage, goQuarterTarget } = useAppStore(useShallow((state) => ({
-    goPage: state.goPage,
+  const { expandedJuz, setExpandedJuz, goQuarterTarget } = useAppStore(useShallow((state) => ({
+    expandedJuz: state.expandedIndexJuz,
+    setExpandedJuz: state.setExpandedIndexJuz,
     goQuarterTarget: state.goQuarterTarget,
   })));
+
+  function openJuzStart(juz) {
+    const page = findPageForJuz(juz);
+    goQuarterTarget({
+      id: 'start',
+      page,
+      surah: null,
+      ayah: null,
+    });
+  }
 
   return (
     <section className="index-list index-juz-list">
@@ -94,7 +107,7 @@ function JuzIndex() {
 
         return (
           <article key={juz} className={`index-card-wrap ${isOpen ? 'is-open' : ''}`}>
-            <button className="index-card index-juz-card" onClick={() => goPage(findPageForJuz(juz))} type="button">
+            <button className="index-card index-juz-card" onClick={() => openJuzStart(juz)} type="button">
               <NumberBadge>{juz}</NumberBadge>
               <span className="index-card-title">{formatJuzName(juz)}</span>
               <ChevronDown
@@ -147,8 +160,9 @@ function getQuarterPillLabel(id) {
 }
 
 function SurahIndex() {
-  const [expandedSurah, setExpandedSurah] = useState(null);
-  const { goAyah, openSurahInfo } = useAppStore(useShallow((state) => ({
+  const { expandedSurah, setExpandedSurah, goAyah, openSurahInfo } = useAppStore(useShallow((state) => ({
+    expandedSurah: state.expandedIndexSurah,
+    setExpandedSurah: state.setExpandedIndexSurah,
     goAyah: state.goAyah,
     openSurahInfo: state.openSurahInfo,
   })));
@@ -159,6 +173,18 @@ function SurahIndex() {
     groups[key].push(surah);
     return groups;
   }, {}), []);
+
+  useEffect(() => {
+    if (!expandedSurah) return;
+
+    const frame = window.requestAnimationFrame(() => {
+      document
+        .querySelector(`[data-index-surah-card="${expandedSurah}"]`)
+        ?.scrollIntoView({ block: 'nearest' });
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [expandedSurah]);
 
   return (
     <section className="index-list index-surah-list">
@@ -171,7 +197,7 @@ function SurahIndex() {
               const ayahs = isOpen ? getSurahAyahs(surah.number) : [];
 
               return (
-                <article key={surah.number} className={`index-card-wrap ${isOpen ? 'is-open' : ''}`}>
+                <article key={surah.number} data-index-surah-card={surah.number} className={`index-card-wrap ${isOpen ? 'is-open' : ''}`}>
                   <button
                     className="index-card index-surah-card"
                     onClick={() => goAyah(surah.number, 1, findPageForReference(surah.number, 1))}
@@ -204,17 +230,15 @@ function SurahIndex() {
                   {isOpen && (
                     <div className="index-collapse-panel index-surah-collapse" aria-label={`${surah.name} details`}>
                       <div className="index-surah-info-preview">
-                        <p>
-                          <span className="index-surah-info-label">Surah Info</span>
-                          <span className="index-surah-info-copy">{previewText(surah)}</span>{' '}
-                          <button
-                            type="button"
-                            className="inline-read-more"
-                            onClick={() => openSurahInfo(surah.number)}
-                          >
-                            Read more
-                          </button>
-                        </p>
+                        <span className="index-surah-info-label">Surah Info</span>
+                        <p className="index-surah-info-copy">{previewText(surah)}</p>
+                        <button
+                          type="button"
+                          className="inline-read-more index-surah-read-more"
+                          onClick={() => openSurahInfo(surah.number)}
+                        >
+                          Read more
+                        </button>
                       </div>
 
                       <div className="index-ayah-grid" aria-label={`${surah.name} ayahs`}>
