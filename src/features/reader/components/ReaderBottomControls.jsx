@@ -12,6 +12,7 @@ export function ReaderBottomControls({
   onAudio,
   compact = false,
   juzProgress,
+  onChromeTap,
 }) {
   return (
     <motion.div
@@ -20,6 +21,10 @@ export function ReaderBottomControls({
       exit={{ opacity: 1 }}
       data-reader-ui
       className="reader-bottom-controls"
+      onClick={(event) => {
+        if (event.target.closest('button, input, [role="slider"]')) return;
+        onChromeTap?.();
+      }}
     >
 {!compact && (
         <motion.button

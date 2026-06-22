@@ -30,6 +30,7 @@ export function MushafPage({
 }) {
   const pageRef = useRef(null);
   const [highlightRects, setHighlightRects] = useState({
+    saved: [],
     selection: [],
     audio: [],
   });
@@ -39,7 +40,7 @@ export function MushafPage({
   useLayoutEffect(() => {
     const pageElement = pageRef.current;
     if (!pageElement) {
-      setHighlightRects({ selection: [], audio: [] });
+      setHighlightRects({ saved: [], selection: [], audio: [] });
       return undefined;
     }
 
@@ -49,6 +50,7 @@ export function MushafPage({
     const measure = () => {
       if (disposed) return;
       setHighlightRects({
+        saved: getSavedHighlightRects(pageElement, pageData, savedHighlights),
         selection: selectedAyah
           ? getAyahHighlightRects(
               pageElement,
@@ -104,6 +106,7 @@ export function MushafPage({
     };
   }, [
     pageData,
+    savedHighlights,
     selectedAyah?.surahNumber,
     selectedAyah?.ayahNumber,
     activeAudioAyah?.surahNumber,
@@ -122,9 +125,6 @@ export function MushafPage({
       const color = typeof highlight === 'string' ? highlight : highlight?.color;
       if (!SAVED_HIGHLIGHTS.includes(color)) return;
       const { surahNumber, ayahNumber } = parseReference(reference);
-      const ranges = getAyahRanges(pageRef.current, pageData, surahNumber, ayahNumber);
-      addRanges(groupedRanges, `reader-highlight-${color}`, ranges);
-
       const wordRange = getSavedWordRange(
         pageRef.current,
         pageData,
@@ -239,6 +239,18 @@ export function MushafPage({
             }}
           />
         )}
+        {highlightRects.saved.map((item, index) => (
+          <span
+            key={`saved-${item.color}-${item.rect.top}-${item.rect.left}-${index}`}
+            className={`reader-ayah-highlight-block reader-ayah-highlight-saved reader-ayah-highlight-${item.color}`}
+            style={{
+              left: `${item.rect.left}px`,
+              top: `${item.rect.top}px`,
+              width: `${item.rect.width}px`,
+              height: `${item.rect.height}px`,
+            }}
+          />
+        ))}
         {highlightRects.audio.map((rect, index) => (
           <span
             key={`audio-${rect.top}-${rect.left}-${index}`}
@@ -297,6 +309,22 @@ export function MushafPage({
   );
 }
 
+
+function getSavedHighlightRects(pageElement, pageData, savedHighlights) {
+  const rects = [];
+
+  savedHighlights.forEach((highlight, reference) => {
+    const color = typeof highlight === 'string' ? highlight : highlight?.color;
+    if (!SAVED_HIGHLIGHTS.includes(color)) return;
+
+    const { surahNumber, ayahNumber } = parseReference(reference);
+    getAyahHighlightRects(pageElement, pageData, surahNumber, ayahNumber).forEach((rect) => {
+      rects.push({ color, rect });
+    });
+  });
+
+  return rects;
+}
 function getAyahRanges(pageElement, pageData, surahNumber, ayahNumber) {
   return pageData.lines.flatMap((line) => {
     if (!lineContainsReference(line, surahNumber, ayahNumber)) return [];
