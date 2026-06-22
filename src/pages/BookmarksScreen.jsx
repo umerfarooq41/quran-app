@@ -20,9 +20,9 @@ const BOOKMARK_TYPES = [
 ];
 
 export default function BookmarksScreen() {
-  const { goBack, goAyah } = useAppStore(useShallow((state) => ({
+  const { goBack, goQuarterTarget } = useAppStore(useShallow((state) => ({
     goBack: state.goBack,
-    goAyah: state.goAyah,
+    goQuarterTarget: state.goQuarterTarget,
   })));
   const [items, setItems] = useState([]);
   const [filter, setFilter] = useState('All');
@@ -79,7 +79,12 @@ export default function BookmarksScreen() {
     }
 
     const itemPage = item.page || findPageForReference(item.surahNumber, item.ayahNumber);
-    goAyah(item.surahNumber, item.ayahNumber, itemPage);
+    goQuarterTarget({
+      id: 'bookmark',
+      page: itemPage,
+      surah: item.surahNumber,
+      ayah: item.ayahNumber,
+    });
   }
 
   function startSwipe(event, menuKey) {
