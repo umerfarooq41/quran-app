@@ -113,8 +113,18 @@ export function QuranLine({
 
           if (requiredWordSpacing > CENTER_FALLBACK_WORD_SPACING) {
             container.classList.add('quran-line-soft-centered');
-            wordSpacing = 0;
-            el.style.wordSpacing = '0px';
+
+            wordSpacing = MAX_POSITIVE_WORD_SPACING;
+            el.style.wordSpacing = `${wordSpacing.toFixed(2)}px`;
+
+            const spacedWidth = measureTextWidth(el);
+            if (spacedWidth > availableWidth) {
+              wordSpacing = Math.max(
+                0,
+                wordSpacing - ((spacedWidth - availableWidth) / spaceCount),
+              );
+              el.style.wordSpacing = `${wordSpacing.toFixed(2)}px`;
+            }
           } else {
             wordSpacing = Math.min(
               MAX_POSITIVE_WORD_SPACING,
