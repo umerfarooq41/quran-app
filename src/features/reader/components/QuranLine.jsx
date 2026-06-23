@@ -10,7 +10,8 @@ import { isAyahMarkerToken } from '../../../lib/mushafText';
 
 const LINE_FIT_EVENT = 'quran-line-fit';
 const LINE_EDGE_GUTTER = 4;
-const MAX_POSITIVE_WORD_SPACING = 6;
+const MAX_POSITIVE_WORD_SPACING = 9;
+const CENTER_FALLBACK_WORD_SPACING = 10;
 const OPENING_PAGE_WORD_SPACING = 4;
 const MAX_NEGATIVE_WORD_SPACING = 0;
 
@@ -60,6 +61,7 @@ export function QuranLine({
 
       el.style.wordSpacing = '0px';
       el.style.transform = 'scaleX(1)';
+      container.classList.remove('quran-line-soft-centered');
 
       const availableWidth = Math.max(
         0,
@@ -107,24 +109,32 @@ export function QuranLine({
             scale = Math.min(1, availableWidth / compressedWidth);
           }
         } else if (line.type === 'ayah' && spaceCount > 0) {
-          wordSpacing = Math.min(
-            MAX_POSITIVE_WORD_SPACING,
-            (availableWidth - naturalWidth) / spaceCount,
-          );
-          wordSpacing = Math.max(0, wordSpacing);
-          el.style.wordSpacing = `${wordSpacing.toFixed(2)}px`;
+          const requiredWordSpacing = (availableWidth - naturalWidth) / spaceCount;
 
-          const expandedWidth = measureTextWidth(el);
-          if (expandedWidth > availableWidth) {
-            wordSpacing = Math.max(
-              0,
-              wordSpacing - ((expandedWidth - availableWidth) / spaceCount),
+          if (requiredWordSpacing > CENTER_FALLBACK_WORD_SPACING) {
+            container.classList.add('quran-line-soft-centered');
+            wordSpacing = 0;
+            el.style.wordSpacing = '0px';
+          } else {
+            wordSpacing = Math.min(
+              MAX_POSITIVE_WORD_SPACING,
+              requiredWordSpacing,
             );
+            wordSpacing = Math.max(0, wordSpacing);
             el.style.wordSpacing = `${wordSpacing.toFixed(2)}px`;
 
-            const correctedWidth = measureTextWidth(el);
-            if (correctedWidth > availableWidth) {
-              scale = Math.min(1, availableWidth / correctedWidth);
+            const expandedWidth = measureTextWidth(el);
+            if (expandedWidth > availableWidth) {
+              wordSpacing = Math.max(
+                0,
+                wordSpacing - ((expandedWidth - availableWidth) / spaceCount),
+              );
+              el.style.wordSpacing = `${wordSpacing.toFixed(2)}px`;
+
+              const correctedWidth = measureTextWidth(el);
+              if (correctedWidth > availableWidth) {
+                scale = Math.min(1, availableWidth / correctedWidth);
+              }
             }
           }
         }
