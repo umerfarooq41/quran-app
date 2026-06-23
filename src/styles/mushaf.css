@@ -363,3 +363,15 @@
   transform-origin: center center;
   text-align: center;
 }
+
+
+/* Soft center fallback for ayah lines that would require excessive word spacing.
+   This keeps ayah markers and pause symbols untouched while avoiding ugly over-stretching. */
+.quran-line-soft-centered {
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+.quran-line-soft-centered .quran-line-text {
+  margin-inline: auto !important;
+}
