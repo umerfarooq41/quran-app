@@ -42,16 +42,16 @@ export function PageWaveSlider({ page, goPage, onPreviewChange }) {
 
       if (pageNumber < 1 || pageNumber > totalPages) return null;
 
-      const x = Math.round(visualOffset * PAGE_STEP + Math.round(dragOffset));
+      const x = visualOffset * PAGE_STEP + dragOffset;
 
       const normalizedDistance = Math.abs(visualOffset) / BAR_RADIUS;
-      const eased = Math.pow(Math.max(0, 1 - normalizedDistance), 1.55);
+      const eased = Math.pow(Math.max(0, 1 - normalizedDistance), 1.75);
 
       return {
         pageNumber,
         x,
-        height: 4 + eased * 44,
-        opacity: 0.05 + eased * 0.95,
+        height: 3 + eased * 42,
+        opacity: 0.10 + eased * 0.90,
       };
     }).filter(Boolean)
   ), [previewPage, dragOffset]);
@@ -247,7 +247,7 @@ export function PageWaveSlider({ page, goPage, onPreviewChange }) {
           <span
             key={`${bar.pageNumber}-${bar.x}`}
             style={{
-              left: `calc(50% + ${bar.x}px)`,
+              transform: `translate3d(calc(-50% + ${bar.x}px), -50%, 0)`,
               height: `${bar.height}px`,
               opacity: bar.opacity,
             }}
