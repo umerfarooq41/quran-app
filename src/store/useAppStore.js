@@ -90,7 +90,7 @@ export const useAppStore = create((set, get) => ({
   openSearch: () => get().navigateTo(VIEWS.SEARCH),
   openBookmarks: () => get().navigateTo(VIEWS.TABS),
   openSettings: () => get().navigateTo(VIEWS.SETTINGS, { direction: 'modal' }),
-  goPage: (page, pendingAyah = null) => set((state) => {
+  goPage: (page, pendingAyah = null, options = {}) => set((state) => {
     const nextPage = clampPage(page);
     const nextState = state.view === VIEWS.READER
       ? state
@@ -103,7 +103,7 @@ export const useAppStore = create((set, get) => ({
       pendingAyah,
       pendingQuarterFlash: null,
       navDirection: 'forward',
-      controlsVisible: false,
+      controlsVisible: options.keepControlsVisible ? true : false,
     };
   }),
   goPreviousReaderPage: () => set((state) => {

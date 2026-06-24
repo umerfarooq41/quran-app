@@ -178,7 +178,7 @@
 .reader-wave-slider {
   position: relative;
   height: 70px;
-  margin: 16px 42px 0;
+  margin: 10px 42px 0;
   overflow: visible;
   cursor: grab;
   outline: none;
@@ -217,26 +217,18 @@
 .reader-wave-marker {
   position: absolute;
   left: 50%;
-  top: 10px;
+  top: 7px;
   z-index: 1;
-  width: 26px;
-  height: 58px;
+  width: 24px;
+  height: 60px;
   transform: translateX(-50%);
-  border-radius: 18px 18px 7px 7px;
+  border-radius: 999px 999px 8px 8px;
   background: #050505;
-  box-shadow: 0 2px 0 rgba(255,255,255,.8) inset;
+  box-shadow: none;
 }
 
 .reader-wave-marker::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 11px;
-  width: 9px;
-  height: 35px;
-  transform: translateX(-50%);
-  border-radius: 999px;
-  background: rgba(255,255,255,.92);
+  content: none;
 }
 
 .reader-bottom-actions {
@@ -839,7 +831,7 @@ body {
 .reader-wave-tooltip {
   position: absolute;
   left: 50%;
-  bottom: calc(100% + 7px);
+  bottom: calc(100% + 54px);
   z-index: 4;
   display: grid;
   min-width: 142px;

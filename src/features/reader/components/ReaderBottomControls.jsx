@@ -13,6 +13,8 @@ export function ReaderBottomControls({
   compact = false,
   juzProgress,
   onChromeTap,
+  onPreviewPageChange,
+  onSliderInteractionChange,
 }) {
   return (
     <motion.div
@@ -54,7 +56,12 @@ export function ReaderBottomControls({
           <span>{juzProgress}</span>
         </div>
 
-        <PageWaveSlider page={page} goPage={goPage} />
+        <PageWaveSlider
+          page={page}
+          goPage={goPage}
+          onPreviewChange={onPreviewPageChange}
+          onInteractionChange={onSliderInteractionChange}
+        />
 
         <div className="reader-bottom-actions">
           <button onClick={onPreviousPage} aria-label="Previous reader page">

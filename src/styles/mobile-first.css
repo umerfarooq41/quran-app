@@ -305,16 +305,14 @@ body { -webkit-text-size-adjust: 100%; }
 }
 
 .reader-wave-marker {
-  top: 3px !important;
+  top: 1px !important;
   width: 18px !important;
-  height: 34px !important;
-  border-radius: 12px 12px 5px 5px !important;
+  height: 36px !important;
+  border-radius: 999px 999px 5px 5px !important;
 }
 
 .reader-wave-marker::after {
-  top: 7px !important;
-  width: 6px !important;
-  height: 20px !important;
+  content: none !important;
 }
 
 .reader-bottom-actions {

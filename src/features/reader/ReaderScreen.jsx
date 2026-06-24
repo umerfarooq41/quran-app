@@ -74,23 +74,30 @@ export default function ReaderScreen() {
     clearPendingAyah: state.clearPendingAyah,
     clearPendingQuarterFlash: state.clearPendingQuarterFlash,
   })));
+  const [sliderPreviewPage, setSliderPreviewPage] = useState(null);
+  const [sliderInteracting, setSliderInteracting] = useState(false);
   const pageData = getPage(page);
   const meta = getPageMeta(page);
   const displayPage = getMushafPageNumber(page);
+  const footerPage = sliderInteracting && sliderPreviewPage ? sliderPreviewPage : page;
+  const footerPageData = footerPage === page ? pageData : getPage(footerPage);
+  const footerMeta = footerPage === page ? meta : getPageMeta(footerPage);
+  const footerDisplayPage = getMushafPageNumber(footerPage);
   const firstPageAyah = pageData.lines.find((line) => line.surahNumber && line.ayahStart);
+  const firstFooterAyah = footerPageData.lines.find((line) => line.surahNumber && line.ayahStart);
   const footerTarget = getFooterTarget({
-    page,
-    firstPageAyah,
+    page: footerPage,
+    firstPageAyah: firstFooterAyah,
     pendingAyah,
     pendingQuarterFlash,
     selectedAyah,
     audioTarget,
   });
   const juzProgress = getCurrentIndoPakJuzProgress(
-    page,
+    footerPage,
     footerTarget?.surahNumber,
     footerTarget?.ayahNumber,
-    meta.juz,
+    footerMeta.juz,
   );
   const [savedHighlights, setSavedHighlights] = useState(new Map());
   const [bookmarkMarkers, setBookmarkMarkers] = useState(new Map());
@@ -102,6 +109,10 @@ export default function ReaderScreen() {
   );
   const { handleTouchStart, handleTouchEnd } = useReaderGestures({ page, goPage });
   const topOverlay = overlayStack.at(-1)?.type;
+
+  useEffect(() => {
+    if (!sliderInteracting) setSliderPreviewPage(null);
+  }, [page, sliderInteracting]);
 
   usePagePersistence({ page, pageData });
 
@@ -321,14 +332,14 @@ export default function ReaderScreen() {
           onSelectAyah={selectAyah}
         />
 
-        <ReaderFooterMeta displayPage={displayPage} progress={juzProgress} />
+        <ReaderFooterMeta displayPage={footerDisplayPage} progress={juzProgress} />
       </div>
 
       <AnimatePresence>
         {controlsVisible && (
           <ReaderBottomControls
             page={page}
-            displayPage={displayPage}
+            displayPage={footerDisplayPage}
             goPage={goPage}
             onPreviousPage={goPreviousReaderPage}
             onSearch={openSearch}
@@ -336,6 +347,8 @@ export default function ReaderScreen() {
             compact={audioPlayerActive}
             juzProgress={juzProgress}
             onChromeTap={hideReaderChrome}
+            onPreviewPageChange={setSliderPreviewPage}
+            onSliderInteractionChange={setSliderInteracting}
           />
         )}
       </AnimatePresence>
