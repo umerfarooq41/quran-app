@@ -205,16 +205,17 @@
 
 .reader-wave-bars span {
   position: absolute;
+  left: 50%;
   top: 50%;
   display: block;
-  width: 2px;
-  min-width: 2px;
-  max-width: 2px;
+  width: 1.5px;
+  min-width: 1.5px;
+  max-width: 1.5px;
   transform: translate3d(-50%, -50%, 0);
   backface-visibility: hidden;
   border-radius: 999px;
   background: #080808;
-  will-change: left, height, opacity;
+  will-change: transform, height, opacity;
 }
 
 .reader-wave-marker {
