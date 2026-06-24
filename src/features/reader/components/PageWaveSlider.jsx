@@ -2,10 +2,10 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { clampPage, getPage, getPageMeta, getSurah, totalPages } from '../../../lib/quran';
 import { getCurrentIndoPakJuzProgress } from '../../../data/indoPakParaQuarters';
 
-const PAGE_STEP = 9.2;
-const BAR_RADIUS = 18;
+const PAGE_STEP = 10;
+const BAR_RADIUS = 13;
 const MAX_INERTIA_FRAMES = 16;
-const RTL_PAGE_DIRECTION = 1;
+const RTL_PAGE_DIRECTION = -1;
 
 export function PageWaveSlider({ page, goPage, onPreviewChange }) {
   const [previewPage, setPreviewPage] = useState(page);
@@ -39,14 +39,14 @@ export function PageWaveSlider({ page, goPage, onPreviewChange }) {
 
       const x = visualOffset * PAGE_STEP + dragOffset;
       const distance = Math.abs(x);
-      const proximity = Math.max(0, 1 - distance / 230);
-      const eased = proximity ** 0.85;
+      const proximity = Math.max(0, 1 - distance / 120);
+      const eased = proximity ** 2.0;
 
       return {
         pageNumber,
         x,
-        height: 8 + eased * 34,
-        opacity: 0.14 + eased * 0.76,
+        height: 3 + eased * 42,
+        opacity: 0.04 + eased * 0.96,
       };
     }).filter(Boolean)
   ), [previewPage, dragOffset]);
