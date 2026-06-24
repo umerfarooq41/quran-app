@@ -177,7 +177,7 @@
 
 .reader-wave-slider {
   position: relative;
-  height: 54px;
+  height: 72px;
   margin: 8px 42px 0;
   overflow: visible;
   cursor: grab;
@@ -217,14 +217,24 @@
 .reader-wave-marker {
   position: absolute;
   left: 50%;
-  top: 0;
+  top: -7px;
   z-index: 2;
-  width: 24px;
-  height: 53px;
+  width: 25px;
+  height: 68px;
   transform: translateX(-50%);
   background: #050505;
-  border-radius: 14px 14px 7px 7px;
-  clip-path: polygon(50% 0, 68% 7%, 83% 21%, 88% 32%, 88% 100%, 12% 100%, 12% 32%, 17% 21%, 32% 7%);
+  border-radius: 16px 16px 8px 8px;
+  clip-path: polygon(
+    50% 0,
+    64% 5%,
+    76% 17%,
+    82% 31%,
+    82% 100%,
+    18% 100%,
+    18% 31%,
+    24% 17%,
+    36% 5%
+  );
   box-shadow: none;
 }
 
