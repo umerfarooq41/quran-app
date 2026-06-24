@@ -32,28 +32,24 @@ export function PageWaveSlider({ page, goPage, onPreviewChange }) {
   useEffect(() => () => cancelAnimationFrame(inertiaRef.current), []);
 
   const bars = useMemo(() => (
-    Array.from({ length: BAR_RADIUS * 2 + 1 }, (_, index) => {
-      const visualOffset = index - BAR_RADIUS;
-      const pageNumber = previewPage + visualOffset;
-      if (pageNumber < 1 || pageNumber > totalPages) return null;
+  Array.from({ length: BAR_RADIUS * 2 + 1 }, (_, index) => {
+    const visualOffset = index - BAR_RADIUS;
+    const pageNumber = previewPage + visualOffset;
+    if (pageNumber < 1 || pageNumber > totalPages) return null;
 
-      const x = visualOffset * PAGE_STEP + dragOffset;
-      const normalizedDistance =
-  Math.abs(visualOffset) / BAR_RADIUS;
+    const x = visualOffset * PAGE_STEP + dragOffset;
 
-const eased =
-  Math.pow(Math.max(0, 1 - normalizedDistance), 2);
-      const proximity = Math.max(0, 1 - distance / 150);
-      const eased = proximity ** 1.5;
+    const normalizedDistance = Math.abs(visualOffset) / BAR_RADIUS;
+    const eased = Math.pow(Math.max(0, 1 - normalizedDistance), 2.2);
 
-      return {
-        pageNumber,
-        x,
-        height: 5 + eased * 42,
-        opacity: 0.04 + eased * 0.96,
-      };
-    }).filter(Boolean)
-  ), [previewPage, dragOffset]);
+    return {
+      pageNumber,
+      x,
+      height: 4 + eased * 44,
+      opacity: 0.04 + eased * 0.96,
+    };
+  }).filter(Boolean)
+), [previewPage, dragOffset]);
 
   function showPage(nextPage, offset = 0) {
     const safePage = clampPage(nextPage);
