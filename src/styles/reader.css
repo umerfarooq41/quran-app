@@ -208,7 +208,10 @@
   top: 50%;
   display: block;
   width: 2px;
-  transform: translate(-50%, -50%);
+  min-width: 2px;
+  max-width: 2px;
+  transform: translate3d(-50%, -50%, 0);
+  backface-visibility: hidden;
   border-radius: 999px;
   background: #080808;
   will-change: left, height, opacity;
@@ -217,24 +220,29 @@
 .reader-wave-marker {
   position: absolute;
   left: 50%;
-  top: -10px;
+  top: -14px;
   z-index: 2;
-  width: 25px;
-  height: 76px;
+
+  width: 22px;
+  height: 84px;
+
   transform: translateX(-50%);
   background: #050505;
-  border-radius: 16px 16px 8px 8px;
+
+  border-radius: 18px 18px 8px 8px;
+
   clip-path: polygon(
     50% 0,
-    64% 5%,
-    76% 17%,
-    82% 31%,
-    82% 100%,
-    18% 100%,
-    18% 31%,
-    24% 17%,
-    36% 5%
+    61% 4%,
+    71% 15%,
+    78% 30%,
+    78% 100%,
+    22% 100%,
+    22% 30%,
+    29% 15%,
+    39% 4%
   );
+
   box-shadow: none;
 }
 
