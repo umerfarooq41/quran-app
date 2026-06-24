@@ -2,9 +2,9 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { clampPage, getPage, getPageMeta, getSurah, totalPages } from '../../../lib/quran';
 import { getCurrentIndoPakJuzProgress } from '../../../data/indoPakParaQuarters';
 
-const PAGE_STEP = 7;
+const PAGE_STEP = 4.8;
 const BAR_RADIUS = 34;
-const MAX_INERTIA_FRAMES = 18;
+const MAX_INERTIA_FRAMES = 16;
 const RTL_PAGE_DIRECTION = -1;
 
 export function PageWaveSlider({ page, goPage, onPreviewChange }) {
@@ -39,14 +39,14 @@ export function PageWaveSlider({ page, goPage, onPreviewChange }) {
 
       const x = visualOffset * PAGE_STEP + dragOffset;
       const distance = Math.abs(x);
-      const proximity = Math.max(0, 1 - distance / 118);
-      const eased = proximity ** 2.45;
+      const proximity = Math.max(0, 1 - distance / 154);
+      const eased = proximity ** 1.55;
 
       return {
         pageNumber,
         x,
-        height: 8 + eased * 32,
-        opacity: 0.08 + eased * 0.88,
+        height: 8 + eased * 31,
+        opacity: 0.10 + eased * 0.86,
       };
     }).filter(Boolean)
   ), [previewPage, dragOffset]);
@@ -119,30 +119,30 @@ export function PageWaveSlider({ page, goPage, onPreviewChange }) {
     updateFromDelta(event.clientX - interaction.startX);
     event.currentTarget.releasePointerCapture?.(event.pointerId);
 
-    const releaseVelocity = Math.max(-18, Math.min(18, interaction.velocity || 0));
+    const releaseVelocity = Math.max(-30, Math.min(30, interaction.velocity || 0));
     interactionRef.current = null;
 
-    if (Math.abs(releaseVelocity) < 5) {
+    if (Math.abs(releaseVelocity) < 3.5) {
       commitPage(previewPageRef.current);
       return;
     }
 
     let frame = 0;
-    let velocity = releaseVelocity * 0.42;
+    let velocity = releaseVelocity * 0.68;
     const basePage = previewPageRef.current;
     let virtualDelta = 0;
 
     function runInertia() {
       frame += 1;
       virtualDelta += velocity;
-      velocity *= 0.70;
+      velocity *= 0.76;
 
       const pageOffset = Math.round((virtualDelta * RTL_PAGE_DIRECTION) / PAGE_STEP);
       const nextPage = clampPage(basePage + pageOffset);
       const consumed = pageOffset * PAGE_STEP * RTL_PAGE_DIRECTION;
       showPage(nextPage, Math.max(-PAGE_STEP / 2, Math.min(PAGE_STEP / 2, virtualDelta - consumed)));
 
-      if (frame < MAX_INERTIA_FRAMES && Math.abs(velocity) > 0.35) {
+      if (frame < MAX_INERTIA_FRAMES && Math.abs(velocity) > 0.28) {
         inertiaRef.current = requestAnimationFrame(runInertia);
       } else {
         commitPage(previewPageRef.current);

@@ -217,14 +217,14 @@
 .reader-wave-marker {
   position: absolute;
   left: 50%;
-  top: 4px;
+  top: 0;
   z-index: 2;
-  width: 25px;
-  height: 48px;
+  width: 24px;
+  height: 53px;
   transform: translateX(-50%);
   background: #050505;
-  border-radius: 15px 15px 7px 7px;
-  clip-path: polygon(50% 0, 72% 8%, 88% 24%, 88% 100%, 12% 100%, 12% 24%, 28% 8%);
+  border-radius: 14px 14px 7px 7px;
+  clip-path: polygon(50% 0, 68% 7%, 83% 21%, 88% 32%, 88% 100%, 12% 100%, 12% 32%, 17% 21%, 32% 7%);
   box-shadow: none;
 }
 
@@ -847,7 +847,7 @@ body {
 }
 
 .reader-wave-tooltip--floating {
-  bottom: calc(env(safe-area-inset-bottom, 0px) + 128px);
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 184px);
 }
 
 .reader-wave-tooltip::after {
