@@ -38,7 +38,11 @@ export function PageWaveSlider({ page, goPage, onPreviewChange }) {
       if (pageNumber < 1 || pageNumber > totalPages) return null;
 
       const x = visualOffset * PAGE_STEP + dragOffset;
-      const distance = Math.abs(x);
+      const normalizedDistance =
+  Math.abs(visualOffset) / BAR_RADIUS;
+
+const eased =
+  Math.pow(Math.max(0, 1 - normalizedDistance), 2);
       const proximity = Math.max(0, 1 - distance / 150);
       const eased = proximity ** 1.5;
 
