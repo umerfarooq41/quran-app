@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Play, Search, Undo2 } from 'lucide-react';
 import { PageWaveSlider } from './PageWaveSlider';
@@ -13,9 +13,12 @@ export function ReaderBottomControls({
   compact = false,
   juzProgress,
   onChromeTap,
-  onPreviewPageChange,
-  onSliderInteractionChange,
 }) {
+  const [sliderPreview, setSliderPreview] = useState(null);
+  const footerPage = sliderPreview?.page ?? displayPage;
+  const footerProgress = sliderPreview?.juzProgress ?? juzProgress;
+  const tooltip = useMemo(() => sliderPreview, [sliderPreview]);
+
   return (
     <motion.div
       initial={{ opacity: 1 }}
@@ -28,7 +31,15 @@ export function ReaderBottomControls({
         onChromeTap?.();
       }}
     >
-{!compact && (
+      {tooltip && (
+        <div className="reader-wave-tooltip reader-wave-tooltip--floating" role="status">
+          <strong>{tooltip.surahLabel}</strong>
+          {tooltip.rangeLabel && <span>{tooltip.rangeLabel}</span>}
+          <span>Page {tooltip.page}</span>
+        </div>
+      )}
+
+      {!compact && (
         <motion.button
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
@@ -52,23 +63,18 @@ export function ReaderBottomControls({
         className="reader-bottom-sheet"
       >
         <div className="reader-bottom-meta">
-          <span>{displayPage}</span>
-          <span>{juzProgress}</span>
+          <span>{footerPage}</span>
+          <span>{footerProgress}</span>
         </div>
 
-        <PageWaveSlider
-          page={page}
-          goPage={goPage}
-          onPreviewChange={onPreviewPageChange}
-          onInteractionChange={onSliderInteractionChange}
-        />
+        <PageWaveSlider page={page} goPage={goPage} onPreviewChange={setSliderPreview} />
 
         <div className="reader-bottom-actions">
           <button onClick={onPreviousPage} aria-label="Previous reader page">
             <Undo2 size={34} strokeWidth={1.8} />
           </button>
 
-          <span>{displayPage}</span>
+          <span aria-hidden="true" />
 
           <button onClick={onSearch} aria-label="Search">
             <Search size={34} strokeWidth={1.8} />

@@ -177,8 +177,8 @@
 
 .reader-wave-slider {
   position: relative;
-  height: 70px;
-  margin: 10px 42px 0;
+  height: 54px;
+  margin: 8px 42px 0;
   overflow: visible;
   cursor: grab;
   outline: none;
@@ -210,25 +210,22 @@
   width: 2px;
   transform: translate(-50%, -50%);
   border-radius: 999px;
-  background: #171717;
+  background: #080808;
   will-change: left, height, opacity;
 }
 
 .reader-wave-marker {
   position: absolute;
   left: 50%;
-  top: 7px;
-  z-index: 1;
-  width: 24px;
-  height: 60px;
+  top: 4px;
+  z-index: 2;
+  width: 25px;
+  height: 48px;
   transform: translateX(-50%);
-  border-radius: 999px 999px 8px 8px;
   background: #050505;
+  border-radius: 15px 15px 7px 7px;
+  clip-path: polygon(50% 0, 72% 8%, 88% 24%, 88% 100%, 12% 100%, 12% 24%, 28% 8%);
   box-shadow: none;
-}
-
-.reader-wave-marker::after {
-  content: none;
 }
 
 .reader-bottom-actions {
@@ -831,8 +828,8 @@ body {
 .reader-wave-tooltip {
   position: absolute;
   left: 50%;
-  bottom: calc(100% + 54px);
-  z-index: 4;
+  bottom: calc(100% + 7px);
+  z-index: 6;
   display: grid;
   min-width: 142px;
   max-width: min(76vw, 270px);
@@ -847,6 +844,10 @@ body {
   text-align: center;
   box-shadow: 0 10px 24px rgba(0,0,0,.18);
   pointer-events: none;
+}
+
+.reader-wave-tooltip--floating {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 128px);
 }
 
 .reader-wave-tooltip::after {

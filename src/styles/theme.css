@@ -368,16 +368,12 @@
   background: #d9deda;
 }
 
-[data-theme='dark'] .reader-wave-marker,
 [data-theme='dark'] .reader-listen-play,
 [data-theme='dark'] .reader-transport-row .transport-main {
   background: #f0f2ef;
   color: #161916;
 }
 
-[data-theme='dark'] .reader-wave-marker::after {
-  background: #161916;
-}
 
 [data-theme='dark'] .reader-audio-head button,
 [data-theme='dark'] .reader-reciter-row,
@@ -424,4 +420,8 @@
   border-color: var(--theme-border);
   background: #262c28;
   color: var(--theme-text);
+}
+
+[data-theme='dark'] .reader-wave-marker {
+  background: #050505;
 }

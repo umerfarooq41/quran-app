@@ -295,24 +295,24 @@ body { -webkit-text-size-adjust: 100%; }
 }
 
 .reader-wave-slider {
-  height: 36px !important;
-  margin: 8px 42px 0 !important;
+  height: 42px !important;
+  margin: 6px 42px 0 !important;
 }
 
 .reader-wave-bars span {
   width: 1.5px !important;
-  max-height: 28px !important;
+  max-height: 34px !important;
 }
 
 .reader-wave-marker {
-  top: 1px !important;
-  width: 18px !important;
-  height: 36px !important;
-  border-radius: 999px 999px 5px 5px !important;
+  top: 2px !important;
+  width: 21px !important;
+  height: 40px !important;
+  border-radius: 13px 13px 6px 6px !important;
 }
 
 .reader-wave-marker::after {
-  content: none !important;
+  display: none !important;
 }
 
 .reader-bottom-actions {

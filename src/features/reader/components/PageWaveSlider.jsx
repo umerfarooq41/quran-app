@@ -1,190 +1,168 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { clampPage, getPage, getSurah, totalPages } from '../../../lib/quran';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { clampPage, getPage, getPageMeta, getSurah, totalPages } from '../../../lib/quran';
+import { getCurrentIndoPakJuzProgress } from '../../../data/indoPakParaQuarters';
 
-const PAGE_STEP = 8;
-const BAR_RADIUS = 42;
-const MAX_MOMENTUM_VELOCITY = 4.8;
-const MOMENTUM_FRICTION = 0.92;
-const MOMENTUM_STOP_VELOCITY = 0.08;
+const PAGE_STEP = 7;
+const BAR_RADIUS = 34;
+const MAX_INERTIA_FRAMES = 18;
+const RTL_PAGE_DIRECTION = -1;
 
-export function PageWaveSlider({ page, goPage, onPreviewChange, onInteractionChange }) {
+export function PageWaveSlider({ page, goPage, onPreviewChange }) {
   const [previewPage, setPreviewPage] = useState(page);
   const [dragOffset, setDragOffset] = useState(0);
   const [interacting, setInteracting] = useState(false);
   const interactionRef = useRef(null);
   const previewPageRef = useRef(page);
-  const offsetRef = useRef(0);
-  const momentumRef = useRef(null);
+  const inertiaRef = useRef(0);
   const lastHapticPageRef = useRef(page);
   const preview = useMemo(() => getPagePreview(previewPage), [previewPage]);
 
-  const cancelMomentum = useCallback(() => {
-    if (!momentumRef.current) return;
-    window.cancelAnimationFrame(momentumRef.current.frame);
-    momentumRef.current = null;
-  }, []);
-
-  const showPage = useCallback((nextPage, offset = 0, haptic = true) => {
-    const safePage = clampPage(nextPage);
-    const safeOffset = Math.max(-PAGE_STEP / 2, Math.min(PAGE_STEP / 2, offset));
-
-    previewPageRef.current = safePage;
-    offsetRef.current = safeOffset;
-    setPreviewPage(safePage);
-    setDragOffset(safeOffset);
-    onPreviewChange?.(safePage);
-
-    if (haptic && safePage !== lastHapticPageRef.current) {
-      lastHapticPageRef.current = safePage;
-      if (window.navigator?.vibrate) window.navigator.vibrate(8);
-    }
-  }, [onPreviewChange]);
+  useEffect(() => {
+    onPreviewChange?.(interacting ? { page: previewPage, ...preview } : null);
+  }, [interacting, previewPage, preview, onPreviewChange]);
 
   useEffect(() => {
-    if (interacting || momentumRef.current) return;
+    if (interacting) return;
+    previewPageRef.current = page;
     lastHapticPageRef.current = page;
-    showPage(page, 0, false);
-  }, [page, interacting, showPage]);
+    setPreviewPage(page);
+    setDragOffset(0);
+  }, [page, interacting]);
 
-  useEffect(() => () => cancelMomentum(), [cancelMomentum]);
+  useEffect(() => () => cancelAnimationFrame(inertiaRef.current), []);
 
   const bars = useMemo(() => (
     Array.from({ length: BAR_RADIUS * 2 + 1 }, (_, index) => {
-      const offset = index - BAR_RADIUS;
-      const pageNumber = previewPage + offset;
+      const visualOffset = index - BAR_RADIUS;
+      const pageNumber = previewPage + visualOffset;
       if (pageNumber < 1 || pageNumber > totalPages) return null;
 
-      const x = offset * PAGE_STEP + dragOffset;
+      const x = visualOffset * PAGE_STEP + dragOffset;
       const distance = Math.abs(x);
-      const fadeDistance = BAR_RADIUS * PAGE_STEP;
-      const proximity = Math.max(0, 1 - distance / fadeDistance);
-      const shaped = proximity ** 1.55;
+      const proximity = Math.max(0, 1 - distance / 118);
+      const eased = proximity ** 2.45;
 
       return {
         pageNumber,
         x,
-        height: 7 + shaped * 35,
-        opacity: 0.1 + shaped * 0.9,
+        height: 8 + eased * 32,
+        opacity: 0.08 + eased * 0.88,
       };
     }).filter(Boolean)
   ), [previewPage, dragOffset]);
 
-  function applyDelta(basePage, delta) {
-    const rawPageOffset = -delta / PAGE_STEP;
-    const nextPage = clampPage(basePage + Math.round(rawPageOffset));
-    const remainder = delta + (nextPage - basePage) * PAGE_STEP;
-    showPage(nextPage, remainder);
+  function showPage(nextPage, offset = 0) {
+    const safePage = clampPage(nextPage);
+    previewPageRef.current = safePage;
+    setPreviewPage(safePage);
+    setDragOffset(offset);
+
+    if (safePage !== lastHapticPageRef.current) {
+      lastHapticPageRef.current = safePage;
+      window.navigator?.vibrate?.(6);
+    }
   }
 
-  function finishInteraction(commitPage) {
-    cancelMomentum();
-    setInteracting(false);
-    onInteractionChange?.(false);
-    showPage(commitPage, 0, false);
-    if (commitPage !== page) goPage(commitPage, null, { keepControlsVisible: true });
-  }
+  function updateFromDelta(delta) {
+    const interaction = interactionRef.current;
+    if (!interaction) return;
 
-  function runMomentum(initialVelocity) {
-    let velocity = Math.max(-MAX_MOMENTUM_VELOCITY, Math.min(MAX_MOMENTUM_VELOCITY, initialVelocity));
-    let virtualOffset = offsetRef.current;
-    let virtualPage = previewPageRef.current;
-    let lastTime = performance.now();
+    const rawPageOffset = (delta * RTL_PAGE_DIRECTION) / PAGE_STEP;
+    const nextPage = clampPage(interaction.basePage + Math.round(rawPageOffset));
+    const consumed = (nextPage - interaction.basePage) * PAGE_STEP * RTL_PAGE_DIRECTION;
+    const remainder = delta - consumed;
+    const boundedRemainder = Math.max(-PAGE_STEP / 2, Math.min(PAGE_STEP / 2, remainder));
 
-    const step = (time) => {
-      const elapsed = Math.min(32, time - lastTime) / 16.67;
-      lastTime = time;
-      virtualOffset += velocity * elapsed;
-
-      while (virtualOffset <= -PAGE_STEP / 2 && virtualPage < totalPages) {
-        virtualPage += 1;
-        virtualOffset += PAGE_STEP;
-      }
-      while (virtualOffset >= PAGE_STEP / 2 && virtualPage > 1) {
-        virtualPage -= 1;
-        virtualOffset -= PAGE_STEP;
-      }
-
-      showPage(virtualPage, virtualOffset);
-      velocity *= MOMENTUM_FRICTION ** elapsed;
-
-      if (Math.abs(velocity) < MOMENTUM_STOP_VELOCITY) {
-        momentumRef.current = null;
-        finishInteraction(virtualPage);
-        return;
-      }
-
-      momentumRef.current = { frame: window.requestAnimationFrame(step) };
-    };
-
-    momentumRef.current = { frame: window.requestAnimationFrame(step) };
+    interaction.velocity = delta - interaction.lastDelta;
+    interaction.lastDelta = delta;
+    showPage(nextPage, boundedRemainder);
   }
 
   function handlePointerDown(event) {
     if (event.pointerType === 'mouse' && event.button !== 0) return;
-    cancelMomentum();
+    cancelAnimationFrame(inertiaRef.current);
 
     const bounds = event.currentTarget.getBoundingClientRect();
-    const tappedOffset = Math.round((event.clientX - (bounds.left + bounds.width / 2)) / PAGE_STEP);
-    const tappedPage = clampPage(page + tappedOffset);
+    const tappedOffset = Math.round(((event.clientX - (bounds.left + bounds.width / 2)) * RTL_PAGE_DIRECTION) / PAGE_STEP);
+    const tappedPage = clampPage(previewPageRef.current + tappedOffset);
 
     interactionRef.current = {
       pointerId: event.pointerId,
       startX: event.clientX,
       basePage: tappedPage,
-      lastX: event.clientX,
-      lastTime: performance.now(),
+      lastDelta: 0,
       velocity: 0,
     };
 
     event.currentTarget.setPointerCapture?.(event.pointerId);
     setInteracting(true);
-    onInteractionChange?.(true);
-    showPage(tappedPage, 0, false);
+    showPage(tappedPage, 0);
     event.preventDefault();
   }
 
   function handlePointerMove(event) {
-    const interaction = interactionRef.current;
-    if (interaction?.pointerId !== event.pointerId) return;
-
-    const now = performance.now();
-    const elapsed = Math.max(1, now - interaction.lastTime);
-    interaction.velocity = (event.clientX - interaction.lastX) / elapsed * 16.67;
-    interaction.lastX = event.clientX;
-    interaction.lastTime = now;
-    applyDelta(interaction.basePage, event.clientX - interaction.startX);
+    if (interactionRef.current?.pointerId !== event.pointerId) return;
+    updateFromDelta(event.clientX - interactionRef.current.startX);
     event.preventDefault();
+  }
+
+  function commitPage(nextPage) {
+    setInteracting(false);
+    setDragOffset(0);
+    if (nextPage !== page) goPage(nextPage, null, { keepControlsVisible: true });
   }
 
   function handlePointerUp(event) {
     const interaction = interactionRef.current;
     if (interaction?.pointerId !== event.pointerId) return;
 
-    handlePointerMove(event);
-    const velocity = interaction.velocity;
-    interactionRef.current = null;
+    updateFromDelta(event.clientX - interaction.startX);
     event.currentTarget.releasePointerCapture?.(event.pointerId);
 
-    if (Math.abs(velocity) > 0.65) {
-      runMomentum(velocity);
+    const releaseVelocity = Math.max(-18, Math.min(18, interaction.velocity || 0));
+    interactionRef.current = null;
+
+    if (Math.abs(releaseVelocity) < 5) {
+      commitPage(previewPageRef.current);
       return;
     }
 
-    finishInteraction(previewPageRef.current);
+    let frame = 0;
+    let velocity = releaseVelocity * 0.42;
+    const basePage = previewPageRef.current;
+    let virtualDelta = 0;
+
+    function runInertia() {
+      frame += 1;
+      virtualDelta += velocity;
+      velocity *= 0.70;
+
+      const pageOffset = Math.round((virtualDelta * RTL_PAGE_DIRECTION) / PAGE_STEP);
+      const nextPage = clampPage(basePage + pageOffset);
+      const consumed = pageOffset * PAGE_STEP * RTL_PAGE_DIRECTION;
+      showPage(nextPage, Math.max(-PAGE_STEP / 2, Math.min(PAGE_STEP / 2, virtualDelta - consumed)));
+
+      if (frame < MAX_INERTIA_FRAMES && Math.abs(velocity) > 0.35) {
+        inertiaRef.current = requestAnimationFrame(runInertia);
+      } else {
+        commitPage(previewPageRef.current);
+      }
+    }
+
+    inertiaRef.current = requestAnimationFrame(runInertia);
   }
 
   function handlePointerCancel(event) {
     if (interactionRef.current?.pointerId !== event.pointerId) return;
-
     interactionRef.current = null;
-    finishInteraction(page);
+    setInteracting(false);
+    showPage(page, 0);
   }
 
   function handleKeyDown(event) {
     let nextPage = null;
-
-    if (event.key === 'ArrowLeft' || event.key === 'PageUp') nextPage = clampPage(page - 1);
-    if (event.key === 'ArrowRight' || event.key === 'PageDown') nextPage = clampPage(page + 1);
+    if (event.key === 'ArrowLeft' || event.key === 'PageDown') nextPage = clampPage(page + 1);
+    if (event.key === 'ArrowRight' || event.key === 'PageUp') nextPage = clampPage(page - 1);
     if (event.key === 'Home') nextPage = 1;
     if (event.key === 'End') nextPage = totalPages;
     if (nextPage === null) return;
@@ -196,7 +174,7 @@ export function PageWaveSlider({ page, goPage, onPreviewChange, onInteractionCha
 
   return (
     <div
-      className={`reader-wave-slider ${interacting || momentumRef.current ? 'is-interacting' : ''}`}
+      className={`reader-wave-slider ${interacting ? 'is-interacting' : ''}`}
       role="slider"
       tabIndex={0}
       aria-label="Quran page navigation"
@@ -210,19 +188,10 @@ export function PageWaveSlider({ page, goPage, onPreviewChange, onInteractionCha
       onPointerCancel={handlePointerCancel}
       onKeyDown={handleKeyDown}
     >
-      {(interacting || momentumRef.current) && (
-        <div className="reader-wave-tooltip" role="status">
-          <strong>{preview.surahLabel}</strong>
-          {preview.rangeLabel && <span>{preview.rangeLabel}</span>}
-          <span>Page {previewPage}</span>
-        </div>
-      )}
-
       <div className="reader-wave-bars" aria-hidden="true">
         {bars.map((bar) => (
           <span
             key={bar.pageNumber}
-            data-page={bar.pageNumber}
             style={{
               left: `calc(50% + ${bar.x}px)`,
               height: `${bar.height}px`,
@@ -231,7 +200,6 @@ export function PageWaveSlider({ page, goPage, onPreviewChange, onInteractionCha
           />
         ))}
       </div>
-
       <div className="reader-wave-marker" aria-hidden="true" />
     </div>
   );
@@ -239,6 +207,7 @@ export function PageWaveSlider({ page, goPage, onPreviewChange, onInteractionCha
 
 function getPagePreview(pageNumber) {
   const pageData = getPage(pageNumber);
+  const meta = getPageMeta(pageNumber);
   const ayahLines = pageData?.lines?.filter((line) => (
     line.surahNumber &&
     line.ayahStart !== null &&
@@ -248,7 +217,7 @@ function getPagePreview(pageNumber) {
   )) || [];
 
   if (!ayahLines.length) {
-    return { surahLabel: 'Quran', rangeLabel: '' };
+    return { surahLabel: 'Quran', rangeLabel: '', juzProgress: getCurrentIndoPakJuzProgress(pageNumber, 1, 1, meta.juz) };
   }
 
   const first = ayahLines[0];
@@ -258,18 +227,19 @@ function getPagePreview(pageNumber) {
   const sameSurah = first.surahNumber === last.surahNumber;
   const firstAyah = Number(first.ayahStart);
   const lastAyah = Number(last.ayahEnd);
+  const juzProgress = getCurrentIndoPakJuzProgress(pageNumber, first.surahNumber, firstAyah, meta.juz);
 
   if (sameSurah) {
     return {
       surahLabel: firstSurah?.name || `Surah ${first.surahNumber}`,
-      rangeLabel: firstAyah === lastAyah
-        ? `Ayah ${firstAyah}`
-        : `Ayahs ${firstAyah}-${lastAyah}`,
+      rangeLabel: firstAyah === lastAyah ? `Ayah ${firstAyah}` : `Ayahs ${firstAyah}-${lastAyah}`,
+      juzProgress,
     };
   }
 
   return {
     surahLabel: `${firstSurah?.name || `Surah ${first.surahNumber}`} - ${lastSurah?.name || `Surah ${last.surahNumber}`}`,
     rangeLabel: `${first.surahNumber}:${firstAyah} - ${last.surahNumber}:${lastAyah}`,
+    juzProgress,
   };
 }
