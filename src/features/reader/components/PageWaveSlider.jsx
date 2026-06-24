@@ -40,7 +40,7 @@ export function PageWaveSlider({ page, goPage, onPreviewChange }) {
 
       if (pageNumber < 1 || pageNumber > totalPages) return null;
 
-      const x = Math.round(visualOffset * PAGE_STEP + dragOffset);
+      const x = Math.round(visualOffset * PAGE_STEP + Math.round(dragOffset));
 
       const normalizedDistance = Math.abs(visualOffset) / BAR_RADIUS;
       const eased = Math.pow(Math.max(0, 1 - normalizedDistance), 1.55);
