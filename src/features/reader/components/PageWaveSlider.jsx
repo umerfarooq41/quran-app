@@ -39,13 +39,13 @@ export function PageWaveSlider({ page, goPage, onPreviewChange }) {
 
       const x = visualOffset * PAGE_STEP + dragOffset;
       const distance = Math.abs(x);
-      const proximity = Math.max(0, 1 - distance / 120);
-      const eased = proximity ** 2.0;
+      const proximity = Math.max(0, 1 - distance / 150);
+      const eased = proximity ** 1.5;
 
       return {
         pageNumber,
         x,
-        height: 3 + eased * 42,
+        height: 5 + eased * 42,
         opacity: 0.04 + eased * 0.96,
       };
     }).filter(Boolean)
