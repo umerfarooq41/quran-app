@@ -4,8 +4,9 @@ import { getCurrentIndoPakJuzProgress } from '../../../data/indoPakParaQuarters'
 
 const PAGE_STEP = 10;
 const BAR_RADIUS = 18;
-const MAX_INERTIA_FRAMES = 10;
+const MAX_INERTIA_FRAMES = 8;
 const RTL_PAGE_DIRECTION = -1;
+const DRAG_SENSITIVITY = 6;
 
 export function PageWaveSlider({ page, goPage, onPreviewChange }) {
   const [previewPage, setPreviewPage] = useState(page);
@@ -25,6 +26,7 @@ export function PageWaveSlider({ page, goPage, onPreviewChange }) {
 
   useEffect(() => {
     if (interacting) return;
+
     previewPageRef.current = page;
     lastHapticPageRef.current = page;
     setPreviewPage(page);
@@ -71,11 +73,11 @@ export function PageWaveSlider({ page, goPage, onPreviewChange }) {
     const interaction = interactionRef.current;
     if (!interaction) return;
 
-    const rawPageOffset = (delta * RTL_PAGE_DIRECTION) / PAGE_STEP;
+    const rawPageOffset = (delta * RTL_PAGE_DIRECTION) / DRAG_SENSITIVITY;
     const nextPage = clampPage(interaction.basePage + Math.round(rawPageOffset));
 
     const consumed =
-      (nextPage - interaction.basePage) * PAGE_STEP * RTL_PAGE_DIRECTION;
+      (nextPage - interaction.basePage) * DRAG_SENSITIVITY * RTL_PAGE_DIRECTION;
 
     const remainder = delta - consumed;
     const boundedRemainder = Math.max(
@@ -98,7 +100,7 @@ export function PageWaveSlider({ page, goPage, onPreviewChange }) {
     const centerX = bounds.left + bounds.width / 2;
 
     const tappedOffset = Math.round(
-      ((event.clientX - centerX) * RTL_PAGE_DIRECTION) / PAGE_STEP
+      ((event.clientX - centerX) * RTL_PAGE_DIRECTION) / DRAG_SENSITIVITY
     );
 
     const tappedPage = clampPage(previewPageRef.current + tappedOffset);
@@ -156,23 +158,23 @@ export function PageWaveSlider({ page, goPage, onPreviewChange }) {
     }
 
     let frame = 0;
-    let velocity = releaseVelocity * 0.65;
+    let velocity = releaseVelocity * 0.85;
     const basePage = previewPageRef.current;
     let virtualDelta = 0;
 
     function runInertia() {
       frame += 1;
       virtualDelta += velocity;
-      velocity *= 0.72;
+      velocity *= 0.76;
 
       const pageOffset = Math.round(
-        (virtualDelta * RTL_PAGE_DIRECTION) / PAGE_STEP
+        (virtualDelta * RTL_PAGE_DIRECTION) / DRAG_SENSITIVITY
       );
 
       const nextPage = clampPage(basePage + pageOffset);
 
       const consumed =
-        pageOffset * PAGE_STEP * RTL_PAGE_DIRECTION;
+        pageOffset * DRAG_SENSITIVITY * RTL_PAGE_DIRECTION;
 
       const offset = Math.max(
         -PAGE_STEP / 2,
