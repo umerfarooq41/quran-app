@@ -26,6 +26,8 @@ export function MushafPage({
   quarterFlashTarget,
   selectedAyah,
   activeAudioAyah,
+  interactionsBlocked = false,
+  onBlockedInteraction,
   onSelectAyah,
   onTapAyah,
 }) {
@@ -284,6 +286,8 @@ export function MushafPage({
             line={line}
             hasSeparateBasmallah={hasSeparateBasmallah}
             forceCentered={isOpeningMushafPage && line.type === 'ayah'}
+            interactionsBlocked={interactionsBlocked}
+            onBlockedInteraction={onBlockedInteraction}
             onSelect={(selection) => onSelectAyah(line, index, selection)}
             onTap={(selection) => onTapAyah?.(line, index, selection)}
             marked={!supportsTextHighlights && lineHasSavedHighlight(line, savedHighlights)}

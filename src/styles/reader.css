@@ -967,7 +967,7 @@ body {
 }
 
 .reader-audio-over-reader {
-  bottom: calc(env(safe-area-inset-bottom, 0px) + 112px);
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
 }
 
 .reader-audio-panel-visible {
@@ -1144,7 +1144,7 @@ body {
   }
 
   .reader-audio-over-reader {
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 104px);
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
   }
 
   .reader-audio-panel {

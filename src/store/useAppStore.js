@@ -174,7 +174,7 @@ export const useAppStore = create((set, get) => ({
       audioPlaybackRate: state.settings.playbackRate,
       audioPlayerActive: true,
       audioPlayerVisible: true,
-      controlsVisible: true,
+      controlsVisible: false,
     };
   }),
   closeAudioPlayer: () => set({
@@ -189,7 +189,7 @@ export const useAppStore = create((set, get) => ({
     audioPlayerVisible: false,
   }),
   showAudioPlayer: () => set((state) => (
-    state.audioPlayerActive ? { audioPlayerVisible: true, controlsVisible: true } : state
+    state.audioPlayerActive ? { audioPlayerVisible: true, controlsVisible: false } : state
   )),
   hideAudioPlayer: () => set((state) => (
     state.audioPlayerActive ? { audioPlayerVisible: false } : state

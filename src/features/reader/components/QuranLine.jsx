@@ -20,6 +20,8 @@ export function QuranLine({
   line,
   onSelect,
   onTap,
+  interactionsBlocked = false,
+  onBlockedInteraction,
   marked = false,
   jumped = false,
   hasSeparateBasmallah = false,
@@ -34,6 +36,7 @@ export function QuranLine({
   const pressPoint = useRef(null);
   const pressedSelection = useRef(null);
   const capturedPointer = useRef(null);
+  const blockedPress = useRef(false);
   const isBasmallah = line.type === 'basmallah' || line.type === 'bismillah';
   const centered = (
     forceCentered ||
@@ -209,6 +212,13 @@ export function QuranLine({
   function startLongPress(event) {
     if (line.type !== 'ayah' || !line.ayahStart) return;
 
+    if (interactionsBlocked) {
+      blockedPress.current = true;
+      ignoreNextClick.current = true;
+      onBlockedInteraction?.();
+      return;
+    }
+
     longPressed.current = false;
     ignoreNextClick.current = false;
     pressMoved.current = false;
@@ -238,14 +248,18 @@ export function QuranLine({
     }, 430);
   }
 
-  function cancelLongPress() {
+  function cancelLongPress(clearBlockedPress = true) {
     window.clearTimeout(longPressTimer.current);
     pressPoint.current = null;
+    if (clearBlockedPress && blockedPress.current) {
+      blockedPress.current = false;
+      ignoreNextClick.current = false;
+    }
   }
 
   function finishPress(event) {
     const hadLongPress = longPressed.current;
-    cancelLongPress();
+    cancelLongPress(false);
 
     if (capturedPointer.current !== null && event.currentTarget.hasPointerCapture?.(capturedPointer.current)) {
       event.currentTarget.releasePointerCapture(capturedPointer.current);
@@ -253,6 +267,12 @@ export function QuranLine({
 
     capturedPointer.current = null;
     if (hadLongPress) ignoreNextClick.current = true;
+    if (blockedPress.current) {
+      window.setTimeout(() => {
+        blockedPress.current = false;
+        ignoreNextClick.current = false;
+      }, 80);
+    }
     window.setTimeout(() => {
       longPressed.current = false;
     }, 0);
@@ -322,10 +342,21 @@ export function QuranLine({
       onSelectStart={(event) => event.preventDefault()}
       onDragStart={(event) => event.preventDefault()}
       onClick={(event) => {
+        if (interactionsBlocked) {
+          event.preventDefault();
+          event.stopPropagation();
+          blockedPress.current = false;
+          ignoreNextClick.current = false;
+          pressMoved.current = false;
+          onBlockedInteraction?.();
+          return;
+        }
+
         if (longPressed.current || ignoreNextClick.current || pressMoved.current) {
           event.preventDefault();
           event.stopPropagation();
           longPressed.current = false;
+          blockedPress.current = false;
           ignoreNextClick.current = false;
           pressMoved.current = false;
           return;
@@ -340,6 +371,11 @@ export function QuranLine({
       onContextMenu={(event) => {
         event.preventDefault();
         ignoreNextClick.current = true;
+
+        if (interactionsBlocked) {
+          onBlockedInteraction?.();
+          return;
+        }
 
         if (line.type === 'ayah' && line.ayahStart) {
           onSelect(getSelectionFromEvent(event));

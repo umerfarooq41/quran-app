@@ -113,6 +113,15 @@ export default function ReaderScreen() {
   );
   const { handleTouchStart, handleTouchEnd } = useReaderGestures({ page, goPage });
   const topOverlay = overlayStack.at(-1)?.type;
+  const ayahTooltipVisible = Boolean(selectedAyah && topOverlay === OVERLAY_TYPES.AYAH);
+  const shareSheetVisible = Boolean(shareTarget && topOverlay === OVERLAY_TYPES.SHARE);
+  const readerInteractionsBlocked = Boolean(
+    controlsVisible ||
+      audioPlayerVisible ||
+      translationTarget ||
+      ayahTooltipVisible ||
+      shareSheetVisible
+  );
 
   useEffect(() => {
     if (!sliderInteracting) setSliderPreviewPage(null);
@@ -254,6 +263,12 @@ export default function ReaderScreen() {
   }
 
   function selectAyah(line, lineIndex, selection) {
+    if (readerInteractionsBlocked) {
+      suppressTapUntil.current = Date.now() + 700;
+      dismissVisibleReaderUi();
+      return;
+    }
+
     const ayahNumber = Number(selection?.ayahNumber || line.ayahStart);
     const wordIndex = Number.isInteger(selection?.wordIndex)
       ? selection.wordIndex
@@ -285,6 +300,10 @@ export default function ReaderScreen() {
 
   function openTranslationCard(line, lineIndex, selection) {
     if (line.type !== 'ayah' || !line.surahNumber || !line.ayahStart) return;
+    if (readerInteractionsBlocked) {
+      dismissVisibleReaderUi();
+      return;
+    }
 
     const ayahNumber = Number(selection?.ayahNumber || line.ayahStart);
     setTranslationTarget({
@@ -293,6 +312,14 @@ export default function ReaderScreen() {
       ayahNumber,
       lineIndex,
     });
+  }
+
+  function dismissVisibleReaderUi() {
+    if (translationTarget) setTranslationTarget(null);
+    if (ayahTooltipVisible) closeAyahSheet();
+    if (shareSheetVisible) closeShareSheet();
+    if (controlsVisible) setControlsVisible(false);
+    if (audioPlayerVisible) hideAudioPlayer();
   }
 
   function hideReaderChrome() {
@@ -320,6 +347,16 @@ export default function ReaderScreen() {
   function handleReaderTap(event) {
     if (Date.now() < suppressTapUntil.current) return;
     if (event.target.closest('[data-reader-ui]')) return;
+
+    if (audioPlayerVisible) {
+      hideAudioPlayer();
+      return;
+    }
+
+    if (controlsVisible && event.target.closest('.reader-page')) {
+      setControlsVisible(false);
+      return;
+    }
 
     if (event.target.closest('[data-reader-toggle-zone]')) {
       toggleReaderChrome();
@@ -361,6 +398,8 @@ export default function ReaderScreen() {
           quarterFlashTarget={quarterFlashTarget}
           selectedAyah={selectedAyah}
           activeAudioAyah={audioPlayerActive ? audioTarget : null}
+          interactionsBlocked={readerInteractionsBlocked}
+          onBlockedInteraction={dismissVisibleReaderUi}
           onSelectAyah={selectAyah}
           onTapAyah={openTranslationCard}
         />
