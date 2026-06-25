@@ -76,6 +76,8 @@ export function ReaderAudioPanel() {
   const repeatRef = useRef(repeat);
   const playbackRateRef = useRef(audioPlaybackRate || settings.playbackRate || 1);
   const unmountedRef = useRef(false);
+  const rafRef = useRef(0);
+  const [visualTime, setVisualTime] = useState(currentTime || 0);
 
   const reciters = useMemo(() => normalizeLocalReciters(), []);
   const selectedReciter = audioReciter || settings.reciter || getDefaultReciterId();
@@ -91,7 +93,8 @@ export function ReaderAudioPanel() {
   const reference = ayah?.surahNumber && ayah?.ayahNumber
     ? `${surah?.name || 'Surah'} ${ayah.surahNumber}:${ayah.ayahNumber}`
     : 'Audio player';
-  const progressRatio = duration > 0 ? Math.min(1, Math.max(0, currentTime / duration)) : 0;
+  const displayedTime = playing && duration > 0 ? visualTime : currentTime;
+  const progressRatio = duration > 0 ? Math.min(1, Math.max(0, displayedTime / duration)) : 0;
   const filteredReciters = useMemo(() => {
     const query = reciterSearch.trim().toLowerCase();
     if (!query) return reciters;
@@ -101,6 +104,29 @@ export function ReaderAudioPanel() {
   repeatRef.current = repeat;
   playbackRateRef.current = audioPlaybackRate || settings.playbackRate || 1;
 
+
+  useEffect(() => {
+    if (!playing) {
+      setVisualTime(currentTime || 0);
+      return undefined;
+    }
+
+    let active = true;
+    const tick = () => {
+      const audio = currentAudioRef.current;
+      if (audio && active) {
+        setVisualTime(audio.currentTime || 0);
+      }
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      active = false;
+      cancelAnimationFrame(rafRef.current);
+    };
+  }, [playing, currentTime, ayah?.surahNumber, ayah?.ayahNumber]);
+
   useEffect(() => {
     unmountedRef.current = false;
 
@@ -109,6 +135,7 @@ export function ReaderAudioPanel() {
       loadTokenRef.current += 1;
       preloadTokenRef.current += 1;
       loadingRef.current = null;
+      cancelAnimationFrame(rafRef.current);
       disposeAudio(currentAudioRef.current);
       disposePreload();
       currentAudioRef.current = null;
@@ -448,6 +475,7 @@ export function ReaderAudioPanel() {
   function seek(value) {
     const audio = currentAudioRef.current;
     const nextTime = Number(value) || 0;
+    setVisualTime(nextTime);
     setAudioProgress(nextTime, duration);
     if (audio) audio.currentTime = nextTime;
   }
@@ -538,17 +566,13 @@ export function ReaderAudioPanel() {
 
         <div className="reader-audio-times reader-audio-times-above" dir="ltr">
           <span>{formatTime(duration || 0)}</span>
-          <span>{formatTime(currentTime)}</span>
+          <span>{formatTime(displayedTime)}</span>
         </div>
 
         <div className="reader-audio-waveform reader-audio-wave-line" style={{ '--audio-progress': progressRatio }}>
           <div className="reader-audio-wave-track" aria-hidden="true">
             <span className="reader-audio-wave-remaining" />
-            <span className="reader-audio-wave-played">
-              <svg viewBox="0 0 300 24" preserveAspectRatio="none" focusable="false" aria-hidden="true">
-                <path d="M0 12 C14 5 28 19 42 12 S70 5 84 12 S112 19 126 12 S154 5 168 12 S196 19 210 12 S238 5 252 12 S280 19 300 12" />
-              </svg>
-            </span>
+            <span className="reader-audio-wave-played" />
             <span className="reader-audio-wave-thumb" />
           </div>
           <input
