@@ -5,7 +5,7 @@ import { getCurrentIndoPakJuzProgress } from '../../../data/indoPakParaQuarters'
 const PAGE_STEP = 10;
 const BAR_RADIUS = 18;
 const MAX_INERTIA_FRAMES = 8;
-const RTL_PAGE_DIRECTION = -1;
+const RTL_PAGE_DIRECTION = 1;
 const DRAG_SENSITIVITY = 6;
 
 export function PageWaveSlider({ page, goPage, onPreviewChange }) {
