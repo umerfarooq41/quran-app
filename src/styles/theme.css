@@ -11,6 +11,11 @@
   --theme-shadow: rgba(31, 41, 55, .06);
   --theme-accent: #2d6e5e;
   --reader-bg: #fffaf1;
+  --reader-bg-gradient:
+    radial-gradient(circle at 15% 10%, rgba(212, 168, 67, 0.045), transparent 38%),
+    radial-gradient(circle at 85% 18%, rgba(45, 110, 94, 0.030), transparent 32%),
+    radial-gradient(circle at 50% 90%, rgba(212, 168, 67, 0.025), transparent 40%),
+    linear-gradient(160deg, #fdf8ef 0%, #f8f3e8 50%, #f4f0e6 100%);
   --reader-surface: #fffaf1;
   --reader-surface-raised: rgba(255, 250, 241, .98);
   --reader-soft: rgba(35, 33, 30, .08);
@@ -39,6 +44,10 @@
   --theme-shadow: rgba(0, 0, 0, .28);
   --theme-accent: #2d6e5e;
   --reader-bg: #111412;
+  --reader-bg-gradient:
+    radial-gradient(circle at 16% 8%, rgba(169, 129, 49, .030), transparent 34%),
+    radial-gradient(circle at 85% 15%, rgba(50, 122, 103, .030), transparent 32%),
+    linear-gradient(160deg, #151815 0%, #111412 58%, #171915 100%);
   --reader-surface: #1e2320;
   --reader-surface-raised: rgba(30, 35, 32, .98);
   --reader-soft: rgba(255, 255, 255, .08);
@@ -69,7 +78,7 @@
 }
 
 [data-theme='dark'] .bg-reader {
-  background: #090b0a;
+  background: var(--reader-bg-gradient);
 }
 
 [data-theme='dark'] .app-header-title,
@@ -470,7 +479,7 @@ body,
 .bg-reader,
 .reader-shell,
 .reader-page {
-  background: var(--reader-bg) !important;
+  background: var(--reader-bg-gradient) !important;
   color: var(--reader-text) !important;
 }
 
