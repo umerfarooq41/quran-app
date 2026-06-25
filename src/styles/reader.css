@@ -492,14 +492,14 @@
 
   position: fixed;
   z-index: 89;
-  width: 236px;
+  width: 248px;
   color: var(--ayah-tooltip-color);
 }
 
 .ayah-action-tooltip {
   position: relative;
   display: grid;
-  width: 236px;
+  width: 248px;
   height: 56px;
   grid-template-columns: repeat(5, 44px);
   align-items: center;
@@ -570,17 +570,17 @@
 
 .ayah-highlight-chip-row {
   display: grid;
-  width: 236px;
+  width: 248px;
   min-height: 58px;
   grid-template-columns: repeat(5, 44px);
   justify-content: space-between;
-  margin-top: 12px;
+  margin-top: 8px;
   border: 1px solid var(--ayah-tooltip-border);
   border-radius: 22px;
   background: var(--ayah-tooltip-bg);
   padding: 7px 8px;
   box-shadow: var(--ayah-tooltip-shadow);
-  animation: ayahTooltipPanelIn .18s ease-out both;
+  animation: ayahTooltipPanelIn .2s ease-out both;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
@@ -606,15 +606,15 @@
 
 .ayah-bookmark-picker {
   display: grid;
-  width: 236px;
-  min-height: 50px;
+  width: 248px;
+  min-height: 42px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 6px;
-  margin-top: 12px;
+  gap: 5px;
+  margin-top: 7px;
   border: 1px solid var(--ayah-tooltip-border);
-  border-radius: 22px;
+  border-radius: 20px;
   background: var(--ayah-tooltip-bg);
-  padding: 6px;
+  padding: 5px;
   color: var(--ayah-tooltip-color);
   box-shadow: var(--ayah-tooltip-shadow);
   animation: ayahTooltipPanelIn .16s ease-out both;
@@ -623,16 +623,17 @@
 }
 
 .ayah-bookmark-picker button {
+  display: grid;
   min-width: 0;
-  min-height: 38px;
-  overflow: hidden;
+  min-height: 32px;
+  place-items: center;
   border: 1px solid transparent;
-  border-radius: 17px;
-  padding: 0 7px;
+  border-radius: 15px;
+  padding: 0 4px;
   font-size: 12px;
   font-weight: 650;
   line-height: 1;
-  text-overflow: ellipsis;
+  text-align: center;
   white-space: nowrap;
 }
 

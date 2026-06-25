@@ -11,10 +11,10 @@ import {
 import { findPageForReference, getSurah } from '../../../lib/quran';
 import { getJuzForReference } from '../../../data/quranMeta';
 
-const TOOLTIP_WIDTH = 236;
+const TOOLTIP_WIDTH = 248;
 const TOOLTIP_HEIGHT = 56;
-const CHIP_ROW_HEIGHT = 70;
-const BOOKMARK_PICKER_HEIGHT = 62;
+const CHIP_ROW_HEIGHT = 66;
+const BOOKMARK_PICKER_HEIGHT = 50;
 const TOOLTIP_GAP = 12;
 const VIEWPORT_EDGE = 8;
 const DEFAULT_BOOKMARK = 'Reading';
