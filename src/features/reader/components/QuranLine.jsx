@@ -18,6 +18,7 @@ const MAX_NEGATIVE_WORD_SPACING = 0;
 export function QuranLine({
   line,
   onSelect,
+  onTap,
   marked = false,
   jumped = false,
   hasSeparateBasmallah = false,
@@ -27,6 +28,8 @@ export function QuranLine({
   const textRef = useRef(null);
   const longPressTimer = useRef(null);
   const longPressed = useRef(false);
+  const ignoreNextClick = useRef(false);
+  const pressMoved = useRef(false);
   const pressPoint = useRef(null);
   const pressedSelection = useRef(null);
   const capturedPointer = useRef(null);
@@ -206,6 +209,8 @@ export function QuranLine({
     if (line.type !== 'ayah' || !line.ayahStart) return;
 
     longPressed.current = false;
+    ignoreNextClick.current = false;
+    pressMoved.current = false;
     pressPoint.current = { x: event.clientX, y: event.clientY };
     pressedSelection.current = {
       ayahNumber: getAyahAtRenderedPoint(
@@ -226,6 +231,7 @@ export function QuranLine({
 
     longPressTimer.current = window.setTimeout(() => {
       longPressed.current = true;
+      ignoreNextClick.current = true;
 
       if (document.documentElement.dataset.haptics !== 'off' && navigator.vibrate) {
         navigator.vibrate([24]);
@@ -244,6 +250,7 @@ export function QuranLine({
   }
 
   function finishPress(event) {
+    const hadLongPress = longPressed.current;
     cancelLongPress();
 
     if (capturedPointer.current !== null && event.currentTarget.hasPointerCapture?.(capturedPointer.current)) {
@@ -251,6 +258,7 @@ export function QuranLine({
     }
 
     capturedPointer.current = null;
+    if (hadLongPress) ignoreNextClick.current = true;
     window.setTimeout(() => {
       longPressed.current = false;
     }, 0);
@@ -263,8 +271,25 @@ export function QuranLine({
     const deltaY = event.clientY - pressPoint.current.y;
 
     if (Math.hypot(deltaX, deltaY) > 12) {
+      pressMoved.current = true;
       cancelLongPress();
     }
+  }
+
+  function getSelectionFromEvent(event) {
+    return {
+      ayahNumber: getAyahAtRenderedPoint(
+        line,
+        textRef.current,
+        event.clientX,
+        event.clientY,
+      ),
+      wordIndex: getWordAtRenderedPoint(
+        textRef.current,
+        event.clientX,
+        event.clientY,
+      ),
+    };
   }
 
   return (
@@ -279,29 +304,27 @@ export function QuranLine({
       onSelectStart={(event) => event.preventDefault()}
       onDragStart={(event) => event.preventDefault()}
       onClick={(event) => {
-        if (longPressed.current) {
+        if (longPressed.current || ignoreNextClick.current || pressMoved.current) {
           event.preventDefault();
           event.stopPropagation();
           longPressed.current = false;
+          ignoreNextClick.current = false;
+          pressMoved.current = false;
+          return;
+        }
+
+        if (line.type === 'ayah' && line.ayahStart) {
+          event.preventDefault();
+          event.stopPropagation();
+          onTap?.(getSelectionFromEvent(event));
         }
       }}
       onContextMenu={(event) => {
         event.preventDefault();
+        ignoreNextClick.current = true;
 
         if (line.type === 'ayah' && line.ayahStart) {
-          onSelect({
-            ayahNumber: getAyahAtRenderedPoint(
-              line,
-              textRef.current,
-              event.clientX,
-              event.clientY,
-            ),
-            wordIndex: getWordAtRenderedPoint(
-              textRef.current,
-              event.clientX,
-              event.clientY,
-            ),
-          });
+          onSelect(getSelectionFromEvent(event));
         }
       }}
       className={`quran-line quran-line-${isBasmallah ? 'basmallah' : line.type} ${marked ? 'quran-line-marked' : ''} ${jumped ? 'quran-line-jumped' : ''} ${line.type === 'spacer' ? 'opacity-0' : ''} ${centered ? 'quran-line-centered' : 'quran-line-normal'}`}

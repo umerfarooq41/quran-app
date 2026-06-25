@@ -1358,6 +1358,110 @@ body {
   text-align: center;
 }
 
+.ayah-translation-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: transparent;
+}
+
+.ayah-translation-card {
+  --translation-card-bg: #FFFFFF;
+  --translation-card-text: #1F2933;
+  --translation-card-secondary: #64748B;
+  --translation-card-border: rgba(15,23,42,0.08);
+  --translation-card-shadow: 0 -8px 28px rgba(15,23,42,0.14);
+
+  display: grid;
+  width: min(100%, 576px);
+  max-height: 50vh;
+  grid-template-rows: 48px minmax(0, 1fr) 56px;
+  overflow: hidden;
+  border: 1px solid var(--translation-card-border);
+  border-bottom: 0;
+  border-radius: 22px 22px 0 0;
+  background: var(--translation-card-bg);
+  color: var(--translation-card-text);
+  box-shadow: var(--translation-card-shadow);
+}
+
+.ayah-translation-header {
+  display: grid;
+  height: 48px;
+  place-items: center;
+  border-bottom: 1px solid var(--translation-card-border);
+  color: var(--translation-card-text);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+}
+
+.ayah-translation-body {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 16px 18px 18px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ayah-translation-text {
+  margin: 0;
+  color: var(--translation-card-text);
+  font-size: 15px;
+  line-height: 1.65;
+  text-align: start;
+}
+
+.ayah-translation-arabic {
+  margin: 18px 0 0;
+  color: var(--translation-card-text);
+  direction: rtl;
+  font-family: IndopakNastaleeq, serif;
+  font-size: 21px;
+  line-height: 2;
+  text-align: center;
+}
+
+.ayah-translation-footer {
+  display: grid;
+  height: 56px;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--translation-card-border);
+}
+
+.ayah-translation-footer button {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  color: var(--translation-card-text);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.ayah-translation-footer button + button {
+  border-left: 1px solid var(--translation-card-border);
+}
+
+.ayah-translation-footer button:disabled {
+  color: var(--translation-card-secondary);
+  opacity: .48;
+}
+
+[data-theme='dark'] .ayah-translation-card {
+  --translation-card-bg: #171717;
+  --translation-card-text: #F5F5F5;
+  --translation-card-secondary: #A3A3A3;
+  --translation-card-border: rgba(255,255,255,0.08);
+  --translation-card-shadow: 0 -8px 28px rgba(0,0,0,0.45);
+}
+
 @media (max-width: 420px) {
   .ayah-main-actions-v2 {
     gap: 5px;

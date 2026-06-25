@@ -6,6 +6,7 @@ import { getCurrentIndoPakJuzProgress } from '../../data/indoPakParaQuarters';
 import { getMushafPageNumber, getPage, getPageMeta, getSurahAyahs } from '../../lib/quran';
 import { OVERLAY_TYPES, useAppStore } from '../../store/useAppStore';
 import { AyahActionSheet } from './components/AyahActionSheet';
+import { AyahTranslationCard } from './components/AyahTranslationCard';
 import { MushafPage } from './components/MushafPage';
 import { ReaderBottomControls } from './components/ReaderBottomControls';
 import { ReaderFooterMeta, ReaderPassiveHeader } from './components/ReaderPassiveMeta';
@@ -76,6 +77,7 @@ export default function ReaderScreen() {
   })));
   const [sliderPreviewPage, setSliderPreviewPage] = useState(null);
   const [sliderInteracting, setSliderInteracting] = useState(false);
+  const [translationTarget, setTranslationTarget] = useState(null);
   const pageData = getPage(page);
   const meta = getPageMeta(page);
   const displayPage = getMushafPageNumber(page);
@@ -249,6 +251,7 @@ export default function ReaderScreen() {
     const ayahKey = `${line.surahNumber}:${ayahNumber}`;
 
     suppressTapUntil.current = Date.now() + 700;
+    setTranslationTarget(null);
     openAyahSheet({
       page,
       surah: line.surahNumber,
@@ -260,6 +263,18 @@ export default function ReaderScreen() {
       ayahKey,
       reference: ayahKey,
       text: ayah?.text || line.text,
+    });
+  }
+
+  function openTranslationCard(line, lineIndex, selection) {
+    if (line.type !== 'ayah' || !line.surahNumber || !line.ayahStart) return;
+
+    const ayahNumber = Number(selection?.ayahNumber || line.ayahStart);
+    setTranslationTarget({
+      page,
+      surahNumber: line.surahNumber,
+      ayahNumber,
+      lineIndex,
     });
   }
 
@@ -330,6 +345,7 @@ export default function ReaderScreen() {
           selectedAyah={selectedAyah}
           activeAudioAyah={audioPlayerActive ? audioTarget : null}
           onSelectAyah={selectAyah}
+          onTapAyah={openTranslationCard}
         />
 
         <ReaderFooterMeta displayPage={footerDisplayPage} progress={juzProgress} />
@@ -349,6 +365,16 @@ export default function ReaderScreen() {
             onChromeTap={hideReaderChrome}
             onPreviewPageChange={setSliderPreviewPage}
             onSliderInteractionChange={setSliderInteracting}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {translationTarget && (
+          <AyahTranslationCard
+            target={translationTarget}
+            translationId={settings.translation}
+            onClose={() => setTranslationTarget(null)}
           />
         )}
       </AnimatePresence>

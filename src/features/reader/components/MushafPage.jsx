@@ -27,6 +27,7 @@ export function MushafPage({
   selectedAyah,
   activeAudioAyah,
   onSelectAyah,
+  onTapAyah,
 }) {
   const pageRef = useRef(null);
   const [highlightRects, setHighlightRects] = useState({
@@ -284,6 +285,7 @@ export function MushafPage({
             hasSeparateBasmallah={hasSeparateBasmallah}
             forceCentered={isOpeningMushafPage && line.type === 'ayah'}
             onSelect={(selection) => onSelectAyah(line, index, selection)}
+            onTap={(selection) => onTapAyah?.(line, index, selection)}
             marked={!supportsTextHighlights && lineHasSavedHighlight(line, savedHighlights)}
             jumped={Boolean(
               (
