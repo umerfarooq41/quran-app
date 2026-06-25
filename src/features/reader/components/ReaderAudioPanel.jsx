@@ -605,12 +605,12 @@ export function ReaderAudioPanel() {
 
         {reciterPickerOpen && (
           <div
-            className="reader-reciter-sheet-backdrop"
+            className="reader-reciter-sheet"
             role="presentation"
             onClick={() => setReciterPickerOpen(false)}
           >
             <div
-              className="reader-reciter-sheet"
+              className="reader-reciter-sheet-card"
               role="dialog"
               aria-modal="true"
               aria-label="Select reciter"
@@ -636,22 +636,22 @@ export function ReaderAudioPanel() {
                     <button
                       key={reciter.id}
                       type="button"
-                      className={isSelected ? 'reader-reciter-option reader-reciter-option-selected' : 'reader-reciter-option'}
+                      className={isSelected ? 'reader-reciter-list-item selected' : 'reader-reciter-list-item'}
                       onClick={() => selectReciter(reciter.id)}
                       role="option"
                       aria-selected={isSelected}
                     >
-                      <span className="reader-reciter-option-avatar" aria-hidden="true">
+                      <span className="reader-reciter-avatar" aria-hidden="true">
                         <img
                           src={getReciterImageSrc(reciter)}
                           alt=""
                           onError={(event) => { event.currentTarget.style.display = 'none'; }}
                         />
                       </span>
-                      <span className="reader-reciter-option-copy">
-                        <span>{getReciterDisplayName(reciter)}</span>
+                      <span>
+                        {getReciterDisplayName(reciter)}
                       </span>
-                      <span className="reader-reciter-option-check" aria-hidden="true">
+                      <span className="reader-reciter-check" aria-hidden="true">
                         {isSelected ? <Check size={19} /> : <span className="reader-reciter-option-radio" />}
                       </span>
                     </button>
