@@ -73,8 +73,11 @@ export function ReaderAudioPanel() {
 
   const surah = ayah?.surahNumber ? getSurah(ayah.surahNumber) : null;
   const reference = ayah?.surahNumber && ayah?.ayahNumber
-    ? `${surah?.name || 'Surah'} : ${ayah.ayahNumber}`
+    ? `${surah?.name || 'Surah'} ${ayah.surahNumber}:${ayah.ayahNumber}`
     : 'Audio player';
+  const progressPercent = duration > 0
+    ? Math.max(0, Math.min(100, (currentTime / duration) * 100))
+    : 0;
 
   repeatRef.current = repeat;
   playbackRateRef.current = audioPlaybackRate || settings.playbackRate || 1;
@@ -499,13 +502,14 @@ export function ReaderAudioPanel() {
 
         <input
           className="reader-audio-progress"
-          dir="rtl"
+          dir="ltr"
           type="range"
           min="0"
           max={duration || 0}
           value={Math.min(currentTime, duration || 0)}
           onChange={(event) => seek(event.target.value)}
           aria-label="Audio progress"
+          style={{ '--audio-progress': `${progressPercent}%` }}
         />
 
         <div className="reader-audio-times" dir="ltr">
