@@ -16,19 +16,14 @@ function formatTime(seconds = 0) {
   return `${minutes}:${secs}`;
 }
 
-const WAVEFORM_BARS = [
-  7, 11, 16, 10, 20, 14, 24, 12, 18, 27, 15, 22, 32, 18, 26, 13, 21,
-  30, 16, 24, 11, 19, 28, 15, 23, 34, 20, 27, 13, 21, 17, 25, 12, 18,
-];
-
 function getReciterDisplayName(reciter) {
   return reciter?.displayName || reciter?.reciter_name || reciter?.name || 'Reciter';
 }
 
 function getReciterImageSrc(reciter) {
   const name = getReciterDisplayName(reciter);
-  const extension = reciter?.id === 'mishari-rashid-al-afasy' ? 'jpeg' : 'png';
-  return `/reciters/${encodeURIComponent(name)}.${extension}`;
+  const ext = reciter?.id === 'mishari-rashid-al-afasy' ? 'jpeg' : 'png';
+  return `/reciters/${encodeURIComponent(name)}.${ext}`;
 }
 
 export function ReaderAudioPanel() {
@@ -81,8 +76,6 @@ export function ReaderAudioPanel() {
   const repeatRef = useRef(repeat);
   const playbackRateRef = useRef(audioPlaybackRate || settings.playbackRate || 1);
   const unmountedRef = useRef(false);
-  const [reciterSheetOpen, setReciterSheetOpen] = useState(false);
-  const [reciterQuery, setReciterQuery] = useState('');
 
   const reciters = useMemo(() => normalizeLocalReciters(), []);
   const selectedReciter = audioReciter || settings.reciter || getDefaultReciterId();
@@ -90,18 +83,20 @@ export function ReaderAudioPanel() {
     () => reciters.find((reciter) => reciter.id === selectedReciter) || reciters[0],
     [reciters, selectedReciter],
   );
-  const filteredReciters = useMemo(() => {
-    const query = reciterQuery.trim().toLowerCase();
-    if (!query) return reciters;
-    return reciters.filter((reciter) => getReciterDisplayName(reciter).toLowerCase().includes(query));
-  }, [reciterQuery, reciters]);
   const [status, setStatus] = useState('');
+  const [reciterPickerOpen, setReciterPickerOpen] = useState(false);
+  const [reciterSearch, setReciterSearch] = useState('');
 
   const surah = ayah?.surahNumber ? getSurah(ayah.surahNumber) : null;
   const reference = ayah?.surahNumber && ayah?.ayahNumber
     ? `${surah?.name || 'Surah'} ${ayah.surahNumber}:${ayah.ayahNumber}`
     : 'Audio player';
   const progressRatio = duration > 0 ? Math.min(1, Math.max(0, currentTime / duration)) : 0;
+  const filteredReciters = useMemo(() => {
+    const query = reciterSearch.trim().toLowerCase();
+    if (!query) return reciters;
+    return reciters.filter((reciter) => getReciterDisplayName(reciter).toLowerCase().includes(query));
+  }, [reciterSearch, reciters]);
 
   repeatRef.current = repeat;
   playbackRateRef.current = audioPlaybackRate || settings.playbackRate || 1;
@@ -490,6 +485,12 @@ export function ReaderAudioPanel() {
     updateSettings({ playbackRate: next });
   }
 
+  function selectReciter(reciterId) {
+    updateSettings({ reciter: reciterId });
+    setReciterPickerOpen(false);
+    setReciterSearch('');
+  }
+
   function closePlayer() {
     playIntentRef.current = false;
     loadTokenRef.current += 1;
@@ -516,11 +517,11 @@ export function ReaderAudioPanel() {
         </div>
 
         <button
-          type="button"
           className="reader-reciter-row reader-reciter-pill"
-          onClick={() => setReciterSheetOpen(true)}
+          type="button"
+          onClick={() => setReciterPickerOpen(true)}
           aria-haspopup="dialog"
-          aria-expanded={reciterSheetOpen}
+          aria-expanded={reciterPickerOpen}
         >
           <span className="reader-reciter-avatar" aria-hidden="true">
             <img
@@ -531,29 +532,24 @@ export function ReaderAudioPanel() {
           </span>
           <span className="reader-reciter-copy">
             <span>{getReciterDisplayName(selectedReciterMeta)}</span>
-            <small>Bundled audio • Ready</small>
           </span>
           <ChevronDown size={17} />
         </button>
 
         <div className="reader-audio-times reader-audio-times-above" dir="ltr">
-          <span>{formatTime(currentTime)}</span>
           <span>{formatTime(duration || 0)}</span>
+          <span>{formatTime(currentTime)}</span>
         </div>
 
-        <div className="reader-audio-waveform" style={{ '--audio-progress': progressRatio }}>
-          <div className="reader-audio-wave-bars" aria-hidden="true">
-            {WAVEFORM_BARS.map((height, index) => {
-              const barProgress = (index + 1) / WAVEFORM_BARS.length;
-              const isPlayed = barProgress >= (1 - progressRatio);
-              return (
-                <span
-                  key={`${height}-${index}`}
-                  className={isPlayed ? 'wave-played' : undefined}
-                  style={{ '--wave-height': `${height}px` }}
-                />
-              );
-            })}
+        <div className="reader-audio-waveform reader-audio-wave-line" style={{ '--audio-progress': progressRatio }}>
+          <div className="reader-audio-wave-track" aria-hidden="true">
+            <span className="reader-audio-wave-remaining" />
+            <span className="reader-audio-wave-played">
+              <svg viewBox="0 0 300 24" preserveAspectRatio="none" focusable="false" aria-hidden="true">
+                <path d="M0 12 C14 5 28 19 42 12 S70 5 84 12 S112 19 126 12 S154 5 168 12 S196 19 210 12 S238 5 252 12 S280 19 300 12" />
+              </svg>
+            </span>
+            <span className="reader-audio-wave-thumb" />
           </div>
           <input
             className="reader-audio-progress reader-audio-progress-overlay"
@@ -582,66 +578,49 @@ export function ReaderAudioPanel() {
         </div>
 
         {status && <p className="reader-audio-status">{status}</p>}
-        {reciterSheetOpen && (
-          <div className="reader-reciter-sheet-backdrop" onClick={() => setReciterSheetOpen(false)}>
-            <section
-              className="reader-reciter-sheet"
-              role="dialog"
-              aria-modal="true"
-              aria-label="Select reciter"
-              onClick={(event) => event.stopPropagation()}
-            >
+
+        {reciterPickerOpen && (
+          <div className="reader-reciter-sheet" role="dialog" aria-modal="true" aria-label="Select reciter">
+            <div className="reader-reciter-sheet-card">
               <div className="reader-reciter-sheet-handle" aria-hidden="true" />
               <div className="reader-reciter-sheet-head">
                 <strong>Select Reciter</strong>
-                <button type="button" onClick={() => setReciterSheetOpen(false)} aria-label="Close reciter list">
-                  <X size={18} />
-                </button>
+                <button type="button" onClick={() => setReciterPickerOpen(false)} aria-label="Close reciter list"><X size={19} /></button>
               </div>
               <label className="reader-reciter-search">
-                <Search size={16} />
+                <Search size={18} aria-hidden="true" />
                 <input
-                  type="search"
-                  value={reciterQuery}
-                  onChange={(event) => setReciterQuery(event.target.value)}
+                  value={reciterSearch}
+                  onChange={(event) => setReciterSearch(event.target.value)}
                   placeholder="Search reciters"
                 />
               </label>
-              <div className="reader-reciter-list" role="listbox" aria-label="Available reciters">
+              <div className="reader-reciter-list" role="listbox" aria-label="Reciters">
                 {filteredReciters.map((reciter) => {
                   const isSelected = reciter.id === selectedReciter;
                   return (
                     <button
-                      type="button"
                       key={reciter.id}
-                      className={`reader-reciter-option ${isSelected ? 'reader-reciter-option-selected' : ''}`}
-                      onClick={() => {
-                        updateSettings({ reciter: reciter.id });
-                        setReciterSheetOpen(false);
-                        setReciterQuery('');
-                      }}
+                      type="button"
+                      className={isSelected ? 'reader-reciter-list-item selected' : 'reader-reciter-list-item'}
+                      onClick={() => selectReciter(reciter.id)}
                       role="option"
                       aria-selected={isSelected}
                     >
-                      <span className="reader-reciter-option-avatar" aria-hidden="true">
+                      <span className="reader-reciter-avatar" aria-hidden="true">
                         <img
                           src={getReciterImageSrc(reciter)}
                           alt=""
                           onError={(event) => { event.currentTarget.style.display = 'none'; }}
                         />
                       </span>
-                      <span className="reader-reciter-option-copy">
-                        <span>{getReciterDisplayName(reciter)}</span>
-                        <small>Bundled audio • Ready</small>
-                      </span>
-                      <span className="reader-reciter-option-check" aria-hidden="true">
-                        {isSelected && <Check size={17} />}
-                      </span>
+                      <span>{getReciterDisplayName(reciter)}</span>
+                      {isSelected && <Check size={20} aria-hidden="true" />}
                     </button>
                   );
                 })}
               </div>
-            </section>
+            </div>
           </div>
         )}
       </section>
