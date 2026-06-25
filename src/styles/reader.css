@@ -1622,7 +1622,8 @@ body {
 
   display: grid;
   width: min(100%, 576px);
-  max-height: 50vh;
+  height: clamp(300px, 56dvh, 60dvh);
+  max-height: 60dvh;
   grid-template-rows: 48px minmax(0, 1fr) 56px;
   overflow: hidden;
   border: 1px solid var(--translation-card-border);
@@ -1656,8 +1657,8 @@ body {
 .ayah-translation-text {
   margin: 0;
   color: var(--translation-card-text);
-  font-size: 15px;
-  line-height: 1.65;
+  font-size: 15.5px;
+  line-height: 1.7;
   text-align: start;
 }
 
@@ -1666,7 +1667,7 @@ body {
   color: var(--translation-card-text);
   direction: rtl;
   font-family: IndopakNastaleeq, serif;
-  font-size: 21px;
+  font-size: clamp(20px, 5.4vw, 22px);
   line-height: 2;
   text-align: center;
 }
