@@ -1,5 +1,10 @@
 /* App theme layer. Mushaf typography metrics stay untouched; only colors/backgrounds are themed. */
 :root {
+  --brand-bg-light: radial-gradient(circle at 15% 10%, rgba(212, 168, 67, 0.18), transparent 38%), radial-gradient(circle at 85% 18%, rgba(45, 110, 94, 0.12), transparent 32%), radial-gradient(circle at 50% 90%, rgba(212, 168, 67, 0.10), transparent 40%), linear-gradient(160deg, #fdf8ef 0%, #f8f3e8 50%, #f4f0e6 100%);
+  --brand-bg-dark: radial-gradient(circle at 16% 8%, rgba(169, 129, 49, .12), transparent 34%), radial-gradient(circle at 85% 15%, rgba(50, 122, 103, .12), transparent 32%), linear-gradient(160deg, #151815 0%, #111412 58%, #171915 100%);
+  --brand-green: #2d6e5e;
+  --brand-green-dark: #1f483d;
+  --brand-gold: #b8882a;
   --theme-bg: #f7f2e8;
   --theme-surface: rgba(255, 255, 255, .78);
   --theme-surface-solid: #fff;
@@ -11,11 +16,6 @@
   --theme-shadow: rgba(31, 41, 55, .06);
   --theme-accent: #2d6e5e;
   --reader-bg: #fffaf1;
-  --reader-bg-gradient:
-    radial-gradient(circle at 15% 10%, rgba(212, 168, 67, 0.045), transparent 38%),
-    radial-gradient(circle at 85% 18%, rgba(45, 110, 94, 0.030), transparent 32%),
-    radial-gradient(circle at 50% 90%, rgba(212, 168, 67, 0.025), transparent 40%),
-    linear-gradient(160deg, #fdf8ef 0%, #f8f3e8 50%, #f4f0e6 100%);
   --reader-surface: #fffaf1;
   --reader-surface-raised: rgba(255, 250, 241, .98);
   --reader-soft: rgba(35, 33, 30, .08);
@@ -44,10 +44,6 @@
   --theme-shadow: rgba(0, 0, 0, .28);
   --theme-accent: #2d6e5e;
   --reader-bg: #111412;
-  --reader-bg-gradient:
-    radial-gradient(circle at 16% 8%, rgba(169, 129, 49, .030), transparent 34%),
-    radial-gradient(circle at 85% 15%, rgba(50, 122, 103, .030), transparent 32%),
-    linear-gradient(160deg, #151815 0%, #111412 58%, #171915 100%);
   --reader-surface: #1e2320;
   --reader-surface-raised: rgba(30, 35, 32, .98);
   --reader-soft: rgba(255, 255, 255, .08);
@@ -71,14 +67,11 @@
 }
 
 [data-theme='dark'] .bg-fluent {
-  background:
-    radial-gradient(circle at 16% 8%, rgba(169, 129, 49, .12), transparent 34%),
-    radial-gradient(circle at 85% 15%, rgba(50, 122, 103, .12), transparent 32%),
-    linear-gradient(160deg, #151815 0%, #111412 58%, #171915 100%);
+  background: var(--brand-bg-dark);
 }
 
 [data-theme='dark'] .bg-reader {
-  background: var(--reader-bg-gradient);
+  background: #090b0a;
 }
 
 [data-theme='dark'] .app-header-title,
@@ -472,14 +465,22 @@ body,
   color: var(--theme-text);
 }
 
-.app-shell {
+.app-shell,
+.bg-fluent {
+  background: var(--brand-bg-light);
+  color: var(--theme-text);
+}
+
+[data-theme='dark'] .app-shell,
+[data-theme='dark'] .bg-fluent {
+  background: var(--brand-bg-dark) !important;
   color: var(--theme-text);
 }
 
 .bg-reader,
 .reader-shell,
 .reader-page {
-  background: var(--reader-bg-gradient) !important;
+  background: var(--reader-bg) !important;
   color: var(--reader-text) !important;
 }
 
@@ -636,6 +637,13 @@ body,
   background: rgba(59, 130, 246, .24);
 }
 
+.screen-shell,
+.tabs-screen,
+.settings-screen,
+.search-screen,
+.index-replica-shell,
+.tafsir-screen,
+.surah-info-screen,
 [data-theme='dark'] .screen-shell,
 [data-theme='dark'] .tabs-screen,
 [data-theme='dark'] .settings-screen,
@@ -643,7 +651,7 @@ body,
 [data-theme='dark'] .index-replica-shell,
 [data-theme='dark'] .tafsir-screen,
 [data-theme='dark'] .surah-info-screen {
-  background: var(--theme-bg) !important;
+  background: transparent !important;
   color: var(--theme-text) !important;
 }
 
@@ -738,4 +746,91 @@ body,
   border-color: var(--theme-border) !important;
   background: var(--theme-soft) !important;
   color: var(--theme-text) !important;
+}
+
+
+/* Home palette applied to Index without adding a full-screen card. */
+.index-replica-shell {
+  background: transparent !important;
+  color: var(--theme-text) !important;
+}
+
+.index-replica-header h1,
+.index-card-title,
+.index-section-title,
+.index-surah-text strong,
+.index-number-badge,
+.index-segment button,
+.index-quarter-btn,
+.index-ayah-grid button {
+  color: var(--theme-text) !important;
+}
+
+.index-surah-text small,
+.index-quarter-btn span,
+.index-surah-info-preview p {
+  color: var(--theme-muted) !important;
+}
+
+.index-close-pill,
+.index-segment,
+.index-card,
+.index-collapse-panel,
+.index-quarter-btn,
+.index-surah-info-preview,
+.index-ayah-grid button {
+  border: 1px solid var(--theme-border) !important;
+  box-shadow: 0 9px 28px var(--theme-shadow) !important;
+}
+
+.index-card,
+.index-collapse-panel,
+.index-surah-info-preview {
+  background: var(--theme-surface) !important;
+  backdrop-filter: blur(16px);
+}
+
+.index-close-pill,
+.index-segment,
+.index-quarter-btn,
+.index-ayah-grid button {
+  background: var(--theme-soft) !important;
+}
+
+.index-segment button.is-active {
+  background: linear-gradient(135deg, var(--brand-green) 0%, var(--brand-green-dark) 100%) !important;
+  color: #fff !important;
+  box-shadow: 0 8px 18px rgba(30, 68, 56, .18) !important;
+}
+
+.index-number-badge {
+  border-color: rgba(184, 136, 42, .42) !important;
+}
+
+.index-surah-info-preview button,
+.index-surah-read-more {
+  color: var(--brand-gold) !important;
+}
+
+[data-theme='dark'] .index-close-pill,
+[data-theme='dark'] .index-segment,
+[data-theme='dark'] .index-card,
+[data-theme='dark'] .index-collapse-panel,
+[data-theme='dark'] .index-quarter-btn,
+[data-theme='dark'] .index-surah-info-preview,
+[data-theme='dark'] .index-ayah-grid button {
+  border-color: var(--theme-border) !important;
+}
+
+[data-theme='dark'] .index-card,
+[data-theme='dark'] .index-collapse-panel,
+[data-theme='dark'] .index-surah-info-preview {
+  background: var(--theme-surface) !important;
+}
+
+[data-theme='dark'] .index-close-pill,
+[data-theme='dark'] .index-segment,
+[data-theme='dark'] .index-quarter-btn,
+[data-theme='dark'] .index-ayah-grid button {
+  background: var(--theme-soft) !important;
 }
