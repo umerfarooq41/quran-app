@@ -1,4 +1,4 @@
-/* App theme layer. Mushaf page, Quran lines, Harf rendering, and 16-line layout are excluded. */
+/* App theme layer. Mushaf typography metrics stay untouched; only colors/backgrounds are themed. */
 :root {
   --theme-bg: #f7f2e8;
   --theme-surface: rgba(255, 255, 255, .78);
@@ -9,6 +9,21 @@
   --theme-muted: #747b84;
   --theme-subtle: #9aa0a8;
   --theme-shadow: rgba(31, 41, 55, .06);
+  --theme-accent: #2d6e5e;
+  --reader-bg: #fffaf1;
+  --reader-surface: #fffaf1;
+  --reader-surface-raised: rgba(255, 250, 241, .98);
+  --reader-soft: rgba(35, 33, 30, .08);
+  --reader-border: rgba(35, 33, 30, .08);
+  --reader-text: #13100a;
+  --reader-muted: rgba(35, 35, 35, .55);
+  --reader-primary: #050505;
+  --reader-primary-text: #ffffff;
+  --reader-control-bg: rgba(35, 33, 30, .08);
+  --reader-control-text: #23211e;
+  --mushaf-text: #171717;
+  --mushaf-banner-bg: var(--reader-bg);
+  --mushaf-banner-text: var(--reader-text);
 }
 
 :root[data-theme='dark'] {
@@ -22,6 +37,21 @@
   --theme-muted: #abb2ac;
   --theme-subtle: #858d87;
   --theme-shadow: rgba(0, 0, 0, .28);
+  --theme-accent: #2d6e5e;
+  --reader-bg: #111412;
+  --reader-surface: #1e2320;
+  --reader-surface-raised: rgba(30, 35, 32, .98);
+  --reader-soft: rgba(255, 255, 255, .08);
+  --reader-border: rgba(255, 255, 255, .10);
+  --reader-text: #f1f3ef;
+  --reader-muted: #abb2ac;
+  --reader-primary: #f0f2ef;
+  --reader-primary-text: #161916;
+  --reader-control-bg: #292f2b;
+  --reader-control-text: #f1f3ef;
+  --mushaf-text: #f5f4ed;
+  --mushaf-banner-bg: var(--reader-bg);
+  --mushaf-banner-text: var(--reader-text);
 }
 
 [data-theme='dark'] body,
@@ -424,4 +454,279 @@
 
 [data-theme='dark'] .reader-wave-marker {
   background: #050505;
+}
+
+/* Final color authority for screens, reader chrome, and Mushaf colors. */
+body,
+#root {
+  background: var(--theme-bg);
+  color: var(--theme-text);
+}
+
+.app-shell {
+  color: var(--theme-text);
+}
+
+.bg-reader,
+.reader-shell,
+.reader-page {
+  background: var(--reader-bg) !important;
+  color: var(--reader-text) !important;
+}
+
+.reader-shell {
+  box-shadow: none !important;
+}
+
+.reader-passive-header,
+.reader-footer-meta {
+  color: var(--reader-muted) !important;
+}
+
+.reader-topbar {
+  background: linear-gradient(180deg, var(--reader-bg) 0%, var(--reader-bg) 72%, transparent 100%) !important;
+}
+
+.reader-back-pill,
+.reader-top-actions,
+.reader-listen-pill,
+.reader-bottom-sheet {
+  border-color: var(--reader-border) !important;
+  background: var(--reader-surface-raised) !important;
+  color: var(--reader-text) !important;
+}
+
+.reader-top-icon,
+.reader-bottom-actions,
+.reader-bottom-actions span,
+.reader-bottom-meta {
+  color: inherit !important;
+}
+
+.reader-bottom-meta {
+  color: var(--reader-muted) !important;
+}
+
+.reader-listen-play,
+.reader-transport-row .transport-main {
+  background: var(--reader-primary) !important;
+  color: var(--reader-primary-text) !important;
+}
+
+.reader-wave-bars span,
+.reader-wave-marker {
+  background: var(--reader-primary) !important;
+}
+
+.reader-audio-panel,
+.share-sheet {
+  border-color: var(--reader-border) !important;
+  background: var(--reader-surface-raised) !important;
+  color: var(--reader-text) !important;
+}
+
+.reader-audio-head button,
+.reader-reciter-row,
+.reader-transport-row button,
+.share-range-card,
+.share-sheet-header button,
+.share-range-selectors select {
+  border-color: var(--reader-border) !important;
+  background: var(--reader-control-bg) !important;
+  color: var(--reader-control-text) !important;
+}
+
+.reader-reciter-row select,
+.reader-audio-head,
+.reader-audio-status,
+.reader-audio-times,
+.share-sheet-header h2,
+.share-range-card h3,
+.share-background-picker h3 {
+  color: var(--reader-text) !important;
+}
+
+.reader-audio-status,
+.reader-audio-times,
+.share-sheet-header p,
+.share-range-selectors span,
+.share-range-card > p,
+.share-sheet-status {
+  color: var(--reader-muted) !important;
+}
+
+.surah-banner {
+  background: var(--mushaf-banner-bg) !important;
+  color: var(--mushaf-banner-text) !important;
+}
+
+.quran-line {
+  color: var(--mushaf-text) !important;
+}
+
+.quran-line-text,
+.quran-word,
+.quran-ayah-marker {
+  color: inherit;
+}
+
+[data-theme='dark'] .quran-line-marked {
+  background: linear-gradient(90deg, rgba(139, 199, 180, .08), rgba(139, 199, 180, .18), rgba(139, 199, 180, .08));
+}
+
+[data-theme='dark'] .quran-line-jumped {
+  background: linear-gradient(90deg, rgba(56, 189, 248, .10), rgba(56, 189, 248, .24), rgba(56, 189, 248, .10));
+  box-shadow: inset 0 0 0 1px rgba(56, 189, 248, .22);
+}
+
+[data-theme='dark'] .reader-ayah-highlight-saved {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .10);
+}
+
+[data-theme='dark'] .reader-page .reader-ayah-highlight-amber { background: rgba(250, 204, 21, .22); }
+[data-theme='dark'] .reader-page .reader-ayah-highlight-emerald { background: rgba(134, 239, 172, .20); }
+[data-theme='dark'] .reader-page .reader-ayah-highlight-sky { background: rgba(147, 197, 253, .20); }
+[data-theme='dark'] .reader-page .reader-ayah-highlight-violet { background: rgba(196, 181, 253, .20); }
+[data-theme='dark'] .reader-page .reader-ayah-highlight-rose { background: rgba(253, 164, 175, .20); }
+
+[data-theme='dark'] .reader-page .reader-word-highlight-amber { background: rgba(250, 204, 21, .42); }
+[data-theme='dark'] .reader-page .reader-word-highlight-emerald { background: rgba(134, 239, 172, .38); }
+[data-theme='dark'] .reader-page .reader-word-highlight-sky { background: rgba(147, 197, 253, .38); }
+[data-theme='dark'] .reader-page .reader-word-highlight-violet { background: rgba(196, 181, 253, .38); }
+[data-theme='dark'] .reader-page .reader-word-highlight-rose { background: rgba(253, 164, 175, .38); }
+
+[data-theme='dark'] ::highlight(reader-highlight-amber) { background: rgba(250, 204, 21, .24); }
+[data-theme='dark'] ::highlight(reader-highlight-emerald) { background: rgba(134, 239, 172, .22); }
+[data-theme='dark'] ::highlight(reader-highlight-sky) { background: rgba(147, 197, 253, .22); }
+[data-theme='dark'] ::highlight(reader-highlight-violet) { background: rgba(196, 181, 253, .22); }
+[data-theme='dark'] ::highlight(reader-highlight-rose) { background: rgba(253, 164, 175, .22); }
+
+[data-theme='dark'] ::highlight(reader-word-highlight-amber) { background: rgba(250, 204, 21, .46); }
+[data-theme='dark'] ::highlight(reader-word-highlight-emerald) { background: rgba(134, 239, 172, .42); }
+[data-theme='dark'] ::highlight(reader-word-highlight-sky) { background: rgba(147, 197, 253, .42); }
+[data-theme='dark'] ::highlight(reader-word-highlight-violet) { background: rgba(196, 181, 253, .42); }
+[data-theme='dark'] ::highlight(reader-word-highlight-rose) { background: rgba(253, 164, 175, .42); }
+
+[data-theme='dark'] ::highlight(reader-bookmark-reading) {
+  color: #bbf7d0;
+  background: rgba(34, 197, 94, .24);
+}
+
+[data-theme='dark'] ::highlight(reader-bookmark-memorize) {
+  color: #fde68a;
+  background: rgba(245, 158, 11, .24);
+}
+
+[data-theme='dark'] ::highlight(reader-bookmark-tadabbur) {
+  color: #fecdd3;
+  background: rgba(244, 63, 94, .24);
+}
+
+[data-theme='dark'] ::highlight(reader-bookmark-notes) {
+  color: #bfdbfe;
+  background: rgba(59, 130, 246, .24);
+}
+
+[data-theme='dark'] .screen-shell,
+[data-theme='dark'] .tabs-screen,
+[data-theme='dark'] .settings-screen,
+[data-theme='dark'] .search-screen,
+[data-theme='dark'] .index-replica-shell,
+[data-theme='dark'] .tafsir-screen,
+[data-theme='dark'] .surah-info-screen {
+  background: var(--theme-bg) !important;
+  color: var(--theme-text) !important;
+}
+
+[data-theme='dark'] .home-action-chip,
+[data-theme='dark'] .search-form,
+[data-theme='dark'] .search-recent-list button,
+[data-theme='dark'] .search-results-heading span,
+[data-theme='dark'] .search-result-card,
+[data-theme='dark'] .search-empty,
+[data-theme='dark'] .tabs-back-pill,
+[data-theme='dark'] .library-tabs,
+[data-theme='dark'] .tabs-filter-row button,
+[data-theme='dark'] .tabs-status,
+[data-theme='dark'] .tab-card-surface,
+[data-theme='dark'] .tab-menu,
+[data-theme='dark'] .tab-inline-editor,
+[data-theme='dark'] .settings-card,
+[data-theme='dark'] .settings-theme-picker,
+[data-theme='dark'] .settings-select-row,
+[data-theme='dark'] .settings-toggle-row,
+[data-theme='dark'] .settings-dialog,
+[data-theme='dark'] .tafsir-card,
+[data-theme='dark'] .surah-info-content {
+  border-color: var(--theme-border) !important;
+  background: var(--theme-surface-solid) !important;
+  color: var(--theme-text) !important;
+  box-shadow: 0 9px 28px var(--theme-shadow) !important;
+}
+
+[data-theme='dark'] .library-tabs button,
+[data-theme='dark'] .search-form input,
+[data-theme='dark'] .search-recent h2,
+[data-theme='dark'] .search-results-heading h2,
+[data-theme='dark'] .search-result-reference strong,
+[data-theme='dark'] .tabs-header h1,
+[data-theme='dark'] .tab-more-button,
+[data-theme='dark'] .tab-type,
+[data-theme='dark'] .tab-surah,
+[data-theme='dark'] .tab-note,
+[data-theme='dark'] .tab-arabic,
+[data-theme='dark'] .settings-section-heading span,
+[data-theme='dark'] .settings-rendering-lock strong,
+[data-theme='dark'] .settings-row-copy strong,
+[data-theme='dark'] .settings-dialog h2,
+[data-theme='dark'] .tafsir-card-head h2,
+[data-theme='dark'] .tafsir-section h3,
+[data-theme='dark'] .tafsir-arabic,
+[data-theme='dark'] .surah-info-topbar,
+[data-theme='dark'] .surah-info-topbar button,
+[data-theme='dark'] .surah-info-topbar h1,
+[data-theme='dark'] .surah-info-title-row h2,
+[data-theme='dark'] .surah-info-html,
+[data-theme='dark'] .surah-info-html h2,
+[data-theme='dark'] .surah-info-html h3 {
+  color: var(--theme-text) !important;
+}
+
+[data-theme='dark'] .search-result-preview,
+[data-theme='dark'] .search-result-reference small,
+[data-theme='dark'] .search-result-meta,
+[data-theme='dark'] .search-empty,
+[data-theme='dark'] .search-recent-list button,
+[data-theme='dark'] .tabs-filter-row button,
+[data-theme='dark'] .tabs-status,
+[data-theme='dark'] .tab-saved-date,
+[data-theme='dark'] .settings-section-heading small,
+[data-theme='dark'] .settings-row-copy small,
+[data-theme='dark'] .settings-rendering-lock p,
+[data-theme='dark'] .settings-dialog p,
+[data-theme='dark'] .tafsir-card-head p,
+[data-theme='dark'] .tafsir-section p,
+[data-theme='dark'] .tafsir-section div,
+[data-theme='dark'] .surah-info-meta,
+[data-theme='dark'] .surah-info-empty {
+  color: var(--theme-muted) !important;
+}
+
+[data-theme='dark'] .library-tabs button.is-active,
+[data-theme='dark'] .tabs-filter-row button.active,
+[data-theme='dark'] .settings-theme-picker button.is-active {
+  background: var(--theme-accent) !important;
+  color: #ffffff !important;
+}
+
+[data-theme='dark'] .settings-select-row select,
+[data-theme='dark'] .tab-menu button,
+[data-theme='dark'] .tab-inline-editor textarea,
+[data-theme='dark'] .tab-inline-editor .secondary,
+[data-theme='dark'] .tab-editor-cancel,
+[data-theme='dark'] .settings-dialog-close,
+[data-theme='dark'] .settings-dialog .secondary {
+  border-color: var(--theme-border) !important;
+  background: var(--theme-soft) !important;
+  color: var(--theme-text) !important;
 }

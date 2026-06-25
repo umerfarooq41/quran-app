@@ -13,8 +13,8 @@ import './styles/index.css';
 import './styles/search.css';
 import './styles/mobile-first.css';
 import './styles/settings.css';
-import './styles/theme.css';
 import './styles/ui-polish.css';
+import './styles/theme.css';
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
