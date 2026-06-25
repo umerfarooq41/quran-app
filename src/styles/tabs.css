@@ -1,4 +1,4 @@
-/* Compact saved-bookmark screen. */
+/* Compact Library screen. */
 .tabs-screen {
   width: min(100%, 480px);
   min-height: calc(100dvh - 2rem);
@@ -93,6 +93,34 @@
   color: #fff;
 }
 
+.library-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  height: 40px;
+  margin: 0 0 12px;
+  border-radius: 18px;
+  background: rgba(15, 23, 42, .05);
+  padding: 3px;
+}
+
+.library-tabs button {
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 16px;
+  color: #334155;
+  font-size: .86rem;
+  font-weight: 650;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.library-tabs button.is-active {
+  background: #245269;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(36, 82, 105, .18);
+}
+
 .tabs-status {
   margin: 2px 0 10px;
   border-radius: 14px;
@@ -114,7 +142,7 @@
   width: 100%;
   max-width: 100%;
   overflow: hidden;
-  border-radius: 21px;
+  border-radius: 18px;
   background: #c83a35;
   padding: 0 !important;
   box-shadow: 0 9px 26px rgba(31, 24, 15, .07);
@@ -142,9 +170,9 @@
   z-index: 1;
   width: 100%;
   min-width: 0;
-  border-radius: 21px;
+  border-radius: 18px;
   background: #fff;
-  padding: 15px;
+  padding: 12px;
   transition: transform .2s ease;
   touch-action: pan-y;
 }
@@ -173,7 +201,7 @@
   display: inline-flex;
   min-width: 0;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
 }
 
 .tab-bookmark {
@@ -190,9 +218,15 @@
 .tab-bookmark-violet { color: #7955b7; }
 
 .tab-type {
+  display: inline-flex;
   min-width: 0;
+  max-width: 136px;
+  align-items: center;
   overflow: hidden;
-  color: #46413b;
+  border-radius: 999px;
+  background: rgba(36, 82, 105, .08);
+  padding: 4px 8px;
+  color: #245269;
   font-size: .78rem;
   font-weight: 630;
   line-height: 1.25;
@@ -263,7 +297,7 @@
 
 .tab-menu {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(94px, 1fr));
   gap: 6px;
   width: 100%;
   margin-top: 12px;
@@ -313,6 +347,7 @@
 .tab-inline-editor textarea {
   width: 100%;
   max-width: 100%;
+  max-height: 120px;
   resize: vertical;
   border: 1px solid rgba(54, 48, 41, .12);
   border-radius: 12px;
@@ -383,6 +418,68 @@
   text-overflow: ellipsis;
 }
 
+.library-empty-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.library-highlight-card {
+  background: transparent;
+}
+
+.library-highlight-card .tab-card-surface {
+  overflow: hidden;
+  padding-left: 16px;
+}
+
+.library-highlight-strip {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  z-index: 3;
+  width: 4px;
+  border-radius: 18px 0 0 18px;
+}
+
+.library-highlight-dot {
+  display: grid;
+  width: 25px;
+  height: 25px;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  color: #1f2933;
+}
+
+.library-highlight-amber { background: #FACC15; }
+.library-highlight-emerald { background: #86EFAC; }
+.library-highlight-sky { background: #93C5FD; }
+.library-highlight-violet { background: #C4B5FD; }
+.library-highlight-rose { background: #FDA4AF; }
+
+[data-theme='dark'] .library-tabs {
+  background: rgba(255, 255, 255, .08);
+}
+
+[data-theme='dark'] .library-tabs button {
+  color: #D4D4D4;
+}
+
+[data-theme='dark'] .library-tabs button.is-active {
+  background: #245269;
+  color: #fff;
+  box-shadow: none;
+}
+
+[data-theme='dark'] .tabs-screen .tab-type {
+  background: rgba(255, 255, 255, .08);
+  color: #F5F5F5;
+}
+
+[data-theme='dark'] .library-highlight-dot {
+  color: #171717;
+}
+
 /* Keep the premium bookmark density above generic mobile overrides. */
 .tabs-screen .tabs-filter-row {
   gap: 6px;
@@ -400,7 +497,7 @@
 }
 
 .tabs-screen .tab-card-surface {
-  padding: 15px;
+  padding: 12px;
 }
 
 .tabs-screen .tab-card-top {
@@ -424,6 +521,16 @@
   margin-top: 12px;
   font-size: clamp(1.32rem, 5.5vw, 1.86rem);
   line-height: 1.65;
+}
+
+.tabs-screen .tab-menu {
+  position: static;
+  min-width: 0;
+  border-radius: 0;
+}
+
+.tabs-screen .library-highlight-card .tab-card-surface {
+  padding-left: 16px;
 }
 
 @media (max-width: 350px) {

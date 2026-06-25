@@ -16,7 +16,7 @@ export function ReaderTopControls({ visible, onBack, onBookmarks, onIndex, onSet
         <BackButton className="reader-back-pill" onClick={onBack} />
 
         <div className="reader-top-actions">
-          <button className="reader-top-icon" onClick={onBookmarks} aria-label="Open bookmarks">
+          <button className="reader-top-icon" onClick={onBookmarks} aria-label="Open library">
             <Bookmark size={30} strokeWidth={1.7} />
           </button>
 

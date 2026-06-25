@@ -27,7 +27,7 @@ export default function HomeScreen() {
   const actions = [
     ['Index', Library, openIndex],
     ['Search', Search, openSearch],
-    ['Bookmarks', Bookmark, openBookmarks],
+    ['Library', Bookmark, openBookmarks],
     ['Settings', SlidersHorizontal, openSettings],
   ];
 
