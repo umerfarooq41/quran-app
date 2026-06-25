@@ -1,2246 +1,710 @@
-/* Reader chrome and overlays. Protected Quran page rendering lives in mushaf.css. */
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Check, ChevronDown, Pause, Play, Repeat, Search, SkipBack, SkipForward, X } from 'lucide-react';
+import { useShallow } from 'zustand/react/shallow';
+import { VIEWS } from '../../../app/routes';
+import { findPageForReference, getSurah, quranAyahs } from '../../../lib/quran';
+import { getAudioUrl, getDefaultReciterId, normalizeLocalReciters } from '../../../lib/localAudio';
+import { useAppStore } from '../../../store/useAppStore';
 
-.reader-passive-header {
-  pointer-events: none;
-  position: absolute;
-  inset-inline: 0;
-  top: 0;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: calc(env(safe-area-inset-top, 0px) + 58px);
-  padding: calc(env(safe-area-inset-top, 0px) + 18px) 20px 0;
-  color: var(--reader-meta, rgba(62, 57, 49, .58));
-  font-size: clamp(1.05rem, 3.75vw, 1.22rem);
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: -0.01em;
+const SPEEDS = [1, 1.25, 1.5, 2];
+const PRELOAD_THRESHOLD_SECONDS = 6;
+
+function formatTime(seconds = 0) {
+  const safe = Math.max(0, Math.floor(Number(seconds) || 0));
+  const minutes = Math.floor(safe / 60);
+  const secs = String(safe % 60).padStart(2, '0');
+  return `${minutes}:${secs}`;
 }
 
-.reader-meta-label {
-  display: inline-flex;
-  min-width: 3ch;
-  align-items: center;
-  line-height: 1;
+function getReciterDisplayName(reciter) {
+  return reciter?.displayName || reciter?.reciter_name || reciter?.name || 'Reciter';
 }
 
-.reader-meta-page,
-.reader-meta-progress {
-  flex: 0 0 auto;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
+function getReciterImageSrc(reciter) {
+  const name = getReciterDisplayName(reciter);
+  const ext = reciter?.id === 'mishari-rashid-al-afasy' ? 'jpeg' : 'png';
+  return `/reciters/${encodeURIComponent(name)}.${ext}`;
 }
 
-.reader-meta-page {
-  min-width: 3ch;
-  justify-content: flex-start;
-}
+export function ReaderAudioPanel() {
+  const {
+    view,
+    settings,
+    updateSettings,
+    audioTarget: ayah,
+    audioPosition: currentTime,
+    audioDuration: duration,
+    audioPlaying: playing,
+    audioRepeat: repeat,
+    audioPlayerVisible,
+    audioReciter,
+    audioPlaybackRate,
+    closeAudioPlayer,
+    setAudioTarget,
+    setAudioQueue,
+    setAudioProgress,
+    setAudioPlaying,
+    setAudioRepeat,
+  } = useAppStore(useShallow((state) => ({
+    view: state.view,
+    settings: state.settings,
+    updateSettings: state.updateSettings,
+    audioTarget: state.audioTarget,
+    audioPosition: state.audioPosition,
+    audioDuration: state.audioDuration,
+    audioPlaying: state.audioPlaying,
+    audioRepeat: state.audioRepeat,
+    audioPlayerVisible: state.audioPlayerVisible,
+    audioReciter: state.audioReciter,
+    audioPlaybackRate: state.audioPlaybackRate,
+    closeAudioPlayer: state.closeAudioPlayer,
+    setAudioTarget: state.setAudioTarget,
+    setAudioQueue: state.setAudioQueue,
+    setAudioProgress: state.setAudioProgress,
+    setAudioPlaying: state.setAudioPlaying,
+    setAudioRepeat: state.setAudioRepeat,
+  })));
+  const currentAudioRef = useRef(null);
+  const currentTargetRef = useRef(null);
+  const currentReciterRef = useRef('');
+  const preloadRef = useRef(null);
+  const audioHandlersRef = useRef(new WeakMap());
+  const loadTokenRef = useRef(0);
+  const loadingRef = useRef(null);
+  const preloadTokenRef = useRef(0);
+  const playIntentRef = useRef(playing);
+  const repeatRef = useRef(repeat);
+  const playbackRateRef = useRef(audioPlaybackRate || settings.playbackRate || 1);
+  const unmountedRef = useRef(false);
+  const rafRef = useRef(0);
+  const [visualTime, setVisualTime] = useState(currentTime || 0);
 
-.reader-meta-progress {
-  min-width: 5.5ch;
-  justify-content: flex-end;
-}
-
-.reader-topbar {
-  position: absolute;
-  inset-inline: 0;
-  top: 0;
-  z-index: 30;
-  padding: calc(env(safe-area-inset-top, 0px) + 24px) 22px 48px;
-  background: linear-gradient(180deg, rgba(255, 250, 241, .98), rgba(255, 250, 241, .86), rgba(255, 250, 241, 0));
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(-10px);
-  transition: opacity .2s ease, transform .2s ease;
-}
-
-.reader-topbar-visible {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
-}
-
-.reader-control-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.reader-back-pill {
-  display: grid;
-  height: 66px;
-  min-width: 104px;
-  place-items: center;
-  border-radius: 30px;
-  background: rgba(223, 224, 226, .82);
-  color: #171717;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.75);
-}
-
-.reader-top-actions {
-  display: flex;
-  align-items: center;
-  gap: 32px;
-  color: rgba(22, 24, 27, .72);
-}
-
-.reader-top-icon {
-  display: grid;
-  height: 48px;
-  width: 48px;
-  place-items: center;
-  border-radius: 999px;
-}
-
-.reader-footer-meta {
-  pointer-events: none;
-  position: absolute;
-  inset-inline: 0;
-  bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-inline: 26px;
-  color: var(--reader-meta, rgba(62, 57, 49, .58));
-  font-size: clamp(1.05rem, 3.75vw, 1.22rem);
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: -0.01em;
-}
-
-.reader-bottom-controls {
-  position: fixed;
-  inset-inline: 0;
-  bottom: 0;
-  z-index: 40;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  pointer-events: none;
-}
-
-.reader-listen-pill {
-  pointer-events: auto;
-  position: relative;
-  z-index: 2;
-  display: inline-flex;
-  align-items: center;
-  gap: 18px;
-  min-height: 72px;
-  max-width: min(86vw, 390px);
-  margin-bottom: -18px;
-  border-radius: 36px;
-  background: rgba(255, 255, 255, .96);
-  color: #2d2b28;
-  padding: 8px 26px 8px 10px;
-  font-size: clamp(1rem, 4.2vw, 1.22rem);
-  font-weight: 500;
-  box-shadow: 0 18px 48px rgba(28, 23, 16, .12);
-}
-
-.reader-listen-play {
-  display: grid;
-  height: 56px;
-  width: 104px;
-  place-items: center;
-  border-radius: 999px;
-  background: #050505;
-  color: #fff;
-}
-
-.reader-bottom-sheet {
-  pointer-events: auto;
-  width: min(100%, 576px);
-  border-radius: 28px 28px 0 0;
-  background: rgba(255, 255, 255, .94);
-  padding: 28px 30px calc(env(safe-area-inset-bottom, 0px) + 22px);
-  box-shadow: 0 -18px 50px rgba(28, 23, 16, .08);
-}
-
-.reader-bottom-meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: rgba(62, 57, 49, .42);
-  font-size: clamp(1rem, 4vw, 1.18rem);
-  font-weight: 500;
-}
-
-.reader-bottom-meta span:last-child {
-  min-width: 5.5ch;
-  text-align: right;
-  white-space: nowrap;
-}
-
-.reader-wave-slider {
-  position: relative;
-  height: 78px;
-  margin: 8px 42px 0;
-  overflow: visible;
-  cursor: grab;
-  outline: none;
-  touch-action: none;
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-.reader-wave-slider.is-interacting {
-  cursor: grabbing;
-}
-
-.reader-wave-slider:focus-visible {
-  border-radius: 18px;
-  box-shadow: 0 0 0 3px rgba(35, 102, 84, .18);
-}
-
-.reader-wave-bars {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.reader-wave-bars span {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  display: block;
-  width: 1.5px;
-  min-width: 1.5px;
-  max-width: 1.5px;
-  transform: translate3d(-50%, -50%, 0);
-  backface-visibility: hidden;
-  border-radius: 999px;
-  background: #080808;
-  will-change: transform, height, opacity;
-}
-
-.reader-wave-marker {
-  position: absolute;
-  left: 50%;
-  top: -14px;
-  z-index: 2;
-
-  width: 22px;
-  height: 84px;
-
-  transform: translateX(-50%);
-  background: #050505;
-
-  border-radius: 18px 18px 8px 8px;
-
-  clip-path: polygon(
-    50% 0,
-    61% 4%,
-    71% 15%,
-    78% 30%,
-    78% 100%,
-    22% 100%,
-    22% 30%,
-    29% 15%,
-    39% 4%
+  const reciters = useMemo(() => normalizeLocalReciters(), []);
+  const selectedReciter = audioReciter || settings.reciter || getDefaultReciterId();
+  const selectedReciterMeta = useMemo(
+    () => reciters.find((reciter) => reciter.id === selectedReciter) || reciters[0],
+    [reciters, selectedReciter],
   );
+  const [status, setStatus] = useState('');
+  const [reciterPickerOpen, setReciterPickerOpen] = useState(false);
+  const [reciterSearch, setReciterSearch] = useState('');
 
-  box-shadow: none;
-}
+  const surah = ayah?.surahNumber ? getSurah(ayah.surahNumber) : null;
+  const reference = ayah?.surahNumber && ayah?.ayahNumber
+    ? `${surah?.name || 'Surah'} ${ayah.surahNumber}:${ayah.ayahNumber}`
+    : 'Audio player';
+  const displayedTime = playing && duration > 0 ? visualTime : currentTime;
+  const progressRatio = duration > 0 ? Math.min(1, Math.max(0, displayedTime / duration)) : 0;
+  const filteredReciters = useMemo(() => {
+    const query = reciterSearch.trim().toLowerCase();
+    if (!query) return reciters;
+    return reciters.filter((reciter) => getReciterDisplayName(reciter).toLowerCase().includes(query));
+  }, [reciterSearch, reciters]);
 
-.reader-bottom-actions {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  color: rgba(6, 6, 6, .95);
-  margin-top: -4px;
-}
+  repeatRef.current = repeat;
+  playbackRateRef.current = audioPlaybackRate || settings.playbackRate || 1;
 
-.reader-bottom-actions button:first-child {
-  justify-self: start;
-}
 
-.reader-bottom-actions button:last-child {
-  justify-self: end;
-}
+  useEffect(() => {
+    if (!playing) {
+      setVisualTime(currentTime || 0);
+      return undefined;
+    }
 
-.reader-bottom-actions span {
-  justify-self: start;
-  margin-left: -3px;
-  color: rgba(62, 57, 49, .42);
-  font-size: .95rem;
-}
+    let active = true;
+    const tick = () => {
+      const audio = currentAudioRef.current;
+      if (audio && active) {
+        setVisualTime(audio.currentTime || 0);
+      }
+      rafRef.current = requestAnimationFrame(tick);
+    };
 
-.wave-slider {
-  appearance: none;
-  height: 34px;
-  border-radius: 999px;
-  background:
-    radial-gradient(ellipse at center, rgba(15, 23, 42, .2), transparent 58%),
-    repeating-linear-gradient(90deg, rgba(14, 116, 144, .24) 0 3px, transparent 3px 10px),
-    linear-gradient(90deg, rgba(14, 165, 233, .12), rgba(34, 197, 94, .16));
-  outline: none;
-}
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      active = false;
+      cancelAnimationFrame(rafRef.current);
+    };
+  }, [playing, currentTime, ayah?.surahNumber, ayah?.ayahNumber]);
 
-.wave-slider::-webkit-slider-thumb {
-  appearance: none;
-  height: 32px;
-  width: 32px;
-  border-radius: 999px;
-  background: #0ea5e9;
-  border: 4px solid #fff;
-  box-shadow: 0 10px 24px rgba(14, 116, 144, .26);
-}
+  useEffect(() => {
+    unmountedRef.current = false;
 
-.prose h2 {
-  margin-top: 1.3em;
-  font-size: 1.25rem;
-}
+    return () => {
+      unmountedRef.current = true;
+      loadTokenRef.current += 1;
+      preloadTokenRef.current += 1;
+      loadingRef.current = null;
+      cancelAnimationFrame(rafRef.current);
+      disposeAudio(currentAudioRef.current);
+      disposePreload();
+      currentAudioRef.current = null;
+    };
+  }, []);
 
-.prose a {
-  color: #0369a1;
-}
+  useEffect(() => {
+    playIntentRef.current = playing;
+    const audio = currentAudioRef.current;
 
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
+    if (
+      playing &&
+      audio?.paused &&
+      !audio.ended &&
+      sameTarget(currentTargetRef.current, ayah)
+    ) {
+      startCurrentAudio();
+    } else if (!playing && audio && !audio.paused) {
+      audio.pause();
+    }
+  }, [playing]);
 
-@media (max-width: 420px) {
-  .reader-top-actions {
-    gap: 24px;
+  useEffect(() => {
+    if (!settings.reciter && selectedReciter) {
+      updateSettings({ reciter: selectedReciter });
+    }
+  }, [settings.reciter, selectedReciter, updateSettings]);
+
+  useEffect(() => {
+    if (!ayah?.surahNumber || !ayah?.ayahNumber) return;
+
+    const target = normalizeTarget(ayah);
+    const currentMatches = (
+      sameTarget(currentTargetRef.current, target) &&
+      currentReciterRef.current === selectedReciter &&
+      currentAudioRef.current
+    );
+    const loadingMatches = (
+      sameTarget(loadingRef.current?.target, target) &&
+      loadingRef.current?.reciterId === selectedReciter
+    );
+
+    if (!currentMatches && !loadingMatches) {
+      playIntentRef.current = playing;
+      loadTarget(target, selectedReciter, playing);
+    }
+  }, [ayah?.surahNumber, ayah?.ayahNumber, selectedReciter]);
+
+  useEffect(() => {
+    const rate = audioPlaybackRate || settings.playbackRate || 1;
+    playbackRateRef.current = rate;
+
+    if (currentAudioRef.current) {
+      currentAudioRef.current.playbackRate = rate;
+    }
+    if (preloadRef.current?.audio) {
+      preloadRef.current.audio.playbackRate = rate;
+    }
+  }, [audioPlaybackRate, settings.playbackRate]);
+
+  function bindCurrentAudio(audio) {
+    const handlers = {
+      loadedmetadata: () => {
+        if (audio !== currentAudioRef.current) return;
+        setAudioProgress(
+          audio.currentTime || 0,
+          Number.isFinite(audio.duration) ? audio.duration : 0,
+        );
+      },
+      durationchange: () => {
+        if (audio !== currentAudioRef.current) return;
+        setAudioProgress(
+          audio.currentTime || 0,
+          Number.isFinite(audio.duration) ? audio.duration : 0,
+        );
+      },
+      timeupdate: () => {
+        if (audio !== currentAudioRef.current) return;
+
+        setAudioProgress(
+          audio.currentTime || 0,
+          Number.isFinite(audio.duration) ? audio.duration : 0,
+        );
+        const remaining = (audio.duration || 0) - (audio.currentTime || 0);
+        if (remaining > 0 && remaining <= PRELOAD_THRESHOLD_SECONDS) {
+          ensureNextPreloaded(currentTargetRef.current, currentReciterRef.current);
+        }
+      },
+      play: () => {
+        if (audio !== currentAudioRef.current) return;
+        setAudioPlaying(true);
+        setStatus('');
+      },
+      pause: () => {
+        if (audio !== currentAudioRef.current || audio.ended) return;
+        setAudioPlaying(false);
+      },
+      ended: () => {
+        if (audio !== currentAudioRef.current) return;
+        handleEnded(audio);
+      },
+      error: () => {
+        if (audio !== currentAudioRef.current) return;
+        playIntentRef.current = false;
+        setAudioPlaying(false);
+        setStatus('Audio playback could not continue.');
+      },
+    };
+
+    Object.entries(handlers).forEach(([eventName, handler]) => {
+      audio.addEventListener(eventName, handler);
+    });
+    audioHandlersRef.current.set(audio, handlers);
   }
 
-  .reader-back-pill {
-    min-width: 102px;
-    height: 66px;
-  }
-}
-
-.ayah-action-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 55;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  background: rgba(19, 17, 15, .38);
-  padding: 14px;
-}
-
-.ayah-action-sheet {
-  width: min(100%, 548px);
-  border-radius: 30px;
-  background: rgba(255, 255, 255, .98);
-  box-shadow: 0 28px 76px rgba(9, 9, 9, .24);
-  padding: 18px 30px 28px;
-  color: #1d1c1a;
-}
-
-.sheet-grabber {
-  width: 54px;
-  height: 6px;
-  margin: 0 auto 18px;
-  border-radius: 999px;
-  background: rgba(22, 22, 22, .14);
-}
-
-.ayah-tab-row {
-  display: flex;
-  gap: 14px;
-  overflow-x: auto;
-  padding: 10px 0 20px;
-  scrollbar-width: none;
-}
-
-.ayah-tab-row::-webkit-scrollbar {
-  display: none;
-}
-
-.ayah-tab-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 54px;
-  white-space: nowrap;
-  border-radius: 999px;
-  padding: 0 22px;
-  font-size: clamp(1rem, 3.8vw, 1.2rem);
-  font-weight: 500;
-  transition: transform .18s ease, box-shadow .18s ease;
-}
-
-.ayah-tab-pill:active,
-.ayah-round-action:active {
-  transform: scale(.98);
-}
-
-.ayah-tab-emerald {
-  background: #e4fff1;
-  color: #2f7e69;
-}
-
-.ayah-tab-amber {
-  background: #fff5de;
-  color: #d49b27;
-}
-
-.ayah-tab-rose {
-  background: #ffe4ef;
-  color: #d4144e;
-}
-
-.ayah-tab-active {
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .04), 0 10px 24px rgba(0, 0, 0, .05);
-}
-
-.ayah-main-action-row {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(58px, 1fr));
-  gap: 18px;
-  align-items: center;
-  padding: 4px 0 28px;
-}
-
-.ayah-round-action {
-  display: grid;
-  height: clamp(64px, 14vw, 78px);
-  min-width: 0;
-  place-items: center;
-  border-radius: 999px;
-  background: #f3f3f3;
-  color: #111;
-}
-
-.ayah-round-action.active {
-  background: #050505;
-  color: #fff;
-}
-
-.ayah-round-action.gradient {
-  background: #f2f2f2;
-}
-
-.gradient-check {
-  display: grid;
-  height: 46px;
-  width: 72px;
-  place-items: center;
-  border-radius: 999px;
-  background:
-    radial-gradient(circle at 30% 35%, #ff6b52, transparent 34%),
-    radial-gradient(circle at 74% 66%, #2ec7c2, transparent 38%),
-    radial-gradient(circle at 42% 78%, #f7c542, transparent 34%),
-    #151515;
-  color: #fff;
-  font-size: 2rem;
-  line-height: 1;
-  transform: rotate(180deg);
-}
-
-.ayah-tafsir-block h3 {
-  margin: 0;
-  font-size: clamp(1.4rem, 5vw, 1.75rem);
-  font-weight: 500;
-}
-
-.ayah-tafsir-block p {
-  margin: 16px 0 8px;
-  color: rgba(30, 30, 30, .45);
-  font-size: clamp(1.02rem, 4.2vw, 1.18rem);
-  line-height: 1.55;
-}
-
-.ayah-tafsir-block button {
-  display: block;
-  margin: 0 auto;
-  color: #333;
-  text-decoration: underline;
-  font-size: clamp(1rem, 4vw, 1.12rem);
-}
-
-.ayah-ref-pill {
-  border-radius: 999px;
-  background: #f2f2f2;
-  padding: 6px 12px;
-  color: rgba(30, 30, 30, .48);
-  font-size: .9rem;
-}
-
-.ayah-action-status {
-  margin: 16px 0 0;
-  border-radius: 18px;
-  background: #f6f6f6;
-  padding: 10px 14px;
-  color: rgba(20, 20, 20, .62);
-  font-size: .95rem;
-}
-
-.ayah-tooltip-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 88;
-  background: transparent;
-}
-
-.ayah-action-tooltip-wrap {
-  --ayah-tooltip-bg: #FFFFFF;
-  --ayah-tooltip-border: rgba(15,23,42,0.10);
-  --ayah-tooltip-color: #1F2933;
-  --ayah-tooltip-shadow: 0 10px 28px rgba(15,23,42,0.18);
-
-  position: fixed;
-  z-index: 89;
-  width: 248px;
-  color: var(--ayah-tooltip-color);
-}
-
-.ayah-action-tooltip {
-  position: relative;
-  display: grid;
-  width: 248px;
-  height: 56px;
-  grid-template-columns: repeat(5, 44px);
-  align-items: center;
-  justify-content: space-between;
-  border: 1px solid var(--ayah-tooltip-border);
-  border-radius: 28px;
-  background: var(--ayah-tooltip-bg);
-  padding: 6px 8px;
-  color: var(--ayah-tooltip-color);
-  box-shadow: var(--ayah-tooltip-shadow);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-.ayah-action-tooltip::after {
-  content: '';
-  position: absolute;
-  left: var(--ayah-tooltip-arrow-x);
-  width: 11px;
-  height: 11px;
-  background: var(--ayah-tooltip-bg);
-  transform: translateX(-50%) rotate(45deg);
-  border: 1px solid var(--ayah-tooltip-border);
-}
-
-.ayah-action-tooltip[data-placement='bottom']::after {
-  top: calc(100% - 5px);
-  border-left: 0;
-  border-top: 0;
-}
-
-.ayah-action-tooltip[data-placement='top']::after {
-  bottom: calc(100% - 5px);
-  border-right: 0;
-  border-bottom: 0;
-}
-
-.ayah-action-tooltip button {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  width: 44px;
-  height: 44px;
-  place-items: center;
-  border-radius: 22px;
-  color: var(--ayah-tooltip-color);
-}
-
-.ayah-action-tooltip button.is-active {
-  background: transparent;
-  color: var(--ayah-tooltip-active-color, var(--ayah-tooltip-color));
-}
-
-.ayah-action-tooltip button:active {
-  transform: scale(.94);
-}
-
-[data-theme='dark'] .ayah-action-tooltip-wrap {
-  --ayah-tooltip-bg: #18181B;
-  --ayah-tooltip-border: rgba(255,255,255,0.10);
-  --ayah-tooltip-color: #F5F5F5;
-  --ayah-tooltip-shadow: 0 10px 30px rgba(0,0,0,0.54);
-}
-
-[data-theme='dark'] .ayah-action-tooltip button.is-active {
-  background: transparent;
-}
-
-.ayah-highlight-chip-row {
-  display: grid;
-  width: 248px;
-  min-height: 58px;
-  grid-template-columns: repeat(5, 44px);
-  justify-content: space-between;
-  margin-top: 8px;
-  border: 1px solid var(--ayah-tooltip-border);
-  border-radius: 22px;
-  background: var(--ayah-tooltip-bg);
-  padding: 7px 8px;
-  box-shadow: var(--ayah-tooltip-shadow);
-  animation: ayahTooltipPanelIn .2s ease-out both;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-.ayah-highlight-chip-row button {
-  display: grid;
-  width: 44px;
-  height: 44px;
-  place-items: center;
-  border-radius: 22px;
-}
-
-.ayah-highlight-chip-row span {
-  width: 30px;
-  height: 30px;
-  border-radius: 999px;
-  box-shadow: inset 0 0 0 1px rgba(15,23,42,0.10), 0 2px 7px rgba(15,23,42,0.12);
-}
-
-[data-theme='dark'] .ayah-highlight-chip-row span {
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.16), 0 2px 8px rgba(0,0,0,0.34);
-}
-
-.ayah-bookmark-picker {
-  display: grid;
-  width: 248px;
-  min-height: 42px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 5px;
-  margin-top: 7px;
-  border: 1px solid var(--ayah-tooltip-border);
-  border-radius: 20px;
-  background: var(--ayah-tooltip-bg);
-  padding: 5px;
-  color: var(--ayah-tooltip-color);
-  box-shadow: var(--ayah-tooltip-shadow);
-  animation: ayahTooltipPanelIn .16s ease-out both;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-.ayah-bookmark-picker button {
-  display: grid;
-  min-width: 0;
-  min-height: 32px;
-  place-items: center;
-  border: 1px solid transparent;
-  border-radius: 15px;
-  padding: 0 4px;
-  font-size: 12px;
-  font-weight: 650;
-  line-height: 1;
-  text-align: center;
-  white-space: nowrap;
-}
-
-.ayah-bookmark-picker-emerald {
-  background: #e4f7ef;
-  color: #2f7462;
-}
-
-.ayah-bookmark-picker-amber {
-  background: #fff2d5;
-  color: #a46f09;
-}
-
-.ayah-bookmark-picker-rose {
-  background: #fbe4eb;
-  color: #a9365b;
-}
-
-.ayah-bookmark-picker button:active {
-  filter: saturate(1.08) brightness(.97);
-}
-
-[data-theme='dark'] .ayah-bookmark-picker button:active {
-  filter: saturate(1.08) brightness(.93);
-}
-
-@keyframes ayahTooltipPanelIn {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes ayahTooltipPanelFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ayah-highlight-chip-row,
-  .ayah-bookmark-picker {
-    animation-name: ayahTooltipPanelFadeIn;
-    animation-duration: .08s;
-    transform: none;
-  }
-}
-
-.reader-copy-toast {
-  position: fixed;
-  left: 50%;
-  bottom: calc(env(safe-area-inset-bottom, 0px) + 92px);
-  z-index: 92;
-  transform: translateX(-50%);
-  border: 1px solid rgba(15,23,42,0.08);
-  border-radius: 999px;
-  background: rgba(255,255,255,0.96);
-  padding: 9px 16px;
-  color: #1F2933;
-  font-size: 13px;
-  font-weight: 650;
-  line-height: 1;
-  box-shadow: 0 8px 24px rgba(15,23,42,0.16);
-  pointer-events: none;
-}
-
-[data-theme='dark'] .reader-copy-toast {
-  border-color: rgba(255,255,255,0.10);
-  background: rgba(24,24,27,0.96);
-  color: #F5F5F5;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.50);
-}
-
-.reader-page .reader-ayah-highlight-amber { background: rgba(250, 204, 21, .24); }
-.reader-page .reader-ayah-highlight-emerald { background: rgba(134, 239, 172, .24); }
-.reader-page .reader-ayah-highlight-sky { background: rgba(147, 197, 253, .24); }
-.reader-page .reader-ayah-highlight-violet { background: rgba(196, 181, 253, .24); }
-.reader-page .reader-ayah-highlight-rose { background: rgba(253, 164, 175, .24); }
-
-.reader-page .reader-word-highlight-amber { background: rgba(250, 204, 21, .48); }
-.reader-page .reader-word-highlight-emerald { background: rgba(134, 239, 172, .48); }
-.reader-page .reader-word-highlight-sky { background: rgba(147, 197, 253, .48); }
-.reader-page .reader-word-highlight-violet { background: rgba(196, 181, 253, .48); }
-.reader-page .reader-word-highlight-rose { background: rgba(253, 164, 175, .48); }
-
-.share-preview-panel {
-  margin-top: 18px;
-  max-height: 46dvh;
-  overflow: auto;
-  border-radius: 24px;
-  background: #f7f7f7;
-  padding: 16px;
-}
-
-.share-preview-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: rgba(20, 20, 20, .58);
-  font-size: .98rem;
-}
-
-.share-color-dots {
-  display: flex;
-  gap: 20px;
-  overflow: hidden;
-  padding: 18px 8px;
-}
-
-.share-color-dots span {
-  flex: 0 0 auto;
-  width: 40px;
-  height: 40px;
-  border-radius: 999px;
-}
-
-.share-preview-panel img {
-  display: block;
-  width: min(100%, 380px);
-  margin: 0 auto;
-  border-radius: 18px;
-}
-
-.ayah-highlight-panel {
-  margin: -8px 0 22px;
-  border-radius: 24px;
-  background: #f7f7f7;
-  padding: 12px;
-}
-
-.ayah-highlight-toggle {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  border-radius: 18px;
-  padding: 10px 12px;
-  color: rgba(20, 20, 20, .72);
-  font-weight: 500;
-}
-
-.highlight-dot,
-.highlight-color-button {
-  display: grid;
-  width: 34px;
-  height: 34px;
-  place-items: center;
-  border-radius: 999px;
-  color: #fff;
-  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .8), 0 8px 18px rgba(0, 0, 0, .08);
-}
-
-.highlight-color-row {
-  display: flex;
-  gap: 14px;
-  padding: 10px 8px 4px;
-}
-
-.highlight-amber { background: #f3b83e; }
-.highlight-emerald { background: #227d68; }
-.highlight-rose { background: #d4144e; }
-.highlight-sky { background: #0284c7; }
-.highlight-violet { background: #7c3aed; }
-
-.reader-passive-header {
-  height: calc(env(safe-area-inset-top, 0px) + 62px);
-  padding-top: calc(env(safe-area-inset-top, 0px) + 22px);
-  padding-inline: 38px;
-  color: #1d1b18;
-  font-size: clamp(1rem, 3.6vw, 1.18rem);
-  z-index: 12;
-}
-
-.reader-footer-meta { bottom: 18px; }
-
-.reader-bottom-sheet { border-radius: 28px 28px 0 0; }
-
-@media (max-width: 420px) {
-  .home-actions-row { gap: 7px; }
-  .home-action-chip { padding: 14px 4px; font-size: .68rem; border-radius: 19px; }
-}
-
-
-html,
-body,
-#root {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden !important;
-}
-
-body {
-  background: #ffffff;
-}
-
-.bg-reader {
-  background: #ffffff;
-}
-
-.reader-passive-header {
-  height: calc(env(safe-area-inset-top, 0px) + 82px) !important;
-  padding-top: calc(env(safe-area-inset-top, 0px) + 30px) !important;
-  padding-inline: clamp(28px, 7vw, 46px) !important;
-  color: rgba(35, 35, 35, .68) !important;
-  font-size: clamp(1.12rem, 4.3vw, 1.35rem) !important;
-  font-weight: 600 !important;
-}
-
-.reader-footer-meta {
-  bottom: 22px !important;
-  padding-inline: clamp(32px, 8vw, 52px) !important;
-  color: rgba(35, 35, 35, .52) !important;
-  font-size: clamp(1.05rem, 4vw, 1.25rem) !important;
-}
-
-/* Step 5 correction: reference-small muted reader header/footer only. */
-.reader-passive-header {
-  height: calc(env(safe-area-inset-top, 0px) + 72px) !important;
-  padding-top: calc(env(safe-area-inset-top, 0px) + 28px) !important;
-  padding-inline: clamp(22px, 6vw, 36px) !important;
-  color: rgba(35, 35, 35, .50) !important;
-  font-size: clamp(.86rem, 3.05vw, 1rem) !important;
-  font-weight: 500 !important;
-  letter-spacing: -.025em !important;
-}
-
-.reader-meta-label {
-  font-weight: inherit !important;
-}
-
-.reader-footer-meta {
-  bottom: calc(env(safe-area-inset-bottom, 0px) + 16px) !important;
-  padding-inline: clamp(26px, 7vw, 42px) !important;
-  color: rgba(35, 35, 35, .45) !important;
-  font-size: clamp(.92rem, 3.4vw, 1.08rem) !important;
-  font-weight: 500 !important;
-  letter-spacing: -.025em !important;
-}
-
-/* Reader overlay interaction patch: UI only. Do not alter Mushaf text metrics here. */
-.ayah-action-sheet-compact {
-  max-height: min(42dvh, 390px);
-  overflow: hidden;
-  border-radius: 28px 28px 0 0;
-  padding: 10px 18px calc(env(safe-area-inset-bottom, 0px) + 16px);
-}
-
-.ayah-main-action-row-compact {
-  grid-template-columns: repeat(5, minmax(44px, 1fr));
-  gap: 10px;
-  padding: 4px 0 14px;
-}
-
-.ayah-action-sheet-compact .ayah-round-action {
-  height: 48px;
-  width: 100%;
-  min-width: 0;
-  border-radius: 999px;
-  background: #f1f1f1;
-}
-
-.brand-dot {
-  display: block;
-  width: 28px;
-  height: 28px;
-  border-radius: 999px;
-  background:
-    radial-gradient(circle at 32% 28%, #67e8f9, transparent 38%),
-    radial-gradient(circle at 70% 70%, #2563eb, transparent 42%),
-    radial-gradient(circle at 36% 76%, #facc15, transparent 36%),
-    #101827;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.35);
-}
-
-.ayah-action-sheet-compact .ayah-tafsir-block h3 {
-  font-size: 1.08rem;
-  font-weight: 700;
-}
-
-.ayah-action-sheet-compact .ayah-tafsir-block p {
-  margin: 8px 0 6px;
-  color: rgba(26, 26, 26, .58);
-  font-size: .92rem;
-  line-height: 1.45;
-}
-
-.tafsir-preview-text {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.ayah-tafsir-expanded {
-  max-height: 24dvh;
-  overflow: auto;
-  padding-right: 2px;
-}
-
-.ayah-action-sheet-compact .ayah-tafsir-block button {
-  margin: 2px 0 0;
-  color: #1f2937;
-  font-size: .9rem;
-  font-weight: 600;
-  text-align: left;
-}
-
-.ayah-action-sheet-compact .sheet-grabber {
-  width: 42px;
-  height: 5px;
-  margin-bottom: 12px;
-}
-
-.reader-audio-panel-wrap {
-  position: fixed;
-  inset-inline: 0;
-  bottom: calc(env(safe-area-inset-bottom, 0px) + 112px);
-  z-index: 80;
-  display: flex;
-  justify-content: center;
-  pointer-events: none;
-  padding: 0 14px;
-  transition: opacity .18s ease, transform .18s ease, visibility .18s ease;
-}
-
-.reader-audio-over-screen {
-  bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
-}
-
-.reader-audio-over-reader {
-  bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
-}
-
-.reader-audio-panel-visible {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-.reader-audio-panel {
-  pointer-events: auto;
-  width: min(100%, 548px);
-  border-radius: 26px;
-  background: rgba(255,255,255,.97);
-  padding: 16px;
-  color: #171717;
-  box-shadow: 0 24px 70px rgba(0,0,0,.18);
-}
-
-.reader-audio-head,
-.reader-audio-times,
-.reader-transport-row,
-.reader-reciter-row {
-  display: flex;
-  align-items: center;
-}
-
-.reader-audio-head {
-  justify-content: space-between;
-  gap: 10px;
-  font-size: .96rem;
-  letter-spacing: -.01em;
-}
-
-.reader-audio-head button {
-  display: grid;
-  width: 32px;
-  height: 32px;
-  place-items: center;
-  border-radius: 999px;
-  background: #f1f1f1;
-}
-
-.reader-reciter-row {
-  margin: 12px 0 10px;
-  gap: 10px;
-  border-radius: 18px;
-  background: #f7f7f7;
-  padding: 8px 10px;
-}
-
-.reader-reciter-avatar {
-  width: 34px;
-  height: 34px;
-  flex: 0 0 auto;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #d1fae5, #bfdbfe);
-}
-
-.reader-reciter-row select {
-  min-width: 0;
-  flex: 1;
-  appearance: none;
-  background: transparent;
-  color: #242424;
-  font-size: .9rem;
-  outline: none;
-}
-
-.reader-audio-progress {
-  width: 100%;
-  accent-color: #16a34a;
-  direction: rtl;
-}
-
-.reader-audio-times {
-  justify-content: space-between;
-  margin-top: 4px;
-  color: rgba(23,23,23,.52);
-  font-size: .78rem;
-}
-
-.reader-transport-row {
-  justify-content: space-between;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.reader-transport-row button {
-  display: grid;
-  min-width: 40px;
-  height: 40px;
-  place-items: center;
-  border-radius: 999px;
-  background: #f4f4f4;
-  color: #171717;
-}
-
-.reader-transport-row .transport-main {
-  min-width: 72px;
-  border-radius: 999px;
-  background: #050505;
-  color: #fff;
-}
-
-.transport-speed {
-  font-size: .84rem;
-  font-weight: 700;
-}
-
-.transport-active {
-  background: #dcfce7 !important;
-  color: #166534 !important;
-}
-
-.reader-audio-status {
-  margin: 10px 0 0;
-  color: rgba(23,23,23,.5);
-  font-size: .8rem;
-}
-
-.reader-wave-tooltip {
-  position: absolute;
-  left: 50%;
-  bottom: calc(100% + 7px);
-  z-index: 6;
-  display: grid;
-  min-width: 142px;
-  max-width: min(76vw, 270px);
-  gap: 2px;
-  transform: translateX(-50%);
-  border-radius: 13px;
-  background: rgba(17,17,17,.92);
-  color: #fff;
-  padding: 8px 11px;
-  font-size: .7rem;
-  line-height: 1.25;
-  text-align: center;
-  box-shadow: 0 10px 24px rgba(0,0,0,.18);
-  pointer-events: none;
-}
-
-.reader-wave-tooltip--floating {
-  bottom: calc(env(safe-area-inset-bottom, 0px) + 184px);
-}
-
-.reader-wave-tooltip::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 100%;
-  transform: translateX(-50%);
-  border: 5px solid transparent;
-  border-top-color: rgba(17,17,17,.92);
-}
-
-.reader-wave-tooltip strong {
-  overflow: hidden;
-  font-size: .76rem;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.reader-wave-tooltip span {
-  color: rgba(255, 255, 255, .76);
-}
-
-@media (max-width: 420px) {
-  .reader-audio-panel-wrap {
-    padding-inline: 12px;
+  function unbindAudio(audio) {
+    if (!audio) return;
+
+    const handlers = audioHandlersRef.current.get(audio);
+    if (!handlers) return;
+
+    Object.entries(handlers).forEach(([eventName, handler]) => {
+      audio.removeEventListener(eventName, handler);
+    });
+    audioHandlersRef.current.delete(audio);
   }
 
-  .reader-audio-over-screen {
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
+  function disposeAudio(audio) {
+    if (!audio) return;
+
+    unbindAudio(audio);
+    audio.pause();
+    audio.removeAttribute('src');
+    audio.load();
   }
 
-  .reader-audio-over-reader {
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
+  function disposePreload() {
+    const preload = preloadRef.current;
+    preloadRef.current = null;
+    if (preload?.audio) disposeAudio(preload.audio);
   }
 
-  .reader-audio-panel {
-    padding: 14px;
-    border-radius: 24px;
-  }
-}
-
-/* Patch 2: storage-backed ayah actions and share sheet. */
-.ayah-action-sheet.ayah-action-sheet-v2 {
-  width: min(100%, 548px);
-  max-height: min(82dvh, 720px) !important;
-  overflow-y: auto !important;
-  border-radius: 28px 28px 0 0 !important;
-  padding: 10px 18px calc(env(safe-area-inset-bottom, 0px) + 18px) !important;
-}
-
-.ayah-action-reference {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
-  color: #28231e;
-}
-
-.ayah-action-reference strong {
-  font-size: 1rem;
-}
-
-.ayah-action-reference span {
-  border-radius: 999px;
-  background: #f1f1f1;
-  padding: 5px 10px;
-  color: rgba(31, 27, 23, .56);
-  font-size: .78rem;
-}
-
-.ayah-main-actions-v2 {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.ayah-main-action-v2 {
-  display: grid;
-  min-width: 0;
-  justify-items: center;
-  gap: 6px;
-  color: #4a4640;
-}
-
-.ayah-main-action-v2 > span {
-  display: grid;
-  width: 48px;
-  height: 48px;
-  place-items: center;
-  border-radius: 18px;
-  background: #f1f1f1;
-  transition: transform .16s ease, background .16s ease, color .16s ease;
-}
-
-.ayah-main-action-v2 small {
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: .68rem;
-  font-weight: 650;
-  white-space: nowrap;
-}
-
-.ayah-main-action-v2.is-active > span {
-  background: #23211e;
-  color: #fff;
-}
-
-.ayah-main-action-v2:active > span {
-  transform: scale(.95);
-}
-
-.ayah-inline-panel {
-  margin-bottom: 12px;
-  border-radius: 20px;
-  background: #f7f7f6;
-  padding: 12px;
-}
-
-.ayah-inline-panel-title {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 10px;
-}
-
-.ayah-inline-panel-title strong {
-  font-size: .92rem;
-}
-
-.ayah-inline-panel-title span {
-  color: rgba(32, 29, 25, .48);
-  font-size: .72rem;
-  text-align: right;
-}
-
-.ayah-highlight-colors {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.ayah-remove-highlight {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  margin-top: 11px;
-  border-radius: 999px;
-  background: #fff0ef;
-  padding: 7px 11px;
-  color: #b42318;
-  font-size: .76rem;
-  font-weight: 700;
-}
-
-.ayah-highlight-colors .highlight-color-button {
-  width: 36px !important;
-  height: 36px !important;
-  border-radius: 999px !important;
-  transition: transform .16s ease, box-shadow .16s ease;
-}
-
-.ayah-highlight-colors .highlight-color-button.is-selected {
-  transform: scale(1.08);
-  box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgba(35, 33, 30, .18);
-}
-
-.ayah-bookmark-types {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-}
-
-.bookmark-type {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 7px;
-  min-height: 44px;
-  border-radius: 15px;
-  padding: 8px 10px;
-  font-size: .76rem;
-  font-weight: 650;
-  text-align: left;
-}
-
-.bookmark-type span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.bookmark-type-emerald { background: #e4f7ef; color: #2f7462; }
-.bookmark-type-amber { background: #fff2d5; color: #a46f09; }
-.bookmark-type-rose { background: #fbe4eb; color: #a9365b; }
-.bookmark-type-sky { background: #e2f1f8; color: #286f91; }
-
-.bookmark-type.is-selected {
-  box-shadow: inset 0 0 0 2px currentColor;
-}
-
-.ayah-note-editor {
-  display: grid;
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.ayah-note-editor textarea {
-  width: 100%;
-  resize: vertical;
-  border: 1px solid rgba(42, 38, 33, .12);
-  border-radius: 14px;
-  background: #fff;
-  padding: 10px 12px;
-  color: #27231f;
-  outline: none;
-}
-
-.ayah-note-editor button {
-  justify-self: end;
-  border-radius: 999px;
-  background: #25221e;
-  padding: 8px 14px;
-  color: #fff;
-  font-size: .78rem;
-  font-weight: 700;
-}
-
-.ayah-action-sheet-v2 .ayah-tafsir-block {
-  border-radius: 20px;
-  background: #faf9f7;
-  padding: 12px;
-}
-
-.ayah-tafsir-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.ayah-action-sheet-v2 .ayah-tafsir-block h3 {
-  font-size: 1rem !important;
-}
-
-.ayah-action-sheet-v2 .ayah-tafsir-block p {
-  margin: 8px 0 6px !important;
-  color: rgba(29, 26, 22, .62) !important;
-  font-size: .88rem !important;
-  line-height: 1.58 !important;
-}
-
-.ayah-action-sheet-v2 .ayah-tafsir-block > button {
-  margin: 0 !important;
-  font-size: .8rem !important;
-  font-weight: 700;
-}
-
-.ayah-action-sheet-v2 .ayah-action-status {
-  margin: 10px 0 0;
-  padding: 8px 11px;
-  font-size: .78rem;
-}
-
-.share-sheet-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 65;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  background: rgba(18, 16, 14, .42);
-  padding: 12px;
-}
-
-.share-sheet {
-  width: min(100%, 576px);
-  max-height: 94dvh;
-  overflow-y: auto;
-  border-radius: 28px 28px 0 0;
-  background: #fff;
-  padding: 18px 16px calc(env(safe-area-inset-bottom, 0px) + 18px);
-  color: #26221e;
-  box-shadow: 0 -24px 70px rgba(0, 0, 0, .20);
-}
-
-.share-sheet-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 14px;
-}
-
-.share-sheet-header p {
-  margin: 0 0 2px;
-  color: rgba(38, 34, 30, .50);
-  font-size: .72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-}
-
-.share-sheet-header h2 {
-  margin: 0;
-  font-size: 1.32rem;
-}
-
-.share-sheet-header button {
-  display: grid;
-  width: 40px;
-  height: 40px;
-  place-items: center;
-  border-radius: 999px;
-  background: #f0f0ef;
-}
-
-.share-range-card {
-  border-radius: 20px;
-  background: #f7f7f6;
-  padding: 12px;
-}
-
-.share-range-card h3,
-.share-background-picker h3 {
-  margin: 0 0 10px;
-  font-size: .9rem;
-}
-
-.share-range-selectors {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.share-range-selectors label {
-  display: grid;
-  gap: 5px;
-}
-
-.share-range-selectors span {
-  color: rgba(38, 34, 30, .54);
-  font-size: .72rem;
-  font-weight: 700;
-}
-
-.share-range-selectors select {
-  width: 100%;
-  border: 1px solid rgba(38, 34, 30, .10);
-  border-radius: 13px;
-  background: #fff;
-  padding: 9px 10px;
-  outline: none;
-}
-
-.share-range-card > p {
-  margin: 8px 0 0;
-  color: rgba(38, 34, 30, .44);
-  font-size: .7rem;
-}
-
-.share-background-picker {
-  margin: 14px 0;
-}
-
-.share-background-picker > div {
-  display: flex;
-  gap: 12px;
-}
-
-.share-background-picker button {
-  width: 36px;
-  height: 36px;
-  border-radius: 999px;
-  background: var(--share-color);
-  box-shadow: inset 0 0 0 1px rgba(31, 27, 23, .09);
-}
-
-.share-background-picker button.is-active {
-  box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgba(31, 27, 23, .24);
-}
-
-.quran-share-preview {
-  aspect-ratio: 4 / 5;
-  width: min(100%, 430px);
-  margin: 0 auto;
-  border-radius: 28px;
-  background: var(--share-background);
-  padding: 20px;
-  box-shadow: 0 18px 42px rgba(37, 31, 24, .14);
-}
-
-.quran-share-frame {
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-  border: 1px solid rgba(53, 43, 32, .16);
-  border-radius: 22px;
-  background: rgba(255,255,255,.56);
-  padding: 22px;
-}
-
-.quran-share-frame > h3 {
-  margin: 0;
-  color: #30271e;
-  font-family: IndopakNastaleeq, serif;
-  font-size: clamp(1.3rem, 5vw, 1.8rem);
-  font-weight: 600;
-  text-align: center;
-}
-
-.quran-share-divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 8px 0 14px;
-}
-
-.quran-share-divider::before,
-.quran-share-divider::after {
-  content: '';
-  height: 1px;
-  flex: 1;
-  background: rgba(64, 50, 35, .22);
-}
-
-.quran-share-divider span {
-  width: 10px;
-  height: 10px;
-  transform: rotate(45deg);
-  background: rgba(64, 50, 35, .52);
-}
-
-.quran-share-ayahs {
-  display: flex;
-  min-height: 0;
-  flex: 1;
-  flex-direction: column;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.quran-share-ayahs p {
-  margin: 0 0 8px;
-  color: #17130f;
-  font-family: IndopakNastaleeq, serif;
-  font-size: var(--share-preview-font, 1.2rem);
-  line-height: 1.75;
-  text-align: right;
-}
-
-.quran-share-ayahs span {
-  color: rgba(55, 42, 29, .72);
-  white-space: nowrap;
-}
-
-.quran-share-frame footer {
-  color: rgba(48, 39, 30, .58);
-  font-size: .72rem;
-  font-weight: 700;
-  text-align: center;
-}
-
-.share-image-button {
-  display: flex;
-  width: min(100%, 430px);
-  min-height: 48px;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin: 14px auto 0;
-  border-radius: 16px;
-  background: #25221e;
-  color: #fff;
-  font-weight: 750;
-}
-
-.share-image-button:disabled {
-  opacity: .55;
-}
-
-.share-sheet-status {
-  margin: 10px 0 0;
-  color: rgba(38, 34, 30, .60);
-  font-size: .78rem;
-  text-align: center;
-}
-
-.ayah-translation-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 90;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  background: transparent;
-}
-
-.ayah-translation-card {
-  --translation-card-bg: #FFFFFF;
-  --translation-card-text: #1F2933;
-  --translation-card-secondary: #64748B;
-  --translation-card-border: rgba(15,23,42,0.08);
-  --translation-card-shadow: 0 -8px 28px rgba(15,23,42,0.14);
-
-  display: grid;
-  width: min(100%, 576px);
-  height: clamp(300px, 56dvh, 60dvh);
-  max-height: 60dvh;
-  grid-template-rows: 48px minmax(0, 1fr) 56px;
-  overflow: hidden;
-  border: 1px solid var(--translation-card-border);
-  border-bottom: 0;
-  border-radius: 22px 22px 0 0;
-  background: var(--translation-card-bg);
-  color: var(--translation-card-text);
-  box-shadow: var(--translation-card-shadow);
-}
-
-.ayah-translation-header {
-  display: grid;
-  height: 48px;
-  place-items: center;
-  border-bottom: 1px solid var(--translation-card-border);
-  color: var(--translation-card-text);
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1;
-  text-align: center;
-}
-
-.ayah-translation-body {
-  min-height: 0;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  padding: 16px 18px 18px;
-  -webkit-overflow-scrolling: touch;
-}
-
-.ayah-translation-text {
-  margin: 0;
-  color: var(--translation-card-text);
-  font-family: "Jameel Noori Nastaleeq", "Noto Nastaliq Urdu", "Nafees Nastaleeq", "Urdu Typesetting", IndopakNastaleeq, "Noto Naskh Arabic", "Segoe UI", Tahoma, serif;
-  font-size: 17px;
-  line-height: 2;
-  text-align: start;
-}
-
-.ayah-translation-arabic {
-  margin: 18px 0 0;
-  color: var(--translation-card-text);
-  direction: rtl;
-  font-family: IndopakNastaleeq, serif;
-  font-size: clamp(20px, 5.4vw, 22px);
-  line-height: 2;
-  text-align: center;
-}
-
-.ayah-translation-footer {
-  display: grid;
-  height: 56px;
-  grid-template-columns: 1fr 1fr;
-  border-top: 1px solid var(--translation-card-border);
-}
-
-.ayah-translation-footer button {
-  display: inline-flex;
-  min-width: 0;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  color: var(--translation-card-text);
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1;
-}
-
-.ayah-translation-footer button + button {
-  border-left: 1px solid var(--translation-card-border);
-}
-
-.ayah-translation-footer button:disabled {
-  color: var(--translation-card-secondary);
-  opacity: .48;
-}
-
-[data-theme='dark'] .ayah-translation-card {
-  --translation-card-bg: #171717;
-  --translation-card-text: #F5F5F5;
-  --translation-card-secondary: #A3A3A3;
-  --translation-card-border: rgba(255,255,255,0.08);
-  --translation-card-shadow: 0 -8px 28px rgba(0,0,0,0.45);
-}
-
-@media (max-width: 420px) {
-  .ayah-main-actions-v2 {
-    gap: 5px;
+  function installCurrentAudio(audio, target, reciterId) {
+    const previousAudio = currentAudioRef.current;
+    if (previousAudio && previousAudio !== audio) {
+      disposeAudio(previousAudio);
+    }
+
+    currentAudioRef.current = audio;
+    currentTargetRef.current = target;
+    currentReciterRef.current = reciterId;
+    audio.playbackRate = playbackRateRef.current;
+    bindCurrentAudio(audio);
+    setAudioProgress(
+      audio.currentTime || 0,
+      Number.isFinite(audio.duration) ? audio.duration : 0,
+    );
   }
 
-  .ayah-main-action-v2 > span {
-    width: 44px;
-    height: 44px;
-    border-radius: 16px;
+  async function startCurrentAudio() {
+    const audio = currentAudioRef.current;
+    if (!audio || !playIntentRef.current || unmountedRef.current) return;
+
+    try {
+      audio.playbackRate = playbackRateRef.current;
+      await audio.play();
+      if (audio !== currentAudioRef.current) return;
+      setAudioPlaying(true);
+      setStatus('');
+    } catch (error) {
+      if (audio !== currentAudioRef.current) return;
+      playIntentRef.current = false;
+      setAudioPlaying(false);
+      setStatus(error?.message || 'Audio playback could not start.');
+    }
   }
 
-  .ayah-main-action-v2 small {
-    font-size: .62rem;
+  async function loadTarget(target, reciterId, autoplay) {
+    if (!target || unmountedRef.current) return;
+
+    const loadToken = ++loadTokenRef.current;
+    loadingRef.current = { target, reciterId, loadToken };
+    preloadTokenRef.current += 1;
+    disposePreload();
+    disposeAudio(currentAudioRef.current);
+    currentAudioRef.current = null;
+    currentTargetRef.current = target;
+    currentReciterRef.current = reciterId;
+    setAudioProgress(0, 0);
+    setStatus('Loading audio...');
+
+    try {
+      const url = await getAudioUrl(reciterId, target.surahNumber, target.ayahNumber);
+      if (unmountedRef.current || loadToken !== loadTokenRef.current) return;
+
+      if (!url) {
+        loadingRef.current = null;
+        playIntentRef.current = false;
+        setAudioPlaying(false);
+        setStatus('Audio is not available for this ayah and reciter.');
+        return;
+      }
+
+      const audio = new Audio();
+      audio.preload = 'auto';
+      audio.src = url;
+      audio.playbackRate = playbackRateRef.current;
+      installCurrentAudio(audio, target, reciterId);
+      loadingRef.current = null;
+      audio.load();
+      setStatus('');
+      ensureNextPreloaded(target, reciterId);
+
+      if (autoplay) {
+        playIntentRef.current = true;
+        await startCurrentAudio();
+      } else {
+        setAudioPlaying(false);
+      }
+    } catch (error) {
+      if (unmountedRef.current || loadToken !== loadTokenRef.current) return;
+      loadingRef.current = null;
+      playIntentRef.current = false;
+      setAudioPlaying(false);
+      setStatus(error?.message || 'Audio could not be loaded.');
+    }
   }
 
-  .bookmark-type {
-    font-size: .7rem;
+  async function ensureNextPreloaded(target, reciterId) {
+    if (unmountedRef.current) return null;
+
+    const nextTarget = getAdjacentTarget(target, 1);
+    if (!nextTarget || !reciterId) {
+      disposePreload();
+      setAudioQueue(target ? [target] : [], target ? 0 : -1);
+      return null;
+    }
+
+    setAudioQueue([target, nextTarget], 0);
+
+    const existing = preloadRef.current;
+    if (
+      existing &&
+      existing.reciterId === reciterId &&
+      sameTarget(existing.target, nextTarget)
+    ) {
+      return existing.promise || existing;
+    }
+
+    const preloadToken = ++preloadTokenRef.current;
+    disposePreload();
+    const preload = {
+      audio: null,
+      target: nextTarget,
+      reciterId,
+      promise: null,
+    };
+    preloadRef.current = preload;
+
+    preload.promise = getAudioUrl(
+      reciterId,
+      nextTarget.surahNumber,
+      nextTarget.ayahNumber,
+    ).then((url) => {
+      if (
+        unmountedRef.current ||
+        preloadToken !== preloadTokenRef.current ||
+        preloadRef.current !== preload ||
+        !url
+      ) {
+        return null;
+      }
+
+      const audio = new Audio();
+      audio.preload = 'auto';
+      audio.src = url;
+      audio.playbackRate = playbackRateRef.current;
+      audio.load();
+      preload.audio = audio;
+      preload.promise = null;
+      return preload;
+    }).catch(() => {
+      if (preloadRef.current === preload) {
+        preloadRef.current = null;
+      }
+      return null;
+    });
+
+    return preload.promise;
   }
 
-  .quran-share-preview {
-    padding: 14px;
-    border-radius: 22px;
+  async function handleEnded(endedAudio) {
+    if (repeatRef.current) {
+      endedAudio.currentTime = 0;
+      playIntentRef.current = true;
+      await startCurrentAudio();
+      return;
+    }
+
+    const nextTarget = getAdjacentTarget(currentTargetRef.current, 1);
+    if (!nextTarget) {
+      playIntentRef.current = false;
+      setAudioPlaying(false);
+      return;
+    }
+
+    playIntentRef.current = true;
+    const preload = await ensureNextPreloaded(
+      currentTargetRef.current,
+      currentReciterRef.current,
+    );
+    if (
+      unmountedRef.current ||
+      endedAudio !== currentAudioRef.current
+    ) {
+      return;
+    }
+
+    if (!preload?.audio || !sameTarget(preload.target, nextTarget)) {
+      setAudioTarget(nextTarget);
+      await loadTarget(nextTarget, currentReciterRef.current, true);
+      return;
+    }
+
+    preloadRef.current = null;
+    const previousAudio = currentAudioRef.current;
+    unbindAudio(previousAudio);
+
+    currentAudioRef.current = null;
+    installCurrentAudio(preload.audio, nextTarget, preload.reciterId);
+    disposeAudio(previousAudio);
+    setAudioTarget(nextTarget);
+    await startCurrentAudio();
+    ensureNextPreloaded(nextTarget, preload.reciterId);
   }
 
-  .quran-share-frame {
-    padding: 16px;
-    border-radius: 18px;
-  }
-}
-
-/* Modern ayah audio player */
-.reader-audio-over-reader {
-  bottom: calc(env(safe-area-inset-bottom, 0px) + 76px) !important;
-}
-
-.reader-audio-panel-modern {
-  width: min(100%, 548px);
-  border: 1px solid rgba(255, 255, 255, 0.16) !important;
-  background:
-    radial-gradient(circle at 12% 0%, rgba(255, 255, 255, 0.16), transparent 36%),
-    linear-gradient(135deg, #2d6e5e 0%, #1f483d 100%) !important;
-  color: #fff !important;
-  border-radius: 28px;
-  padding: 14px 16px 15px;
-  box-shadow: 0 24px 70px rgba(18, 46, 38, 0.34);
-}
-
-[data-theme='dark'] .reader-audio-panel-modern {
-  background:
-    radial-gradient(circle at 12% 0%, rgba(255, 255, 255, 0.1), transparent 36%),
-    linear-gradient(135deg, #286454 0%, #173b32 100%) !important;
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.36);
-}
-
-.reader-audio-head-centered {
-  display: grid;
-  grid-template-columns: 38px minmax(0, 1fr) 38px;
-  align-items: center;
-  gap: 6px;
-  text-align: center;
-}
-
-.reader-audio-head-centered strong {
-  color: #fff !important;
-  font-size: clamp(1rem, 4vw, 1.12rem);
-  font-weight: 760;
-  letter-spacing: -0.025em;
-}
-
-.reader-audio-head-centered button {
-  width: 38px;
-  height: 38px;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  background: rgba(255, 255, 255, 0.12) !important;
-  color: #fff !important;
-  backdrop-filter: blur(14px);
-  transition: transform 0.14s ease, background 0.14s ease;
-}
-
-.reader-reciter-pill {
-  position: relative;
-  margin: 10px 0 9px;
-  min-height: 54px;
-  gap: 11px;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 19px !important;
-  background: rgba(255, 255, 255, 0.11) !important;
-  color: #fff !important;
-  padding: 7px 12px 7px 8px;
-  backdrop-filter: blur(16px);
-}
-
-.reader-reciter-pill .reader-reciter-avatar {
-  width: 40px;
-  height: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  background:
-    linear-gradient(135deg, rgba(255,255,255,.92), rgba(216,245,238,.88));
-  box-shadow: 0 8px 24px rgba(0,0,0,.14);
-  overflow: hidden;
-}
-
-.reader-reciter-pill .reader-reciter-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.reader-reciter-copy {
-  display: grid;
-  min-width: 0;
-  flex: 1;
-  color: #fff;
-  font-size: .94rem;
-  font-weight: 640;
-  letter-spacing: -0.018em;
-}
-
-.reader-reciter-copy span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.reader-reciter-pill select {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  cursor: pointer;
-}
-
-.reader-reciter-pill svg {
-  flex: 0 0 auto;
-  color: rgba(255, 255, 255, .86);
-}
-
-.reader-audio-times-above {
-  margin: 6px 1px 4px;
-  color: rgba(255,255,255,.72) !important;
-  font-size: .73rem;
-  font-weight: 650;
-  letter-spacing: -0.01em;
-}
-
-.reader-audio-waveform {
-  position: relative;
-  height: 38px;
-  display: grid;
-  align-items: center;
-  padding: 0 1px;
-}
-
-.reader-audio-wave-bars {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 3px;
-  height: 34px;
-  transform: scaleX(-1);
-}
-
-.reader-audio-wave-bars span {
-  width: 3px;
-  height: var(--wave-height);
-  min-height: 7px;
-  border-radius: 999px;
-  background: rgba(255,255,255,.28) !important;
-  transition: height .16s ease, background-color .18s ease, opacity .18s ease;
-}
-
-.reader-audio-wave-bars span.wave-played {
-  background: #27c986 !important;
-  opacity: 1;
-  box-shadow: 0 0 10px rgba(39,201,134,.22);
-}
-
-.reader-audio-progress-overlay {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 38px;
-  opacity: 0;
-  cursor: pointer;
-  touch-action: pan-y;
-}
-
-.reader-transport-modern {
-  display: grid;
-  grid-template-columns: 44px 48px 64px 48px 44px;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(9px, 3.4vw, 15px);
-  margin-top: 10px;
-}
-
-.reader-transport-modern button {
-  width: 44px;
-  min-width: 44px;
-  height: 44px;
-  border: 1px solid rgba(255,255,255,.1) !important;
-  background: rgba(255,255,255,.12) !important;
-  color: #fff !important;
-  border-radius: 999px;
-  box-shadow: 0 8px 22px rgba(0,0,0,.12);
-  transition: transform .14s ease, background .14s ease, box-shadow .14s ease;
-}
-
-.reader-transport-modern button:active,
-.reader-audio-head-centered button:active,
-.reader-reciter-pill:active {
-  transform: scale(.92);
-}
-
-.reader-transport-modern .transport-main {
-  width: 64px;
-  min-width: 64px;
-  height: 58px;
-  background: rgba(255,255,255,.94) !important;
-  color: #0f1713 !important;
-  border-radius: 999px;
-  box-shadow: 0 14px 32px rgba(0,0,0,.22);
-}
-
-.reader-transport-modern .transport-main:active {
-  transform: scale(.88);
-}
-
-.reader-transport-modern .transport-speed {
-  font-size: .88rem;
-  font-weight: 800;
-  letter-spacing: -0.035em;
-}
-
-.reader-transport-modern .transport-active {
-  background: rgba(39, 201, 134, .24) !important;
-  color: #5ff0b0 !important;
-  border-color: rgba(95, 240, 176, .35) !important;
-}
-
-.reader-audio-panel-modern .reader-audio-status {
-  color: rgba(255,255,255,.68) !important;
-  text-align: center;
-}
-
-@media (max-width: 370px) {
-  .reader-audio-panel-modern {
-    padding-inline: 13px;
+  function seek(value) {
+    const audio = currentAudioRef.current;
+    const nextTime = Number(value) || 0;
+    setVisualTime(nextTime);
+    setAudioProgress(nextTime, duration);
+    if (audio) audio.currentTime = nextTime;
   }
 
-  .reader-transport-modern {
-    grid-template-columns: 40px 43px 58px 43px 40px;
-    gap: 7px;
+  function togglePlay() {
+    const audio = currentAudioRef.current;
+    if (!audio) return;
+
+    if (!audio.paused) {
+      playIntentRef.current = false;
+      audio.pause();
+      setAudioPlaying(false);
+      return;
+    }
+
+    playIntentRef.current = true;
+    startCurrentAudio();
   }
 
-  .reader-transport-modern button {
-    width: 40px;
-    min-width: 40px;
-    height: 40px;
+  function moveAyah(direction) {
+    const sourceTarget = currentTargetRef.current || normalizeTarget(ayah);
+    const nextTarget = getAdjacentTarget(sourceTarget, direction);
+    if (!nextTarget) return;
+
+    playIntentRef.current = true;
+    setAudioPlaying(true);
+    setAudioTarget(nextTarget);
+    loadTarget(nextTarget, selectedReciter, true);
   }
 
-  .reader-transport-modern .transport-main {
-    width: 58px;
-    min-width: 58px;
-    height: 54px;
+  function cycleSpeed() {
+    const current = audioPlaybackRate || settings.playbackRate || 1;
+    const index = SPEEDS.indexOf(current);
+    const next = SPEEDS[(index + 1) % SPEEDS.length] || 1;
+    updateSettings({ playbackRate: next });
   }
 
-  .reader-audio-wave-bars {
-    gap: 2px;
-  }
-}
-
-/* Compact themed reciter selector sheet */
-.reader-reciter-pill {
-  appearance: none;
-  width: 100%;
-  border: 0;
-  text-align: left;
-  cursor: pointer;
-}
-
-.reader-reciter-pill small {
-  margin-top: 2px;
-  color: rgba(255, 255, 255, .62);
-  font-size: .68rem;
-  font-weight: 560;
-  letter-spacing: -0.01em;
-}
-
-.reader-reciter-sheet-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 80;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding: 14px 14px calc(env(safe-area-inset-bottom, 0px) + 14px);
-  background: rgba(7, 11, 9, .42);
-  backdrop-filter: blur(8px);
-  animation: readerReciterBackdropIn .16s ease-out both;
-}
-
-.reader-reciter-sheet {
-  width: min(100%, 540px);
-  max-height: min(68vh, 560px);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  border: 1px solid rgba(31, 72, 61, .12);
-  border-radius: 28px;
-  background:
-    radial-gradient(circle at 12% 0%, rgba(45, 110, 94, .12), transparent 34%),
-    linear-gradient(180deg, #fffaf1 0%, #f8f3e8 100%);
-  color: #1f180f;
-  box-shadow: 0 24px 70px rgba(18, 46, 38, .26);
-  animation: readerReciterSheetIn .2s cubic-bezier(.2, .85, .25, 1) both;
-}
-
-[data-theme='dark'] .reader-reciter-sheet {
-  border-color: rgba(255, 255, 255, .1);
-  background:
-    radial-gradient(circle at 12% 0%, rgba(255, 255, 255, .1), transparent 36%),
-    linear-gradient(135deg, #286454 0%, #173b32 100%);
-  color: #fff;
-  box-shadow: 0 28px 80px rgba(0, 0, 0, .46);
-}
-
-.reader-reciter-sheet-handle {
-  width: 44px;
-  height: 5px;
-  margin: 10px auto 6px;
-  border-radius: 999px;
-  background: rgba(31, 72, 61, .22);
-}
-
-[data-theme='dark'] .reader-reciter-sheet-handle {
-  background: rgba(255, 255, 255, .26);
-}
-
-.reader-reciter-sheet-head {
-  display: grid;
-  grid-template-columns: 42px minmax(0, 1fr) 42px;
-  align-items: center;
-  padding: 0 14px 10px;
-  text-align: center;
-}
-
-.reader-reciter-sheet-head strong {
-  grid-column: 2;
-  font-size: 1.04rem;
-  font-weight: 760;
-  letter-spacing: -0.025em;
-}
-
-.reader-reciter-sheet-head button {
-  grid-column: 3;
-  width: 38px;
-  height: 38px;
-  border: 0;
-  border-radius: 999px;
-  background: rgba(31, 72, 61, .08);
-  color: currentColor;
-  display: grid;
-  place-items: center;
-  transition: transform .14s ease, background .14s ease;
-}
-
-[data-theme='dark'] .reader-reciter-sheet-head button {
-  background: rgba(255, 255, 255, .12);
-}
-
-.reader-reciter-search {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 42px;
-  margin: 0 14px 10px;
-  padding: 0 13px;
-  border: 1px solid rgba(31, 72, 61, .1);
-  border-radius: 16px;
-  background: rgba(255, 255, 255, .72);
-  color: rgba(31, 72, 61, .76);
-}
-
-[data-theme='dark'] .reader-reciter-search {
-  border-color: rgba(255,255,255,.09);
-  background: rgba(255,255,255,.1);
-  color: rgba(255,255,255,.78);
-}
-
-.reader-reciter-search input {
-  width: 100%;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  font-size: .9rem;
-  font-weight: 570;
-}
-
-.reader-reciter-search input::placeholder {
-  color: currentColor;
-  opacity: .66;
-}
-
-.reader-reciter-list {
-  overflow-y: auto;
-  padding: 0 10px 12px;
-  overscroll-behavior: contain;
-}
-
-.reader-reciter-option {
-  width: 100%;
-  min-height: 58px;
-  display: grid;
-  grid-template-columns: 42px minmax(0, 1fr) 32px;
-  align-items: center;
-  gap: 11px;
-  margin: 4px 0;
-  padding: 8px 10px;
-  border: 1px solid transparent;
-  border-radius: 18px;
-  background: transparent;
-  color: inherit;
-  text-align: left;
-  transition: transform .14s ease, background .14s ease, border-color .14s ease;
-}
-
-.reader-reciter-option:active,
-.reader-reciter-sheet-head button:active {
-  transform: scale(.97);
-}
-
-.reader-reciter-option-selected {
-  border-color: rgba(45, 110, 94, .28);
-  background: rgba(45, 110, 94, .1);
-}
-
-[data-theme='dark'] .reader-reciter-option-selected {
-  border-color: rgba(95, 240, 176, .28);
-  background: rgba(255, 255, 255, .1);
-}
-
-.reader-reciter-option-avatar {
-  width: 42px;
-  height: 42px;
-  overflow: hidden;
-  border-radius: 50%;
-  border: 1px solid rgba(45, 110, 94, .16);
-  background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(216,245,238,.88));
-  box-shadow: 0 8px 18px rgba(18, 46, 38, .12);
-}
-
-[data-theme='dark'] .reader-reciter-option-avatar {
-  border-color: rgba(255,255,255,.22);
-}
-
-.reader-reciter-option-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.reader-reciter-option-copy {
-  min-width: 0;
-  display: grid;
-  gap: 2px;
-}
-
-.reader-reciter-option-copy span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: .94rem;
-  font-weight: 670;
-  letter-spacing: -0.02em;
-}
-
-.reader-reciter-option-copy small {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: rgba(31, 24, 15, .56);
-  font-size: .71rem;
-  font-weight: 570;
-}
-
-[data-theme='dark'] .reader-reciter-option-copy small {
-  color: rgba(255, 255, 255, .62);
-}
-
-.reader-reciter-option-check {
-  width: 28px;
-  height: 28px;
-  display: grid;
-  place-items: center;
-  border-radius: 999px;
-  color: #2d6e5e;
-}
-
-[data-theme='dark'] .reader-reciter-option-check {
-  color: #5ff0b0;
-}
-
-@keyframes readerReciterBackdropIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes readerReciterSheetIn {
-  from { opacity: 0; transform: translateY(18px) scale(.98); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-@media (max-width: 370px) {
-  .reader-reciter-sheet {
-    max-height: min(72vh, 560px);
-    border-radius: 24px;
+  function selectReciter(reciterId) {
+    updateSettings({ reciter: reciterId });
+    setReciterPickerOpen(false);
+    setReciterSearch('');
   }
 
-  .reader-reciter-option {
-    min-height: 54px;
-    grid-template-columns: 38px minmax(0, 1fr) 28px;
-    gap: 9px;
+  function closePlayer() {
+    playIntentRef.current = false;
+    loadTokenRef.current += 1;
+    loadingRef.current = null;
+    preloadTokenRef.current += 1;
+    disposeAudio(currentAudioRef.current);
+    disposePreload();
+    currentAudioRef.current = null;
+    currentTargetRef.current = null;
+    setAudioPlaying(false);
+    closeAudioPlayer();
   }
 
-  .reader-reciter-option-avatar {
-    width: 38px;
-    height: 38px;
-  }
+  return (
+    <div
+      className={`reader-audio-panel-wrap ${audioPlayerVisible ? 'reader-audio-panel-visible' : 'reader-audio-panel-hidden'} ${view === VIEWS.READER ? 'reader-audio-over-reader' : 'reader-audio-over-screen'}`}
+      data-reader-ui
+    >
+      <section className="reader-audio-panel reader-audio-panel-modern">
+        <div className="reader-audio-head reader-audio-head-centered">
+          <span aria-hidden="true" />
+          <strong>{reference}</strong>
+          <button onClick={closePlayer} aria-label="Close audio player"><X size={18} /></button>
+        </div>
+
+        <button
+          className="reader-reciter-row reader-reciter-pill"
+          type="button"
+          onClick={() => setReciterPickerOpen(true)}
+          aria-haspopup="dialog"
+          aria-expanded={reciterPickerOpen}
+        >
+          <span className="reader-reciter-avatar" aria-hidden="true">
+            <img
+              src={getReciterImageSrc(selectedReciterMeta)}
+              alt=""
+              onError={(event) => { event.currentTarget.style.display = 'none'; }}
+            />
+          </span>
+          <span className="reader-reciter-copy">
+            <span>{getReciterDisplayName(selectedReciterMeta)}</span>
+          </span>
+          <ChevronDown size={17} />
+        </button>
+
+        <div className="reader-audio-times reader-audio-times-above" dir="ltr">
+          <span>{formatTime(duration || 0)}</span>
+          <span>{formatTime(displayedTime)}</span>
+        </div>
+
+        <div className="reader-audio-waveform reader-audio-wave-line" style={{ '--audio-progress': progressRatio }}>
+          <div className="reader-audio-wave-track" aria-hidden="true">
+            <span className="reader-audio-wave-remaining" />
+            <span className="reader-audio-wave-played" />
+            <span className="reader-audio-wave-thumb" />
+          </div>
+          <input
+            className="reader-audio-progress reader-audio-progress-overlay"
+            dir="rtl"
+            type="range"
+            min="0"
+            max={duration || 0}
+            value={Math.min(currentTime, duration || 0)}
+            onChange={(event) => seek(event.target.value)}
+            aria-label="Audio progress"
+          />
+        </div>
+
+        <div className="reader-transport-row reader-transport-modern">
+          <button className={repeat ? 'transport-active' : ''} onClick={() => setAudioRepeat(!repeat)} aria-label="Repeat ayah">
+            <Repeat size={22} />
+          </button>
+          <button onClick={() => moveAyah(-1)} aria-label="Previous ayah"><SkipBack size={24} fill="currentColor" /></button>
+          <button className="transport-main" onClick={togglePlay} aria-label={playing ? 'Pause' : 'Play'}>
+            {playing ? <Pause size={29} fill="currentColor" /> : <Play size={29} fill="currentColor" />}
+          </button>
+          <button onClick={() => moveAyah(1)} aria-label="Next ayah"><SkipForward size={24} fill="currentColor" /></button>
+          <button className="transport-speed" onClick={cycleSpeed} aria-label="Playback speed">
+            {audioPlaybackRate || settings.playbackRate || 1}x
+          </button>
+        </div>
+
+        {status && <p className="reader-audio-status">{status}</p>}
+
+        {reciterPickerOpen && (
+          <div
+            className="reader-reciter-sheet-backdrop"
+            role="presentation"
+            onClick={() => setReciterPickerOpen(false)}
+          >
+            <div
+              className="reader-reciter-sheet"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Select reciter"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <div className="reader-reciter-sheet-handle" aria-hidden="true" />
+              <div className="reader-reciter-sheet-head">
+                <strong>Select Reciter</strong>
+                <button type="button" onClick={() => setReciterPickerOpen(false)} aria-label="Close reciter list"><X size={19} /></button>
+              </div>
+              <label className="reader-reciter-search">
+                <Search size={18} aria-hidden="true" />
+                <input
+                  value={reciterSearch}
+                  onChange={(event) => setReciterSearch(event.target.value)}
+                  placeholder="Search reciters"
+                />
+              </label>
+              <div className="reader-reciter-list" role="listbox" aria-label="Reciters">
+                {filteredReciters.map((reciter) => {
+                  const isSelected = reciter.id === selectedReciter;
+                  return (
+                    <button
+                      key={reciter.id}
+                      type="button"
+                      className={isSelected ? 'reader-reciter-option reader-reciter-option-selected' : 'reader-reciter-option'}
+                      onClick={() => selectReciter(reciter.id)}
+                      role="option"
+                      aria-selected={isSelected}
+                    >
+                      <span className="reader-reciter-option-avatar" aria-hidden="true">
+                        <img
+                          src={getReciterImageSrc(reciter)}
+                          alt=""
+                          onError={(event) => { event.currentTarget.style.display = 'none'; }}
+                        />
+                      </span>
+                      <span className="reader-reciter-option-copy">
+                        <span>{getReciterDisplayName(reciter)}</span>
+                      </span>
+                      <span className="reader-reciter-option-check" aria-hidden="true">
+                        {isSelected ? <Check size={19} /> : <span className="reader-reciter-option-radio" />}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+      </section>
+    </div>
+  );
+}
+
+function normalizeTarget(ayah) {
+  if (!ayah?.surahNumber || !ayah?.ayahNumber) return null;
+
+  return {
+    page: ayah.page || findPageForReference(ayah.surahNumber, ayah.ayahNumber),
+    surahNumber: Number(ayah.surahNumber),
+    ayahNumber: Number(ayah.ayahNumber),
+    reference: ayah.reference || `${ayah.surahNumber}:${ayah.ayahNumber}`,
+    arabic: ayah.arabic || ayah.text || '',
+  };
+}
+
+function getAdjacentTarget(target, direction) {
+  if (!target) return null;
+
+  const currentIndex = quranAyahs.findIndex(
+    (item) =>
+      item.surahNumber === Number(target.surahNumber) &&
+      item.ayahNumber === Number(target.ayahNumber),
+  );
+  if (currentIndex < 0) return null;
+
+  const adjacent = quranAyahs[currentIndex + direction];
+  if (!adjacent) return null;
+
+  return {
+    page: findPageForReference(adjacent.surahNumber, adjacent.ayahNumber),
+    surahNumber: adjacent.surahNumber,
+    ayahNumber: adjacent.ayahNumber,
+    reference: `${adjacent.surahNumber}:${adjacent.ayahNumber}`,
+    arabic: adjacent.text,
+  };
+}
+
+function sameTarget(first, second) {
+  return Boolean(
+    first &&
+      second &&
+      Number(first.surahNumber) === Number(second.surahNumber) &&
+      Number(first.ayahNumber) === Number(second.ayahNumber)
+  );
 }
