@@ -385,21 +385,51 @@ function getSavedWordRange(
 ) {
   if (!highlight || typeof highlight === 'string') return null;
 
-  if (
-    !Number.isInteger(highlight.lineIndex) ||
-    !Number.isInteger(highlight.wordIndex)
-  ) {
-    return null;
+  const candidates = getSavedWordCandidates(highlight);
+  if (!candidates.length) return null;
+
+  for (const candidate of candidates) {
+    const line = Number.isInteger(candidate.lineNumber)
+      ? pageData.lines.find((item) => item.line === candidate.lineNumber)
+      : pageData.lines[candidate.lineIndex];
+
+    if (!lineContainsReference(line, surahNumber, ayahNumber)) continue;
+
+    const textElement = getLineTextElement(pageElement, line.line);
+    const range = createWordDomRange(textElement, line.text, candidate.wordIndex);
+    if (range) return range;
   }
 
-  const lineIndex = highlight.lineIndex;
-  const wordIndex = highlight.wordIndex;
+  return null;
+}
 
-  const line = pageData.lines[lineIndex];
-  if (!lineContainsReference(line, surahNumber, ayahNumber)) return null;
+function getSavedWordCandidates(highlight) {
+  const candidates = [];
+  const selectedWordId = parseSelectedWordId(highlight.selectedWordId);
 
-  const textElement = getLineTextElement(pageElement, line.line);
-  return createWordDomRange(textElement, line.text, wordIndex);
+  if (selectedWordId) candidates.push(selectedWordId);
+
+  if (
+    Number.isInteger(highlight.lineIndex) &&
+    Number.isInteger(highlight.wordIndex)
+  ) {
+    candidates.push({
+      lineIndex: highlight.lineIndex,
+      wordIndex: highlight.wordIndex,
+    });
+  }
+
+  return candidates;
+}
+
+function parseSelectedWordId(value) {
+  const match = String(value || '').match(/^line:(\d+):word:(\d+)$/);
+  if (!match) return null;
+
+  return {
+    lineNumber: Number(match[1]),
+    wordIndex: Number(match[2]),
+  };
 }
 
 function getLineTextElement(pageElement, lineNumber) {

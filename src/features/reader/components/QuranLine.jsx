@@ -1,6 +1,7 @@
 import React, { useMemo, useLayoutEffect, useRef } from 'react';
 import { getDisplayLineText } from '../../../utils/quranLabels';
 import {
+  getAyahRangeRects,
   getAyahAtRenderedPoint,
   getRenderedWordTokens,
   getWordAtRenderedPoint,
@@ -212,19 +213,7 @@ export function QuranLine({
     ignoreNextClick.current = false;
     pressMoved.current = false;
     pressPoint.current = { x: event.clientX, y: event.clientY };
-    pressedSelection.current = {
-      ayahNumber: getAyahAtRenderedPoint(
-        line,
-        textRef.current,
-        event.clientX,
-        event.clientY,
-      ),
-      wordIndex: getWordAtRenderedPoint(
-        textRef.current,
-        event.clientX,
-        event.clientY,
-      ),
-    };
+    pressedSelection.current = getSelectionFromEvent(event);
     capturedPointer.current = event.pointerId;
     event.currentTarget.setPointerCapture?.(event.pointerId);
     window.clearTimeout(longPressTimer.current);
@@ -240,6 +229,11 @@ export function QuranLine({
       onSelect({
         ayahNumber: pressedSelection.current?.ayahNumber || line.ayahStart,
         wordIndex: pressedSelection.current?.wordIndex,
+        selectedWord: pressedSelection.current?.selectedWord || '',
+        selectedWordId: pressedSelection.current?.selectedWordId || '',
+        selectedWordRect: pressedSelection.current?.selectedWordRect || null,
+        ayahRect: pressedSelection.current?.ayahRect || null,
+        pointer: pressedSelection.current?.pointer || null,
       });
     }, 430);
   }
@@ -277,18 +271,42 @@ export function QuranLine({
   }
 
   function getSelectionFromEvent(event) {
+    const ayahNumber = getAyahAtRenderedPoint(
+      line,
+      textRef.current,
+      event.clientX,
+      event.clientY,
+    );
+    const wordIndex = getWordAtRenderedPoint(
+      textRef.current,
+      event.clientX,
+      event.clientY,
+    );
+    const wordElement = Number.isInteger(wordIndex)
+      ? textRef.current?.querySelector(`[data-quran-word-index="${wordIndex}"]`)
+      : null;
+    const wordToken = renderedTokens.find((token) => (
+      token.isWord && token.wordIndex === wordIndex
+    ));
+    const ayahRect = chooseAnchorRect(
+      getAyahRangeRects(line, textRef.current, ayahNumber),
+      event.clientX,
+      event.clientY,
+    );
+
     return {
-      ayahNumber: getAyahAtRenderedPoint(
-        line,
-        textRef.current,
-        event.clientX,
-        event.clientY,
-      ),
-      wordIndex: getWordAtRenderedPoint(
-        textRef.current,
-        event.clientX,
-        event.clientY,
-      ),
+      ayahNumber,
+      wordIndex,
+      selectedWord: wordToken?.text || '',
+      selectedWordId: Number.isInteger(wordIndex)
+        ? `line:${line.line}:word:${wordIndex}`
+        : '',
+      selectedWordRect: normalizeRect(wordElement?.getBoundingClientRect()),
+      ayahRect: normalizeRect(ayahRect),
+      pointer: {
+        x: event.clientX,
+        y: event.clientY,
+      },
     };
   }
 
@@ -389,4 +407,51 @@ function measureTextWidth(element) {
   const width = range.getBoundingClientRect().width;
   range.detach?.();
   return width;
+}
+
+function chooseAnchorRect(rects, clientX, clientY) {
+  if (!rects?.length) return null;
+
+  let closestRect = rects[0];
+  let closestDistance = Number.POSITIVE_INFINITY;
+
+  rects.forEach((rect) => {
+    if (!rect?.width || !rect?.height) return;
+
+    if (
+      clientX >= rect.left &&
+      clientX <= rect.right &&
+      clientY >= rect.top &&
+      clientY <= rect.bottom
+    ) {
+      closestRect = rect;
+      closestDistance = -1;
+      return;
+    }
+
+    if (closestDistance < 0) return;
+
+    const deltaX = clientX < rect.left ? rect.left - clientX : clientX > rect.right ? clientX - rect.right : 0;
+    const deltaY = clientY < rect.top ? rect.top - clientY : clientY > rect.bottom ? clientY - rect.bottom : 0;
+    const distance = Math.hypot(deltaX, deltaY);
+    if (distance < closestDistance) {
+      closestDistance = distance;
+      closestRect = rect;
+    }
+  });
+
+  return closestRect;
+}
+
+function normalizeRect(rect) {
+  if (!rect?.width || !rect?.height) return null;
+
+  return {
+    left: rect.left,
+    top: rect.top,
+    right: rect.right,
+    bottom: rect.bottom,
+    width: rect.width,
+    height: rect.height,
+  };
 }
