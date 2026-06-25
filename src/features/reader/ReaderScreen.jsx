@@ -78,6 +78,7 @@ export default function ReaderScreen() {
   const [sliderPreviewPage, setSliderPreviewPage] = useState(null);
   const [sliderInteracting, setSliderInteracting] = useState(false);
   const [translationTarget, setTranslationTarget] = useState(null);
+  const [copyToastVisible, setCopyToastVisible] = useState(false);
   const pageData = getPage(page);
   const meta = getPageMeta(page);
   const displayPage = getMushafPageNumber(page);
@@ -106,6 +107,7 @@ export default function ReaderScreen() {
   const [annotationVersion, setAnnotationVersion] = useState(0);
   const [quarterFlashTarget, setQuarterFlashTarget] = useState(null);
   const suppressTapUntil = useRef(0);
+  const copyToastTimer = useRef(0);
   const previousAudioTargetKey = useRef(
     audioTarget ? `${audioTarget.surahNumber}:${audioTarget.ayahNumber}` : '',
   );
@@ -115,6 +117,8 @@ export default function ReaderScreen() {
   useEffect(() => {
     if (!sliderInteracting) setSliderPreviewPage(null);
   }, [page, sliderInteracting]);
+
+  useEffect(() => () => window.clearTimeout(copyToastTimer.current), []);
 
   usePagePersistence({ page, pageData });
 
@@ -239,6 +243,14 @@ export default function ReaderScreen() {
 
   function showShareSheet(targetAyah) {
     pushShareSheet(targetAyah);
+  }
+
+  function showCopyToast() {
+    window.clearTimeout(copyToastTimer.current);
+    setCopyToastVisible(true);
+    copyToastTimer.current = window.setTimeout(() => {
+      setCopyToastVisible(false);
+    }, 1300);
   }
 
   function selectAyah(line, lineIndex, selection) {
@@ -391,8 +403,17 @@ export default function ReaderScreen() {
             onClose={closeAyahSheet}
             onPlay={openAudioPanel}
             onShare={showShareSheet}
+            onCopied={showCopyToast}
             onAnnotationsChanged={annotationsChanged}
           />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {copyToastVisible && (
+          <div className="reader-copy-toast" data-reader-ui role="status">
+            Copied
+          </div>
         )}
       </AnimatePresence>
 

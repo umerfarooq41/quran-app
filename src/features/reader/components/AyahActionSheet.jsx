@@ -36,6 +36,7 @@ export function AyahActionSheet({
   onClose,
   onPlay,
   onShare,
+  onCopied,
   onAnnotationsChanged,
 }) {
   const [annotations, setAnnotations] = useState({ highlight: null, bookmarks: [] });
@@ -149,6 +150,7 @@ export function AyahActionSheet({
   }
 
   function playAyah() {
+    onClose?.();
     onPlay?.({
       page,
       surahNumber: ayah.surahNumber,
@@ -156,12 +158,11 @@ export function AyahActionSheet({
       reference,
       arabic: ayah.text,
     });
-    onClose?.();
   }
 
   function shareAyah() {
-    onShare?.(ayah);
     onClose?.();
+    onShare?.(ayah);
   }
 
   async function copyAyah() {
@@ -174,6 +175,7 @@ export function AyahActionSheet({
 
     try {
       await navigator.clipboard.writeText(copyText);
+      onCopied?.();
     } catch {
       // Clipboard may be unavailable in older embedded browsers.
     }
@@ -256,6 +258,12 @@ export function AyahActionSheet({
 }
 
 function TooltipButton({ label, icon: Icon, active = false, filled = false, color = '', onClick }) {
+  function handleClick(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    onClick?.(event);
+  }
+
   return (
     <button
       type="button"
@@ -266,7 +274,7 @@ function TooltipButton({ label, icon: Icon, active = false, filled = false, colo
         '--ayah-tooltip-active-bg': `${color}33`,
         '--ayah-tooltip-active-color': color,
       } : undefined}
-      onClick={onClick}
+      onClick={handleClick}
     >
       <Icon size={21} fill={filled || active ? 'currentColor' : 'none'} />
     </button>
