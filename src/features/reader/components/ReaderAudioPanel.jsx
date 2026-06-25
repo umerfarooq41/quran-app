@@ -533,136 +533,139 @@ export function ReaderAudioPanel() {
   }
 
   return (
-    <div
-      className={`reader-audio-panel-wrap ${audioPlayerVisible ? 'reader-audio-panel-visible' : 'reader-audio-panel-hidden'} ${view === VIEWS.READER ? 'reader-audio-over-reader' : 'reader-audio-over-screen'}`}
-      data-reader-ui
-    >
-      <section className="reader-audio-panel reader-audio-panel-modern">
-        <div className="reader-audio-head reader-audio-head-centered">
-          <span aria-hidden="true" />
-          <strong>{reference}</strong>
-          <button onClick={closePlayer} aria-label="Close audio player"><X size={18} /></button>
-        </div>
-
-        <button
-          className="reader-reciter-row reader-reciter-pill"
-          type="button"
-          onClick={() => setReciterPickerOpen(true)}
-          aria-haspopup="dialog"
-          aria-expanded={reciterPickerOpen}
-        >
-          <span className="reader-reciter-avatar" aria-hidden="true">
-            <img
-              src={getReciterImageSrc(selectedReciterMeta)}
-              alt=""
-              onError={(event) => { event.currentTarget.style.display = 'none'; }}
-            />
-          </span>
-          <span className="reader-reciter-copy">
-            <span>{getReciterDisplayName(selectedReciterMeta)}</span>
-          </span>
-          <ChevronDown size={17} />
-        </button>
-
-        <div className="reader-audio-times reader-audio-times-above" dir="ltr">
-          <span>{formatTime(duration || 0)}</span>
-          <span>{formatTime(displayedTime)}</span>
-        </div>
-
-        <div className="reader-audio-waveform reader-audio-wave-line" style={{ '--audio-progress': progressRatio }}>
-          <div className="reader-audio-wave-track" aria-hidden="true">
-            <span className="reader-audio-wave-remaining" />
-            <span className="reader-audio-wave-played" />
-            <span className="reader-audio-wave-thumb" />
+    <>
+      <div
+        className={`reader-audio-panel-wrap ${audioPlayerVisible ? 'reader-audio-panel-visible' : 'reader-audio-panel-hidden'} ${view === VIEWS.READER ? 'reader-audio-over-reader' : 'reader-audio-over-screen'}`}
+        data-reader-ui
+      >
+        <section className="reader-audio-panel reader-audio-panel-modern">
+          <div className="reader-audio-head reader-audio-head-centered">
+            <span aria-hidden="true" />
+            <strong>{reference}</strong>
+            <button onClick={closePlayer} aria-label="Close audio player"><X size={18} /></button>
           </div>
-          <input
-            className="reader-audio-progress reader-audio-progress-overlay"
-            dir="rtl"
-            type="range"
-            min="0"
-            max={duration || 0}
-            value={Math.min(currentTime, duration || 0)}
-            onChange={(event) => seek(event.target.value)}
-            aria-label="Audio progress"
-          />
-        </div>
 
-        <div className="reader-transport-row reader-transport-modern">
-          <button className={repeat ? 'transport-active' : ''} onClick={() => setAudioRepeat(!repeat)} aria-label="Repeat ayah">
-            <Repeat size={22} />
-          </button>
-          <button onClick={() => moveAyah(-1)} aria-label="Previous ayah"><SkipBack size={24} fill="currentColor" /></button>
-          <button className="transport-main" onClick={togglePlay} aria-label={playing ? 'Pause' : 'Play'}>
-            {playing ? <Pause size={29} fill="currentColor" /> : <Play size={29} fill="currentColor" />}
-          </button>
-          <button onClick={() => moveAyah(1)} aria-label="Next ayah"><SkipForward size={24} fill="currentColor" /></button>
-          <button className="transport-speed" onClick={cycleSpeed} aria-label="Playback speed">
-            {audioPlaybackRate || settings.playbackRate || 1}x
-          </button>
-        </div>
-
-        {status && <p className="reader-audio-status">{status}</p>}
-
-        {reciterPickerOpen && (
-          <div
-            className="reader-reciter-sheet"
-            role="presentation"
-            onClick={() => setReciterPickerOpen(false)}
+          <button
+            className="reader-reciter-row reader-reciter-pill"
+            type="button"
+            onClick={() => setReciterPickerOpen(true)}
+            aria-haspopup="dialog"
+            aria-expanded={reciterPickerOpen}
           >
-            <div
-              className="reader-reciter-sheet-card"
-              role="dialog"
-              aria-modal="true"
-              aria-label="Select reciter"
-              onClick={(event) => event.stopPropagation()}
-            >
-              <div className="reader-reciter-sheet-handle" aria-hidden="true" />
-              <div className="reader-reciter-sheet-head">
-                <strong>Select Reciter</strong>
-                <button type="button" onClick={() => setReciterPickerOpen(false)} aria-label="Close reciter list"><X size={19} /></button>
-              </div>
-              <label className="reader-reciter-search">
-                <Search size={18} aria-hidden="true" />
-                <input
-                  value={reciterSearch}
-                  onChange={(event) => setReciterSearch(event.target.value)}
-                  placeholder="Search reciters"
-                />
-              </label>
-              <div className="reader-reciter-list" role="listbox" aria-label="Reciters">
-                {filteredReciters.map((reciter) => {
-                  const isSelected = reciter.id === selectedReciter;
-                  return (
-                    <button
-                      key={reciter.id}
-                      type="button"
-                      className={isSelected ? 'reader-reciter-list-item selected' : 'reader-reciter-list-item'}
-                      onClick={() => selectReciter(reciter.id)}
-                      role="option"
-                      aria-selected={isSelected}
-                    >
-                      <span className="reader-reciter-avatar" aria-hidden="true">
-                        <img
-                          src={getReciterImageSrc(reciter)}
-                          alt=""
-                          onError={(event) => { event.currentTarget.style.display = 'none'; }}
-                        />
-                      </span>
-                      <span>
-                        {getReciterDisplayName(reciter)}
-                      </span>
-                      <span className="reader-reciter-check" aria-hidden="true">
-                        {isSelected ? <Check size={19} /> : <span className="reader-reciter-option-radio" />}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
+            <span className="reader-reciter-avatar" aria-hidden="true">
+              <img
+                src={getReciterImageSrc(selectedReciterMeta)}
+                alt=""
+                onError={(event) => { event.currentTarget.style.display = 'none'; }}
+              />
+            </span>
+            <span className="reader-reciter-copy">
+              <span>{getReciterDisplayName(selectedReciterMeta)}</span>
+            </span>
+            <ChevronDown size={17} />
+          </button>
+
+          <div className="reader-audio-times reader-audio-times-above" dir="ltr">
+            <span>{formatTime(duration || 0)}</span>
+            <span>{formatTime(displayedTime)}</span>
+          </div>
+
+          <div className="reader-audio-waveform reader-audio-wave-line" style={{ '--audio-progress': progressRatio }}>
+            <div className="reader-audio-wave-track" aria-hidden="true">
+              <span className="reader-audio-wave-remaining" />
+              <span className="reader-audio-wave-played" />
+              <span className="reader-audio-wave-thumb" />
+            </div>
+            <input
+              className="reader-audio-progress reader-audio-progress-overlay"
+              dir="rtl"
+              type="range"
+              min="0"
+              max={duration || 0}
+              value={Math.min(currentTime, duration || 0)}
+              onChange={(event) => seek(event.target.value)}
+              aria-label="Audio progress"
+            />
+          </div>
+
+          <div className="reader-transport-row reader-transport-modern">
+            <button className={repeat ? 'transport-active' : ''} onClick={() => setAudioRepeat(!repeat)} aria-label="Repeat ayah">
+              <Repeat size={22} />
+            </button>
+            <button onClick={() => moveAyah(-1)} aria-label="Previous ayah"><SkipBack size={24} fill="currentColor" /></button>
+            <button className="transport-main" onClick={togglePlay} aria-label={playing ? 'Pause' : 'Play'}>
+              {playing ? <Pause size={29} fill="currentColor" /> : <Play size={29} fill="currentColor" />}
+            </button>
+            <button onClick={() => moveAyah(1)} aria-label="Next ayah"><SkipForward size={24} fill="currentColor" /></button>
+            <button className="transport-speed" onClick={cycleSpeed} aria-label="Playback speed">
+              {audioPlaybackRate || settings.playbackRate || 1}x
+            </button>
+          </div>
+
+          {status && <p className="reader-audio-status">{status}</p>}
+        </section>
+      </div>
+
+      {reciterPickerOpen && (
+        <div
+          className="reader-reciter-sheet"
+          role="presentation"
+          data-reader-ui
+          onClick={() => setReciterPickerOpen(false)}
+        >
+          <div
+            className="reader-reciter-sheet-card"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Select reciter"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="reader-reciter-sheet-handle" aria-hidden="true" />
+            <div className="reader-reciter-sheet-head">
+              <strong>Select Reciter</strong>
+              <button type="button" onClick={() => setReciterPickerOpen(false)} aria-label="Close reciter list"><X size={19} /></button>
+            </div>
+            <label className="reader-reciter-search">
+              <Search size={18} aria-hidden="true" />
+              <input
+                value={reciterSearch}
+                onChange={(event) => setReciterSearch(event.target.value)}
+                placeholder="Search reciters"
+              />
+            </label>
+            <div className="reader-reciter-list" role="listbox" aria-label="Reciters">
+              {filteredReciters.map((reciter) => {
+                const isSelected = reciter.id === selectedReciter;
+                return (
+                  <button
+                    key={reciter.id}
+                    type="button"
+                    className={isSelected ? 'reader-reciter-list-item selected' : 'reader-reciter-list-item'}
+                    onClick={() => selectReciter(reciter.id)}
+                    role="option"
+                    aria-selected={isSelected}
+                  >
+                    <span className="reader-reciter-avatar" aria-hidden="true">
+                      <img
+                        src={getReciterImageSrc(reciter)}
+                        alt=""
+                        onError={(event) => { event.currentTarget.style.display = 'none'; }}
+                      />
+                    </span>
+                    <span>
+                      {getReciterDisplayName(reciter)}
+                    </span>
+                    <span className="reader-reciter-check" aria-hidden="true">
+                      {isSelected ? <Check size={19} /> : <span className="reader-reciter-option-radio" />}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
-        )}
-      </section>
-    </div>
+        </div>
+      )}
+    </>
   );
 }
 

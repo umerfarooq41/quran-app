@@ -1679,6 +1679,23 @@ body,
   color: #5ff0b0 !important;
 }
 
+.reader-reciter-sheet {
+  pointer-events: auto !important;
+}
+
+.reader-reciter-sheet-card {
+  pointer-events: auto !important;
+}
+
+.reader-reciter-option-radio {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, .58);
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .08);
+}
+
 @media (max-width: 370px) {
   .reader-reciter-sheet {
     padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 228px) !important;
