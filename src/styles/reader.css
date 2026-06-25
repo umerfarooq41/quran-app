@@ -591,6 +591,40 @@
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.16), 0 2px 8px rgba(0,0,0,0.34);
 }
 
+.ayah-bookmark-picker {
+  display: grid;
+  width: 220px;
+  min-height: 42px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3px;
+  margin-top: 6px;
+  border: 1px solid var(--ayah-tooltip-border);
+  border-radius: 19px;
+  background: var(--ayah-tooltip-bg);
+  padding: 3px;
+  color: var(--ayah-tooltip-color);
+  box-shadow: var(--ayah-tooltip-shadow);
+}
+
+.ayah-bookmark-picker button {
+  min-width: 0;
+  border-radius: 16px;
+  color: var(--ayah-tooltip-color);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1;
+}
+
+.ayah-bookmark-picker button:active {
+  background: rgba(36,82,105,0.14);
+  color: #245269;
+}
+
+[data-theme='dark'] .ayah-bookmark-picker button:active {
+  background: rgba(134,239,172,0.16);
+  color: #86EFAC;
+}
+
 .reader-page .reader-ayah-highlight-amber { background: rgba(250, 204, 21, .24); }
 .reader-page .reader-ayah-highlight-emerald { background: rgba(134, 239, 172, .24); }
 .reader-page .reader-ayah-highlight-sky { background: rgba(147, 197, 253, .24); }

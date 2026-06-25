@@ -14,9 +14,15 @@ import { getJuzForReference } from '../../../data/quranMeta';
 const TOOLTIP_WIDTH = 220;
 const TOOLTIP_HEIGHT = 48;
 const CHIP_ROW_HEIGHT = 48;
+const BOOKMARK_PICKER_HEIGHT = 50;
 const TOOLTIP_GAP = 12;
 const VIEWPORT_EDGE = 8;
 const DEFAULT_BOOKMARK = 'Reading';
+const BOOKMARK_TYPES = [
+  { category: 'Reading', label: 'Recite' },
+  { category: 'Memorize', label: 'Memorize' },
+  { category: 'Tadabbur', label: 'Tadabbur' },
+];
 const HIGHLIGHT_COLORS = [
   { id: 'amber', label: 'Yellow', value: '#FACC15' },
   { id: 'emerald', label: 'Green', value: '#86EFAC' },
@@ -34,11 +40,17 @@ export function AyahActionSheet({
 }) {
   const [annotations, setAnnotations] = useState({ highlight: null, bookmarks: [] });
   const [highlightPaletteOpen, setHighlightPaletteOpen] = useState(false);
-  const placement = useMemo(() => getTooltipPlacement(ayah, highlightPaletteOpen), [
+  const [bookmarkPickerOpen, setBookmarkPickerOpen] = useState(false);
+  const placement = useMemo(() => getTooltipPlacement({
+    ayah,
+    highlightPaletteOpen,
+    bookmarkPickerOpen,
+  }), [
     ayah?.selectedWordRect,
     ayah?.ayahRect,
     ayah?.pointer,
     highlightPaletteOpen,
+    bookmarkPickerOpen,
   ]);
 
   useEffect(() => {
@@ -47,6 +59,7 @@ export function AyahActionSheet({
     if (!ayah?.surahNumber || !ayah?.ayahNumber) return undefined;
 
     setHighlightPaletteOpen(false);
+    setBookmarkPickerOpen(false);
     getAyahAnnotations(ayah.surahNumber, ayah.ayahNumber)
       .then((nextAnnotations) => {
         if (mounted) setAnnotations(nextAnnotations);
@@ -66,7 +79,7 @@ export function AyahActionSheet({
   const reference = ayah.reference || `${ayah.surahNumber}:${ayah.ayahNumber}`;
   const surah = getSurah(ayah.surahNumber);
   const highlightColor = getHighlightColor(annotations.highlight?.color);
-  const readingBookmark = annotations.bookmarks.find((item) => item.category === DEFAULT_BOOKMARK);
+  const savedBookmark = getActiveBookmark(annotations.bookmarks);
 
   async function handleHighlightClick() {
     if (annotations.highlight) {
@@ -76,6 +89,7 @@ export function AyahActionSheet({
       return;
     }
 
+    setBookmarkPickerOpen(false);
     setHighlightPaletteOpen(true);
   }
 
@@ -103,19 +117,32 @@ export function AyahActionSheet({
     onClose?.();
   }
 
-  async function toggleBookmark() {
-    if (readingBookmark?.id) {
-      await removeAyahBookmark(readingBookmark.id);
-    } else {
-      await saveAyahBookmark({
-        page,
-        surahNumber: ayah.surahNumber,
-        ayahNumber: ayah.ayahNumber,
-        category: DEFAULT_BOOKMARK,
-        note: '',
-        preview: ayah.text,
-      });
+  async function handleBookmarkClick() {
+    if (savedBookmark) {
+      await Promise.all(
+        annotations.bookmarks
+          .filter((bookmark) => bookmark?.id)
+          .map((bookmark) => removeAyahBookmark(bookmark.id)),
+      );
+
+      onAnnotationsChanged?.();
+      onClose?.();
+      return;
     }
+
+    setHighlightPaletteOpen(false);
+    setBookmarkPickerOpen(true);
+  }
+
+  async function chooseBookmark(category) {
+    await saveAyahBookmark({
+      page,
+      surahNumber: ayah.surahNumber,
+      ayahNumber: ayah.ayahNumber,
+      category: category || DEFAULT_BOOKMARK,
+      note: '',
+      preview: ayah.text,
+    });
 
     onAnnotationsChanged?.();
     onClose?.();
@@ -187,8 +214,8 @@ export function AyahActionSheet({
           <TooltipButton
             label="Bookmark"
             icon={Bookmark}
-            active={Boolean(readingBookmark)}
-            onClick={toggleBookmark}
+            active={Boolean(savedBookmark)}
+            onClick={handleBookmarkClick}
           />
           <TooltipButton label="Play" icon={Play} onClick={playAyah} filled />
           <TooltipButton label="Share" icon={Share2} onClick={shareAyah} />
@@ -205,6 +232,20 @@ export function AyahActionSheet({
                 onClick={() => chooseHighlight(color.id)}
               >
                 <span style={{ background: color.value }} />
+              </button>
+            ))}
+          </div>
+        )}
+
+        {bookmarkPickerOpen && !savedBookmark && (
+          <div className="ayah-bookmark-picker" aria-label="Bookmark type">
+            {BOOKMARK_TYPES.map((type) => (
+              <button
+                key={type.category}
+                type="button"
+                onClick={() => chooseBookmark(type.category)}
+              >
+                {type.label}
               </button>
             ))}
           </div>
@@ -232,10 +273,16 @@ function TooltipButton({ label, icon: Icon, active = false, filled = false, colo
   );
 }
 
-function getTooltipPlacement(ayah, paletteOpen = false) {
+function getTooltipPlacement({
+  ayah,
+  highlightPaletteOpen = false,
+  bookmarkPickerOpen = false,
+}) {
   const viewportWidth = typeof window === 'undefined' ? 390 : window.innerWidth;
   const viewportHeight = typeof window === 'undefined' ? 844 : window.innerHeight;
-  const tooltipHeight = TOOLTIP_HEIGHT + (paletteOpen ? CHIP_ROW_HEIGHT : 0);
+  const tooltipHeight = TOOLTIP_HEIGHT
+    + (highlightPaletteOpen ? CHIP_ROW_HEIGHT : 0)
+    + (bookmarkPickerOpen ? BOOKMARK_PICKER_HEIGHT : 0);
   const anchor = getAnchorRect(ayah);
   const anchorCenterX = anchor.left + (anchor.width / 2);
   const left = clamp(
@@ -248,7 +295,7 @@ function getTooltipPlacement(ayah, paletteOpen = false) {
   const canShowAbove = spaceAbove >= TOOLTIP_HEIGHT + TOOLTIP_GAP;
   const showAbove = canShowAbove || spaceBelow < TOOLTIP_HEIGHT + TOOLTIP_GAP;
   const rawTop = showAbove
-    ? anchor.top - TOOLTIP_HEIGHT - TOOLTIP_GAP
+    ? anchor.top - tooltipHeight - TOOLTIP_GAP
     : anchor.bottom + TOOLTIP_GAP;
   const top = clamp(
     rawTop,
@@ -267,6 +314,10 @@ function getTooltipPlacement(ayah, paletteOpen = false) {
 
 function getHighlightColor(colorId) {
   return HIGHLIGHT_COLORS.find((color) => color.id === colorId) || null;
+}
+
+function getActiveBookmark(bookmarks = []) {
+  return bookmarks.find((bookmark) => bookmark?.id) || null;
 }
 
 function getAnchorRect(ayah) {
