@@ -1657,6 +1657,7 @@ body {
 .ayah-translation-text {
   margin: 0;
   color: var(--translation-card-text);
+  font-family: "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", "Nafees Nastaleeq", "Urdu Typesetting", IndopakNastaleeq, "Noto Naskh Arabic", "Segoe UI", Tahoma, serif;
   font-size: 15.5px;
   line-height: 1.7;
   text-align: start;
