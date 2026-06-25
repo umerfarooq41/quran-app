@@ -1658,8 +1658,8 @@ body {
   margin: 0;
   color: var(--translation-card-text);
   font-family: "Jameel Noori Nastaleeq", "Noto Nastaliq Urdu", "Nafees Nastaleeq", "Urdu Typesetting", IndopakNastaleeq, "Noto Naskh Arabic", "Segoe UI", Tahoma, serif;
-  font-size: 15.5px;
-  line-height: 1.7;
+  font-size: 17px;
+  line-height: 2;
   text-align: start;
 }
 
