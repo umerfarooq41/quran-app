@@ -107,6 +107,7 @@ export default function ReaderScreen() {
   const [annotationVersion, setAnnotationVersion] = useState(0);
   const [quarterFlashTarget, setQuarterFlashTarget] = useState(null);
   const suppressTapUntil = useRef(0);
+  const suppressAyahInteractionUntil = useRef(0);
   const copyToastTimer = useRef(0);
   const previousAudioTargetKey = useRef(
     audioTarget ? `${audioTarget.surahNumber}:${audioTarget.ayahNumber}` : '',
@@ -263,7 +264,7 @@ export default function ReaderScreen() {
   }
 
   function selectAyah(line, lineIndex, selection) {
-    if (readerInteractionsBlocked) {
+    if (readerInteractionsBlocked || isAyahInteractionSuppressed()) {
       suppressTapUntil.current = Date.now() + 700;
       dismissVisibleReaderUi();
       return;
@@ -300,7 +301,7 @@ export default function ReaderScreen() {
 
   function openTranslationCard(line, lineIndex, selection) {
     if (line.type !== 'ayah' || !line.surahNumber || !line.ayahStart) return;
-    if (readerInteractionsBlocked) {
+    if (readerInteractionsBlocked || isAyahInteractionSuppressed()) {
       dismissVisibleReaderUi();
       return;
     }
@@ -314,7 +315,16 @@ export default function ReaderScreen() {
     });
   }
 
+  function suppressAyahInteractions(duration = 700) {
+    suppressAyahInteractionUntil.current = Date.now() + duration;
+  }
+
+  function isAyahInteractionSuppressed() {
+    return Date.now() < suppressAyahInteractionUntil.current;
+  }
+
   function dismissVisibleReaderUi() {
+    suppressAyahInteractions();
     if (translationTarget) setTranslationTarget(null);
     if (ayahTooltipVisible) closeAyahSheet();
     if (shareSheetVisible) closeShareSheet();
@@ -344,6 +354,11 @@ export default function ReaderScreen() {
     showReaderChrome();
   }
 
+  function handleReaderPointerDownCapture(event) {
+    if (event.target.closest('[data-reader-ui]')) return;
+    if (readerInteractionsBlocked) suppressAyahInteractions();
+  }
+
   function handleReaderTap(event) {
     if (Date.now() < suppressTapUntil.current) return;
     if (event.target.closest('[data-reader-ui]')) return;
@@ -371,6 +386,7 @@ export default function ReaderScreen() {
   return (
     <section
       className="fixed inset-0 overflow-hidden bg-reader text-slate-950"
+      onPointerDownCapture={handleReaderPointerDownCapture}
       onClick={handleReaderTap}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
