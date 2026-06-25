@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ChevronDown, Pause, Play, Repeat, SkipBack, SkipForward, X } from 'lucide-react';
+import { Check, ChevronDown, Pause, Play, Repeat, Search, SkipBack, SkipForward, X } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { VIEWS } from '../../../app/routes';
 import { findPageForReference, getSurah, quranAyahs } from '../../../lib/quran';
@@ -23,6 +23,12 @@ const WAVEFORM_BARS = [
 
 function getReciterDisplayName(reciter) {
   return reciter?.displayName || reciter?.reciter_name || reciter?.name || 'Reciter';
+}
+
+function getReciterImageSrc(reciter) {
+  const name = getReciterDisplayName(reciter);
+  const extension = reciter?.id === 'mishari-rashid-al-afasy' ? 'jpeg' : 'png';
+  return `/reciters/${encodeURIComponent(name)}.${extension}`;
 }
 
 export function ReaderAudioPanel() {
@@ -75,6 +81,8 @@ export function ReaderAudioPanel() {
   const repeatRef = useRef(repeat);
   const playbackRateRef = useRef(audioPlaybackRate || settings.playbackRate || 1);
   const unmountedRef = useRef(false);
+  const [reciterSheetOpen, setReciterSheetOpen] = useState(false);
+  const [reciterQuery, setReciterQuery] = useState('');
 
   const reciters = useMemo(() => normalizeLocalReciters(), []);
   const selectedReciter = audioReciter || settings.reciter || getDefaultReciterId();
@@ -82,6 +90,11 @@ export function ReaderAudioPanel() {
     () => reciters.find((reciter) => reciter.id === selectedReciter) || reciters[0],
     [reciters, selectedReciter],
   );
+  const filteredReciters = useMemo(() => {
+    const query = reciterQuery.trim().toLowerCase();
+    if (!query) return reciters;
+    return reciters.filter((reciter) => getReciterDisplayName(reciter).toLowerCase().includes(query));
+  }, [reciterQuery, reciters]);
   const [status, setStatus] = useState('');
 
   const surah = ayah?.surahNumber ? getSurah(ayah.surahNumber) : null;
@@ -502,24 +515,26 @@ export function ReaderAudioPanel() {
           <button onClick={closePlayer} aria-label="Close audio player"><X size={18} /></button>
         </div>
 
-        <label className="reader-reciter-row reader-reciter-pill">
+        <button
+          type="button"
+          className="reader-reciter-row reader-reciter-pill"
+          onClick={() => setReciterSheetOpen(true)}
+          aria-haspopup="dialog"
+          aria-expanded={reciterSheetOpen}
+        >
           <span className="reader-reciter-avatar" aria-hidden="true">
             <img
-              src={`/reciters/${selectedReciter}.png`}
+              src={getReciterImageSrc(selectedReciterMeta)}
               alt=""
               onError={(event) => { event.currentTarget.style.display = 'none'; }}
             />
           </span>
           <span className="reader-reciter-copy">
             <span>{getReciterDisplayName(selectedReciterMeta)}</span>
+            <small>Bundled audio • Ready</small>
           </span>
-          <select value={selectedReciter} onChange={(event) => updateSettings({ reciter: event.target.value })}>
-            {reciters.map((reciter) => (
-              <option key={reciter.id} value={reciter.id}>{getReciterDisplayName(reciter)}</option>
-            ))}
-          </select>
           <ChevronDown size={17} />
-        </label>
+        </button>
 
         <div className="reader-audio-times reader-audio-times-above" dir="ltr">
           <span>{formatTime(currentTime)}</span>
@@ -567,6 +582,68 @@ export function ReaderAudioPanel() {
         </div>
 
         {status && <p className="reader-audio-status">{status}</p>}
+        {reciterSheetOpen && (
+          <div className="reader-reciter-sheet-backdrop" onClick={() => setReciterSheetOpen(false)}>
+            <section
+              className="reader-reciter-sheet"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Select reciter"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <div className="reader-reciter-sheet-handle" aria-hidden="true" />
+              <div className="reader-reciter-sheet-head">
+                <strong>Select Reciter</strong>
+                <button type="button" onClick={() => setReciterSheetOpen(false)} aria-label="Close reciter list">
+                  <X size={18} />
+                </button>
+              </div>
+              <label className="reader-reciter-search">
+                <Search size={16} />
+                <input
+                  type="search"
+                  value={reciterQuery}
+                  onChange={(event) => setReciterQuery(event.target.value)}
+                  placeholder="Search reciters"
+                />
+              </label>
+              <div className="reader-reciter-list" role="listbox" aria-label="Available reciters">
+                {filteredReciters.map((reciter) => {
+                  const isSelected = reciter.id === selectedReciter;
+                  return (
+                    <button
+                      type="button"
+                      key={reciter.id}
+                      className={`reader-reciter-option ${isSelected ? 'reader-reciter-option-selected' : ''}`}
+                      onClick={() => {
+                        updateSettings({ reciter: reciter.id });
+                        setReciterSheetOpen(false);
+                        setReciterQuery('');
+                      }}
+                      role="option"
+                      aria-selected={isSelected}
+                    >
+                      <span className="reader-reciter-option-avatar" aria-hidden="true">
+                        <img
+                          src={getReciterImageSrc(reciter)}
+                          alt=""
+                          onError={(event) => { event.currentTarget.style.display = 'none'; }}
+                        />
+                      </span>
+                      <span className="reader-reciter-option-copy">
+                        <span>{getReciterDisplayName(reciter)}</span>
+                        <small>Bundled audio • Ready</small>
+                      </span>
+                      <span className="reader-reciter-option-check" aria-hidden="true">
+                        {isSelected && <Check size={17} />}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+          </div>
+        )}
       </section>
     </div>
   );
