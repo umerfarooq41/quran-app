@@ -484,38 +484,42 @@
   background: transparent;
 }
 
-.ayah-action-tooltip {
-  --ayah-tooltip-bg: rgba(255,255,255,0.96);
-  --ayah-tooltip-border: rgba(15,23,42,0.08);
+.ayah-action-tooltip-wrap {
+  --ayah-tooltip-bg: #FFFFFF;
+  --ayah-tooltip-border: rgba(15,23,42,0.10);
   --ayah-tooltip-color: #1F2933;
-  --ayah-tooltip-shadow: 0 8px 24px rgba(15,23,42,0.16);
+  --ayah-tooltip-shadow: 0 10px 28px rgba(15,23,42,0.18);
 
+  position: fixed;
+  z-index: 89;
+  width: 236px;
+  color: var(--ayah-tooltip-color);
+}
+
+.ayah-action-tooltip {
   position: relative;
   display: grid;
-  width: 220px;
-  height: 48px;
-  grid-template-columns: repeat(5, 40px);
+  width: 236px;
+  height: 56px;
+  grid-template-columns: repeat(5, 44px);
   align-items: center;
   justify-content: space-between;
   border: 1px solid var(--ayah-tooltip-border);
-  border-radius: 24px;
+  border-radius: 28px;
   background: var(--ayah-tooltip-bg);
-  padding: 6px 10px;
+  padding: 6px 8px;
   color: var(--ayah-tooltip-color);
   box-shadow: var(--ayah-tooltip-shadow);
-}
-
-.ayah-action-tooltip-wrap {
-  position: fixed;
-  width: 220px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .ayah-action-tooltip::after {
   content: '';
   position: absolute;
   left: var(--ayah-tooltip-arrow-x);
-  width: 10px;
-  height: 10px;
+  width: 11px;
+  height: 11px;
   background: var(--ayah-tooltip-bg);
   transform: translateX(-50%) rotate(45deg);
   border: 1px solid var(--ayah-tooltip-border);
@@ -537,10 +541,10 @@
   position: relative;
   z-index: 1;
   display: grid;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   place-items: center;
-  border-radius: 20px;
+  border-radius: 22px;
   color: var(--ayah-tooltip-color);
 }
 
@@ -553,11 +557,11 @@
   transform: scale(.94);
 }
 
-[data-theme='dark'] .ayah-action-tooltip {
-  --ayah-tooltip-bg: rgba(24,24,27,0.96);
+[data-theme='dark'] .ayah-action-tooltip-wrap {
+  --ayah-tooltip-bg: #18181B;
   --ayah-tooltip-border: rgba(255,255,255,0.10);
   --ayah-tooltip-color: #F5F5F5;
-  --ayah-tooltip-shadow: 0 8px 24px rgba(0,0,0,0.50);
+  --ayah-tooltip-shadow: 0 10px 30px rgba(0,0,0,0.54);
 }
 
 [data-theme='dark'] .ayah-action-tooltip button.is-active {
@@ -566,23 +570,32 @@
 
 .ayah-highlight-chip-row {
   display: grid;
-  height: 40px;
-  grid-template-columns: repeat(5, 40px);
+  width: 236px;
+  min-height: 58px;
+  grid-template-columns: repeat(5, 44px);
   justify-content: space-between;
-  margin-top: 8px;
+  margin-top: 12px;
+  border: 1px solid var(--ayah-tooltip-border);
+  border-radius: 22px;
+  background: var(--ayah-tooltip-bg);
+  padding: 7px 8px;
+  box-shadow: var(--ayah-tooltip-shadow);
+  animation: ayahTooltipPanelIn .18s ease-out both;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .ayah-highlight-chip-row button {
   display: grid;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   place-items: center;
-  border-radius: 20px;
+  border-radius: 22px;
 }
 
 .ayah-highlight-chip-row span {
-  width: 24px;
-  height: 24px;
+  width: 30px;
+  height: 30px;
   border-radius: 999px;
   box-shadow: inset 0 0 0 1px rgba(15,23,42,0.10), 0 2px 7px rgba(15,23,42,0.12);
 }
@@ -593,36 +606,82 @@
 
 .ayah-bookmark-picker {
   display: grid;
-  width: 220px;
-  min-height: 42px;
+  width: 236px;
+  min-height: 50px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 3px;
-  margin-top: 6px;
+  gap: 6px;
+  margin-top: 12px;
   border: 1px solid var(--ayah-tooltip-border);
-  border-radius: 19px;
+  border-radius: 22px;
   background: var(--ayah-tooltip-bg);
-  padding: 3px;
+  padding: 6px;
   color: var(--ayah-tooltip-color);
   box-shadow: var(--ayah-tooltip-shadow);
+  animation: ayahTooltipPanelIn .16s ease-out both;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .ayah-bookmark-picker button {
   min-width: 0;
-  border-radius: 16px;
-  color: var(--ayah-tooltip-color);
+  min-height: 38px;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 17px;
+  padding: 0 7px;
   font-size: 12px;
   font-weight: 650;
   line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ayah-bookmark-picker-emerald {
+  background: #e4f7ef;
+  color: #2f7462;
+}
+
+.ayah-bookmark-picker-amber {
+  background: #fff2d5;
+  color: #a46f09;
+}
+
+.ayah-bookmark-picker-rose {
+  background: #fbe4eb;
+  color: #a9365b;
 }
 
 .ayah-bookmark-picker button:active {
-  background: rgba(36,82,105,0.14);
-  color: #245269;
+  filter: saturate(1.08) brightness(.97);
 }
 
 [data-theme='dark'] .ayah-bookmark-picker button:active {
-  background: rgba(134,239,172,0.16);
-  color: #86EFAC;
+  filter: saturate(1.08) brightness(.93);
+}
+
+@keyframes ayahTooltipPanelIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ayahTooltipPanelFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ayah-highlight-chip-row,
+  .ayah-bookmark-picker {
+    animation-name: ayahTooltipPanelFadeIn;
+    animation-duration: .08s;
+    transform: none;
+  }
 }
 
 .reader-copy-toast {

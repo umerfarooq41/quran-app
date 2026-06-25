@@ -12,7 +12,7 @@ import { useAppStore } from '../store/useAppStore';
 import { BackButton, Empty, Screen } from '../components/common/AppChrome';
 
 const BOOKMARK_TYPES = [
-  { category: 'Reading', label: 'Recite', tone: 'emerald' },
+  { category: 'Reading', label: 'Recitation', tone: 'emerald' },
   { category: 'Memorize', label: 'Memorize', tone: 'amber' },
   { category: 'Tadabbur', label: 'Tadabbur', tone: 'rose' },
 ];

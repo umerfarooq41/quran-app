@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Bookmark, Copy, Highlighter, Play, Share2 } from 'lucide-react';
 import {
   getAyahAnnotations,
@@ -11,17 +11,17 @@ import {
 import { findPageForReference, getSurah } from '../../../lib/quran';
 import { getJuzForReference } from '../../../data/quranMeta';
 
-const TOOLTIP_WIDTH = 220;
-const TOOLTIP_HEIGHT = 48;
-const CHIP_ROW_HEIGHT = 48;
-const BOOKMARK_PICKER_HEIGHT = 50;
+const TOOLTIP_WIDTH = 236;
+const TOOLTIP_HEIGHT = 56;
+const CHIP_ROW_HEIGHT = 70;
+const BOOKMARK_PICKER_HEIGHT = 62;
 const TOOLTIP_GAP = 12;
 const VIEWPORT_EDGE = 8;
 const DEFAULT_BOOKMARK = 'Reading';
 const BOOKMARK_TYPES = [
-  { category: 'Reading', label: 'Recite' },
-  { category: 'Memorize', label: 'Memorize' },
-  { category: 'Tadabbur', label: 'Tadabbur' },
+  { category: 'Reading', label: 'Recitation', tone: 'emerald' },
+  { category: 'Memorize', label: 'Memorize', tone: 'amber' },
+  { category: 'Tadabbur', label: 'Tadabbur', tone: 'rose' },
 ];
 const HIGHLIGHT_COLORS = [
   { id: 'amber', label: 'Yellow', value: '#FACC15' },
@@ -42,6 +42,7 @@ export function AyahActionSheet({
   const [annotations, setAnnotations] = useState({ highlight: null, bookmarks: [] });
   const [highlightPaletteOpen, setHighlightPaletteOpen] = useState(false);
   const [bookmarkPickerOpen, setBookmarkPickerOpen] = useState(false);
+  const reduceMotion = useReducedMotion();
   const placement = useMemo(() => getTooltipPlacement({
     ayah,
     highlightPaletteOpen,
@@ -186,10 +187,10 @@ export function AyahActionSheet({
   return (
     <div className="ayah-tooltip-backdrop" data-reader-ui onClick={closeTooltip}>
       <motion.div
-        initial={{ opacity: 0, scale: .94, y: placement.arrowPlacement === 'top' ? -4 : 4 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: .96 }}
-        transition={{ duration: .14, ease: 'easeOut' }}
+        initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: .94, y: placement.arrowPlacement === 'top' ? -4 : 4 }}
+        animate={reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
+        exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: .96 }}
+        transition={{ duration: reduceMotion ? .01 : .14, ease: 'easeOut' }}
         className="ayah-action-tooltip-wrap"
         style={{
           left: `${placement.left}px`,
@@ -245,6 +246,7 @@ export function AyahActionSheet({
               <button
                 key={type.category}
                 type="button"
+                className={`ayah-bookmark-picker-button ayah-bookmark-picker-${type.tone}`}
                 onClick={() => chooseBookmark(type.category)}
               >
                 {type.label}
