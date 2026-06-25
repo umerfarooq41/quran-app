@@ -16,6 +16,15 @@ function formatTime(seconds = 0) {
   return `${minutes}:${secs}`;
 }
 
+const WAVEFORM_BARS = [
+  7, 11, 16, 10, 20, 14, 24, 12, 18, 27, 15, 22, 32, 18, 26, 13, 21,
+  30, 16, 24, 11, 19, 28, 15, 23, 34, 20, 27, 13, 21, 17, 25, 12, 18,
+];
+
+function getReciterDisplayName(reciter) {
+  return reciter?.displayName || reciter?.reciter_name || reciter?.name || 'Reciter';
+}
+
 export function ReaderAudioPanel() {
   const {
     view,
@@ -69,15 +78,17 @@ export function ReaderAudioPanel() {
 
   const reciters = useMemo(() => normalizeLocalReciters(), []);
   const selectedReciter = audioReciter || settings.reciter || getDefaultReciterId();
+  const selectedReciterMeta = useMemo(
+    () => reciters.find((reciter) => reciter.id === selectedReciter) || reciters[0],
+    [reciters, selectedReciter],
+  );
   const [status, setStatus] = useState('');
 
   const surah = ayah?.surahNumber ? getSurah(ayah.surahNumber) : null;
   const reference = ayah?.surahNumber && ayah?.ayahNumber
     ? `${surah?.name || 'Surah'} ${ayah.surahNumber}:${ayah.ayahNumber}`
     : 'Audio player';
-  const progressPercent = duration > 0
-    ? Math.max(0, Math.min(100, (currentTime / duration) * 100))
-    : 0;
+  const progressRatio = duration > 0 ? Math.min(1, Math.max(0, currentTime / duration)) : 0;
 
   repeatRef.current = repeat;
   playbackRateRef.current = audioPlaybackRate || settings.playbackRate || 1;
@@ -484,48 +495,72 @@ export function ReaderAudioPanel() {
       className={`reader-audio-panel-wrap ${audioPlayerVisible ? 'reader-audio-panel-visible' : 'reader-audio-panel-hidden'} ${view === VIEWS.READER ? 'reader-audio-over-reader' : 'reader-audio-over-screen'}`}
       data-reader-ui
     >
-      <section className="reader-audio-panel">
-        <div className="reader-audio-head">
+      <section className="reader-audio-panel reader-audio-panel-modern">
+        <div className="reader-audio-head reader-audio-head-centered">
+          <span aria-hidden="true" />
           <strong>{reference}</strong>
           <button onClick={closePlayer} aria-label="Close audio player"><X size={18} /></button>
         </div>
 
-        <label className="reader-reciter-row">
-          <span className="reader-reciter-avatar" aria-hidden="true"> </span>
+        <label className="reader-reciter-row reader-reciter-pill">
+          <span className="reader-reciter-avatar" aria-hidden="true">
+            <img
+              src={`/reciters/${selectedReciter}.png`}
+              alt=""
+              onError={(event) => { event.currentTarget.style.display = 'none'; }}
+            />
+          </span>
+          <span className="reader-reciter-copy">
+            <span>{getReciterDisplayName(selectedReciterMeta)}</span>
+          </span>
           <select value={selectedReciter} onChange={(event) => updateSettings({ reciter: event.target.value })}>
             {reciters.map((reciter) => (
-              <option key={reciter.id} value={reciter.id}>{reciter.reciter_name || reciter.name}</option>
+              <option key={reciter.id} value={reciter.id}>{getReciterDisplayName(reciter)}</option>
             ))}
           </select>
-          <ChevronDown size={18} />
+          <ChevronDown size={17} />
         </label>
 
-        <input
-          className="reader-audio-progress"
-          dir="ltr"
-          type="range"
-          min="0"
-          max={duration || 0}
-          value={Math.min(currentTime, duration || 0)}
-          onChange={(event) => seek(event.target.value)}
-          aria-label="Audio progress"
-          style={{ '--audio-progress': `${progressPercent}%` }}
-        />
-
-        <div className="reader-audio-times" dir="ltr">
+        <div className="reader-audio-times reader-audio-times-above" dir="ltr">
           <span>{formatTime(currentTime)}</span>
-          <span>-{formatTime(Math.max(0, (duration || 0) - currentTime))}</span>
+          <span>{formatTime(duration || 0)}</span>
         </div>
 
-        <div className="reader-transport-row">
+        <div className="reader-audio-waveform" style={{ '--audio-progress': progressRatio }}>
+          <div className="reader-audio-wave-bars" aria-hidden="true">
+            {WAVEFORM_BARS.map((height, index) => {
+              const barProgress = (index + 1) / WAVEFORM_BARS.length;
+              const isPlayed = barProgress >= (1 - progressRatio);
+              return (
+                <span
+                  key={`${height}-${index}`}
+                  className={isPlayed ? 'wave-played' : undefined}
+                  style={{ '--wave-height': `${height}px` }}
+                />
+              );
+            })}
+          </div>
+          <input
+            className="reader-audio-progress reader-audio-progress-overlay"
+            dir="rtl"
+            type="range"
+            min="0"
+            max={duration || 0}
+            value={Math.min(currentTime, duration || 0)}
+            onChange={(event) => seek(event.target.value)}
+            aria-label="Audio progress"
+          />
+        </div>
+
+        <div className="reader-transport-row reader-transport-modern">
           <button className={repeat ? 'transport-active' : ''} onClick={() => setAudioRepeat(!repeat)} aria-label="Repeat ayah">
             <Repeat size={22} />
           </button>
-          <button onClick={() => moveAyah(-1)} aria-label="Previous ayah"><SkipBack size={23} /></button>
+          <button onClick={() => moveAyah(-1)} aria-label="Previous ayah"><SkipBack size={24} fill="currentColor" /></button>
           <button className="transport-main" onClick={togglePlay} aria-label={playing ? 'Pause' : 'Play'}>
-            {playing ? <Pause size={26} fill="currentColor" /> : <Play size={26} fill="currentColor" />}
+            {playing ? <Pause size={29} fill="currentColor" /> : <Play size={29} fill="currentColor" />}
           </button>
-          <button onClick={() => moveAyah(1)} aria-label="Next ayah"><SkipForward size={23} /></button>
+          <button onClick={() => moveAyah(1)} aria-label="Next ayah"><SkipForward size={24} fill="currentColor" /></button>
           <button className="transport-speed" onClick={cycleSpeed} aria-label="Playback speed">
             {audioPlaybackRate || settings.playbackRate || 1}x
           </button>
