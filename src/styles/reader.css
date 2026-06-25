@@ -549,7 +549,7 @@
 }
 
 .ayah-action-tooltip button.is-active {
-  background: var(--ayah-tooltip-active-bg, rgba(31,41,51,0.08));
+  background: transparent;
   color: var(--ayah-tooltip-active-color, var(--ayah-tooltip-color));
 }
 
@@ -565,7 +565,7 @@
 }
 
 [data-theme='dark'] .ayah-action-tooltip button.is-active {
-  background: var(--ayah-tooltip-active-bg, rgba(245,245,245,0.12));
+  background: transparent;
 }
 
 .ayah-highlight-chip-row {

@@ -23,6 +23,12 @@ const BOOKMARK_TYPES = [
   { category: 'Memorize', label: 'Memorize', tone: 'amber' },
   { category: 'Tadabbur', label: 'Tadabbur', tone: 'rose' },
 ];
+const BOOKMARK_ICON_COLORS = {
+  Reading: '#2f7462',
+  Recitation: '#2f7462',
+  Memorize: '#a46f09',
+  Tadabbur: '#a9365b',
+};
 const HIGHLIGHT_COLORS = [
   { id: 'amber', label: 'Yellow', value: '#FACC15' },
   { id: 'emerald', label: 'Green', value: '#86EFAC' },
@@ -218,6 +224,7 @@ export function AyahActionSheet({
             label="Bookmark"
             icon={Bookmark}
             active={Boolean(savedBookmark)}
+            color={getBookmarkIconColor(savedBookmark)}
             onClick={handleBookmarkClick}
           />
           <TooltipButton label="Play" icon={Play} onClick={playAyah} filled />
@@ -324,6 +331,10 @@ function getTooltipPlacement({
 
 function getHighlightColor(colorId) {
   return HIGHLIGHT_COLORS.find((color) => color.id === colorId) || null;
+}
+
+function getBookmarkIconColor(bookmark) {
+  return BOOKMARK_ICON_COLORS[bookmark?.category] || '';
 }
 
 function getActiveBookmark(bookmarks = []) {
