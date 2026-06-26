@@ -44,7 +44,6 @@ export function MushafPage({
 }) {
   const pageRef = useRef(null);
   const [highlightRects, setHighlightRects] = useState({
-    juzStart: [],
     saved: [],
     savedWords: [],
     selection: [],
@@ -57,7 +56,7 @@ export function MushafPage({
   useLayoutEffect(() => {
     const pageElement = pageRef.current;
     if (!pageElement) {
-      setHighlightRects({ juzStart: [], saved: [], savedWords: [], selection: [], audio: [] });
+      setHighlightRects({ saved: [], savedWords: [], selection: [], audio: [] });
       return undefined;
     }
 
@@ -68,7 +67,6 @@ export function MushafPage({
     const measure = () => {
       if (disposed) return;
       setHighlightRects({
-        juzStart: getJuzStartLineRects(pageElement, juzStartLines),
         saved: getSavedHighlightRects(pageElement, pageData, savedHighlights),
         savedWords: getSavedWordHighlightRects(pageElement, pageData, savedHighlights),
         selection: selectedAyah
@@ -164,7 +162,6 @@ export function MushafPage({
     selectedAyah?.ayahNumber,
     activeAudioAyah?.surahNumber,
     activeAudioAyah?.ayahNumber,
-    juzStartLines,
     settings.fontScale,
   ]);
 
@@ -264,15 +261,12 @@ export function MushafPage({
       style={{ '--font-scale': settings.fontScale }}
     >
       <div className="reader-ayah-highlight-layer" aria-hidden="true">
-        {highlightRects.juzStart.map((rect, index) => (
+        {[...juzStartLines].map((lineNumber) => (
           <span
-            key={`juz-start-${rect.top}-${rect.left}-${index}`}
+            key={`juz-start-${lineNumber}`}
             className="reader-juz-start-line-band"
             style={{
-              left: `${rect.left}px`,
-              top: `${rect.top}px`,
-              width: `${rect.width}px`,
-              height: `${rect.height}px`,
+              gridRow: `${lineNumber} / span 1`,
             }}
           />
         ))}
@@ -402,25 +396,6 @@ function isBismillahOnlyAyahLine(line) {
       Number(line.ayahStart) === 1 &&
       Number(line.ayahEnd) === 1
   );
-}
-
-function getJuzStartLineRects(pageElement, lineNumbers) {
-  if (!pageElement || !lineNumbers?.size) return [];
-
-  const pageRect = pageElement.getBoundingClientRect();
-
-  return [...lineNumbers].flatMap((lineNumber) => {
-    const lineElement = pageElement.querySelector(`[data-quran-line="${lineNumber}"]`);
-    const lineRect = lineElement?.getBoundingClientRect();
-    if (!lineRect?.width || !lineRect?.height) return [];
-
-    return [{
-      left: 0,
-      top: lineRect.top - pageRect.top,
-      width: pageRect.width,
-      height: lineRect.height,
-    }];
-  });
 }
 
 function getSavedHighlightRects(pageElement, pageData, savedHighlights) {
