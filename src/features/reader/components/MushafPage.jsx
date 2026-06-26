@@ -8,7 +8,7 @@ import {
   getRangeHighlightRects,
 } from '../utils/ayahDomRange';
 import { QuranLine } from './QuranLine';
-import { JUZ_STARTS } from '../../../data/quranMeta';
+import indoPakParaQuarters from '../../../data/indoPakParaQuarters';
 
 const SAVED_HIGHLIGHTS = ['amber', 'emerald', 'rose', 'sky', 'violet'];
 const BOOKMARK_TONES = ['reading', 'memorize', 'tadabbur', 'notes'];
@@ -20,6 +20,12 @@ const LINE_FIT_EVENT = 'quran-line-fit';
 const MUSHAF_FONT_FAMILY = 'IndopakNastaleeq';
 const MUSHAF_FONT_SAMPLE = 'اللَّهُ';
 const MEASURE_DELAYS = [60, 180, 420];
+const INDO_PAK_JUZ_START_PAGES = new Set(
+  Object.values(indoPakParaQuarters)
+    .map((targets) => targets.find((target) => target.id === 'start')?.page)
+    .filter((page) => Number.isFinite(Number(page)))
+    .map(Number),
+);
 
 export function MushafPage({
   pageData,
@@ -370,22 +376,10 @@ export function MushafPage({
 function getJuzStartLineNumbers(pageData) {
   const lineNumbers = new Set();
   if (!pageData?.lines?.length) return lineNumbers;
+  if (!INDO_PAK_JUZ_START_PAGES.has(Number(pageData.page))) return lineNumbers;
 
-  JUZ_STARTS.forEach(([surahNumber, ayahNumber]) => {
-    const startLineIndex = pageData.lines.findIndex((line) => (
-      lineContainsReference(line, surahNumber, ayahNumber)
-    ));
-    if (startLineIndex < 0) return;
-
-    let startLine = pageData.lines[startLineIndex];
-    if (isBismillahOnlyAyahLine(startLine)) {
-      startLine = pageData.lines
-        .slice(startLineIndex + 1)
-        .find((line) => isReadableAyahLine(line));
-    }
-
-    if (startLine) lineNumbers.add(startLine.line);
-  });
+  const startLine = pageData.lines.find((line) => isReadableAyahLine(line));
+  if (startLine) lineNumbers.add(startLine.line);
 
   return lineNumbers;
 }
