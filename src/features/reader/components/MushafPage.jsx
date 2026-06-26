@@ -414,7 +414,6 @@ function getJuzStartLineRects(pageElement, lineNumbers) {
   if (!pageElement || !lineNumbers?.size) return [];
 
   const pageRect = pageElement.getBoundingClientRect();
-  const textAreaRect = getPageTextAreaRect(pageElement, pageRect);
 
   return [...lineNumbers].flatMap((lineNumber) => {
     const lineElement = pageElement.querySelector(`[data-quran-line="${lineNumber}"]`);
@@ -422,23 +421,12 @@ function getJuzStartLineRects(pageElement, lineNumbers) {
     if (!lineRect?.width || !lineRect?.height) return [];
 
     return [{
-      left: textAreaRect.left,
+      left: 0,
       top: lineRect.top - pageRect.top,
-      width: textAreaRect.width,
+      width: pageRect.width,
       height: lineRect.height,
     }];
   });
-}
-
-function getPageTextAreaRect(pageElement, pageRect) {
-  const style = window.getComputedStyle(pageElement);
-  const paddingLeft = parseFloat(style.paddingLeft) || 0;
-  const paddingRight = parseFloat(style.paddingRight) || 0;
-
-  return {
-    left: paddingLeft,
-    width: Math.max(0, pageRect.width - paddingLeft - paddingRight),
-  };
 }
 
 function getSavedHighlightRects(pageElement, pageData, savedHighlights) {
