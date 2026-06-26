@@ -2200,19 +2200,6 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
   box-shadow: none !important;
 }
 
-.index-replica-shell.app-page-shell .index-card,
-.index-replica-shell.app-page-shell .index-collapse-panel,
-.index-replica-shell.app-page-shell .index-surah-info-preview,
-[data-theme='dark'] .index-replica-shell.app-page-shell .index-card,
-[data-theme='dark'] .index-replica-shell.app-page-shell .index-collapse-panel,
-[data-theme='dark'] .index-replica-shell.app-page-shell .index-surah-info-preview {
-  background: transparent !important;
-  border-color: transparent !important;
-  box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-
 .tabs-screen.app-page-shell .library-tabs,
 [data-theme='dark'] .tabs-screen.app-page-shell .library-tabs {
   background: transparent !important;
@@ -2220,11 +2207,14 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
   box-shadow: none !important;
 }
 
-.tabs-screen.app-page-shell .tab-card,
+.tabs-screen.app-page-shell .tab-card:not(.is-swiped),
 .tabs-screen.app-page-shell .library-highlight-card,
-[data-theme='dark'] .tabs-screen.app-page-shell .tab-card,
+[data-theme='dark'] .tabs-screen.app-page-shell .tab-card:not(.is-swiped),
 [data-theme='dark'] .tabs-screen.app-page-shell .library-highlight-card {
   background: transparent !important;
+}
+
+.tabs-screen.app-page-shell .tab-card {
   box-shadow: none !important;
 }
 
@@ -2244,9 +2234,9 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
 
 .tabs-screen.app-page-shell .tab-card-surface,
 [data-theme='dark'] .tabs-screen.app-page-shell .tab-card-surface {
-  background: transparent !important;
-  border-color: transparent !important;
-  box-shadow: none !important;
+  border-color: var(--theme-border) !important;
+  background: var(--theme-surface-solid) !important;
+  box-shadow: 0 9px 24px var(--theme-shadow) !important;
 }
 
 .tabs-screen.app-page-shell .library-highlight-strip {
