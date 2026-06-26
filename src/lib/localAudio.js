@@ -11,6 +11,17 @@ export const RECITERS = [
 ];
 
 const audioCache = new Map();
+const DIRECT_AUDIO_BASE_BY_RECITER = Object.freeze({
+  'mishari-rashid-al-afasy': 'https://audio-cdn.tarteel.ai/quran/alafasy',
+  'abdur-rahman-as-sudais': 'https://audio.qurancdn.com/Sudais/mp3',
+  'abdul-basit-abdul-samad': 'https://audio-cdn.tarteel.ai/quran/abdulBasitMurattal',
+  'abu-bakr-al-shatri': 'https://audio-cdn.tarteel.ai/quran/abuBakrAlShatri',
+  'maher-al-mu-aiqly': 'https://audio-cdn.tarteel.ai/quran/maherAlMuaiqly',
+  'mahmoud-khalil-al-husary': 'https://audio-cdn.tarteel.ai/quran/husary',
+  'saad-al-ghamdi': 'https://audio-cdn.tarteel.ai/quran/ghamadi',
+  'saud-al-shuraim': 'https://audio-cdn.tarteel.ai/quran/saudAlShuraim',
+  'yasser-al-dosari': 'https://audio-cdn.tarteel.ai/quran/yasserAlDosari',
+});
 
 export function getDefaultReciterId() {
   return RECITERS[0]?.id || '';
@@ -37,9 +48,22 @@ export async function loadReciterAudio(reciterId) {
 }
 
 export async function getAudioUrl(reciterId, surahNumber, ayahNumber) {
+  const directUrl = getBundledAudioUrl(reciterId, surahNumber, ayahNumber);
+  if (directUrl) return directUrl;
+
   const data = await loadReciterAudio(reciterId);
   const key = `${Number(surahNumber)}:${Number(ayahNumber)}`;
   return data?.[key]?.audio_url || '';
+}
+
+export function getBundledAudioUrl(reciterId, surahNumber, ayahNumber) {
+  const baseUrl = DIRECT_AUDIO_BASE_BY_RECITER[reciterId || getDefaultReciterId()];
+  const surah = Number(surahNumber);
+  const ayah = Number(ayahNumber);
+
+  if (!baseUrl || !Number.isInteger(surah) || !Number.isInteger(ayah)) return '';
+
+  return `${baseUrl}/${String(surah).padStart(3, '0')}${String(ayah).padStart(3, '0')}.mp3`;
 }
 
 export function getNextAyahRef(surahNumber, ayahNumber, ayahs) {

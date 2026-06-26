@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Check, ChevronDown, Pause, Play, Repeat, SkipBack, SkipForward, X } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { VIEWS } from '../../../app/routes';
 import { findPageForReference, getSurah, quranAyahs } from '../../../lib/quran';
-import { getAudioUrl, getDefaultReciterId, normalizeLocalReciters } from '../../../lib/localAudio';
+import { getAudioUrl, getBundledAudioUrl, getDefaultReciterId, normalizeLocalReciters } from '../../../lib/localAudio';
 import { useAppStore } from '../../../store/useAppStore';
 
 const SPEEDS = [1, 1.25, 1.5, 2];
@@ -36,10 +37,13 @@ export function ReaderAudioPanel() {
     audioDuration: duration,
     audioPlaying: playing,
     audioRepeat: repeat,
+    audioPlayerActive,
     audioPlayerVisible,
     audioReciter,
     audioPlaybackRate,
     closeAudioPlayer,
+    showAudioPlayer,
+    hideAudioPlayer,
     setAudioTarget,
     setAudioQueue,
     setAudioProgress,
@@ -54,16 +58,20 @@ export function ReaderAudioPanel() {
     audioDuration: state.audioDuration,
     audioPlaying: state.audioPlaying,
     audioRepeat: state.audioRepeat,
+    audioPlayerActive: state.audioPlayerActive,
     audioPlayerVisible: state.audioPlayerVisible,
     audioReciter: state.audioReciter,
     audioPlaybackRate: state.audioPlaybackRate,
     closeAudioPlayer: state.closeAudioPlayer,
+    showAudioPlayer: state.showAudioPlayer,
+    hideAudioPlayer: state.hideAudioPlayer,
     setAudioTarget: state.setAudioTarget,
     setAudioQueue: state.setAudioQueue,
     setAudioProgress: state.setAudioProgress,
     setAudioPlaying: state.setAudioPlaying,
     setAudioRepeat: state.setAudioRepeat,
   })));
+  const nativeAudioRef = useRef(null);
   const currentAudioRef = useRef(null);
   const currentTargetRef = useRef(null);
   const currentReciterRef = useRef('');
@@ -80,6 +88,7 @@ export function ReaderAudioPanel() {
   const reciterPickerRef = useRef(null);
   const reciterNameWindowRef = useRef(null);
   const reciterNameTextRef = useRef(null);
+  const panelDragRef = useRef(null);
   const [visualTime, setVisualTime] = useState(currentTime || 0);
   const [reciterNameOverflow, setReciterNameOverflow] = useState(false);
   const [reciterNameScroll, setReciterNameScroll] = useState(0);
@@ -100,6 +109,7 @@ export function ReaderAudioPanel() {
     : 'Audio player';
   const displayedTime = playing && duration > 0 ? visualTime : currentTime;
   const progressRatio = duration > 0 ? Math.min(1, Math.max(0, displayedTime / duration)) : 0;
+  const panelExpanded = audioPlayerVisible;
   repeatRef.current = repeat;
   playbackRateRef.current = audioPlaybackRate || settings.playbackRate || 1;
 
@@ -162,6 +172,94 @@ export function ReaderAudioPanel() {
       updateSettings({ reciter: selectedReciter });
     }
   }, [settings.reciter, selectedReciter, updateSettings]);
+
+  useEffect(() => {
+    const unsubscribe = useAppStore.subscribe((state, previousState) => {
+      const activatedByUser = state.audioPlayerActive && !previousState.audioPlayerActive;
+      if (!activatedByUser || !state.audioPlaying || !state.audioTarget) return;
+
+      const reciterId = state.audioReciter || state.settings.reciter || getDefaultReciterId();
+      const target = normalizeTarget(state.audioTarget);
+      const directUrl = target
+        ? getBundledAudioUrl(reciterId, target.surahNumber, target.ayahNumber)
+        : '';
+
+      if (!target || !directUrl) return;
+
+      playIntentRef.current = true;
+      loadTarget(target, reciterId, true, { directUrl });
+    });
+
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    if (!('mediaSession' in navigator)) return undefined;
+
+    const mediaSession = navigator.mediaSession;
+    if (typeof window.MediaMetadata === 'function') {
+      const artworkSrc = getReciterImageSrc(selectedReciterMeta);
+      mediaSession.metadata = new window.MediaMetadata({
+        title: reference,
+        artist: selectedReciterName,
+        album: 'Quran Reader',
+        artwork: [
+          {
+            src: artworkSrc,
+            sizes: '512x512',
+            type: artworkSrc.endsWith('.jpeg') ? 'image/jpeg' : 'image/png',
+          },
+        ],
+      });
+    }
+
+    const handlers = [
+      ['play', () => {
+        playIntentRef.current = true;
+        setAudioPlaying(true);
+        startCurrentAudio();
+      }],
+      ['pause', () => {
+        playIntentRef.current = false;
+        currentAudioRef.current?.pause();
+        setAudioPlaying(false);
+      }],
+      ['previoustrack', () => moveAyah(-1)],
+      ['nexttrack', () => moveAyah(1)],
+    ];
+
+    handlers.forEach(([action, handler]) => {
+      try {
+        mediaSession.setActionHandler(action, handler);
+      } catch {
+        // Some browsers expose Media Session but not every action.
+      }
+    });
+
+    return () => {
+      handlers.forEach(([action]) => {
+        try {
+          mediaSession.setActionHandler(action, null);
+        } catch {
+          // No cleanup needed for unsupported actions.
+        }
+      });
+    };
+  }, [
+    reference,
+    selectedReciterName,
+    selectedReciterMeta,
+    selectedReciter,
+    ayah?.surahNumber,
+    ayah?.ayahNumber,
+  ]);
+
+  useEffect(() => {
+    if (!('mediaSession' in navigator)) return;
+
+    navigator.mediaSession.playbackState = playing ? 'playing' : 'paused';
+    syncMediaSessionPosition(currentAudioRef.current);
+  }, [playing, currentTime, duration]);
 
   useEffect(() => {
     if (!ayah?.surahNumber || !ayah?.ayahNumber) return;
@@ -250,6 +348,7 @@ export function ReaderAudioPanel() {
           audio.currentTime || 0,
           Number.isFinite(audio.duration) ? audio.duration : 0,
         );
+        syncMediaSessionPosition(audio);
       },
       durationchange: () => {
         if (audio !== currentAudioRef.current) return;
@@ -257,6 +356,7 @@ export function ReaderAudioPanel() {
           audio.currentTime || 0,
           Number.isFinite(audio.duration) ? audio.duration : 0,
         );
+        syncMediaSessionPosition(audio);
       },
       timeupdate: () => {
         if (audio !== currentAudioRef.current) return;
@@ -265,6 +365,7 @@ export function ReaderAudioPanel() {
           audio.currentTime || 0,
           Number.isFinite(audio.duration) ? audio.duration : 0,
         );
+        syncMediaSessionPosition(audio);
         const remaining = (audio.duration || 0) - (audio.currentTime || 0);
         if (remaining > 0 && remaining <= PRELOAD_THRESHOLD_SECONDS) {
           ensureNextPreloaded(currentTargetRef.current, currentReciterRef.current);
@@ -318,6 +419,25 @@ export function ReaderAudioPanel() {
     audio.load();
   }
 
+  function syncMediaSessionPosition(audio) {
+    if (!audio || !('mediaSession' in navigator) || !navigator.mediaSession.setPositionState) {
+      return;
+    }
+
+    const mediaDuration = Number.isFinite(audio.duration) ? audio.duration : 0;
+    if (!mediaDuration) return;
+
+    try {
+      navigator.mediaSession.setPositionState({
+        duration: mediaDuration,
+        playbackRate: audio.playbackRate || 1,
+        position: Math.min(mediaDuration, Math.max(0, audio.currentTime || 0)),
+      });
+    } catch {
+      // Position state is advisory and may reject partial media metadata.
+    }
+  }
+
   function disposePreload() {
     const preload = preloadRef.current;
     preloadRef.current = null;
@@ -341,6 +461,19 @@ export function ReaderAudioPanel() {
     );
   }
 
+  function installAudioUrl(url, target, reciterId) {
+    const audio = nativeAudioRef.current || new Audio();
+    audio.preload = 'auto';
+    audio.setAttribute('playsinline', '');
+    audio.src = url;
+    audio.playbackRate = playbackRateRef.current;
+    installCurrentAudio(audio, target, reciterId);
+    loadingRef.current = null;
+    audio.load();
+    setStatus('');
+    ensureNextPreloaded(target, reciterId);
+  }
+
   async function startCurrentAudio() {
     const audio = currentAudioRef.current;
     if (!audio || !playIntentRef.current || unmountedRef.current) return;
@@ -359,7 +492,7 @@ export function ReaderAudioPanel() {
     }
   }
 
-  async function loadTarget(target, reciterId, autoplay) {
+  async function loadTarget(target, reciterId, autoplay, options = {}) {
     if (!target || unmountedRef.current) return;
 
     const loadToken = ++loadTokenRef.current;
@@ -374,6 +507,24 @@ export function ReaderAudioPanel() {
     setStatus('Loading audio...');
 
     try {
+      const directUrl = options.directUrl || getBundledAudioUrl(
+        reciterId,
+        target.surahNumber,
+        target.ayahNumber,
+      );
+
+      if (directUrl) {
+        installAudioUrl(directUrl, target, reciterId);
+
+        if (autoplay) {
+          playIntentRef.current = true;
+          await startCurrentAudio();
+        } else {
+          setAudioPlaying(false);
+        }
+        return;
+      }
+
       const url = await getAudioUrl(reciterId, target.surahNumber, target.ayahNumber);
       if (unmountedRef.current || loadToken !== loadTokenRef.current) return;
 
@@ -385,15 +536,7 @@ export function ReaderAudioPanel() {
         return;
       }
 
-      const audio = new Audio();
-      audio.preload = 'auto';
-      audio.src = url;
-      audio.playbackRate = playbackRateRef.current;
-      installCurrentAudio(audio, target, reciterId);
-      loadingRef.current = null;
-      audio.load();
-      setStatus('');
-      ensureNextPreloaded(target, reciterId);
+      installAudioUrl(url, target, reciterId);
 
       if (autoplay) {
         playIntentRef.current = true;
@@ -506,6 +649,13 @@ export function ReaderAudioPanel() {
       return;
     }
 
+    if (nativeAudioRef.current) {
+      disposePreload();
+      setAudioTarget(nextTarget);
+      await loadTarget(nextTarget, currentReciterRef.current, true);
+      return;
+    }
+
     preloadRef.current = null;
     const previousAudio = currentAudioRef.current;
     unbindAudio(previousAudio);
@@ -524,6 +674,7 @@ export function ReaderAudioPanel() {
     setVisualTime(nextTime);
     setAudioProgress(nextTime, duration);
     if (audio) audio.currentTime = nextTime;
+    syncMediaSessionPosition(audio);
   }
 
   function togglePlay() {
@@ -577,125 +728,227 @@ export function ReaderAudioPanel() {
     closeAudioPlayer();
   }
 
+  function handlePanelGrabberPointerDown(event, mode) {
+    if (event.button !== undefined && event.button !== 0) return;
+
+    const startY = event.clientY;
+    panelDragRef.current = { startY, mode };
+
+    const handlePointerMove = (moveEvent) => {
+      if (!panelDragRef.current) return;
+      panelDragRef.current.deltaY = moveEvent.clientY - startY;
+    };
+
+    const handlePointerUp = (upEvent) => {
+      const drag = panelDragRef.current;
+      panelDragRef.current = null;
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerup', handlePointerUp);
+      window.removeEventListener('pointercancel', handlePointerUp);
+
+      const deltaY = drag?.deltaY ?? (upEvent.clientY - startY);
+      if (mode === 'collapse' && deltaY > 28) hideAudioPlayer();
+      if (mode === 'expand' && deltaY < -22) showAudioPlayer();
+    };
+
+    window.addEventListener('pointermove', handlePointerMove, { passive: true });
+    window.addEventListener('pointerup', handlePointerUp, { passive: true });
+    window.addEventListener('pointercancel', handlePointerUp, { passive: true });
+  }
+
+  function renderGrabber(mode) {
+    const isExpand = mode === 'expand';
+
+    return (
+      <button
+        type="button"
+        className="reader-audio-grabber"
+        onClick={isExpand ? showAudioPlayer : hideAudioPlayer}
+        onPointerDown={(event) => handlePanelGrabberPointerDown(event, isExpand ? 'expand' : 'collapse')}
+        aria-label={isExpand ? 'Expand audio player' : 'Collapse audio player'}
+      >
+        <span aria-hidden="true" />
+      </button>
+    );
+  }
+
+  function renderTransportControls(compact = false) {
+    return (
+      <div className={compact ? 'reader-transport-row reader-transport-modern reader-transport-mini' : 'reader-transport-row reader-transport-modern'}>
+        <button
+          type="button"
+          className={repeat ? 'transport-active' : ''}
+          onClick={() => setAudioRepeat(!repeat)}
+          aria-label="Repeat ayah"
+        >
+          <Repeat size={30} />
+        </button>
+        <button type="button" onClick={() => moveAyah(-1)} aria-label="Previous ayah">
+          <SkipBack size={31} />
+        </button>
+        <button type="button" className="transport-main" onClick={togglePlay} aria-label={playing ? 'Pause' : 'Play'}>
+          {playing ? <Pause size={36} fill="currentColor" /> : <Play size={36} fill="currentColor" />}
+        </button>
+        <button type="button" onClick={() => moveAyah(1)} aria-label="Next ayah">
+          <SkipForward size={31} />
+        </button>
+        <button type="button" className="transport-speed" onClick={cycleSpeed} aria-label="Playback speed">
+          {audioPlaybackRate || settings.playbackRate || 1}x
+        </button>
+      </div>
+    );
+  }
+
+  const nativeAudioElement = (
+    <audio ref={nativeAudioRef} className="reader-audio-native" preload="auto" playsInline />
+  );
+
+  if (!audioPlayerActive) return nativeAudioElement;
+
   return (
     <>
-      <div
-        className={`reader-audio-panel-wrap ${audioPlayerVisible ? 'reader-audio-panel-visible' : 'reader-audio-panel-hidden'} ${view === VIEWS.READER ? 'reader-audio-over-reader' : 'reader-audio-over-screen'}`}
+      {nativeAudioElement}
+
+      <motion.div
+        layout
+        initial={false}
+        className={`reader-audio-panel-wrap ${panelExpanded ? 'reader-audio-panel-visible reader-audio-panel-expanded' : 'reader-audio-panel-visible reader-audio-panel-collapsed'} ${view === VIEWS.READER ? 'reader-audio-over-reader' : 'reader-audio-over-screen'}`}
         data-reader-ui
       >
-        <section className="reader-audio-panel reader-audio-panel-modern">
-          <div className="reader-audio-head reader-audio-head-centered">
-            <span aria-hidden="true" />
-            <strong>{reference}</strong>
-            <button onClick={closePlayer} aria-label="Close audio player"><X size={28} /></button>
-          </div>
+        <motion.section
+          layout
+          transition={{ type: 'spring', stiffness: 420, damping: 38 }}
+          className={`reader-audio-panel reader-audio-panel-modern ${panelExpanded ? 'reader-audio-expanded-panel' : 'reader-audio-mini-panel'}`}
+        >
+          <AnimatePresence mode="popLayout" initial={false}>
+            {panelExpanded ? (
+              <motion.div
+                key="expanded"
+                layout
+                initial={{ opacity: 0, y: 18, scale: .98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 14, scale: .985 }}
+                transition={{ type: 'spring', stiffness: 430, damping: 36 }}
+                className="reader-audio-expanded-content"
+              >
+                {renderGrabber('collapse')}
 
-          <div
-            ref={reciterPickerRef}
-            className={reciterPickerOpen ? 'reader-reciter-picker is-open' : 'reader-reciter-picker'}
-          >
-            <button
-              className="reader-reciter-row reader-reciter-pill"
-              type="button"
-              onClick={() => setReciterPickerOpen((open) => !open)}
-              aria-haspopup="listbox"
-              aria-expanded={reciterPickerOpen}
-            >
-              <span className="reader-reciter-avatar" aria-hidden="true">
-                <img
-                  src={getReciterImageSrc(selectedReciterMeta)}
-                  alt=""
-                  onError={(event) => { event.currentTarget.style.display = 'none'; }}
-                />
-              </span>
-              <span ref={reciterNameWindowRef} className="reader-reciter-name-window">
-                <span
-                  ref={reciterNameTextRef}
-                  className={reciterNameOverflow ? 'reader-reciter-name-text is-overflowing' : 'reader-reciter-name-text'}
-                  style={{ '--reciter-name-scroll': `${reciterNameScroll}px` }}
+                <div className="reader-audio-head reader-audio-head-centered">
+                  <span aria-hidden="true" />
+                  <strong>{reference}</strong>
+                  <button type="button" onClick={closePlayer} aria-label="Close audio player"><X size={28} /></button>
+                </div>
+
+                <div
+                  ref={reciterPickerRef}
+                  className={reciterPickerOpen ? 'reader-reciter-picker is-open' : 'reader-reciter-picker'}
                 >
-                  {selectedReciterName}
-                </span>
-              </span>
-              <span className="reader-reciter-chevron" aria-hidden="true">
-                <ChevronDown size={24} />
-              </span>
-            </button>
-
-            <div className="reader-reciter-inline-panel" aria-hidden={!reciterPickerOpen}>
-              <div className="reader-reciter-list" role="listbox" aria-label="Reciters">
-                {reciters.map((reciter) => {
-                  const isSelected = reciter.id === selectedReciter;
-                  return (
-                    <button
-                      key={reciter.id}
-                      type="button"
-                      className={isSelected ? 'reader-reciter-list-item selected' : 'reader-reciter-list-item'}
-                      onClick={() => selectReciter(reciter.id)}
-                      role="option"
-                      aria-selected={isSelected}
-                      tabIndex={reciterPickerOpen ? 0 : -1}
-                    >
-                      <span className="reader-reciter-avatar" aria-hidden="true">
-                        <img
-                          src={getReciterImageSrc(reciter)}
-                          alt=""
-                          onError={(event) => { event.currentTarget.style.display = 'none'; }}
-                        />
+                  <button
+                    className="reader-reciter-row reader-reciter-pill"
+                    type="button"
+                    onClick={() => setReciterPickerOpen((open) => !open)}
+                    aria-haspopup="listbox"
+                    aria-expanded={reciterPickerOpen}
+                  >
+                    <span className="reader-reciter-avatar" aria-hidden="true">
+                      <img
+                        src={getReciterImageSrc(selectedReciterMeta)}
+                        alt=""
+                        onError={(event) => { event.currentTarget.style.display = 'none'; }}
+                      />
+                    </span>
+                    <span ref={reciterNameWindowRef} className="reader-reciter-name-window">
+                      <span
+                        ref={reciterNameTextRef}
+                        className={reciterNameOverflow ? 'reader-reciter-name-text is-overflowing' : 'reader-reciter-name-text'}
+                        style={{ '--reciter-name-scroll': `${reciterNameScroll}px` }}
+                      >
+                        {selectedReciterName}
                       </span>
-                      <span>
-                        {getReciterDisplayName(reciter)}
-                      </span>
-                      <span className="reader-reciter-check" aria-hidden="true">
-                        {isSelected ? <Check size={19} /> : <span className="reader-reciter-option-radio" />}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
+                    </span>
+                    <span className="reader-reciter-chevron" aria-hidden="true">
+                      <ChevronDown size={24} />
+                    </span>
+                  </button>
 
-          <div className="reader-audio-waveform reader-audio-wave-line" style={{ '--audio-progress': progressRatio }}>
-            <div className="reader-audio-wave-track" aria-hidden="true">
-              <span className="reader-audio-wave-remaining" />
-              <span className="reader-audio-wave-played" />
-              <span className="reader-audio-wave-thumb" />
-            </div>
-            <input
-              className="reader-audio-progress reader-audio-progress-overlay"
-              dir="rtl"
-              type="range"
-              min="0"
-              max={duration || 0}
-              value={Math.min(currentTime, duration || 0)}
-              onChange={(event) => seek(event.target.value)}
-              aria-label="Audio progress"
-            />
-          </div>
+                  <div className="reader-reciter-inline-panel" aria-hidden={!reciterPickerOpen}>
+                    <div className="reader-reciter-list" role="listbox" aria-label="Reciters">
+                      {reciters.map((reciter) => {
+                        const isSelected = reciter.id === selectedReciter;
+                        return (
+                          <button
+                            key={reciter.id}
+                            type="button"
+                            className={isSelected ? 'reader-reciter-list-item selected' : 'reader-reciter-list-item'}
+                            onClick={() => selectReciter(reciter.id)}
+                            role="option"
+                            aria-selected={isSelected}
+                            tabIndex={reciterPickerOpen ? 0 : -1}
+                          >
+                            <span className="reader-reciter-avatar" aria-hidden="true">
+                              <img
+                                src={getReciterImageSrc(reciter)}
+                                alt=""
+                                onError={(event) => { event.currentTarget.style.display = 'none'; }}
+                              />
+                            </span>
+                            <span>
+                              {getReciterDisplayName(reciter)}
+                            </span>
+                            <span className="reader-reciter-check" aria-hidden="true">
+                              {isSelected ? <Check size={19} /> : <span className="reader-reciter-option-radio" />}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
 
-          <div className="reader-audio-times reader-audio-times-above" dir="ltr">
-            <span>{formatTime(duration || 0)}</span>
-            <span>{formatTime(displayedTime)}</span>
-          </div>
+                <div className="reader-audio-waveform reader-audio-wave-line" style={{ '--audio-progress': progressRatio }}>
+                  <div className="reader-audio-wave-track" aria-hidden="true">
+                    <span className="reader-audio-wave-remaining" />
+                    <span className="reader-audio-wave-played" />
+                    <span className="reader-audio-wave-thumb" />
+                  </div>
+                  <input
+                    className="reader-audio-progress reader-audio-progress-overlay"
+                    dir="rtl"
+                    type="range"
+                    min="0"
+                    max={duration || 0}
+                    value={Math.min(currentTime, duration || 0)}
+                    onChange={(event) => seek(event.target.value)}
+                    aria-label="Audio progress"
+                  />
+                </div>
 
-          <div className="reader-transport-row reader-transport-modern">
-            <button className={repeat ? 'transport-active' : ''} onClick={() => setAudioRepeat(!repeat)} aria-label="Repeat ayah">
-              <Repeat size={30} />
-            </button>
-            <button onClick={() => moveAyah(-1)} aria-label="Previous ayah"><SkipBack size={31} /></button>
-            <button className="transport-main" onClick={togglePlay} aria-label={playing ? 'Pause' : 'Play'}>
-              {playing ? <Pause size={36} fill="currentColor" /> : <Play size={36} fill="currentColor" />}
-            </button>
-            <button onClick={() => moveAyah(1)} aria-label="Next ayah"><SkipForward size={31} /></button>
-            <button className="transport-speed" onClick={cycleSpeed} aria-label="Playback speed">
-              {audioPlaybackRate || settings.playbackRate || 1}x
-            </button>
-          </div>
+                <div className="reader-audio-times reader-audio-times-above" dir="ltr">
+                  <span>{formatTime(duration || 0)}</span>
+                  <span>{formatTime(displayedTime)}</span>
+                </div>
 
-          {status && <p className="reader-audio-status">{status}</p>}
-        </section>
-      </div>
+                {renderTransportControls()}
+
+                {status && <p className="reader-audio-status">{status}</p>}
+              </motion.div>
+            ) : (
+              <motion.div
+                key="collapsed"
+                layout
+                initial={{ opacity: 0, y: 18, scale: .98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -12, scale: .985 }}
+                transition={{ type: 'spring', stiffness: 460, damping: 38 }}
+                className="reader-audio-mini-content"
+              >
+                {renderGrabber('expand')}
+                {renderTransportControls(true)}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.section>
+      </motion.div>
 
     </>
   );
