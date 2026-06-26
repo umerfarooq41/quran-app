@@ -846,6 +846,14 @@ html[data-theme='light'] {
   --audio-accent: #2F7462;
   --audio-accent-soft: rgba(47, 116, 98, .14);
   --audio-accent-border: rgba(47, 116, 98, .30);
+  --audio-close-bg: #EEF0F0;
+  --audio-chevron-bg: #1F2933;
+  --audio-chevron-text: #FFFFFF;
+  --audio-icon: #111827;
+  --audio-main-bg: #000000;
+  --audio-main-text: #FFFFFF;
+  --audio-speed-border: rgba(100, 116, 139, .58);
+  --audio-speed-text: #737373;
   --audio-wave-bg: rgba(100, 116, 139, .28);
   --audio-shadow: 0 18px 48px rgba(15, 23, 42, .16);
 }
@@ -860,6 +868,14 @@ html[data-theme='dark'] {
   --audio-accent: #8BC7B4;
   --audio-accent-soft: rgba(139, 199, 180, .16);
   --audio-accent-border: rgba(139, 199, 180, .30);
+  --audio-close-bg: #252A27;
+  --audio-chevron-bg: #F5F5F3;
+  --audio-chevron-text: #181A19;
+  --audio-icon: #F5F5F3;
+  --audio-main-bg: #F5F5F3;
+  --audio-main-text: #181A19;
+  --audio-speed-border: rgba(168, 174, 169, .62);
+  --audio-speed-text: #C8CECA;
   --audio-wave-bg: rgba(168, 174, 169, .28);
   --audio-shadow: 0 18px 48px rgba(0, 0, 0, .44);
 }
@@ -885,43 +901,23 @@ html[data-theme='dark'] {
 .reader-reciter-inline-panel {
   width: 100% !important;
   max-width: 100% !important;
-  max-height: min(38dvh, 330px) !important;
+  max-height: min(44dvh, 390px) !important;
   display: flex !important;
   flex-direction: column !important;
   border: 1px solid var(--audio-panel-border) !important;
   border-radius: 19px !important;
   background: var(--audio-control-bg) !important;
   color: var(--audio-panel-text) !important;
-  padding: 8px !important;
+  padding: 7px !important;
   box-shadow: none !important;
   overflow: hidden !important;
-}
-
-.reader-reciter-inline-panel .reader-reciter-search {
-  min-height: 42px !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  margin-bottom: 6px !important;
-  padding: 0 14px !important;
-  border-radius: 16px !important;
-}
-
-.reader-reciter-inline-panel .reader-reciter-search input {
-  min-width: 0 !important;
-  flex: 1 !important;
-  border: 0 !important;
-  outline: 0 !important;
-  background: transparent !important;
-  font: inherit !important;
-  font-weight: 620 !important;
 }
 
 .reader-reciter-inline-panel .reader-reciter-list {
   min-height: 0 !important;
   flex: 1 1 auto !important;
   overflow-y: auto !important;
-  padding: 4px 2px 6px !important;
+  padding: 0 1px 2px !important;
   scrollbar-width: thin !important;
 }
 
@@ -958,25 +954,20 @@ html[data-theme='dark'] {
 }
 
 .reader-audio-panel-modern .reader-audio-head-centered strong,
-.reader-audio-panel-modern .reader-reciter-copy,
-.reader-audio-panel-modern .reader-reciter-copy span,
-.reader-reciter-inline-panel .reader-reciter-list-item,
-.reader-reciter-inline-panel .reader-reciter-search input {
+.reader-audio-panel-modern .reader-reciter-name-window,
+.reader-audio-panel-modern .reader-reciter-name-text,
+.reader-reciter-inline-panel .reader-reciter-list-item {
   color: var(--audio-panel-text) !important;
 }
 
 .reader-audio-panel-modern .reader-audio-times-above,
 .reader-audio-panel-modern .reader-audio-status,
-.reader-reciter-inline-panel .reader-reciter-search,
-.reader-reciter-inline-panel .reader-reciter-search input::placeholder,
 .reader-reciter-inline-panel .reader-reciter-option-radio {
   color: var(--audio-panel-muted) !important;
 }
 
 .reader-audio-panel-modern .reader-audio-head-centered button,
-.reader-audio-panel-modern .reader-reciter-row.reader-reciter-pill,
 .reader-audio-panel-modern .reader-transport-modern button,
-.reader-reciter-inline-panel .reader-reciter-search,
 .reader-reciter-inline-panel .reader-reciter-list-item.selected {
   border: 1px solid var(--audio-panel-border) !important;
   background: var(--audio-control-bg) !important;
@@ -986,24 +977,46 @@ html[data-theme='dark'] {
   -webkit-backdrop-filter: none !important;
 }
 
+.reader-audio-panel-modern .reader-audio-head-centered button {
+  border: 0 !important;
+  background: var(--audio-close-bg) !important;
+}
+
 .reader-audio-panel-modern .reader-reciter-row.reader-reciter-pill,
 .reader-reciter-inline-panel .reader-reciter-list-item {
   display: grid !important;
   width: 100% !important;
   max-width: 100% !important;
-  grid-template-columns: 40px minmax(0, 1fr) 24px !important;
   align-items: center !important;
-  gap: 12px !important;
-  min-height: 54px !important;
-  padding: 7px 10px !important;
   text-align: left !important;
 }
 
 .reader-audio-panel-modern .reader-reciter-row.reader-reciter-pill {
-  margin: 9px 0 8px !important;
+  grid-template-columns: 48px minmax(0, 1fr) 54px !important;
+  gap: 14px !important;
+  min-height: 58px !important;
+  margin: 16px 0 9px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
-.reader-audio-panel-modern .reader-reciter-avatar,
+.reader-reciter-inline-panel .reader-reciter-list-item {
+  grid-template-columns: 40px minmax(0, 1fr) 24px !important;
+  gap: 12px !important;
+  min-height: 54px !important;
+  padding: 7px 10px !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-pill .reader-reciter-avatar {
+  width: 48px !important;
+  height: 48px !important;
+  border: 1px solid var(--audio-panel-border) !important;
+  background: var(--audio-control-bg) !important;
+  box-shadow: none !important;
+}
+
 .reader-reciter-inline-panel .reader-reciter-list-item .reader-reciter-avatar {
   width: 40px !important;
   height: 40px !important;
@@ -1012,7 +1025,24 @@ html[data-theme='dark'] {
   box-shadow: none !important;
 }
 
-.reader-audio-panel-modern .reader-reciter-copy,
+.reader-audio-panel-modern .reader-reciter-name-window {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  color: var(--audio-panel-text) !important;
+  font-size: clamp(1.04rem, 4vw, 1.28rem) !important;
+  font-weight: 420 !important;
+  line-height: 1.2 !important;
+  letter-spacing: 0 !important;
+  text-align: left !important;
+  white-space: nowrap !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-name-text {
+  display: inline-block !important;
+  max-width: none !important;
+  white-space: nowrap !important;
+}
+
 .reader-reciter-inline-panel .reader-reciter-list-item > span:nth-child(2) {
   display: block !important;
   min-width: 0 !important;
@@ -1027,17 +1057,18 @@ html[data-theme='dark'] {
   white-space: nowrap !important;
 }
 
-.reader-audio-panel-modern .reader-reciter-copy span {
-  display: block !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-}
-
-.reader-audio-panel-modern .reader-reciter-pill > svg,
 .reader-reciter-inline-panel .reader-reciter-check {
   justify-self: end !important;
   color: var(--audio-panel-muted) !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-chevron {
+  background: var(--audio-chevron-bg) !important;
+  color: var(--audio-chevron-text) !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-chevron svg {
+  color: currentColor !important;
 }
 
 .reader-reciter-inline-panel .reader-reciter-list-item.selected {
@@ -1055,21 +1086,36 @@ html[data-theme='dark'] {
 }
 
 .reader-audio-panel-modern .reader-transport-modern .transport-main {
-  background: var(--audio-panel-text) !important;
-  color: var(--audio-panel-bg) !important;
+  background: var(--audio-main-bg) !important;
+  color: var(--audio-main-text) !important;
 }
 
 .reader-audio-panel-modern .reader-transport-modern .transport-active {
-  background: var(--audio-accent-soft) !important;
+  background: transparent !important;
   color: var(--audio-accent) !important;
-  border-color: var(--audio-accent-border) !important;
+  border-color: transparent !important;
+}
+
+.reader-audio-panel-modern .reader-transport-modern button:not(.transport-main) {
+  background: transparent !important;
+  color: var(--audio-icon) !important;
+  box-shadow: none !important;
+}
+
+.reader-audio-panel-modern .reader-transport-modern button.transport-active {
+  color: var(--audio-accent) !important;
+}
+
+.reader-audio-panel-modern .reader-transport-modern .transport-speed {
+  border: 2px solid var(--audio-speed-border) !important;
+  color: var(--audio-speed-text) !important;
 }
 
 .reader-audio-panel-modern .reader-audio-wave-remaining {
   position: absolute !important;
   inset-inline: 0 !important;
   top: 50% !important;
-  height: 4px !important;
+  height: 5px !important;
   border-radius: 999px !important;
   transform: translateY(-50%) !important;
   background: var(--audio-wave-bg) !important;
@@ -1085,7 +1131,7 @@ html[data-theme='dark'] {
   right: 0 !important;
   top: 50% !important;
   width: calc(var(--audio-progress, 0) * 100%) !important;
-  height: 4px !important;
+  height: 5px !important;
   border-radius: 999px !important;
   transform: translateY(-50%) !important;
   box-shadow: none !important;
@@ -1095,8 +1141,8 @@ html[data-theme='dark'] {
   position: absolute !important;
   top: 50% !important;
   right: calc(var(--audio-progress, 0) * 100%) !important;
-  width: 16px !important;
-  height: 16px !important;
+  width: 22px !important;
+  height: 22px !important;
   border-radius: 999px !important;
   transform: translate(50%, -50%) !important;
   box-shadow: 0 0 0 5px var(--audio-accent-soft) !important;

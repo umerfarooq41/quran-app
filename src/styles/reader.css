@@ -1749,8 +1749,8 @@ body {
   border: 1px solid var(--audio-panel-border, rgba(15, 23, 42, .09)) !important;
   background: var(--audio-panel-bg, #ffffff) !important;
   color: var(--audio-panel-text, #1f2933) !important;
-  border-radius: 28px;
-  padding: 14px 16px 15px;
+  border-radius: 30px;
+  padding: 18px 18px 20px;
   box-shadow: var(--audio-shadow, 0 18px 48px rgba(15, 23, 42, .16));
 }
 
@@ -1760,47 +1760,51 @@ body {
 
 .reader-audio-head-centered {
   display: grid;
-  grid-template-columns: 38px minmax(0, 1fr) 38px;
+  grid-template-columns: 50px minmax(0, 1fr) 50px;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   text-align: center;
 }
 
 .reader-audio-head-centered strong {
   color: var(--audio-panel-text, #1f2933) !important;
-  font-size: clamp(1rem, 4vw, 1.12rem);
-  font-weight: 760;
-  letter-spacing: -0.025em;
+  font-size: clamp(1.16rem, 5vw, 1.55rem);
+  font-weight: 520;
+  letter-spacing: 0;
 }
 
 .reader-audio-head-centered button {
-  width: 38px;
-  height: 38px;
-  border: 1px solid var(--audio-panel-border, rgba(15, 23, 42, .09)) !important;
-  background: var(--audio-control-bg, #f4f6f5) !important;
+  width: 50px;
+  height: 44px;
+  border: 0 !important;
+  background: var(--audio-close-bg, #eef0f0) !important;
   color: var(--audio-panel-text, #1f2933) !important;
-  backdrop-filter: blur(14px);
+  border-radius: 999px;
+  backdrop-filter: none;
   transition: transform 0.14s ease, background 0.14s ease;
 }
 
 .reader-reciter-pill {
   position: relative;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 54px;
+  align-items: center;
   width: 100%;
   max-width: 100%;
-  margin: 10px 0 9px;
-  min-height: 54px;
-  gap: 11px;
-  border: 1px solid var(--audio-panel-border, rgba(15, 23, 42, .09)) !important;
-  border-radius: 19px !important;
-  background: var(--audio-control-bg, #f4f6f5) !important;
+  margin: 16px 0 9px;
+  min-height: 58px;
+  gap: 14px;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
   color: var(--audio-panel-text, #1f2933) !important;
-  padding: 7px 12px 7px 8px;
-  backdrop-filter: blur(16px);
+  padding: 0;
+  backdrop-filter: none;
 }
 
 .reader-reciter-pill .reader-reciter-avatar {
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   border: 1px solid var(--audio-panel-border, rgba(15, 23, 42, .09));
   background: var(--audio-control-bg, #f4f6f5);
   box-shadow: none;
@@ -1814,20 +1818,58 @@ body {
   display: block;
 }
 
-.reader-reciter-copy {
-  display: grid;
+.reader-reciter-name-window {
   min-width: 0;
-  flex: 1;
+  overflow: hidden;
+  display: block;
   color: var(--audio-panel-text, #1f2933);
-  font-size: .94rem;
-  font-weight: 640;
-  letter-spacing: -0.018em;
+  font-size: clamp(1.04rem, 4vw, 1.28rem);
+  font-weight: 420;
+  line-height: 1.2;
+  letter-spacing: 0;
+  text-align: left;
+  white-space: nowrap;
 }
 
-.reader-reciter-copy span {
-  overflow: hidden;
-  text-overflow: ellipsis;
+.reader-reciter-name-text {
+  display: inline-block;
+  max-width: none;
   white-space: nowrap;
+  will-change: transform;
+}
+
+.reader-reciter-name-text.is-overflowing {
+  padding-right: 24px;
+  animation: reader-reciter-name-scroll 7.5s ease-in-out infinite alternate;
+}
+
+@keyframes reader-reciter-name-scroll {
+  0%, 16% {
+    transform: translateX(0);
+  }
+
+  84%, 100% {
+    transform: translateX(calc(var(--reciter-name-scroll, 0px) * -1));
+  }
+}
+
+.reader-reciter-chevron {
+  justify-self: end;
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--audio-chevron-bg, #1f2933);
+  color: var(--audio-chevron-text, #ffffff);
+}
+
+.reader-reciter-chevron svg {
+  transition: transform .18s ease;
+}
+
+.reader-reciter-picker.is-open .reader-reciter-chevron svg {
+  transform: rotate(180deg);
 }
 
 .reader-reciter-pill select {
@@ -1844,38 +1886,43 @@ body {
   color: var(--audio-panel-muted, #64748b);
 }
 
+.reader-reciter-pill .reader-reciter-chevron svg {
+  color: currentColor;
+}
+
 .reader-audio-times-above {
-  margin: 6px 1px 4px;
+  margin: 0 0 20px;
   color: var(--audio-panel-muted, #64748b) !important;
-  font-size: .73rem;
-  font-weight: 650;
-  letter-spacing: -0.01em;
+  font-size: clamp(.92rem, 3.8vw, 1.08rem);
+  font-weight: 400;
+  letter-spacing: 0;
 }
 
 .reader-audio-waveform {
   position: relative;
-  height: 38px;
+  height: 42px;
   display: grid;
   align-items: center;
-  padding: 0 1px;
+  margin: 20px 0 0;
+  padding: 0;
 }
 
 .reader-audio-wave-line {
-  height: 28px;
+  height: 42px;
   padding: 0;
 }
 
 .reader-audio-wave-track {
   position: relative;
   width: 100%;
-  height: 28px;
+  height: 42px;
 }
 
 .reader-audio-wave-remaining {
   position: absolute;
   inset-inline: 0;
   top: 50%;
-  height: 4px;
+  height: 5px;
   border-radius: 999px;
   transform: translateY(-50%);
   background: var(--audio-wave-bg, rgba(100, 116, 139, .28));
@@ -1886,7 +1933,7 @@ body {
   right: 0;
   top: 50%;
   width: calc(var(--audio-progress, 0) * 100%);
-  height: 4px;
+  height: 5px;
   min-width: 0;
   border-radius: 999px;
   transform: translateY(-50%);
@@ -1904,8 +1951,8 @@ body {
   position: absolute;
   top: 50%;
   right: calc(var(--audio-progress, 0) * 100%);
-  width: 16px;
-  height: 16px;
+  width: 22px;
+  height: 22px;
   border-radius: 999px;
   transform: translate(50%, -50%);
   background: var(--audio-accent, #2f7462);
@@ -1951,7 +1998,7 @@ body {
   position: absolute;
   inset: 0;
   width: 100%;
-  height: 28px;
+  height: 42px;
   opacity: 0;
   cursor: pointer;
   touch-action: pan-y;
@@ -1959,22 +2006,22 @@ body {
 
 .reader-transport-modern {
   display: grid;
-  grid-template-columns: 44px 48px 64px 48px 44px;
+  grid-template-columns: 50px 54px minmax(94px, 112px) 54px 50px;
   align-items: center;
   justify-content: center;
-  gap: clamp(9px, 3.4vw, 15px);
-  margin-top: 10px;
+  gap: clamp(11px, 4vw, 22px);
+  margin-top: 4px;
 }
 
 .reader-transport-modern button {
-  width: 44px;
-  min-width: 44px;
-  height: 44px;
-  border: 1px solid var(--audio-panel-border, rgba(15, 23, 42, .09)) !important;
-  background: var(--audio-control-bg, #f4f6f5) !important;
-  color: var(--audio-panel-text, #1f2933) !important;
+  width: 50px;
+  min-width: 50px;
+  height: 50px;
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--audio-icon, #111827) !important;
   border-radius: 999px;
-  box-shadow: 0 8px 22px rgba(0,0,0,.12);
+  box-shadow: none;
   transition: transform .14s ease, background .14s ease, box-shadow .14s ease;
 }
 
@@ -1985,13 +2032,13 @@ body {
 }
 
 .reader-transport-modern .transport-main {
-  width: 64px;
-  min-width: 64px;
-  height: 58px;
-  background: var(--audio-panel-text, #1f2933) !important;
-  color: var(--audio-panel-bg, #ffffff) !important;
+  width: 100%;
+  min-width: 94px;
+  height: 64px;
+  background: var(--audio-main-bg, #000000) !important;
+  color: var(--audio-main-text, #ffffff) !important;
   border-radius: 999px;
-  box-shadow: 0 14px 32px rgba(0,0,0,.22);
+  box-shadow: none;
 }
 
 .reader-transport-modern .transport-main:active {
@@ -1999,15 +2046,17 @@ body {
 }
 
 .reader-transport-modern .transport-speed {
-  font-size: .88rem;
-  font-weight: 800;
-  letter-spacing: -0.035em;
+  border: 2px solid var(--audio-speed-border, rgba(100, 116, 139, .56)) !important;
+  color: var(--audio-speed-text, #737373) !important;
+  font-size: 1rem;
+  font-weight: 650;
+  letter-spacing: 0;
 }
 
 .reader-transport-modern .transport-active {
-  background: var(--audio-accent-soft, rgba(47, 116, 98, .14)) !important;
+  background: transparent !important;
   color: var(--audio-accent, #2f7462) !important;
-  border-color: var(--audio-accent-border, rgba(47, 116, 98, .30)) !important;
+  border-color: transparent !important;
 }
 
 .reader-audio-panel-modern .reader-audio-status {
@@ -2017,27 +2066,33 @@ body {
 
 @media (max-width: 370px) {
   .reader-audio-panel-modern {
-    padding-inline: 13px;
+    padding-inline: 14px;
   }
 
   .reader-transport-modern {
-    grid-template-columns: 40px 43px 58px 43px 40px;
-    gap: 7px;
+    grid-template-columns: 42px 46px minmax(84px, 96px) 46px 42px;
+    gap: 8px;
   }
 
   .reader-transport-modern button {
-    width: 40px;
-    min-width: 40px;
-    height: 40px;
+    width: 42px;
+    min-width: 42px;
+    height: 42px;
   }
 
   .reader-transport-modern .transport-main {
-    width: 58px;
-    min-width: 58px;
-    height: 54px;
+    min-width: 84px;
+    height: 58px;
   }
 
   .reader-audio-wave-bars {
     gap: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reader-reciter-name-text.is-overflowing {
+    animation: none;
+    transform: none;
   }
 }

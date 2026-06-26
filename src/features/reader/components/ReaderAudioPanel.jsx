@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Check, ChevronDown, Pause, Play, Repeat, Search, SkipBack, SkipForward, X } from 'lucide-react';
+import { Check, ChevronDown, Pause, Play, Repeat, SkipBack, SkipForward, X } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { VIEWS } from '../../../app/routes';
 import { findPageForReference, getSurah, quranAyahs } from '../../../lib/quran';
@@ -78,7 +78,11 @@ export function ReaderAudioPanel() {
   const unmountedRef = useRef(false);
   const rafRef = useRef(0);
   const reciterPickerRef = useRef(null);
+  const reciterNameWindowRef = useRef(null);
+  const reciterNameTextRef = useRef(null);
   const [visualTime, setVisualTime] = useState(currentTime || 0);
+  const [reciterNameOverflow, setReciterNameOverflow] = useState(false);
+  const [reciterNameScroll, setReciterNameScroll] = useState(0);
 
   const reciters = useMemo(() => normalizeLocalReciters(), []);
   const selectedReciter = audioReciter || settings.reciter || getDefaultReciterId();
@@ -86,9 +90,9 @@ export function ReaderAudioPanel() {
     () => reciters.find((reciter) => reciter.id === selectedReciter) || reciters[0],
     [reciters, selectedReciter],
   );
+  const selectedReciterName = getReciterDisplayName(selectedReciterMeta);
   const [status, setStatus] = useState('');
   const [reciterPickerOpen, setReciterPickerOpen] = useState(false);
-  const [reciterSearch, setReciterSearch] = useState('');
 
   const surah = ayah?.surahNumber ? getSurah(ayah.surahNumber) : null;
   const reference = ayah?.surahNumber && ayah?.ayahNumber
@@ -96,12 +100,6 @@ export function ReaderAudioPanel() {
     : 'Audio player';
   const displayedTime = playing && duration > 0 ? visualTime : currentTime;
   const progressRatio = duration > 0 ? Math.min(1, Math.max(0, displayedTime / duration)) : 0;
-  const filteredReciters = useMemo(() => {
-    const query = reciterSearch.trim().toLowerCase();
-    if (!query) return reciters;
-    return reciters.filter((reciter) => getReciterDisplayName(reciter).toLowerCase().includes(query));
-  }, [reciterSearch, reciters]);
-
   repeatRef.current = repeat;
   playbackRateRef.current = audioPlaybackRate || settings.playbackRate || 1;
 
@@ -209,6 +207,40 @@ export function ReaderAudioPanel() {
     document.addEventListener('pointerdown', handlePointerDown, true);
     return () => document.removeEventListener('pointerdown', handlePointerDown, true);
   }, [reciterPickerOpen]);
+
+  useEffect(() => {
+    const windowElement = reciterNameWindowRef.current;
+    const textElement = reciterNameTextRef.current;
+    if (!windowElement || !textElement) return undefined;
+
+    let frame = 0;
+
+    const measure = () => {
+      const distance = Math.ceil(textElement.scrollWidth - windowElement.clientWidth);
+      setReciterNameOverflow(distance > 4);
+      setReciterNameScroll(Math.max(0, distance + 18));
+    };
+
+    const scheduleMeasure = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(measure);
+    };
+
+    scheduleMeasure();
+
+    const resizeObserver = typeof ResizeObserver === 'undefined'
+      ? null
+      : new ResizeObserver(scheduleMeasure);
+    resizeObserver?.observe(windowElement);
+    resizeObserver?.observe(textElement);
+    window.addEventListener('resize', scheduleMeasure);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      resizeObserver?.disconnect();
+      window.removeEventListener('resize', scheduleMeasure);
+    };
+  }, [selectedReciterName]);
 
   function bindCurrentAudio(audio) {
     const handlers = {
@@ -530,7 +562,6 @@ export function ReaderAudioPanel() {
   function selectReciter(reciterId) {
     updateSettings({ reciter: reciterId });
     setReciterPickerOpen(false);
-    setReciterSearch('');
   }
 
   function closePlayer() {
@@ -556,7 +587,7 @@ export function ReaderAudioPanel() {
           <div className="reader-audio-head reader-audio-head-centered">
             <span aria-hidden="true" />
             <strong>{reference}</strong>
-            <button onClick={closePlayer} aria-label="Close audio player"><X size={18} /></button>
+            <button onClick={closePlayer} aria-label="Close audio player"><X size={28} /></button>
           </div>
 
           <div
@@ -577,24 +608,24 @@ export function ReaderAudioPanel() {
                   onError={(event) => { event.currentTarget.style.display = 'none'; }}
                 />
               </span>
-              <span className="reader-reciter-copy">
-                <span>{getReciterDisplayName(selectedReciterMeta)}</span>
+              <span ref={reciterNameWindowRef} className="reader-reciter-name-window">
+                <span
+                  ref={reciterNameTextRef}
+                  className={reciterNameOverflow ? 'reader-reciter-name-text is-overflowing' : 'reader-reciter-name-text'}
+                  style={{ '--reciter-name-scroll': `${reciterNameScroll}px` }}
+                >
+                  {selectedReciterName}
+                </span>
               </span>
-              <ChevronDown size={17} />
+              <span className="reader-reciter-chevron" aria-hidden="true">
+                <ChevronDown size={24} />
+              </span>
             </button>
 
             {reciterPickerOpen && (
               <div className="reader-reciter-inline-panel">
-                <label className="reader-reciter-search">
-                  <Search size={18} aria-hidden="true" />
-                  <input
-                    value={reciterSearch}
-                    onChange={(event) => setReciterSearch(event.target.value)}
-                    placeholder="Search reciters"
-                  />
-                </label>
                 <div className="reader-reciter-list" role="listbox" aria-label="Reciters">
-                  {filteredReciters.map((reciter) => {
+                  {reciters.map((reciter) => {
                     const isSelected = reciter.id === selectedReciter;
                     return (
                       <button
@@ -626,11 +657,6 @@ export function ReaderAudioPanel() {
             )}
           </div>
 
-          <div className="reader-audio-times reader-audio-times-above" dir="ltr">
-            <span>{formatTime(duration || 0)}</span>
-            <span>{formatTime(displayedTime)}</span>
-          </div>
-
           <div className="reader-audio-waveform reader-audio-wave-line" style={{ '--audio-progress': progressRatio }}>
             <div className="reader-audio-wave-track" aria-hidden="true">
               <span className="reader-audio-wave-remaining" />
@@ -649,15 +675,20 @@ export function ReaderAudioPanel() {
             />
           </div>
 
+          <div className="reader-audio-times reader-audio-times-above" dir="ltr">
+            <span>{formatTime(duration || 0)}</span>
+            <span>{formatTime(displayedTime)}</span>
+          </div>
+
           <div className="reader-transport-row reader-transport-modern">
             <button className={repeat ? 'transport-active' : ''} onClick={() => setAudioRepeat(!repeat)} aria-label="Repeat ayah">
-              <Repeat size={22} />
+              <Repeat size={30} />
             </button>
-            <button onClick={() => moveAyah(-1)} aria-label="Previous ayah"><SkipBack size={24} fill="currentColor" /></button>
+            <button onClick={() => moveAyah(-1)} aria-label="Previous ayah"><SkipBack size={31} /></button>
             <button className="transport-main" onClick={togglePlay} aria-label={playing ? 'Pause' : 'Play'}>
-              {playing ? <Pause size={29} fill="currentColor" /> : <Play size={29} fill="currentColor" />}
+              {playing ? <Pause size={36} fill="currentColor" /> : <Play size={36} fill="currentColor" />}
             </button>
-            <button onClick={() => moveAyah(1)} aria-label="Next ayah"><SkipForward size={24} fill="currentColor" /></button>
+            <button onClick={() => moveAyah(1)} aria-label="Next ayah"><SkipForward size={31} /></button>
             <button className="transport-speed" onClick={cycleSpeed} aria-label="Playback speed">
               {audioPlaybackRate || settings.playbackRate || 1}x
             </button>
