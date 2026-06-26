@@ -9,7 +9,7 @@
   "scope": "/",
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui"],
-  "orientation": "portrait-primary",
+  "orientation": "portrait",
   "background_color": "#f7f2e8",
   "theme_color": "#2d6e5e",
   "categories": ["books", "education", "lifestyle"],

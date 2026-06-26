@@ -17,6 +17,34 @@ import SurahScreen from './pages/SurahScreen';
 import SurahInfoScreen from './pages/SurahInfoScreen';
 import { ReaderAudioPanel } from './features/reader/components/ReaderAudioPanel';
 
+function syncPortraitFallbackState() {
+  const root = document.documentElement;
+  const landscapeQuery = window.matchMedia?.('(orientation: landscape)');
+  const isLandscape = Boolean(landscapeQuery?.matches || window.innerWidth > window.innerHeight);
+  const angleValue = typeof window.orientation === 'number'
+    ? window.orientation
+    : window.screen?.orientation?.angle;
+  const angle = Number(angleValue) || 0;
+
+  root.dataset.appOrientation = isLandscape ? 'landscape' : 'portrait';
+  root.dataset.appLandscapeLock = isLandscape
+    ? (angle === -90 || angle === 270 ? 'counterclockwise' : 'clockwise')
+    : 'none';
+}
+
+function requestPortraitLock() {
+  syncPortraitFallbackState();
+
+  if (document.visibilityState === 'hidden') return;
+
+  const orientation = window.screen?.orientation;
+  if (!orientation?.lock) return;
+
+  Promise.resolve(orientation.lock('portrait')).catch(() => {
+    // Some browsers only allow locking for installed/fullscreen PWAs.
+  });
+}
+
 export default function App() {
   const {
     view,
@@ -33,6 +61,26 @@ export default function App() {
   })));
   const activeView = normalizeView(view);
   const [booted, setBooted] = useState(false);
+
+  useEffect(() => {
+    requestPortraitLock();
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') requestPortraitLock();
+    };
+
+    window.addEventListener('resize', syncPortraitFallbackState);
+    window.addEventListener('orientationchange', requestPortraitLock);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener('resize', syncPortraitFallbackState);
+      window.removeEventListener('orientationchange', requestPortraitLock);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      delete document.documentElement.dataset.appOrientation;
+      delete document.documentElement.dataset.appLandscapeLock;
+    };
+  }, []);
 
   useEffect(() => {
     let mounted = true;
