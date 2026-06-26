@@ -180,61 +180,63 @@ export default function BookmarksScreen() {
   }
 
   return (
-    <Screen className="tabs-screen">
-      <div className="tabs-header compact">
+    <Screen className="tabs-screen app-page-shell bg-fluent">
+      <div className="tabs-header compact app-fixed-header">
         <BackButton className="tabs-back-pill" onClick={() => goBack()} />
         <h1>Library</h1>
       </div>
 
-      <div className="library-tabs" role="tablist" aria-label="Library tabs">
-        <button
-          type="button"
-          role="tab"
-          aria-selected={activeTab === 'bookmarks'}
-          className={activeTab === 'bookmarks' ? 'is-active' : ''}
-          onClick={() => selectTab('bookmarks')}
-        >
-          Bookmarks
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={activeTab === 'highlights'}
-          className={activeTab === 'highlights' ? 'is-active' : ''}
-          onClick={() => selectTab('highlights')}
-        >
-          Highlights
-        </button>
+      <div className="app-scroll-content">
+        <div className="library-tabs" role="tablist" aria-label="Library tabs">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'bookmarks'}
+            className={activeTab === 'bookmarks' ? 'is-active' : ''}
+            onClick={() => selectTab('bookmarks')}
+          >
+            Bookmarks
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === 'highlights'}
+            className={activeTab === 'highlights' ? 'is-active' : ''}
+            onClick={() => selectTab('highlights')}
+          >
+            Highlights
+          </button>
+        </div>
+
+        {status && <p className="tabs-status" role="status">{status}</p>}
+
+        {activeTab === 'bookmarks' ? (
+          <BookmarkList
+            items={bookmarks}
+            openMenu={openMenu}
+            swipedCard={swipedCard}
+            editor={editor}
+            suppressCardClick={suppressCardClick}
+            onDelete={deleteBookmark}
+            onEditorChange={setEditor}
+            onFinishSwipe={finishSwipe}
+            onJump={jumpToBookmark}
+            onMenuChange={setOpenMenu}
+            onSaveNote={saveNote}
+            onStartSwipe={startSwipe}
+            onSwipedCardChange={setSwipedCard}
+          />
+        ) : (
+          <HighlightList
+            items={highlights}
+            openMenu={openMenu}
+            suppressCardClick={suppressCardClick}
+            onDelete={deleteHighlight}
+            onJump={jumpToHighlight}
+            onMenuChange={setOpenMenu}
+          />
+        )}
       </div>
-
-      {status && <p className="tabs-status" role="status">{status}</p>}
-
-      {activeTab === 'bookmarks' ? (
-        <BookmarkList
-          items={bookmarks}
-          openMenu={openMenu}
-          swipedCard={swipedCard}
-          editor={editor}
-          suppressCardClick={suppressCardClick}
-          onDelete={deleteBookmark}
-          onEditorChange={setEditor}
-          onFinishSwipe={finishSwipe}
-          onJump={jumpToBookmark}
-          onMenuChange={setOpenMenu}
-          onSaveNote={saveNote}
-          onStartSwipe={startSwipe}
-          onSwipedCardChange={setSwipedCard}
-        />
-      ) : (
-        <HighlightList
-          items={highlights}
-          openMenu={openMenu}
-          suppressCardClick={suppressCardClick}
-          onDelete={deleteHighlight}
-          onJump={jumpToHighlight}
-          onMenuChange={setOpenMenu}
-        />
-      )}
     </Screen>
   );
 }

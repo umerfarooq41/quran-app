@@ -2015,3 +2015,150 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
     height: 37px !important;
   }
 }
+
+/* Fixed transparent headers for app pages outside the protected Reader layout. */
+.app-page-shell {
+  --app-fixed-header-height: 52px;
+  --app-page-inline-left: max(var(--ui-screen-inline), env(safe-area-inset-left, 0px));
+  --app-page-inline-right: max(var(--ui-screen-inline), env(safe-area-inset-right, 0px));
+  --app-page-max-width: var(--ui-screen-width);
+  position: fixed !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  max-width: none !important;
+  height: 100dvh !important;
+  min-height: 100dvh !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  padding: calc(var(--safe-top, env(safe-area-inset-top, 0px)) + var(--app-fixed-header-height)) var(--app-page-inline-right) 0 var(--app-page-inline-left) !important;
+  background: var(--brand-bg-light) !important;
+  color: var(--theme-text) !important;
+}
+
+[data-theme='dark'] .app-page-shell {
+  background: var(--brand-bg-dark) !important;
+}
+
+.app-page-shell .index-replica-inner {
+  width: min(100%, var(--app-page-max-width));
+  height: 100%;
+  min-height: 0;
+  margin: 0 auto;
+}
+
+.app-fixed-header {
+  position: fixed !important;
+  top: var(--safe-top, env(safe-area-inset-top, 0px)) !important;
+  left: 50% !important;
+  z-index: 60 !important;
+  width: min(calc(100vw - var(--app-page-inline-left) - var(--app-page-inline-right)), var(--app-page-max-width)) !important;
+  height: var(--app-fixed-header-height) !important;
+  min-height: var(--app-fixed-header-height) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  transform: translateX(-50%) !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.app-fixed-header > .app-header {
+  width: 100%;
+  height: 100%;
+  min-height: 100% !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.app-fixed-header.tabs-header,
+.app-fixed-header.index-replica-header {
+  align-items: center !important;
+}
+
+.app-scroll-content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  align-content: start;
+  gap: var(--ui-space-5);
+  width: min(100%, var(--app-page-max-width));
+  height: 100%;
+  min-height: 0;
+  margin: 0 auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  padding: var(--ui-space-2) 0 calc(var(--safe-bottom, env(safe-area-inset-bottom, 0px)) + var(--ui-space-8));
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.app-scroll-content::-webkit-scrollbar {
+  display: none;
+}
+
+.tabs-screen.app-page-shell,
+.search-screen.app-page-shell,
+.settings-screen.app-page-shell {
+  width: 100% !important;
+  min-height: 100dvh !important;
+  padding-bottom: 0 !important;
+}
+
+.tabs-screen.app-page-shell {
+  --app-page-max-width: 480px;
+}
+
+.index-replica-shell.app-page-shell {
+  background: var(--brand-bg-light) !important;
+}
+
+[data-theme='dark'] .index-replica-shell.app-page-shell {
+  background: var(--brand-bg-dark) !important;
+}
+
+.index-replica-shell.app-page-shell .index-segment {
+  margin-top: 0 !important;
+}
+
+.tabs-screen.app-page-shell .tabs-header,
+.search-screen.app-page-shell .app-header,
+.settings-screen.app-page-shell .app-header,
+.index-replica-shell.app-page-shell .index-replica-header {
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.tabs-screen.app-page-shell .tabs-header {
+  padding-top: 0 !important;
+}
+
+.tabs-screen.app-page-shell .tabs-back-pill {
+  position: absolute !important;
+  top: 4px !important;
+  left: 0 !important;
+}
+
+@media (min-width: 640px) {
+  .app-page-shell {
+    --app-page-inline-left: max(20px, env(safe-area-inset-left, 0px));
+    --app-page-inline-right: max(20px, env(safe-area-inset-right, 0px));
+  }
+
+  .search-screen.app-page-shell,
+  .settings-screen.app-page-shell {
+    --app-page-max-width: 620px;
+  }
+}

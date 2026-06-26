@@ -105,8 +105,12 @@ export default function SearchScreen() {
   }
 
   return (
-    <Screen className="search-screen">
-      <Header title="Search" />
+    <Screen className="search-screen app-page-shell bg-fluent">
+      <div className="app-fixed-header">
+        <Header title="Search" />
+      </div>
+
+      <div className="app-scroll-content">
 
       <form className="search-form" onSubmit={submitSearch}>
         <Search size={19} aria-hidden="true" />
@@ -174,6 +178,7 @@ export default function SearchScreen() {
           )}
         </section>
       )}
+      </div>
     </Screen>
   );
 }

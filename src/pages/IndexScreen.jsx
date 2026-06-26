@@ -47,32 +47,34 @@ export default function IndexScreen() {
   })));
 
   return (
-    <main className="index-replica-shell">
+    <main className="index-replica-shell app-page-shell bg-fluent">
       <div className="index-replica-inner">
-        <header className="index-replica-header">
+        <header className="index-replica-header app-fixed-header">
           <BackButton onClick={() => goBack()} label="Back from index" />
           <h1>Index</h1>
           <span className="index-header-spacer" aria-hidden="true" />
         </header>
 
-        <div className="index-segment" role="tablist" aria-label="Index tabs">
-          <button
-            className={tab === 'juz' ? 'is-active' : ''}
-            onClick={() => setTab('juz')}
-            type="button"
-          >
-            Juz's
-          </button>
-          <button
-            className={tab === 'surahs' ? 'is-active' : ''}
-            onClick={() => setTab('surahs')}
-            type="button"
-          >
-            Surahs
-          </button>
-        </div>
+        <div className="app-scroll-content">
+          <div className="index-segment" role="tablist" aria-label="Index tabs">
+            <button
+              className={tab === 'juz' ? 'is-active' : ''}
+              onClick={() => setTab('juz')}
+              type="button"
+            >
+              Juz's
+            </button>
+            <button
+              className={tab === 'surahs' ? 'is-active' : ''}
+              onClick={() => setTab('surahs')}
+              type="button"
+            >
+              Surahs
+            </button>
+          </div>
 
-        {tab === 'juz' ? <JuzIndex /> : <SurahIndex />}
+          {tab === 'juz' ? <JuzIndex /> : <SurahIndex />}
+        </div>
       </div>
     </main>
   );

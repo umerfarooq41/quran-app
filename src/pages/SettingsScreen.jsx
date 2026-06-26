@@ -29,8 +29,12 @@ export default function SettingsScreen() {
   }
 
   return (
-    <Screen className="settings-screen">
-      <Header title="Settings" />
+    <Screen className="settings-screen app-page-shell bg-fluent">
+      <div className="app-fixed-header">
+        <Header title="Settings" />
+      </div>
+
+      <div className="app-scroll-content">
 
       <section className="settings-card">
         <div className="settings-section-heading">
@@ -101,15 +105,11 @@ export default function SettingsScreen() {
         </label>
       </section>
 
-      <section className="settings-card settings-rendering-lock">
-        <strong>Mushaf rendering is locked</strong>
-        <p>Arabic font size, Harf shaping, spacing, scaling, page fitting, and the 16-line layout cannot be changed from Settings.</p>
-      </section>
-
       <button type="button" className="settings-reset-button" onClick={() => setConfirmReset(true)}>
         <RotateCcw size={17} />
         Reset settings
       </button>
+      </div>
 
       {confirmReset && (
         <div className="settings-dialog-backdrop" role="presentation" onClick={() => setConfirmReset(false)}>
