@@ -77,6 +77,7 @@ export function ReaderAudioPanel() {
   const playbackRateRef = useRef(audioPlaybackRate || settings.playbackRate || 1);
   const unmountedRef = useRef(false);
   const rafRef = useRef(0);
+  const reciterPickerRef = useRef(null);
   const [visualTime, setVisualTime] = useState(currentTime || 0);
 
   const reciters = useMemo(() => normalizeLocalReciters(), []);
@@ -195,6 +196,19 @@ export function ReaderAudioPanel() {
       preloadRef.current.audio.playbackRate = rate;
     }
   }, [audioPlaybackRate, settings.playbackRate]);
+
+  useEffect(() => {
+    if (!reciterPickerOpen) return undefined;
+
+    const handlePointerDown = (event) => {
+      if (!reciterPickerRef.current?.contains(event.target)) {
+        setReciterPickerOpen(false);
+      }
+    };
+
+    document.addEventListener('pointerdown', handlePointerDown, true);
+    return () => document.removeEventListener('pointerdown', handlePointerDown, true);
+  }, [reciterPickerOpen]);
 
   function bindCurrentAudio(audio) {
     const handlers = {
@@ -545,25 +559,72 @@ export function ReaderAudioPanel() {
             <button onClick={closePlayer} aria-label="Close audio player"><X size={18} /></button>
           </div>
 
-          <button
-            className="reader-reciter-row reader-reciter-pill"
-            type="button"
-            onClick={() => setReciterPickerOpen(true)}
-            aria-haspopup="dialog"
-            aria-expanded={reciterPickerOpen}
+          <div
+            ref={reciterPickerRef}
+            className={reciterPickerOpen ? 'reader-reciter-picker is-open' : 'reader-reciter-picker'}
           >
-            <span className="reader-reciter-avatar" aria-hidden="true">
-              <img
-                src={getReciterImageSrc(selectedReciterMeta)}
-                alt=""
-                onError={(event) => { event.currentTarget.style.display = 'none'; }}
-              />
-            </span>
-            <span className="reader-reciter-copy">
-              <span>{getReciterDisplayName(selectedReciterMeta)}</span>
-            </span>
-            <ChevronDown size={17} />
-          </button>
+            <button
+              className="reader-reciter-row reader-reciter-pill"
+              type="button"
+              onClick={() => setReciterPickerOpen((open) => !open)}
+              aria-haspopup="listbox"
+              aria-expanded={reciterPickerOpen}
+            >
+              <span className="reader-reciter-avatar" aria-hidden="true">
+                <img
+                  src={getReciterImageSrc(selectedReciterMeta)}
+                  alt=""
+                  onError={(event) => { event.currentTarget.style.display = 'none'; }}
+                />
+              </span>
+              <span className="reader-reciter-copy">
+                <span>{getReciterDisplayName(selectedReciterMeta)}</span>
+              </span>
+              <ChevronDown size={17} />
+            </button>
+
+            {reciterPickerOpen && (
+              <div className="reader-reciter-inline-panel">
+                <label className="reader-reciter-search">
+                  <Search size={18} aria-hidden="true" />
+                  <input
+                    value={reciterSearch}
+                    onChange={(event) => setReciterSearch(event.target.value)}
+                    placeholder="Search reciters"
+                  />
+                </label>
+                <div className="reader-reciter-list" role="listbox" aria-label="Reciters">
+                  {filteredReciters.map((reciter) => {
+                    const isSelected = reciter.id === selectedReciter;
+                    return (
+                      <button
+                        key={reciter.id}
+                        type="button"
+                        className={isSelected ? 'reader-reciter-list-item selected' : 'reader-reciter-list-item'}
+                        onClick={() => selectReciter(reciter.id)}
+                        role="option"
+                        aria-selected={isSelected}
+                      >
+                        <span className="reader-reciter-avatar" aria-hidden="true">
+                          <img
+                            src={getReciterImageSrc(reciter)}
+                            alt=""
+                            onError={(event) => { event.currentTarget.style.display = 'none'; }}
+                          />
+                        </span>
+                        <span>
+                          {getReciterDisplayName(reciter)}
+                        </span>
+                        <span className="reader-reciter-check" aria-hidden="true">
+                          {isSelected ? <Check size={19} /> : <span className="reader-reciter-option-radio" />}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
 
           <div className="reader-audio-times reader-audio-times-above" dir="ltr">
             <span>{formatTime(duration || 0)}</span>
@@ -606,65 +667,6 @@ export function ReaderAudioPanel() {
         </section>
       </div>
 
-      {reciterPickerOpen && (
-        <div
-          className="reader-reciter-sheet"
-          role="presentation"
-          data-reader-ui
-          onClick={() => setReciterPickerOpen(false)}
-        >
-          <div
-            className="reader-reciter-sheet-card"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Select reciter"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="reader-reciter-sheet-handle" aria-hidden="true" />
-            <div className="reader-reciter-sheet-head">
-              <strong>Select Reciter</strong>
-              <button type="button" onClick={() => setReciterPickerOpen(false)} aria-label="Close reciter list"><X size={19} /></button>
-            </div>
-            <label className="reader-reciter-search">
-              <Search size={18} aria-hidden="true" />
-              <input
-                value={reciterSearch}
-                onChange={(event) => setReciterSearch(event.target.value)}
-                placeholder="Search reciters"
-              />
-            </label>
-            <div className="reader-reciter-list" role="listbox" aria-label="Reciters">
-              {filteredReciters.map((reciter) => {
-                const isSelected = reciter.id === selectedReciter;
-                return (
-                  <button
-                    key={reciter.id}
-                    type="button"
-                    className={isSelected ? 'reader-reciter-list-item selected' : 'reader-reciter-list-item'}
-                    onClick={() => selectReciter(reciter.id)}
-                    role="option"
-                    aria-selected={isSelected}
-                  >
-                    <span className="reader-reciter-avatar" aria-hidden="true">
-                      <img
-                        src={getReciterImageSrc(reciter)}
-                        alt=""
-                        onError={(event) => { event.currentTarget.style.display = 'none'; }}
-                      />
-                    </span>
-                    <span>
-                      {getReciterDisplayName(reciter)}
-                    </span>
-                    <span className="reader-reciter-check" aria-hidden="true">
-                      {isSelected ? <Check size={19} /> : <span className="reader-reciter-option-radio" />}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 }

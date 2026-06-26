@@ -864,8 +864,7 @@ html[data-theme='dark'] {
   --audio-shadow: 0 18px 48px rgba(0, 0, 0, .44);
 }
 
-.reader-audio-panel.reader-audio-panel-modern,
-.reader-reciter-sheet .reader-reciter-sheet-card {
+.reader-audio-panel.reader-audio-panel-modern {
   border: 1px solid var(--audio-panel-border) !important;
   background: var(--audio-panel-bg) !important;
   color: var(--audio-panel-text) !important;
@@ -874,66 +873,31 @@ html[data-theme='dark'] {
   -webkit-backdrop-filter: none !important;
 }
 
-.reader-reciter-sheet {
-  position: fixed !important;
-  inset: 0 !important;
-  z-index: 90 !important;
-  display: flex !important;
-  align-items: flex-end !important;
-  justify-content: center !important;
-  padding: 0 14px calc(env(safe-area-inset-bottom, 0px) + 248px) !important;
-  background: transparent !important;
-  pointer-events: auto !important;
+.reader-reciter-picker {
+  width: 100% !important;
+  max-width: 100% !important;
 }
 
-.reader-reciter-sheet .reader-reciter-sheet-card {
-  width: min(100%, 560px) !important;
-  max-height: min(50dvh, 470px) !important;
+.reader-reciter-picker.is-open .reader-reciter-pill {
+  margin-bottom: 6px !important;
+}
+
+.reader-reciter-inline-panel {
+  width: 100% !important;
+  max-width: 100% !important;
+  max-height: min(38dvh, 330px) !important;
   display: flex !important;
   flex-direction: column !important;
-  border-radius: 26px !important;
-  padding: 7px 11px 11px !important;
+  border: 1px solid var(--audio-panel-border) !important;
+  border-radius: 19px !important;
+  background: var(--audio-control-bg) !important;
+  color: var(--audio-panel-text) !important;
+  padding: 8px !important;
+  box-shadow: none !important;
   overflow: hidden !important;
-  pointer-events: auto !important;
 }
 
-.reader-reciter-sheet-card .reader-reciter-sheet-handle {
-  width: 54px !important;
-  height: 5px !important;
-  margin: 0 auto 10px !important;
-  border-radius: 999px !important;
-  background: var(--audio-panel-border) !important;
-}
-
-.reader-reciter-sheet-card .reader-reciter-sheet-head {
-  display: grid !important;
-  grid-template-columns: 40px minmax(0, 1fr) 40px !important;
-  align-items: center !important;
-  margin-bottom: 10px !important;
-  text-align: center !important;
-}
-
-.reader-reciter-sheet-card .reader-reciter-sheet-head strong {
-  grid-column: 2 !important;
-  min-width: 0 !important;
-  overflow: hidden !important;
-  font-size: 1.05rem !important;
-  font-weight: 760 !important;
-  letter-spacing: -.025em !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-}
-
-.reader-reciter-sheet-card .reader-reciter-sheet-head button {
-  grid-column: 3 !important;
-  display: grid !important;
-  width: 38px !important;
-  height: 38px !important;
-  place-items: center !important;
-  border-radius: 999px !important;
-}
-
-.reader-reciter-sheet-card .reader-reciter-search {
+.reader-reciter-inline-panel .reader-reciter-search {
   min-height: 42px !important;
   display: flex !important;
   align-items: center !important;
@@ -943,7 +907,7 @@ html[data-theme='dark'] {
   border-radius: 16px !important;
 }
 
-.reader-reciter-sheet-card .reader-reciter-search input {
+.reader-reciter-inline-panel .reader-reciter-search input {
   min-width: 0 !important;
   flex: 1 !important;
   border: 0 !important;
@@ -953,13 +917,15 @@ html[data-theme='dark'] {
   font-weight: 620 !important;
 }
 
-.reader-reciter-sheet-card .reader-reciter-list {
+.reader-reciter-inline-panel .reader-reciter-list {
+  min-height: 0 !important;
+  flex: 1 1 auto !important;
   overflow-y: auto !important;
   padding: 4px 2px 6px !important;
   scrollbar-width: thin !important;
 }
 
-.reader-reciter-sheet-card .reader-reciter-list-item {
+.reader-reciter-inline-panel .reader-reciter-list-item {
   width: 100% !important;
   border: 0 !important;
   border-radius: 16px !important;
@@ -967,23 +933,23 @@ html[data-theme='dark'] {
   transition: transform .14s ease, background .14s ease !important;
 }
 
-.reader-reciter-sheet-card .reader-reciter-list-item:active {
+.reader-reciter-inline-panel .reader-reciter-list-item:active {
   transform: scale(.985) !important;
 }
 
-.reader-reciter-sheet-card .reader-reciter-list-item .reader-reciter-avatar {
+.reader-reciter-inline-panel .reader-reciter-list-item .reader-reciter-avatar {
   border-radius: 999px !important;
   overflow: hidden !important;
 }
 
-.reader-reciter-sheet-card .reader-reciter-list-item .reader-reciter-avatar img {
+.reader-reciter-inline-panel .reader-reciter-list-item .reader-reciter-avatar img {
   width: 100% !important;
   height: 100% !important;
   display: block !important;
   object-fit: cover !important;
 }
 
-.reader-reciter-sheet-card .reader-reciter-option-radio {
+.reader-reciter-inline-panel .reader-reciter-option-radio {
   display: block !important;
   width: 18px !important;
   height: 18px !important;
@@ -994,26 +960,24 @@ html[data-theme='dark'] {
 .reader-audio-panel-modern .reader-audio-head-centered strong,
 .reader-audio-panel-modern .reader-reciter-copy,
 .reader-audio-panel-modern .reader-reciter-copy span,
-.reader-reciter-sheet-card .reader-reciter-sheet-head strong,
-.reader-reciter-sheet-card .reader-reciter-list-item,
-.reader-reciter-sheet-card .reader-reciter-search input {
+.reader-reciter-inline-panel .reader-reciter-list-item,
+.reader-reciter-inline-panel .reader-reciter-search input {
   color: var(--audio-panel-text) !important;
 }
 
 .reader-audio-panel-modern .reader-audio-times-above,
 .reader-audio-panel-modern .reader-audio-status,
-.reader-reciter-sheet-card .reader-reciter-search,
-.reader-reciter-sheet-card .reader-reciter-search input::placeholder,
-.reader-reciter-sheet-card .reader-reciter-option-radio {
+.reader-reciter-inline-panel .reader-reciter-search,
+.reader-reciter-inline-panel .reader-reciter-search input::placeholder,
+.reader-reciter-inline-panel .reader-reciter-option-radio {
   color: var(--audio-panel-muted) !important;
 }
 
 .reader-audio-panel-modern .reader-audio-head-centered button,
 .reader-audio-panel-modern .reader-reciter-row.reader-reciter-pill,
 .reader-audio-panel-modern .reader-transport-modern button,
-.reader-reciter-sheet-card .reader-reciter-search,
-.reader-reciter-sheet-card .reader-reciter-list-item.selected,
-.reader-reciter-sheet-card .reader-reciter-sheet-head button {
+.reader-reciter-inline-panel .reader-reciter-search,
+.reader-reciter-inline-panel .reader-reciter-list-item.selected {
   border: 1px solid var(--audio-panel-border) !important;
   background: var(--audio-control-bg) !important;
   color: var(--audio-panel-text) !important;
@@ -1023,7 +987,7 @@ html[data-theme='dark'] {
 }
 
 .reader-audio-panel-modern .reader-reciter-row.reader-reciter-pill,
-.reader-reciter-sheet-card .reader-reciter-list-item {
+.reader-reciter-inline-panel .reader-reciter-list-item {
   display: grid !important;
   width: 100% !important;
   max-width: 100% !important;
@@ -1040,7 +1004,7 @@ html[data-theme='dark'] {
 }
 
 .reader-audio-panel-modern .reader-reciter-avatar,
-.reader-reciter-sheet-card .reader-reciter-list-item .reader-reciter-avatar {
+.reader-reciter-inline-panel .reader-reciter-list-item .reader-reciter-avatar {
   width: 40px !important;
   height: 40px !important;
   border: 1px solid var(--audio-panel-border) !important;
@@ -1049,7 +1013,7 @@ html[data-theme='dark'] {
 }
 
 .reader-audio-panel-modern .reader-reciter-copy,
-.reader-reciter-sheet-card .reader-reciter-list-item > span:nth-child(2) {
+.reader-reciter-inline-panel .reader-reciter-list-item > span:nth-child(2) {
   display: block !important;
   min-width: 0 !important;
   overflow: hidden !important;
@@ -1071,21 +1035,21 @@ html[data-theme='dark'] {
 }
 
 .reader-audio-panel-modern .reader-reciter-pill > svg,
-.reader-reciter-sheet-card .reader-reciter-check {
+.reader-reciter-inline-panel .reader-reciter-check {
   justify-self: end !important;
   color: var(--audio-panel-muted) !important;
 }
 
-.reader-reciter-sheet-card .reader-reciter-list-item.selected {
+.reader-reciter-inline-panel .reader-reciter-list-item.selected {
   background: var(--audio-control-active-bg) !important;
   box-shadow: inset 0 0 0 1px var(--audio-accent-soft) !important;
 }
 
-.reader-reciter-sheet-card .reader-reciter-list-item.selected .reader-reciter-check {
+.reader-reciter-inline-panel .reader-reciter-list-item.selected .reader-reciter-check {
   color: var(--audio-accent) !important;
 }
 
-.reader-reciter-sheet-card .reader-reciter-option-radio {
+.reader-reciter-inline-panel .reader-reciter-option-radio {
   border-color: var(--audio-panel-muted) !important;
   box-shadow: none !important;
 }
