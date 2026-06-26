@@ -12,21 +12,23 @@ export function ReaderTopControls({ visible, onBack, onBookmarks, onIndex, onSet
         onChromeTap?.();
       }}
     >
-      <div className="reader-control-row">
-        <BackButton className="reader-back-pill" onClick={onBack} />
+      <div className="reader-top-sheet">
+        <div className="reader-control-row">
+          <BackButton className="reader-back-pill" onClick={onBack} />
 
-        <div className="reader-top-actions">
-          <button className="reader-top-icon" onClick={onBookmarks} aria-label="Open library">
-            <Bookmark size={30} strokeWidth={1.7} />
-          </button>
+          <div className="reader-top-actions">
+            <button className="reader-top-icon" onClick={onBookmarks} aria-label="Open library">
+              <Bookmark size={30} strokeWidth={1.7} />
+            </button>
 
-          <button className="reader-top-icon" onClick={onIndex} aria-label="Index">
-            <Menu size={32} strokeWidth={1.7} />
-          </button>
+            <button className="reader-top-icon" onClick={onIndex} aria-label="Index">
+              <Menu size={32} strokeWidth={1.7} />
+            </button>
 
-          <button className="reader-top-icon" onClick={onSettings} aria-label="Settings">
-            <Settings size={30} strokeWidth={1.7} />
-          </button>
+            <button className="reader-top-icon" onClick={onSettings} aria-label="Settings">
+              <Settings size={30} strokeWidth={1.7} />
+            </button>
+          </div>
         </div>
       </div>
     </header>

@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
 import { Check, ChevronDown, Pause, Play, Repeat, SkipBack, SkipForward, X } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { VIEWS } from '../../../app/routes';
@@ -89,9 +88,12 @@ export function ReaderAudioPanel() {
   const reciterNameWindowRef = useRef(null);
   const reciterNameTextRef = useRef(null);
   const panelDragRef = useRef(null);
+  const panelHasMountedRef = useRef(false);
+  const panelTransitionTimerRef = useRef(0);
   const [visualTime, setVisualTime] = useState(currentTime || 0);
   const [reciterNameOverflow, setReciterNameOverflow] = useState(false);
   const [reciterNameScroll, setReciterNameScroll] = useState(0);
+  const [panelTransitioning, setPanelTransitioning] = useState(false);
 
   const reciters = useMemo(() => normalizeLocalReciters(), []);
   const selectedReciter = audioReciter || settings.reciter || getDefaultReciterId();
@@ -112,6 +114,31 @@ export function ReaderAudioPanel() {
   const panelExpanded = audioPlayerVisible;
   repeatRef.current = repeat;
   playbackRateRef.current = audioPlaybackRate || settings.playbackRate || 1;
+
+  useEffect(() => {
+    window.clearTimeout(panelTransitionTimerRef.current);
+
+    if (!audioPlayerActive) {
+      panelHasMountedRef.current = false;
+      setPanelTransitioning(false);
+      return undefined;
+    }
+
+    if (!panelHasMountedRef.current) {
+      panelHasMountedRef.current = true;
+      setPanelTransitioning(false);
+      return undefined;
+    }
+
+    setPanelTransitioning(true);
+    panelTransitionTimerRef.current = window.setTimeout(() => {
+      setPanelTransitioning(false);
+    }, 380);
+
+    return () => {
+      window.clearTimeout(panelTransitionTimerRef.current);
+    };
+  }, [audioPlayerActive, panelExpanded]);
 
 
   useEffect(() => {
@@ -805,150 +832,142 @@ export function ReaderAudioPanel() {
 
   if (!audioPlayerActive) return nativeAudioElement;
 
+  const panelWrapClassName = [
+    'reader-audio-panel-wrap',
+    'reader-audio-panel-visible',
+    panelExpanded ? 'reader-audio-panel-expanded' : 'reader-audio-panel-collapsed',
+    panelTransitioning ? 'reader-audio-panel-transitioning' : '',
+    view === VIEWS.READER ? 'reader-audio-over-reader' : 'reader-audio-over-screen',
+  ].filter(Boolean).join(' ');
+
   return (
     <>
       {nativeAudioElement}
 
-      <motion.div
-        layout
-        initial={false}
-        className={`reader-audio-panel-wrap ${panelExpanded ? 'reader-audio-panel-visible reader-audio-panel-expanded' : 'reader-audio-panel-visible reader-audio-panel-collapsed'} ${view === VIEWS.READER ? 'reader-audio-over-reader' : 'reader-audio-over-screen'}`}
+      <div
+        className={panelWrapClassName}
         data-reader-ui
       >
-        <motion.section
-          layout
-          transition={{ type: 'spring', stiffness: 420, damping: 38 }}
-          className={`reader-audio-panel reader-audio-panel-modern ${panelExpanded ? 'reader-audio-expanded-panel' : 'reader-audio-mini-panel'}`}
+        <section
+          className={`reader-audio-panel reader-audio-panel-modern reader-audio-expanded-panel ${panelExpanded ? 'is-active' : 'is-inactive'}`}
+          aria-hidden={!panelExpanded}
+          inert={!panelExpanded ? true : undefined}
         >
-          <AnimatePresence mode="popLayout" initial={false}>
-            {panelExpanded ? (
-              <motion.div
-                key="expanded"
-                layout
-                initial={{ opacity: 0, y: 18, scale: .98 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 14, scale: .985 }}
-                transition={{ type: 'spring', stiffness: 430, damping: 36 }}
-                className="reader-audio-expanded-content"
+          <div className="reader-audio-expanded-content">
+            {renderGrabber('collapse')}
+
+            <div className="reader-audio-head reader-audio-head-centered">
+              <span aria-hidden="true" />
+              <strong>{reference}</strong>
+              <button type="button" onClick={closePlayer} aria-label="Close audio player"><X size={28} /></button>
+            </div>
+
+            <div
+              ref={reciterPickerRef}
+              className={reciterPickerOpen ? 'reader-reciter-picker is-open' : 'reader-reciter-picker'}
+            >
+              <button
+                className="reader-reciter-row reader-reciter-pill"
+                type="button"
+                onClick={() => setReciterPickerOpen((open) => !open)}
+                aria-haspopup="listbox"
+                aria-expanded={reciterPickerOpen}
               >
-                {renderGrabber('collapse')}
-
-                <div className="reader-audio-head reader-audio-head-centered">
-                  <span aria-hidden="true" />
-                  <strong>{reference}</strong>
-                  <button type="button" onClick={closePlayer} aria-label="Close audio player"><X size={28} /></button>
-                </div>
-
-                <div
-                  ref={reciterPickerRef}
-                  className={reciterPickerOpen ? 'reader-reciter-picker is-open' : 'reader-reciter-picker'}
-                >
-                  <button
-                    className="reader-reciter-row reader-reciter-pill"
-                    type="button"
-                    onClick={() => setReciterPickerOpen((open) => !open)}
-                    aria-haspopup="listbox"
-                    aria-expanded={reciterPickerOpen}
-                  >
-                    <span className="reader-reciter-avatar" aria-hidden="true">
-                      <img
-                        src={getReciterImageSrc(selectedReciterMeta)}
-                        alt=""
-                        onError={(event) => { event.currentTarget.style.display = 'none'; }}
-                      />
-                    </span>
-                    <span ref={reciterNameWindowRef} className="reader-reciter-name-window">
-                      <span
-                        ref={reciterNameTextRef}
-                        className={reciterNameOverflow ? 'reader-reciter-name-text is-overflowing' : 'reader-reciter-name-text'}
-                        style={{ '--reciter-name-scroll': `${reciterNameScroll}px` }}
-                      >
-                        {selectedReciterName}
-                      </span>
-                    </span>
-                    <span className="reader-reciter-chevron" aria-hidden="true">
-                      <ChevronDown size={24} />
-                    </span>
-                  </button>
-
-                  <div className="reader-reciter-inline-panel" aria-hidden={!reciterPickerOpen}>
-                    <div className="reader-reciter-list" role="listbox" aria-label="Reciters">
-                      {reciters.map((reciter) => {
-                        const isSelected = reciter.id === selectedReciter;
-                        return (
-                          <button
-                            key={reciter.id}
-                            type="button"
-                            className={isSelected ? 'reader-reciter-list-item selected' : 'reader-reciter-list-item'}
-                            onClick={() => selectReciter(reciter.id)}
-                            role="option"
-                            aria-selected={isSelected}
-                            tabIndex={reciterPickerOpen ? 0 : -1}
-                          >
-                            <span className="reader-reciter-avatar" aria-hidden="true">
-                              <img
-                                src={getReciterImageSrc(reciter)}
-                                alt=""
-                                onError={(event) => { event.currentTarget.style.display = 'none'; }}
-                              />
-                            </span>
-                            <span>
-                              {getReciterDisplayName(reciter)}
-                            </span>
-                            <span className="reader-reciter-check" aria-hidden="true">
-                              {isSelected ? <Check size={19} /> : <span className="reader-reciter-option-radio" />}
-                            </span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="reader-audio-waveform reader-audio-wave-line" style={{ '--audio-progress': progressRatio }}>
-                  <div className="reader-audio-wave-track" aria-hidden="true">
-                    <span className="reader-audio-wave-remaining" />
-                    <span className="reader-audio-wave-played" />
-                    <span className="reader-audio-wave-thumb" />
-                  </div>
-                  <input
-                    className="reader-audio-progress reader-audio-progress-overlay"
-                    dir="rtl"
-                    type="range"
-                    min="0"
-                    max={duration || 0}
-                    value={Math.min(currentTime, duration || 0)}
-                    onChange={(event) => seek(event.target.value)}
-                    aria-label="Audio progress"
+                <span className="reader-reciter-avatar" aria-hidden="true">
+                  <img
+                    src={getReciterImageSrc(selectedReciterMeta)}
+                    alt=""
+                    onError={(event) => { event.currentTarget.style.display = 'none'; }}
                   />
+                </span>
+                <span ref={reciterNameWindowRef} className="reader-reciter-name-window">
+                  <span
+                    ref={reciterNameTextRef}
+                    className={reciterNameOverflow ? 'reader-reciter-name-text is-overflowing' : 'reader-reciter-name-text'}
+                    style={{ '--reciter-name-scroll': `${reciterNameScroll}px` }}
+                  >
+                    {selectedReciterName}
+                  </span>
+                </span>
+                <span className="reader-reciter-chevron" aria-hidden="true">
+                  <ChevronDown size={24} />
+                </span>
+              </button>
+
+              <div className="reader-reciter-inline-panel" aria-hidden={!reciterPickerOpen}>
+                <div className="reader-reciter-list" role="listbox" aria-label="Reciters">
+                  {reciters.map((reciter) => {
+                    const isSelected = reciter.id === selectedReciter;
+                    return (
+                      <button
+                        key={reciter.id}
+                        type="button"
+                        className={isSelected ? 'reader-reciter-list-item selected' : 'reader-reciter-list-item'}
+                        onClick={() => selectReciter(reciter.id)}
+                        role="option"
+                        aria-selected={isSelected}
+                        tabIndex={reciterPickerOpen ? 0 : -1}
+                      >
+                        <span className="reader-reciter-avatar" aria-hidden="true">
+                          <img
+                            src={getReciterImageSrc(reciter)}
+                            alt=""
+                            onError={(event) => { event.currentTarget.style.display = 'none'; }}
+                          />
+                        </span>
+                        <span>
+                          {getReciterDisplayName(reciter)}
+                        </span>
+                        <span className="reader-reciter-check" aria-hidden="true">
+                          {isSelected ? <Check size={19} /> : <span className="reader-reciter-option-radio" />}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
+              </div>
+            </div>
 
-                <div className="reader-audio-times reader-audio-times-above" dir="ltr">
-                  <span>{formatTime(duration || 0)}</span>
-                  <span>{formatTime(displayedTime)}</span>
-                </div>
+            <div className="reader-audio-waveform reader-audio-wave-line" style={{ '--audio-progress': progressRatio }}>
+              <div className="reader-audio-wave-track" aria-hidden="true">
+                <span className="reader-audio-wave-remaining" />
+                <span className="reader-audio-wave-played" />
+                <span className="reader-audio-wave-thumb" />
+              </div>
+              <input
+                className="reader-audio-progress reader-audio-progress-overlay"
+                dir="rtl"
+                type="range"
+                min="0"
+                max={duration || 0}
+                value={Math.min(currentTime, duration || 0)}
+                onChange={(event) => seek(event.target.value)}
+                aria-label="Audio progress"
+              />
+            </div>
 
-                {renderTransportControls()}
+            <div className="reader-audio-times reader-audio-times-above" dir="ltr">
+              <span>{formatTime(duration || 0)}</span>
+              <span>{formatTime(displayedTime)}</span>
+            </div>
 
-                {status && <p className="reader-audio-status">{status}</p>}
-              </motion.div>
-            ) : (
-              <motion.div
-                key="collapsed"
-                layout
-                initial={{ opacity: 0, y: 18, scale: .98 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -12, scale: .985 }}
-                transition={{ type: 'spring', stiffness: 460, damping: 38 }}
-                className="reader-audio-mini-content"
-              >
-                {renderGrabber('expand')}
-                {renderTransportControls(true)}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.section>
-      </motion.div>
+            {renderTransportControls()}
+
+            {status && <p className="reader-audio-status">{status}</p>}
+          </div>
+        </section>
+
+        <section
+          className={`reader-audio-panel reader-audio-panel-modern reader-audio-mini-panel ${panelExpanded ? 'is-inactive' : 'is-active'}`}
+          aria-hidden={panelExpanded}
+          inert={panelExpanded ? true : undefined}
+        >
+          <div className="reader-audio-mini-content">
+            {renderGrabber('expand')}
+            {renderTransportControls(true)}
+          </div>
+        </section>
+      </div>
 
     </>
   );

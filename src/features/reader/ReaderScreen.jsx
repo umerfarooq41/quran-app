@@ -575,7 +575,7 @@ export default function ReaderScreen() {
     >
       <div
         ref={readerShellRef}
-        className={`reader-shell relative mx-auto flex h-dvh max-w-[576px] flex-col overflow-hidden bg-[#fffaf1] text-[#13100a] shadow-2xl shadow-slate-900/10 ${audioPlayerActive ? 'reader-shell-audio-active' : ''}`}
+        className={`reader-shell relative mx-auto flex h-dvh max-w-[576px] flex-col overflow-hidden bg-[#fffaf1] text-[#13100a] shadow-2xl shadow-slate-900/10 ${audioPlayerActive ? 'reader-shell-audio-active' : ''} ${audioPlayerActive && !audioPlayerVisible ? 'reader-shell-audio-collapsed' : ''}`}
       >
         <div className="reader-top-hit-zone" data-reader-toggle-zone aria-hidden="true" />
         <div className="reader-bottom-hit-zone" data-reader-toggle-zone aria-hidden="true" />
