@@ -2200,6 +2200,19 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
   box-shadow: none !important;
 }
 
+.index-replica-shell.app-page-shell .index-card,
+.index-replica-shell.app-page-shell .index-collapse-panel,
+.index-replica-shell.app-page-shell .index-quarter-btn,
+.index-replica-shell.app-page-shell .index-surah-info-preview,
+.index-replica-shell.app-page-shell .index-ayah-grid button,
+[data-theme='dark'] .index-replica-shell.app-page-shell .index-card,
+[data-theme='dark'] .index-replica-shell.app-page-shell .index-collapse-panel,
+[data-theme='dark'] .index-replica-shell.app-page-shell .index-quarter-btn,
+[data-theme='dark'] .index-replica-shell.app-page-shell .index-surah-info-preview,
+[data-theme='dark'] .index-replica-shell.app-page-shell .index-ayah-grid button {
+  box-shadow: none !important;
+}
+
 .tabs-screen.app-page-shell .library-tabs,
 [data-theme='dark'] .tabs-screen.app-page-shell .library-tabs {
   background: transparent !important;
@@ -2236,7 +2249,7 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
 [data-theme='dark'] .tabs-screen.app-page-shell .tab-card-surface {
   border-color: var(--theme-border) !important;
   background: var(--theme-surface-solid) !important;
-  box-shadow: 0 9px 24px var(--theme-shadow) !important;
+  box-shadow: none !important;
 }
 
 .tabs-screen.app-page-shell .library-highlight-strip {
