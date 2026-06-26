@@ -1025,6 +1025,8 @@ html[data-theme='dark'] {
 .reader-audio-panel-modern .reader-reciter-row.reader-reciter-pill,
 .reader-reciter-sheet-card .reader-reciter-list-item {
   display: grid !important;
+  width: 100% !important;
+  max-width: 100% !important;
   grid-template-columns: 40px minmax(0, 1fr) 24px !important;
   align-items: center !important;
   gap: 12px !important;
@@ -1100,6 +1102,12 @@ html[data-theme='dark'] {
 }
 
 .reader-audio-panel-modern .reader-audio-wave-remaining {
+  position: absolute !important;
+  inset-inline: 0 !important;
+  top: 50% !important;
+  height: 4px !important;
+  border-radius: 999px !important;
+  transform: translateY(-50%) !important;
   background: var(--audio-wave-bg) !important;
 }
 
@@ -1109,9 +1117,23 @@ html[data-theme='dark'] {
 }
 
 .reader-audio-panel-modern .reader-audio-wave-played {
+  position: absolute !important;
+  right: 0 !important;
+  top: 50% !important;
+  width: calc(var(--audio-progress, 0) * 100%) !important;
+  height: 4px !important;
+  border-radius: 999px !important;
+  transform: translateY(-50%) !important;
   box-shadow: none !important;
 }
 
 .reader-audio-panel-modern .reader-audio-wave-thumb {
+  position: absolute !important;
+  top: 50% !important;
+  right: calc(var(--audio-progress, 0) * 100%) !important;
+  width: 16px !important;
+  height: 16px !important;
+  border-radius: 999px !important;
+  transform: translate(50%, -50%) !important;
   box-shadow: 0 0 0 5px var(--audio-accent-soft) !important;
 }

@@ -1785,6 +1785,8 @@ body {
 
 .reader-reciter-pill {
   position: relative;
+  width: 100%;
+  max-width: 100%;
   margin: 10px 0 9px;
   min-height: 54px;
   gap: 11px;
@@ -1858,8 +1860,71 @@ body {
   padding: 0 1px;
 }
 
+.reader-audio-wave-line {
+  height: 28px;
+  padding: 0;
+}
+
+.reader-audio-wave-track {
+  position: relative;
+  width: 100%;
+  height: 28px;
+}
+
+.reader-audio-wave-remaining {
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  height: 4px;
+  border-radius: 999px;
+  transform: translateY(-50%);
+  background: var(--audio-wave-bg, rgba(100, 116, 139, .28));
+}
+
+.reader-audio-wave-played {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: calc(var(--audio-progress, 0) * 100%);
+  height: 4px;
+  min-width: 0;
+  border-radius: 999px;
+  transform: translateY(-50%);
+  background: var(--audio-accent, #2f7462);
+  box-shadow: none;
+  transition: width .09s cubic-bezier(.2, .8, .2, 1);
+}
+
+.reader-audio-wave-played svg,
+.reader-audio-wave-played path {
+  display: none !important;
+}
+
+.reader-audio-wave-thumb {
+  position: absolute;
+  top: 50%;
+  right: calc(var(--audio-progress, 0) * 100%);
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  transform: translate(50%, -50%);
+  background: var(--audio-accent, #2f7462);
+  box-shadow: 0 0 0 5px var(--audio-accent-soft, rgba(47, 116, 98, .14));
+  pointer-events: none;
+  transition:
+    right .09s cubic-bezier(.2, .8, .2, 1),
+    transform .18s cubic-bezier(.2, .8, .2, 1),
+    box-shadow .18s ease;
+}
+
+.reader-audio-waveform:active .reader-audio-wave-thumb,
+.reader-audio-waveform:focus-within .reader-audio-wave-thumb {
+  transform: translate(50%, -50%) scale(1.16);
+  box-shadow: 0 0 0 7px var(--audio-accent-soft, rgba(47, 116, 98, .14));
+}
+
 .reader-audio-wave-bars {
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: space-between;
   gap: 3px;
@@ -1886,7 +1951,7 @@ body {
   position: absolute;
   inset: 0;
   width: 100%;
-  height: 38px;
+  height: 28px;
   opacity: 0;
   cursor: pointer;
   touch-action: pan-y;
