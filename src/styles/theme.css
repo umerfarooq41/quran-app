@@ -751,8 +751,12 @@ body,
 
 /* Home palette applied to Index without adding a full-screen card. */
 .index-replica-shell {
-  background: transparent !important;
+  background: var(--brand-bg-light) !important;
   color: var(--theme-text) !important;
+}
+
+[data-theme='dark'] .index-replica-shell {
+  background: var(--brand-bg-dark) !important;
 }
 
 .index-replica-header h1,
