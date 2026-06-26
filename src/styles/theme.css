@@ -1696,6 +1696,35 @@ body,
   box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .08);
 }
 
+.reader-reciter-pill {
+  display: grid !important;
+  grid-template-columns: 38px minmax(0, 1fr) 24px !important;
+  align-items: center !important;
+  gap: 10px !important;
+  text-align: left !important;
+}
+
+.reader-reciter-pill .reader-reciter-copy {
+  display: block !important;
+  min-width: 0 !important;
+  justify-self: stretch !important;
+  color: inherit !important;
+  font-size: .93rem !important;
+  font-weight: 680 !important;
+  line-height: 1.15 !important;
+  letter-spacing: -.02em !important;
+  text-align: left !important;
+}
+
+.reader-reciter-pill .reader-reciter-copy span {
+  display: block !important;
+  max-width: 100% !important;
+}
+
+.reader-reciter-pill > svg {
+  justify-self: end !important;
+}
+
 @media (max-width: 370px) {
   .reader-reciter-sheet {
     padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 228px) !important;
