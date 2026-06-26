@@ -622,39 +622,38 @@ export function ReaderAudioPanel() {
               </span>
             </button>
 
-            {reciterPickerOpen && (
-              <div className="reader-reciter-inline-panel">
-                <div className="reader-reciter-list" role="listbox" aria-label="Reciters">
-                  {reciters.map((reciter) => {
-                    const isSelected = reciter.id === selectedReciter;
-                    return (
-                      <button
-                        key={reciter.id}
-                        type="button"
-                        className={isSelected ? 'reader-reciter-list-item selected' : 'reader-reciter-list-item'}
-                        onClick={() => selectReciter(reciter.id)}
-                        role="option"
-                        aria-selected={isSelected}
-                      >
-                        <span className="reader-reciter-avatar" aria-hidden="true">
-                          <img
-                            src={getReciterImageSrc(reciter)}
-                            alt=""
-                            onError={(event) => { event.currentTarget.style.display = 'none'; }}
-                          />
-                        </span>
-                        <span>
-                          {getReciterDisplayName(reciter)}
-                        </span>
-                        <span className="reader-reciter-check" aria-hidden="true">
-                          {isSelected ? <Check size={19} /> : <span className="reader-reciter-option-radio" />}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
+            <div className="reader-reciter-inline-panel" aria-hidden={!reciterPickerOpen}>
+              <div className="reader-reciter-list" role="listbox" aria-label="Reciters">
+                {reciters.map((reciter) => {
+                  const isSelected = reciter.id === selectedReciter;
+                  return (
+                    <button
+                      key={reciter.id}
+                      type="button"
+                      className={isSelected ? 'reader-reciter-list-item selected' : 'reader-reciter-list-item'}
+                      onClick={() => selectReciter(reciter.id)}
+                      role="option"
+                      aria-selected={isSelected}
+                      tabIndex={reciterPickerOpen ? 0 : -1}
+                    >
+                      <span className="reader-reciter-avatar" aria-hidden="true">
+                        <img
+                          src={getReciterImageSrc(reciter)}
+                          alt=""
+                          onError={(event) => { event.currentTarget.style.display = 'none'; }}
+                        />
+                      </span>
+                      <span>
+                        {getReciterDisplayName(reciter)}
+                      </span>
+                      <span className="reader-reciter-check" aria-hidden="true">
+                        {isSelected ? <Check size={19} /> : <span className="reader-reciter-option-radio" />}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
-            )}
+            </div>
           </div>
 
           <div className="reader-audio-waveform reader-audio-wave-line" style={{ '--audio-progress': progressRatio }}>

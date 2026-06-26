@@ -30,6 +30,7 @@ export function MushafPage({
   selectedAyah,
   activeAudioAyah,
   interactionsBlocked = false,
+  enableTextHighlights = true,
   onBlockedInteraction,
   onSelectAyah,
   onTapAyah,
@@ -42,7 +43,7 @@ export function MushafPage({
     audio: [],
   });
   const [quarterMarkerFlashRect, setQuarterMarkerFlashRect] = useState(null);
-  const supportsTextHighlights = typeof CSS !== 'undefined' && Boolean(CSS.highlights) && typeof Highlight !== 'undefined';
+  const supportsTextHighlights = enableTextHighlights && typeof CSS !== 'undefined' && Boolean(CSS.highlights) && typeof Highlight !== 'undefined';
 
   useLayoutEffect(() => {
     const pageElement = pageRef.current;

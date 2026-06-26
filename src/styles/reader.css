@@ -877,6 +877,103 @@ body {
   letter-spacing: -.025em !important;
 }
 
+.reader-page-slide-viewport {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--reader-bg, #fffaf1);
+  touch-action: pan-y;
+}
+
+.reader-page-slide {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  min-width: 100%;
+  height: 100%;
+  background: var(--reader-bg, #fffaf1);
+  will-change: transform;
+}
+
+.reader-page-slide > .reader-page {
+  flex: 1 1 auto;
+  height: 100%;
+}
+
+.reader-page-slide-current {
+  z-index: 2;
+  transform: translate3d(var(--reader-page-slide-x, 0px), 0, 0);
+}
+
+.reader-page-slide-adjacent {
+  z-index: 1;
+  pointer-events: none;
+}
+
+.reader-page-slide-adjacent.is-next {
+  transform: translate3d(calc(-100% + var(--reader-page-slide-x, 0px)), 0, 0);
+}
+
+.reader-page-slide-adjacent.is-previous {
+  transform: translate3d(calc(100% + var(--reader-page-slide-x, 0px)), 0, 0);
+}
+
+.reader-page-slide-viewport.is-settling .reader-page-slide-current,
+.reader-page-slide-viewport.is-settling .reader-page-slide-adjacent {
+  transition: transform .19s ease-out;
+}
+
+.reader-page-slide-viewport.is-transitioning .reader-page-slide {
+  pointer-events: none;
+}
+
+.reader-page-slide-viewport.is-transitioning.is-next .reader-page-slide-current {
+  animation: readerPageEnterFromLeft .19s ease-out both;
+}
+
+.reader-page-slide-viewport.is-transitioning.is-next .reader-page-slide-leaving {
+  animation: readerPageExitToRight .19s ease-out both;
+}
+
+.reader-page-slide-viewport.is-transitioning.is-previous .reader-page-slide-current {
+  animation: readerPageEnterFromRight .19s ease-out both;
+}
+
+.reader-page-slide-viewport.is-transitioning.is-previous .reader-page-slide-leaving {
+  animation: readerPageExitToLeft .19s ease-out both;
+}
+
+@keyframes readerPageEnterFromLeft {
+  from { transform: translate3d(-100%, 0, 0); }
+  to { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes readerPageEnterFromRight {
+  from { transform: translate3d(100%, 0, 0); }
+  to { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes readerPageExitToRight {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(100%, 0, 0); }
+}
+
+@keyframes readerPageExitToLeft {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-100%, 0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reader-page-slide,
+  .reader-page-slide-viewport.is-settling .reader-page-slide-current,
+  .reader-page-slide-viewport.is-settling .reader-page-slide-adjacent {
+    transition: none;
+    animation: none !important;
+  }
+}
+
 /* Reader overlay interaction patch: UI only. Do not alter Mushaf text metrics here. */
 .ayah-action-sheet-compact {
   max-height: min(42dvh, 390px);

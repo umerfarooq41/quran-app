@@ -3,7 +3,7 @@ import { AnimatePresence } from 'framer-motion';
 import { useShallow } from 'zustand/react/shallow';
 import { db } from '../../lib/db';
 import { getCurrentIndoPakJuzProgress } from '../../data/indoPakParaQuarters';
-import { getMushafPageNumber, getPage, getPageMeta, getSurahAyahs } from '../../lib/quran';
+import { clampPage, getMushafPageNumber, getPage, getPageMeta, getSurahAyahs } from '../../lib/quran';
 import { OVERLAY_TYPES, useAppStore } from '../../store/useAppStore';
 import { AyahActionSheet } from './components/AyahActionSheet';
 import { AyahTranslationCard } from './components/AyahTranslationCard';
@@ -15,9 +15,19 @@ import { ShareAyahSheet } from './components/ShareAyahSheet';
 import { usePagePersistence } from './hooks/usePagePersistence';
 import { useReaderGestures } from './hooks/useReaderGestures';
 
+const PAGE_SLIDE_SETTLE_MS = 190;
+const PAGE_SLIDE_IDLE = {
+  active: false,
+  settling: false,
+  offset: 0,
+  targetPage: null,
+  direction: 0,
+};
+
 export default function ReaderScreen() {
   const {
     page,
+    previousReaderPage,
     goPage,
     goPreviousReaderPage,
     controlsVisible,
@@ -47,6 +57,7 @@ export default function ReaderScreen() {
     clearPendingQuarterFlash,
   } = useAppStore(useShallow((state) => ({
     page: state.page,
+    previousReaderPage: state.previousReaderPage,
     goPage: state.goPage,
     goPreviousReaderPage: state.goPreviousReaderPage,
     controlsVisible: state.controlsVisible,
@@ -79,6 +90,8 @@ export default function ReaderScreen() {
   const [sliderInteracting, setSliderInteracting] = useState(false);
   const [translationTarget, setTranslationTarget] = useState(null);
   const [copyToastVisible, setCopyToastVisible] = useState(false);
+  const [pageSlide, setPageSlide] = useState(PAGE_SLIDE_IDLE);
+  const [pageTransition, setPageTransition] = useState(null);
   const pageData = getPage(page);
   const meta = getPageMeta(page);
   const displayPage = getMushafPageNumber(page);
@@ -109,10 +122,19 @@ export default function ReaderScreen() {
   const suppressTapUntil = useRef(0);
   const suppressAyahInteractionUntil = useRef(0);
   const copyToastTimer = useRef(0);
+  const readerShellRef = useRef(null);
+  const pageSlideTimer = useRef(0);
+  const pageTransitionTimer = useRef(0);
   const previousAudioTargetKey = useRef(
     audioTarget ? `${audioTarget.surahNumber}:${audioTarget.ayahNumber}` : '',
   );
-  const { handleTouchStart, handleTouchEnd } = useReaderGestures({ page, goPage });
+  const { handleTouchStart, handleTouchMove, handleTouchEnd, handleTouchCancel } = useReaderGestures({
+    page,
+    goPage: (targetPage) => goReaderPage(targetPage, null, { skipSlideTransition: true }),
+    onSlideMove: handlePageSlideMove,
+    onSlideEnd: handlePageSlideEnd,
+    onSlideCancel: cancelPageSlide,
+  });
   const topOverlay = overlayStack.at(-1)?.type;
   const ayahTooltipVisible = Boolean(selectedAyah && topOverlay === OVERLAY_TYPES.AYAH);
   const shareSheetVisible = Boolean(shareTarget && topOverlay === OVERLAY_TYPES.SHARE);
@@ -123,12 +145,27 @@ export default function ReaderScreen() {
       ayahTooltipVisible ||
       shareSheetVisible
   );
+  const activeSlideTargetPage = pageSlide.targetPage && pageSlide.targetPage !== page
+    ? pageSlide.targetPage
+    : null;
+  const activeSlideTargetPageData = activeSlideTargetPage ? getPage(activeSlideTargetPage) : null;
+  const pageSlideActive = pageSlide.active || pageSlide.settling;
+  const pageTransitionActive = Boolean(pageTransition && pageTransition.page !== page);
 
   useEffect(() => {
     if (!sliderInteracting) setSliderPreviewPage(null);
   }, [page, sliderInteracting]);
 
-  useEffect(() => () => window.clearTimeout(copyToastTimer.current), []);
+  useEffect(() => () => {
+    window.clearTimeout(copyToastTimer.current);
+    window.clearTimeout(pageSlideTimer.current);
+    window.clearTimeout(pageTransitionTimer.current);
+  }, []);
+
+  useEffect(() => {
+    window.clearTimeout(pageSlideTimer.current);
+    setPageSlide(PAGE_SLIDE_IDLE);
+  }, [page]);
 
   usePagePersistence({ page, pageData });
 
@@ -222,10 +259,116 @@ export default function ReaderScreen() {
 
     if (targetChanged && audioPlayerActive && audioTarget?.page && audioTarget.page !== page) {
       const keepControlsVisible = controlsVisible;
-      goPage(audioTarget.page);
+      goReaderPage(audioTarget.page);
       if (keepControlsVisible) setControlsVisible(true);
     }
   }, [audioTarget?.surahNumber, audioTarget?.ayahNumber]);
+
+  function getPageSlideWidth() {
+    return readerShellRef.current?.getBoundingClientRect().width || window.innerWidth || 390;
+  }
+
+  function startPageTransition(nextPage) {
+    const safeNextPage = clampPage(nextPage);
+    if (safeNextPage === page) return;
+
+    window.clearTimeout(pageTransitionTimer.current);
+    setPageSlide(PAGE_SLIDE_IDLE);
+    setPageTransition({
+      page,
+      pageData,
+      direction: safeNextPage > page ? 1 : -1,
+    });
+    pageTransitionTimer.current = window.setTimeout(() => {
+      setPageTransition(null);
+    }, PAGE_SLIDE_SETTLE_MS + 40);
+  }
+
+  function goReaderPage(nextPage, pendingAyah = null, options = {}) {
+    const safeNextPage = clampPage(nextPage);
+    const { skipSlideTransition, ...goPageOptions } = options || {};
+
+    if (!skipSlideTransition) {
+      startPageTransition(safeNextPage);
+    }
+
+    goPage(safeNextPage, pendingAyah, goPageOptions);
+  }
+
+  function goPreviousReaderPageWithSlide() {
+    if (previousReaderPage && previousReaderPage !== page) {
+      startPageTransition(previousReaderPage);
+    }
+
+    goPreviousReaderPage();
+  }
+
+  function pageSlideBlocked() {
+    return Boolean(translationTarget || ayahTooltipVisible || shareSheetVisible || audioPlayerVisible);
+  }
+
+  function handlePageSlideMove(deltaX) {
+    if (pageSlideBlocked()) {
+      cancelPageSlide();
+      return;
+    }
+
+    const width = getPageSlideWidth();
+    const direction = deltaX >= 0 ? 1 : -1;
+    const targetPage = clampPage(page + direction);
+    const boundedOffset = Math.max(-width, Math.min(width, deltaX));
+    const offset = targetPage === page ? boundedOffset * 0.28 : boundedOffset;
+
+    window.clearTimeout(pageTransitionTimer.current);
+    setPageTransition(null);
+    setPageSlide({
+      active: true,
+      settling: false,
+      offset,
+      targetPage: targetPage === page ? null : targetPage,
+      direction,
+    });
+  }
+
+  function handlePageSlideEnd({ deltaX, committed }) {
+    suppressTapUntil.current = Date.now() + 450;
+
+    const width = getPageSlideWidth();
+    const direction = deltaX >= 0 ? 1 : -1;
+    const targetPage = clampPage(page + direction);
+    const canCommit = committed && targetPage !== page && !pageSlideBlocked();
+    const settleOffset = canCommit ? direction * width : 0;
+
+    window.clearTimeout(pageSlideTimer.current);
+    setPageSlide((current) => ({
+      active: true,
+      settling: true,
+      offset: settleOffset,
+      targetPage: canCommit ? targetPage : current.targetPage,
+      direction,
+    }));
+
+    pageSlideTimer.current = window.setTimeout(() => {
+      if (canCommit) {
+        goReaderPage(targetPage, null, { skipSlideTransition: true });
+      }
+      setPageSlide(PAGE_SLIDE_IDLE);
+    }, PAGE_SLIDE_SETTLE_MS);
+
+    return true;
+  }
+
+  function cancelPageSlide() {
+    window.clearTimeout(pageSlideTimer.current);
+    setPageSlide((current) => ({
+      ...current,
+      settling: true,
+      offset: 0,
+    }));
+    pageSlideTimer.current = window.setTimeout(() => {
+      setPageSlide(PAGE_SLIDE_IDLE);
+    }, PAGE_SLIDE_SETTLE_MS);
+  }
 
   function openAudioPanel(targetLine = null) {
     if (!targetLine && audioPlayerActive && !audioPlayerVisible) {
@@ -383,15 +526,54 @@ export default function ReaderScreen() {
     }
   }
 
+  function renderMushafPage(renderedPageData, { interactive = true } = {}) {
+    const renderedPage = renderedPageData.page;
+    const activeAudioAyah = audioPlayerActive && audioTarget?.page === renderedPage
+      ? audioTarget
+      : null;
+
+    return (
+      <MushafPage
+        pageData={renderedPageData}
+        settings={settings}
+        savedHighlights={savedHighlights}
+        bookmarkMarkers={bookmarkMarkers}
+        pendingAyah={interactive ? pendingAyah : null}
+        quarterFlashTarget={interactive ? quarterFlashTarget : null}
+        selectedAyah={interactive ? selectedAyah : null}
+        activeAudioAyah={activeAudioAyah}
+        interactionsBlocked={!interactive || readerInteractionsBlocked}
+        enableTextHighlights={interactive}
+        onBlockedInteraction={interactive ? dismissVisibleReaderUi : undefined}
+        onSelectAyah={interactive ? selectAyah : () => {}}
+        onTapAyah={interactive ? openTranslationCard : () => {}}
+      />
+    );
+  }
+
+  const pageSlideDirection = pageTransitionActive
+    ? pageTransition.direction
+    : pageSlide.direction;
+  const pageSlideClasses = [
+    'reader-page-slide-viewport',
+    pageSlideActive ? 'is-dragging' : '',
+    pageSlide.settling ? 'is-settling' : '',
+    pageTransitionActive ? 'is-transitioning' : '',
+    pageSlideDirection > 0 ? 'is-next' : '',
+    pageSlideDirection < 0 ? 'is-previous' : '',
+  ].filter(Boolean).join(' ');
+
   return (
     <section
       className="fixed inset-0 overflow-hidden bg-reader text-slate-950"
       onPointerDownCapture={handleReaderPointerDownCapture}
       onClick={handleReaderTap}
       onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchCancel}
     >
-      <div className="reader-shell relative mx-auto flex h-dvh max-w-[576px] flex-col overflow-hidden bg-[#fffaf1] text-[#13100a] shadow-2xl shadow-slate-900/10">
+      <div ref={readerShellRef} className="reader-shell relative mx-auto flex h-dvh max-w-[576px] flex-col overflow-hidden bg-[#fffaf1] text-[#13100a] shadow-2xl shadow-slate-900/10">
         <div className="reader-top-hit-zone" data-reader-toggle-zone aria-hidden="true" />
         <div className="reader-bottom-hit-zone" data-reader-toggle-zone aria-hidden="true" />
         <ReaderPassiveHeader meta={meta} displayPage={displayPage} />
@@ -405,20 +587,29 @@ export default function ReaderScreen() {
           onChromeTap={hideReaderChrome}
         />
 
-        <MushafPage
-          pageData={pageData}
-          settings={settings}
-          savedHighlights={savedHighlights}
-          bookmarkMarkers={bookmarkMarkers}
-          pendingAyah={pendingAyah}
-          quarterFlashTarget={quarterFlashTarget}
-          selectedAyah={selectedAyah}
-          activeAudioAyah={audioPlayerActive ? audioTarget : null}
-          interactionsBlocked={readerInteractionsBlocked}
-          onBlockedInteraction={dismissVisibleReaderUi}
-          onSelectAyah={selectAyah}
-          onTapAyah={openTranslationCard}
-        />
+        <div
+          className={pageSlideClasses}
+          style={{ '--reader-page-slide-x': `${pageSlide.offset}px` }}
+        >
+          {pageTransitionActive && (
+            <div className="reader-page-slide reader-page-slide-leaving" aria-hidden="true">
+              {renderMushafPage(pageTransition.pageData, { interactive: false })}
+            </div>
+          )}
+
+          <div className="reader-page-slide reader-page-slide-current">
+            {renderMushafPage(pageData)}
+          </div>
+
+          {activeSlideTargetPageData && !pageTransitionActive && (
+            <div
+              className={`reader-page-slide reader-page-slide-adjacent ${pageSlide.direction > 0 ? 'is-next' : 'is-previous'}`}
+              aria-hidden="true"
+            >
+              {renderMushafPage(activeSlideTargetPageData, { interactive: false })}
+            </div>
+          )}
+        </div>
 
         <ReaderFooterMeta displayPage={footerDisplayPage} progress={juzProgress} />
       </div>
@@ -428,8 +619,8 @@ export default function ReaderScreen() {
           <ReaderBottomControls
             page={page}
             displayPage={footerDisplayPage}
-            goPage={goPage}
-            onPreviousPage={goPreviousReaderPage}
+            goPage={goReaderPage}
+            onPreviousPage={goPreviousReaderPageWithSlide}
             onSearch={openSearch}
             onAudio={() => openAudioPanel()}
             compact={audioPlayerActive}

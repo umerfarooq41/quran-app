@@ -1147,3 +1147,121 @@ html[data-theme='dark'] {
   transform: translate(50%, -50%) !important;
   box-shadow: 0 0 0 5px var(--audio-accent-soft) !important;
 }
+
+/* Floating reciter chooser: keep the player layout fixed while the list is open. */
+.reader-audio-panel-modern .reader-reciter-picker {
+  position: relative !important;
+  z-index: 5 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-picker.is-open .reader-reciter-pill {
+  margin-bottom: 9px !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-inline-panel {
+  position: absolute !important;
+  inset-inline: 6px !important;
+  bottom: calc(100% + 12px) !important;
+  z-index: 20 !important;
+  width: auto !important;
+  max-width: none !important;
+  max-height: min(38dvh, 330px) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 10px 8px 12px !important;
+  border: 1px solid var(--audio-panel-border) !important;
+  border-radius: 23px !important;
+  background: var(--audio-control-bg) !important;
+  color: var(--audio-panel-text) !important;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, .28) !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(8px) scale(.985) !important;
+  transform-origin: bottom center !important;
+  transition: opacity .23s ease-out, transform .23s ease-out, visibility .23s ease-out !important;
+  visibility: hidden !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-picker.is-open .reader-reciter-inline-panel {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transform: translateY(0) scale(1) !important;
+  visibility: visible !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-inline-panel::before,
+.reader-audio-panel-modern .reader-reciter-inline-panel::after {
+  content: '' !important;
+  position: absolute !important;
+  inset-inline: 8px !important;
+  z-index: 2 !important;
+  height: 18px !important;
+  pointer-events: none !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-inline-panel::before {
+  top: 0 !important;
+  background: linear-gradient(to bottom, var(--audio-control-bg), transparent) !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-inline-panel::after {
+  bottom: 0 !important;
+  background: linear-gradient(to top, var(--audio-control-bg), transparent) !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-inline-panel .reader-reciter-list {
+  min-height: 0 !important;
+  max-height: calc(min(38dvh, 330px) - 22px) !important;
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+  -webkit-overflow-scrolling: touch !important;
+  padding: 3px 2px 4px !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: var(--audio-panel-muted) transparent !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-inline-panel .reader-reciter-list::-webkit-scrollbar {
+  width: 4px !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-inline-panel .reader-reciter-list::-webkit-scrollbar-thumb {
+  border-radius: 999px !important;
+  background: var(--audio-panel-muted) !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-inline-panel .reader-reciter-list-item {
+  grid-template-columns: 40px minmax(0, 1fr) 28px !important;
+  min-height: 56px !important;
+  gap: 12px !important;
+  padding: 7px 10px !important;
+  border-radius: 17px !important;
+  background: transparent !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-inline-panel .reader-reciter-list-item.selected {
+  background: var(--audio-control-active-bg) !important;
+  box-shadow: inset 0 0 0 1px var(--audio-accent-soft) !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-inline-panel .reader-reciter-list-item.selected > span:nth-child(2) {
+  font-weight: 760 !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-inline-panel .reader-reciter-list-item.selected .reader-reciter-check,
+.reader-audio-panel-modern .reader-reciter-inline-panel .reader-reciter-list-item.selected .reader-reciter-option-radio {
+  color: var(--audio-accent) !important;
+  border-color: var(--audio-accent) !important;
+}
+
+.reader-audio-panel-modern .reader-audio-waveform,
+.reader-audio-panel-modern .reader-audio-times-above,
+.reader-audio-panel-modern .reader-transport-modern {
+  position: relative !important;
+  z-index: 1 !important;
+}

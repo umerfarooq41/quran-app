@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Play, Search, Undo2 } from 'lucide-react';
 import { PageWaveSlider } from './PageWaveSlider';
@@ -13,11 +13,24 @@ export function ReaderBottomControls({
   compact = false,
   juzProgress,
   onChromeTap,
+  onPreviewPageChange,
+  onSliderInteractionChange,
 }) {
   const [sliderPreview, setSliderPreview] = useState(null);
   const footerPage = sliderPreview?.page ?? displayPage;
   const footerProgress = sliderPreview?.juzProgress ?? juzProgress;
   const tooltip = useMemo(() => sliderPreview, [sliderPreview]);
+
+  useEffect(() => () => {
+    onPreviewPageChange?.(null);
+    onSliderInteractionChange?.(false);
+  }, [onPreviewPageChange, onSliderInteractionChange]);
+
+  function handleSliderPreviewChange(preview) {
+    setSliderPreview(preview);
+    onPreviewPageChange?.(preview?.page ?? null);
+    onSliderInteractionChange?.(Boolean(preview));
+  }
 
   return (
     <motion.div
@@ -67,7 +80,7 @@ export function ReaderBottomControls({
           <span>{footerProgress}</span>
         </div>
 
-        <PageWaveSlider page={page} goPage={goPage} onPreviewChange={setSliderPreview} />
+        <PageWaveSlider page={page} goPage={goPage} onPreviewChange={handleSliderPreviewChange} />
 
         <div className="reader-bottom-actions">
           <button onClick={onPreviousPage} aria-label="Previous reader page">
