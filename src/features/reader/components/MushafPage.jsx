@@ -16,6 +16,9 @@ const MANAGED_HIGHLIGHTS = [
   ...BOOKMARK_TONES.map((tone) => `reader-bookmark-${tone}`),
 ];
 const LINE_FIT_EVENT = 'quran-line-fit';
+const MUSHAF_FONT_FAMILY = 'IndopakNastaleeq';
+const MUSHAF_FONT_SAMPLE = 'اللَّهُ';
+const MEASURE_DELAYS = [60, 180, 420];
 
 export function MushafPage({
   pageData,
@@ -50,6 +53,7 @@ export function MushafPage({
 
     let disposed = false;
     let frame = 0;
+    const timers = new Set();
 
     const measure = () => {
       if (disposed) return;
@@ -80,7 +84,29 @@ export function MushafPage({
       frame = window.requestAnimationFrame(measure);
     };
 
-    scheduleMeasure();
+    const clearMeasureTimers = () => {
+      timers.forEach((timer) => window.clearTimeout(timer));
+      timers.clear();
+    };
+
+    const scheduleMeasureBurst = () => {
+      clearMeasureTimers();
+      scheduleMeasure();
+
+      MEASURE_DELAYS.forEach((delay) => {
+        const timer = window.setTimeout(() => {
+          timers.delete(timer);
+          scheduleMeasure();
+        }, delay);
+        timers.add(timer);
+      });
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') scheduleMeasureBurst();
+    };
+
+    scheduleMeasureBurst();
     pageElement.addEventListener(LINE_FIT_EVENT, scheduleMeasure);
 
     const resizeObserver = typeof ResizeObserver === 'undefined'
@@ -91,22 +117,33 @@ export function MushafPage({
       resizeObserver?.observe(element);
     });
 
-    document.fonts?.ready?.then(() => {
-      if (!disposed) scheduleMeasure();
+    loadMushafFont().then(() => {
+      if (!disposed) scheduleMeasureBurst();
     });
-    window.addEventListener('load', scheduleMeasure);
+    document.fonts?.addEventListener?.('loadingdone', scheduleMeasureBurst);
+    document.fonts?.addEventListener?.('loadingerror', scheduleMeasureBurst);
+    window.addEventListener('load', scheduleMeasureBurst);
+    window.addEventListener('pageshow', scheduleMeasureBurst);
+    window.addEventListener('focus', scheduleMeasureBurst);
     window.addEventListener('resize', scheduleMeasure);
     window.addEventListener('orientationchange', scheduleMeasure);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
     window.visualViewport?.addEventListener('resize', scheduleMeasure);
 
     return () => {
       disposed = true;
+      clearMeasureTimers();
       window.cancelAnimationFrame(frame);
       resizeObserver?.disconnect();
       pageElement.removeEventListener(LINE_FIT_EVENT, scheduleMeasure);
-      window.removeEventListener('load', scheduleMeasure);
+      document.fonts?.removeEventListener?.('loadingdone', scheduleMeasureBurst);
+      document.fonts?.removeEventListener?.('loadingerror', scheduleMeasureBurst);
+      window.removeEventListener('load', scheduleMeasureBurst);
+      window.removeEventListener('pageshow', scheduleMeasureBurst);
+      window.removeEventListener('focus', scheduleMeasureBurst);
       window.removeEventListener('resize', scheduleMeasure);
       window.removeEventListener('orientationchange', scheduleMeasure);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.visualViewport?.removeEventListener('resize', scheduleMeasure);
     };
   }, [
@@ -462,6 +499,19 @@ function lineHasSavedHighlight(line, savedHighlights) {
 function addRanges(groups, name, ranges) {
   if (!ranges.length) return;
   groups.set(name, [...(groups.get(name) || []), ...ranges]);
+}
+
+function loadMushafFont() {
+  if (typeof document === 'undefined' || !document.fonts?.load) {
+    return Promise.resolve();
+  }
+
+  const fontSet = document.fonts;
+  return fontSet
+    .load(`1em ${MUSHAF_FONT_FAMILY}`, MUSHAF_FONT_SAMPLE)
+    .catch(() => undefined)
+    .then(() => fontSet.ready)
+    .catch(() => undefined);
 }
 
 function parseReference(reference) {
