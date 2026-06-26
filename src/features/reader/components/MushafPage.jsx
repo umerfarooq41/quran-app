@@ -261,15 +261,6 @@ export function MushafPage({
       style={{ '--font-scale': settings.fontScale }}
     >
       <div className="reader-ayah-highlight-layer" aria-hidden="true">
-        {[...juzStartLines].map((lineNumber) => (
-          <span
-            key={`juz-start-${lineNumber}`}
-            className="reader-juz-start-line-band"
-            style={{
-              gridRow: `${lineNumber} / span 1`,
-            }}
-          />
-        ))}
         {quarterMarkerFlashRect && (
           <span
             className="reader-quarter-marker-flash"

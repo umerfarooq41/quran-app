@@ -575,17 +575,19 @@ body,
 }
 
 .quran-line--juz-start {
+  isolation: isolate;
   color: var(--reader-primary-text) !important;
   transition: none !important;
 }
 
-.reader-juz-start-line-band {
-  position: relative;
-  z-index: 0;
-  display: block;
-  width: 100%;
-  min-width: 0;
-  height: 100%;
+.quran-line--juz-start::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
   opacity: 1 !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -613,14 +615,9 @@ body,
   color: var(--reader-primary-text) !important;
 }
 
-[data-theme='dark'] .reader-juz-start-line-band {
+[data-theme='dark'] .quran-line--juz-start::before {
   background: rgba(240, 242, 239, .92);
   background: color-mix(in srgb, var(--reader-primary) 90%, transparent);
-}
-
-.reader-ayah-highlight-layer {
-  display: grid;
-  grid-template-rows: repeat(16, minmax(0, 1fr));
 }
 
 .quran-line-text,
