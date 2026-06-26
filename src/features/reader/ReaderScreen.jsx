@@ -128,7 +128,13 @@ export default function ReaderScreen() {
   const previousAudioTargetKey = useRef(
     audioTarget ? `${audioTarget.surahNumber}:${audioTarget.ayahNumber}` : '',
   );
-  const { handleTouchStart, handleTouchMove, handleTouchEnd, handleTouchCancel } = useReaderGestures({
+  const {
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
+    handleTouchCancel,
+    handlePointerDown,
+  } = useReaderGestures({
     page,
     goPage: (targetPage) => goReaderPage(targetPage, null, { skipSlideTransition: true }),
     onSlideMove: handlePageSlideMove,
@@ -168,6 +174,27 @@ export default function ReaderScreen() {
   }, [page]);
 
   usePagePersistence({ page, pageData });
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      if (isReaderKeyboardEventFromUi(event)) return;
+      if (pageSlideBlocked()) return;
+
+      event.preventDefault();
+      goReaderPage(event.key === 'ArrowLeft' ? page + 1 : page - 1);
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [
+    page,
+    translationTarget,
+    ayahTooltipVisible,
+    shareSheetVisible,
+    audioPlayerVisible,
+  ]);
 
   useEffect(() => {
     let mounted = true;
@@ -568,10 +595,6 @@ export default function ReaderScreen() {
       className="fixed inset-0 overflow-hidden bg-reader text-slate-950"
       onPointerDownCapture={handleReaderPointerDownCapture}
       onClick={handleReaderTap}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-      onTouchCancel={handleTouchCancel}
     >
       <div
         ref={readerShellRef}
@@ -593,6 +616,11 @@ export default function ReaderScreen() {
         <div
           className={pageSlideClasses}
           style={{ '--reader-page-slide-x': `${pageSlide.offset}px` }}
+          onPointerDown={handlePointerDown}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          onTouchCancel={handleTouchCancel}
         >
           {pageTransitionActive && (
             <div className="reader-page-slide reader-page-slide-leaving" aria-hidden="true">
@@ -700,4 +728,13 @@ function getFooterTarget({
   if (selectedAyah?.page === page) return selectedAyah;
   if (audioTarget?.page === page) return audioTarget;
   return firstPageAyah;
+}
+
+function isReaderKeyboardEventFromUi(event) {
+  const target = event.target;
+  if (!(target instanceof Element)) return false;
+  if (target.closest('[data-reader-ui]')) return true;
+  if (target.closest('[contenteditable="true"]')) return true;
+
+  return target.matches('input, textarea, select, button, a');
 }
