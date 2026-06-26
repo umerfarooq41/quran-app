@@ -2266,3 +2266,167 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
 .tabs-screen.app-page-shell .tabs-list .library-highlight-card .tab-card-surface {
   padding-left: 12px !important;
 }
+
+/* Responsive app shell pass. Keeps the Reader portrait column protected. */
+:root {
+  --app-responsive-inline: clamp(12px, 3.2vw, 32px);
+  --app-responsive-home-width: 460px;
+  --app-responsive-page-width: 460px;
+  --app-responsive-reader-width: var(--reader-max-width, 576px);
+}
+
+.app-shell {
+  width: 100%;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  padding-left: max(var(--app-responsive-inline), env(safe-area-inset-left, 0px)) !important;
+  padding-right: max(var(--app-responsive-inline), env(safe-area-inset-right, 0px)) !important;
+  padding-top: max(12px, env(safe-area-inset-top, 0px)) !important;
+  padding-bottom: max(20px, env(safe-area-inset-bottom, 0px)) !important;
+}
+
+.screen-shell:not(.app-page-shell) {
+  width: min(100%, var(--app-responsive-home-width)) !important;
+  max-width: var(--app-responsive-home-width) !important;
+  min-width: 0;
+  margin-inline: auto;
+}
+
+.app-page-shell {
+  --app-page-inline-left: max(var(--app-responsive-inline), env(safe-area-inset-left, 0px));
+  --app-page-inline-right: max(var(--app-responsive-inline), env(safe-area-inset-right, 0px));
+  --app-page-max-width: var(--app-responsive-page-width);
+}
+
+.app-scroll-content,
+.app-page-shell .index-replica-inner,
+.app-fixed-header {
+  max-width: var(--app-page-max-width) !important;
+}
+
+.reader-shell {
+  width: min(100vw, var(--app-responsive-reader-width)) !important;
+  max-width: var(--app-responsive-reader-width) !important;
+}
+
+.reader-bottom-controls {
+  left: 50% !important;
+  right: auto !important;
+  width: min(100vw, var(--app-responsive-reader-width)) !important;
+  max-width: var(--app-responsive-reader-width) !important;
+  transform: translateX(-50%) !important;
+}
+
+.reader-bottom-sheet {
+  width: 100% !important;
+  max-width: var(--app-responsive-reader-width) !important;
+}
+
+.reader-audio-panel-wrap.reader-audio-panel-visible.reader-audio-over-reader {
+  left: 50% !important;
+  right: auto !important;
+  width: min(100vw, var(--app-responsive-reader-width)) !important;
+  max-width: var(--app-responsive-reader-width) !important;
+  transform: translateX(-50%) !important;
+}
+
+.reader-audio-panel-wrap.reader-audio-over-reader .reader-audio-expanded-panel {
+  width: min(calc(100% - 24px), 548px) !important;
+}
+
+.reader-audio-panel-wrap.reader-audio-over-reader .reader-audio-mini-panel {
+  width: min(calc(100% - 72px), 262px) !important;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --app-responsive-inline: clamp(20px, 4vw, 44px);
+    --app-responsive-home-width: 720px;
+    --app-responsive-page-width: 720px;
+  }
+
+  .app-page-shell {
+    --app-fixed-header-height: 56px;
+  }
+
+  .home-actions-row {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: clamp(10px, 1.8vw, 16px) !important;
+  }
+
+  .home-hero-card {
+    padding: clamp(24px, 3.8vw, 34px) clamp(26px, 4vw, 38px) !important;
+  }
+
+  .index-replica-shell.app-page-shell,
+  .tabs-screen.app-page-shell {
+    --app-page-max-width: var(--app-responsive-page-width);
+  }
+
+  .search-screen.app-page-shell,
+  .settings-screen.app-page-shell {
+    --app-page-max-width: min(var(--app-responsive-page-width), 680px);
+  }
+
+  .index-juz-list,
+  .index-surah-stack,
+  .tabs-screen.app-page-shell .tabs-list,
+  .search-results-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .index-card-wrap.is-open,
+  .tab-card.is-swiped,
+  .tab-card:has(.tab-menu),
+  .tab-card:has(.tab-inline-editor) {
+    grid-column: 1 / -1;
+  }
+
+  .tab-surah {
+    max-width: min(24vw, 220px) !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --app-responsive-home-width: 840px;
+    --app-responsive-page-width: 860px;
+  }
+
+  .screen-shell:not(.app-page-shell) {
+    padding-top: clamp(12px, 2vh, 28px);
+  }
+
+  .home-hero-surah {
+    font-size: clamp(1.7rem, 3vw, 2.3rem) !important;
+  }
+
+  .app-scroll-content {
+    gap: clamp(14px, 1.6vw, 20px) !important;
+    padding-top: clamp(8px, 1.2vw, 14px) !important;
+  }
+
+  .settings-screen.app-page-shell {
+    --app-page-max-width: 820px;
+  }
+
+  .settings-screen.app-page-shell .app-scroll-content {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    align-items: start;
+  }
+
+  .settings-reset-button {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --app-responsive-home-width: 900px;
+    --app-responsive-page-width: 940px;
+  }
+
+  .search-screen.app-page-shell {
+    --app-page-max-width: 820px;
+  }
+}
