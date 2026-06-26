@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
   createAyahDomRange,
   createTextDomRange,
@@ -8,6 +8,7 @@ import {
   getRangeHighlightRects,
 } from '../utils/ayahDomRange';
 import { QuranLine } from './QuranLine';
+import { JUZ_STARTS } from '../../../data/quranMeta';
 
 const SAVED_HIGHLIGHTS = ['amber', 'emerald', 'rose', 'sky', 'violet'];
 const BOOKMARK_TONES = ['reading', 'memorize', 'tadabbur', 'notes'];
@@ -44,6 +45,7 @@ export function MushafPage({
   });
   const [quarterMarkerFlashRect, setQuarterMarkerFlashRect] = useState(null);
   const supportsTextHighlights = enableTextHighlights && typeof CSS !== 'undefined' && Boolean(CSS.highlights) && typeof Highlight !== 'undefined';
+  const juzStartLines = useMemo(() => getJuzStartLineNumbers(pageData), [pageData]);
 
   useLayoutEffect(() => {
     const pageElement = pageRef.current;
@@ -325,6 +327,7 @@ export function MushafPage({
             hasSeparateBasmallah={hasSeparateBasmallah}
             forceCentered={isOpeningMushafPage && line.type === 'ayah'}
             interactionsBlocked={interactionsBlocked}
+            isJuzStartLine={juzStartLines.has(line.line)}
             onBlockedInteraction={onBlockedInteraction}
             onSelect={(selection) => onSelectAyah(line, index, selection)}
             onTap={(selection) => onTapAyah?.(line, index, selection)}
@@ -349,6 +352,48 @@ export function MushafPage({
   );
 }
 
+function getJuzStartLineNumbers(pageData) {
+  const lineNumbers = new Set();
+  if (!pageData?.lines?.length) return lineNumbers;
+
+  JUZ_STARTS.forEach(([surahNumber, ayahNumber]) => {
+    const startLineIndex = pageData.lines.findIndex((line) => (
+      lineContainsReference(line, surahNumber, ayahNumber)
+    ));
+    if (startLineIndex < 0) return;
+
+    let startLine = pageData.lines[startLineIndex];
+    if (isBismillahOnlyAyahLine(startLine)) {
+      startLine = pageData.lines
+        .slice(startLineIndex + 1)
+        .find((line) => isReadableAyahLine(line));
+    }
+
+    if (startLine) lineNumbers.add(startLine.line);
+  });
+
+  return lineNumbers;
+}
+
+function isReadableAyahLine(line) {
+  return Boolean(
+    line &&
+      line.type === 'ayah' &&
+      line.surahNumber &&
+      line.ayahStart &&
+      !isBismillahOnlyAyahLine(line)
+  );
+}
+
+function isBismillahOnlyAyahLine(line) {
+  return Boolean(
+    line &&
+      line.type === 'ayah' &&
+      Number(line.surahNumber) === 1 &&
+      Number(line.ayahStart) === 1 &&
+      Number(line.ayahEnd) === 1
+  );
+}
 
 function getSavedHighlightRects(pageElement, pageData, savedHighlights) {
   const rects = [];

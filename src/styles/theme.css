@@ -574,6 +574,39 @@ body,
   color: var(--mushaf-text) !important;
 }
 
+.quran-line--juz-start {
+  isolation: isolate;
+  color: var(--reader-primary-text) !important;
+}
+
+.quran-line--juz-start::before {
+  content: '';
+  position: absolute;
+  inset: 2px -2px;
+  z-index: 1;
+  border-radius: 10px;
+  background: rgba(5, 5, 5, .9);
+  background: color-mix(in srgb, var(--reader-primary) 90%, transparent);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .10);
+  pointer-events: none;
+}
+
+.quran-line--juz-start .quran-line-text,
+.quran-line--juz-start .quran-word,
+.quran-line--juz-start .quran-ayah-marker {
+  color: inherit !important;
+}
+
+[data-theme='dark'] .quran-line--juz-start {
+  color: var(--reader-primary-text) !important;
+}
+
+[data-theme='dark'] .quran-line--juz-start::before {
+  background: rgba(240, 242, 239, .92);
+  background: color-mix(in srgb, var(--reader-primary) 90%, transparent);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .12);
+}
+
 .quran-line-text,
 .quran-word,
 .quran-ayah-marker {
