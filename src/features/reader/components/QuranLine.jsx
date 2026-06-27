@@ -6,7 +6,7 @@ import {
   getRenderedWordTokens,
   getWordAtRenderedPoint,
 } from '../utils/ayahDomRange';
-import { SurahHeader } from './SurahHeader';
+import { BismillahHeader, SurahHeader } from './SurahHeader';
 import { isAyahMarkerToken } from '../../../lib/mushafText';
 
 const LINE_FIT_EVENT = 'quran-line-fit';
@@ -426,6 +426,8 @@ export function QuranLine({
     >
       {line.type === 'surah_name' ? (
         <SurahHeader line={line} inlineBasmallah={inlineBasmallah} />
+      ) : isBasmallah ? (
+        <BismillahHeader />
       ) : (
         <span
           ref={textRef}
