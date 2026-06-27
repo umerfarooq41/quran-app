@@ -5,6 +5,7 @@ import { getJuzForReference, getPageJuz, getRevelationType } from '../data/quran
 import { quranJuz } from '../data/quranJuz';
 import { quranRub } from '../data/quranRub';
 import { normalizeMushafAyah, normalizeMushafPage } from './mushafText';
+import { getIndoPakParaQuarterTargets } from '../data/indoPakParaQuarters';
 
 const pages = rawPages.map(normalizeMushafPage);
 const ayahs = rawAyahs.map(normalizeMushafAyah);
@@ -104,6 +105,9 @@ export function getAyahMarkerPage(surahNumber, ayahNumber) {
 
 
 export function findPageForJuz(juzNumber) {
+  const indoPakStart = getIndoPakParaQuarterTargets(juzNumber).find((target) => target.id === 'start');
+  if (indoPakStart?.page) return clampPage(indoPakStart.page);
+
   const juz = quranJuz[String(juzNumber)];
   const start = parseVerseKey(juz?.first_verse_key);
   return findPageForReference(start.surahNumber || 1, start.ayahNumber || 1);

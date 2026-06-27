@@ -271,13 +271,15 @@ export const useAppStore = create((set, get) => ({
       page: nextPage,
       previousReaderPage: nextPage === state.page ? state.previousReaderPage : state.page,
       pendingAyah: null,
-      pendingQuarterFlash: {
-        targetPage: nextPage,
-        targetSurah: Number(target?.surah) || null,
-        targetAyah: Number(target?.ayah) || null,
-        markerId,
-        flashMode: markerId === 'start' ? 'first-rendered-line' : 'ayah-marker',
-      },
+      pendingQuarterFlash: markerId === 'start'
+        ? null
+        : {
+            targetPage: nextPage,
+            targetSurah: Number(target?.surah) || null,
+            targetAyah: Number(target?.ayah) || null,
+            markerId,
+            flashMode: 'ayah-marker',
+          },
       navDirection: 'forward',
       controlsVisible: false,
     };

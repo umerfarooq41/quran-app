@@ -4,7 +4,6 @@ import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../store/useAppStore';
 import { BackButton } from '../components/common/AppChrome';
 import {
-  findPageForJuz,
   findPageForReference,
   getSurahAyahs,
   surahs,
@@ -92,13 +91,8 @@ function JuzIndex() {
   })));
 
   function openJuzStart(juz) {
-    const page = findPageForJuz(juz);
-    goQuarterTarget({
-      id: 'start',
-      page,
-      surah: null,
-      ayah: null,
-    });
+    const startTarget = getIndoPakParaQuarterTargets(juz).find((target) => target.id === 'start');
+    goQuarterTarget(startTarget);
   }
 
   return (
