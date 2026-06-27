@@ -260,20 +260,6 @@ export function MushafPage({
       className={`reader-page grid flex-1 grid-rows-16 overflow-hidden px-4 ${isOpeningMushafPage ? 'reader-page-opening' : ''}`}
       style={{ '--font-scale': settings.fontScale }}
     >
-      {juzStartLines.size > 0 && (
-        <div className="reader-juz-start-layer" aria-hidden="true">
-          {pageData.lines.map((line, index) => (
-            juzStartLines.has(line.line) ? (
-              <span
-                key={`juz-start-band-${pageData.page}-${line.line}`}
-                className="reader-juz-start-band"
-                style={{ gridRow: `${index + 1} / span 1` }}
-              />
-            ) : null
-          ))}
-        </div>
-      )}
-
       <div className="reader-ayah-highlight-layer" aria-hidden="true">
         {quarterMarkerFlashRect && (
           <span
