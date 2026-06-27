@@ -2451,3 +2451,45 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
     --app-page-max-width: 820px;
   }
 }
+
+/* Keep ayah highlights visible on the Juz inverted line without moving Mushaf text. */
+.reader-page {
+  position: relative !important;
+  isolation: isolate;
+}
+
+.reader-page .reader-ayah-highlight-layer {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 2 !important;
+  pointer-events: none !important;
+}
+
+.reader-page .reader-ayah-highlight-block,
+.reader-page .reader-quarter-marker-flash {
+  position: absolute !important;
+  z-index: 2 !important;
+  pointer-events: none !important;
+}
+
+.reader-page .quran-line,
+.reader-page [data-quran-line] {
+  position: relative !important;
+  z-index: auto !important;
+}
+
+.reader-page .quran-line--juz-start {
+  isolation: auto !important;
+  z-index: auto !important;
+}
+
+.reader-page .quran-line--juz-start::before {
+  z-index: 0 !important;
+}
+
+.reader-page .quran-line-text,
+.reader-page .quran-word,
+.reader-page .quran-ayah-marker {
+  position: relative !important;
+  z-index: 3 !important;
+}
