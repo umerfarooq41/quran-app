@@ -26,22 +26,50 @@
   box-shadow: inset 0 0 0 1px rgba(14, 165, 233, .22);
 }
 
-.surah-banner {
-  display: grid;
+.surah-banner,
+.bismillah-banner {
+  --surah-gold: rgba(200, 163, 90, .9);
+  --surah-gold-soft: rgba(200, 163, 90, .25);
+  --surah-gold-faint: rgba(200, 163, 90, .14);
+
+  position: relative;
   width: 100%;
-  height: 100%;
-  grid-template-columns: minmax(54px, .72fr) 1fr minmax(92px, .95fr);
+  height: calc(100% - 2px);
+  min-height: 42px;
+  display: grid;
   align-items: center;
-  gap: 8px;
   direction: ltr;
-  padding: 0 12px;
-  font-family: IndopakNastaleeq, serif;
-  background: #b9dfbf;
+  padding: 0 58px;
+  border: 1px solid var(--surah-gold-soft);
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, transparent, rgba(255, 255, 255, .38), transparent),
+    linear-gradient(90deg, transparent, rgba(200, 163, 90, .045), transparent);
   color: #12110c;
+  font-family: IndopakNastaleeq, serif;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .24);
 }
 
-.surah-banner:not(.surah-banner-inline) {
+.surah-banner::before,
+.bismillah-banner::before {
+  content: "";
+  position: absolute;
+  inset: 5px 18px;
+  border-top: 1px solid var(--surah-gold-faint);
+  border-bottom: 1px solid var(--surah-gold-faint);
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.surah-banner-inline {
+  grid-template-columns: minmax(54px, .72fr) 1fr minmax(92px, .95fr);
+  column-gap: 10px;
+}
+
+.surah-banner-separate {
   grid-template-columns: minmax(80px, 1fr) minmax(0, 1fr);
+  column-gap: 10px;
 }
 
 .surah-banner-name {
@@ -49,6 +77,12 @@
   white-space: nowrap;
   direction: rtl;
   font-size: calc(clamp(1rem, 2.45vh, 1.45rem) * var(--font-scale, 1));
+  font-weight: 600;
+}
+
+.surah-banner-separate .surah-banner-name {
+  justify-self: center;
+  font-size: calc(clamp(1.02rem, 2.5vh, 1.48rem) * var(--font-scale, 1));
 }
 
 .surah-banner-ayahs {
@@ -56,6 +90,7 @@
   white-space: nowrap;
   direction: rtl;
   font-size: calc(clamp(.95rem, 2.35vh, 1.34rem) * var(--font-scale, 1));
+  opacity: .92;
 }
 
 .surah-banner-basmallah {
@@ -63,6 +98,71 @@
   white-space: nowrap;
   direction: rtl;
   font-size: calc(clamp(1.02rem, 2.55vh, 1.52rem) * var(--font-scale, 1));
+  font-weight: 500;
+}
+
+.bismillah-banner {
+  grid-template-columns: 1fr auto 1fr;
+  justify-content: center;
+  padding-inline: 66px;
+}
+
+.bismillah-banner-text {
+  justify-self: center;
+  white-space: nowrap;
+  direction: rtl;
+  font-size: calc(clamp(1.08rem, 2.7vh, 1.6rem) * var(--font-scale, 1));
+  font-weight: 500;
+}
+
+.bismillah-banner-text::before,
+.bismillah-banner-text::after {
+  content: "❁";
+  color: var(--surah-gold);
+  font-size: .46em;
+  margin: 0 18px;
+  opacity: .72;
+}
+
+.surah-header-ornament {
+  position: absolute;
+  top: 50%;
+  width: 56px;
+  height: 34px;
+  color: var(--surah-gold);
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.surah-header-ornament.left {
+  left: 5px;
+}
+
+.surah-header-ornament.right {
+  right: 5px;
+}
+
+.surah-header-ornament.compact {
+  width: 48px;
+  height: 30px;
+  opacity: .84;
+}
+
+.surah-banner > span,
+.bismillah-banner > span {
+  position: relative;
+  z-index: 2;
+}
+
+.surah-banner-inline .surah-banner-basmallah::before,
+.surah-banner-inline .surah-banner-basmallah::after,
+.surah-banner-separate .surah-banner-name::before {
+  content: "❁";
+  color: var(--surah-gold);
+  font-size: .48em;
+  margin: 0 16px;
+  opacity: .68;
 }
 
 @keyframes ayah-pulse {
