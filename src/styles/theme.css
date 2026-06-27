@@ -2441,3 +2441,53 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
     --app-page-max-width: 820px;
   }
 }
+
+/* Juz start band: page-level full-width strip, not text-width/card background. */
+.reader-page {
+  position: relative !important;
+  isolation: isolate;
+}
+
+.reader-juz-start-layer {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  display: grid !important;
+  grid-template-rows: repeat(16, minmax(0, 1fr)) !important;
+  width: 100% !important;
+  height: 100% !important;
+  pointer-events: none !important;
+  overflow: hidden !important;
+}
+
+.reader-juz-start-band {
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
+  min-width: 100% !important;
+  height: 100% !important;
+  background: color-mix(in srgb, var(--reader-primary) 90%, transparent) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+  pointer-events: none !important;
+  transform: none !important;
+  transition: none !important;
+  animation: none !important;
+}
+
+.quran-line--juz-start::before {
+  content: none !important;
+  display: none !important;
+}
+
+.reader-ayah-highlight-layer {
+  z-index: 1 !important;
+  pointer-events: none !important;
+}
+
+.reader-page > .quran-line,
+.reader-page > [data-quran-line] {
+  position: relative !important;
+  z-index: 2 !important;
+}
