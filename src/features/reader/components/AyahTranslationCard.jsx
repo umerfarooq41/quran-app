@@ -8,7 +8,7 @@ const MISSING_TRANSLATION = 'Translation not available.';
 
 export function AyahTranslationCard({ target, translationId, onClose }) {
   const [activeTarget, setActiveTarget] = useState(() => normalizeTarget(target));
-  const [translation, setTranslation] = useState({ plainText: '', footnotes: [] });
+  const [translation, setTranslation] = useState({ plainText: '', parts: [], footnotes: [] });
   const [translationLoaded, setTranslationLoaded] = useState(false);
   const [footnotesOpen, setFootnotesOpen] = useState(false);
   const ayah = useMemo(() => getAyah(activeTarget), [
@@ -35,16 +35,16 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
 
     if (!activeTarget?.surahNumber || !activeTarget?.ayahNumber) return undefined;
 
-    setTranslation({ plainText: '', footnotes: [] });
+    setTranslation({ plainText: '', parts: [], footnotes: [] });
     setTranslationLoaded(false);
     setFootnotesOpen(false);
 
     loadTranslationEntry(translationId, activeTarget.surahNumber, activeTarget.ayahNumber)
       .then((entry) => {
-        if (mounted) setTranslation(entry || { plainText: '', footnotes: [] });
+        if (mounted) setTranslation(entry || { plainText: '', parts: [], footnotes: [] });
       })
       .catch(() => {
-        if (mounted) setTranslation({ plainText: '', footnotes: [] });
+        if (mounted) setTranslation({ plainText: '', parts: [], footnotes: [] });
       })
       .finally(() => {
         if (mounted) setTranslationLoaded(true);
@@ -84,7 +84,9 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
           </p>
 
           <p className="ayah-translation-text" dir={translationOption.direction || 'ltr'}>
-            {translationLoaded ? (translation.plainText || MISSING_TRANSLATION) : ''}
+            {translationLoaded
+              ? renderTranslationText(translation)
+              : ''}
           </p>
 
           {translationLoaded && translation.footnotes?.length > 0 && (
@@ -134,6 +136,29 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
       </motion.section>
     </div>
   );
+}
+
+
+function renderTranslationText(translation) {
+  const parts = Array.isArray(translation?.parts) ? translation.parts : [];
+
+  if (!parts.length) return translation?.plainText || MISSING_TRANSLATION;
+
+  return parts.map((part, index) => {
+    if (part.type === 'footnote') {
+      return (
+        <span
+          key={`${part.id || 'footnote'}-${index}`}
+          className="ayah-translation-inline-footnote"
+          aria-label={`Footnote ${part.number}`}
+        >
+          {part.number}
+        </span>
+      );
+    }
+
+    return <React.Fragment key={`text-${index}`}>{part.text} </React.Fragment>;
+  });
 }
 
 function normalizeTarget(target) {
