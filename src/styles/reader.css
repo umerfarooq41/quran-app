@@ -1764,16 +1764,22 @@ body {
 }
 
 .ayah-translation-text {
-  margin: 0;
+  margin: 14px 0 0;
   color: var(--translation-card-text);
-  font-family: "Jameel Noori Nastaleeq", "Noto Nastaliq Urdu", "Nafees Nastaleeq", "Urdu Typesetting", IndopakNastaleeq, "Noto Naskh Arabic", "Segoe UI", Tahoma, serif;
-  font-size: 17px;
-  line-height: 2;
+  font-family: var(--translation-english-font);
+  font-size: 16px;
+  line-height: 1.78;
   text-align: start;
 }
 
+.ayah-translation-body[data-translation-language="Ur"] .ayah-translation-text {
+  font-family: var(--translation-urdu-font);
+  font-size: 17px;
+  line-height: 2;
+}
+
 .ayah-translation-arabic {
-  margin: 18px 0 0;
+  margin: 0;
   color: var(--translation-card-text);
   direction: rtl;
   font-family: IndopakNastaleeq, serif;
@@ -2204,6 +2210,41 @@ body {
     animation: none;
     transform: none;
   }
+}
+
+.ayah-translation-footnote-wrap {
+  display: grid;
+  gap: 9px;
+  margin-top: 12px;
+  font-family: var(--translation-english-font);
+}
+
+.ayah-translation-body[data-translation-language="Ur"] .ayah-translation-footnote-wrap {
+  font-family: var(--translation-urdu-font);
+}
+
+.ayah-translation-footnote-toggle {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid rgba(45, 110, 94, .16);
+  border-radius: 999px;
+  background: rgba(45, 110, 94, .08);
+  color: #245f51;
+  padding: 8px 12px;
+  font-size: .78rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.ayah-translation-footnote-toggle svg {
+  transition: transform .18s ease;
+}
+
+.ayah-translation-footnote-toggle[aria-expanded="true"] svg {
+  transform: rotate(180deg);
 }
 
 .ayah-translation-footnotes {

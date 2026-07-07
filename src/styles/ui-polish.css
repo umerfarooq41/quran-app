@@ -1057,10 +1057,40 @@
   }
 }
 
+.tafsir-footnote-wrap {
+  display: grid;
+  gap: 9px;
+  margin-top: 10px;
+  font-family: var(--translation-english-font);
+}
+
+.tafsir-footnote-toggle {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid rgba(45, 110, 94, .16);
+  border-radius: 999px;
+  background: rgba(45, 110, 94, .08);
+  color: #245f51;
+  padding: 8px 12px;
+  font-size: .78rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.tafsir-footnote-toggle svg {
+  transition: transform .18s ease;
+}
+
+.tafsir-footnote-toggle[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+
 .tafsir-footnotes {
   display: grid;
   gap: 8px;
-  margin-top: 10px;
   border-radius: 14px;
   background: rgba(45, 110, 94, .08);
   padding: 10px;

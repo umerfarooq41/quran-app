@@ -2568,6 +2568,13 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
   border-color: rgba(227, 234, 238, .4);
 }
 
+[data-theme='dark'] .ayah-translation-footnote-toggle,
+[data-theme='dark'] .tafsir-footnote-toggle {
+  border-color: rgba(87, 191, 161, .18);
+  background: rgba(87, 191, 161, .12);
+  color: #aef1dc;
+}
+
 [data-theme='dark'] .ayah-translation-footnotes,
 [data-theme='dark'] .tafsir-footnotes {
   background: rgba(87, 191, 161, .12);
