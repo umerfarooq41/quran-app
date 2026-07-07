@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, ChevronDown } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { findPageForReference, getSurah } from '../lib/quran';
 import { getTranslationOption, loadTranslationEntry } from '../lib/translations';
@@ -17,6 +17,7 @@ export default function TafsirScreen() {
   })));
   const [translation, setTranslation] = useState({ plainText: '', footnotes: [] });
   const [status, setStatus] = useState('Loading translation...');
+  const [footnotesOpen, setFootnotesOpen] = useState(false);
   const surah = getSurah(tafsirTarget?.surahNumber);
   const surahInfo = surah?.shortText || surah?.text || '';
   const cleanSurahInfo = useMemo(() => sanitizeSurahHtml(surahInfo), [surahInfo]);
@@ -41,9 +42,11 @@ export default function TafsirScreen() {
     let mounted = true;
     if (!tafsirTarget?.surahNumber || !tafsirTarget?.ayahNumber) {
       setTranslation({ plainText: '', footnotes: [] });
+      setFootnotesOpen(false);
       setStatus('No ayah selected.');
       return () => { mounted = false; };
     }
+    setFootnotesOpen(false);
     loadTranslationEntry(settings.translation, tafsirTarget.surahNumber, tafsirTarget.ayahNumber)
       .then((entry) => {
         if (!mounted) return;
@@ -77,19 +80,33 @@ export default function TafsirScreen() {
           <button onClick={() => goAyah(tafsirTarget.surahNumber, tafsirTarget.ayahNumber, tafsirTarget.page)}><BookOpen size={18} /> Open</button>
         </div>
         <p dir="rtl" className="tafsir-arabic">{tafsirTarget.arabic}</p>
-        <section className="tafsir-section">
+        <section className="tafsir-section" data-translation-language={translationOption.language || 'En'}>
           <h3>{translationOption.label}</h3>
           {status ? <p>{status}</p> : (
             <>
-              <p dir={translationOption.direction}>{translation.plainText}</p>
+              <p className="tafsir-translation-text" dir={translationOption.direction}>{translation.plainText}</p>
               {translation.footnotes?.length > 0 && (
-                <div className="tafsir-footnotes" dir={translationOption.direction}>
-                  {translation.footnotes.map((footnote) => (
-                    <p key={footnote.id}>
-                      <span>{footnote.number}</span>
-                      {footnote.text}
-                    </p>
-                  ))}
+                <div className="tafsir-footnote-wrap" dir={translationOption.direction}>
+                  <button
+                    type="button"
+                    className="tafsir-footnote-toggle"
+                    aria-expanded={footnotesOpen}
+                    onClick={() => setFootnotesOpen((open) => !open)}
+                  >
+                    <span>{footnotesOpen ? 'Hide footnotes' : `Show footnotes (${translation.footnotes.length})`}</span>
+                    <ChevronDown size={16} aria-hidden="true" />
+                  </button>
+
+                  {footnotesOpen && (
+                    <div className="tafsir-footnotes">
+                      {translation.footnotes.map((footnote) => (
+                        <p key={footnote.id}>
+                          <span>{footnote.number}</span>
+                          {footnote.text}
+                        </p>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </>
