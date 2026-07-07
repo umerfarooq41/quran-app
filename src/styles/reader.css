@@ -1778,6 +1778,22 @@ body {
   line-height: 2;
 }
 
+.ayah-translation-inline-footnote {
+  display: inline-grid;
+  width: 1.18em;
+  height: 1.18em;
+  margin: 0 .18em;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(45, 110, 94, .15);
+  color: #245f51;
+  font-family: var(--translation-english-font);
+  font-size: .62em;
+  font-weight: 800;
+  line-height: 1;
+  vertical-align: .18em;
+}
+
 .ayah-translation-arabic {
   margin: 0;
   color: var(--translation-card-text);
