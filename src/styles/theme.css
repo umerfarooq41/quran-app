@@ -2676,3 +2676,48 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
   font-size: .72rem !important;
   line-height: 1 !important;
 }
+
+/* Match secondary-screen back buttons to the Reader back arrow style: icon only, no box. */
+.shared-back-button,
+.tabs-back-pill.shared-back-button,
+.surah-info-topbar .shared-back-button,
+.share-sheet-header .shared-back-button {
+  width: 44px !important;
+  min-width: 44px !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  color: inherit !important;
+}
+
+.shared-back-button:active,
+.tabs-back-pill.shared-back-button:active,
+.surah-info-topbar .shared-back-button:active,
+.share-sheet-header .shared-back-button:active {
+  background: transparent !important;
+  transform: scale(.96);
+}
+
+.shared-back-button svg,
+.tabs-back-pill.shared-back-button svg,
+.surah-info-topbar .shared-back-button svg,
+.share-sheet-header .shared-back-button svg {
+  width: 22px !important;
+  height: 22px !important;
+  stroke-width: 2.35 !important;
+}
+
+[data-theme='dark'] .shared-back-button,
+[data-theme='dark'] .tabs-back-pill.shared-back-button,
+[data-theme='dark'] .surah-info-topbar .shared-back-button,
+[data-theme='dark'] .share-sheet-header .shared-back-button {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: inherit !important;
+}
