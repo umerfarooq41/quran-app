@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import {
+  Check,
+  ChevronDown,
   Languages,
   Mic2,
   Moon,
@@ -63,33 +65,26 @@ export default function SettingsScreen() {
       </section>
 
       <section className="settings-card">
-        <SettingSelect
+        <SettingPicker
           icon={Languages}
           label="Translation"
-          description={TRANSLATION_OPTIONS.length > 1
-            ? 'Choose the translation used across the app'
-            : 'One bundled translation is currently available'}
+          description="Choose the translation used across the app"
           value={settings.translation}
+          options={TRANSLATION_OPTIONS}
+          getLabel={(translation) => translation.label}
           onChange={(value) => updateSettings({ translation: value })}
-        >
-          {TRANSLATION_OPTIONS.map((translation) => (
-            <option key={translation.id} value={translation.id}>{translation.label}</option>
-          ))}
-        </SettingSelect>
+        />
 
-        <SettingSelect
+        <SettingPicker
           icon={Mic2}
           label="Audio reciter"
           description="Used by the persistent Quran audio player"
           value={settings.reciter || reciters[0]?.id || ''}
+          options={reciters}
+          getLabel={getReciterDisplayName}
+          getAvatarSrc={getReciterImageSrc}
           onChange={(value) => updateSettings({ reciter: value })}
-        >
-          {reciters.map((reciter) => (
-            <option key={reciter.id} value={reciter.id}>
-              {reciter.reciter_name || reciter.name}
-            </option>
-          ))}
-        </SettingSelect>
+        />
 
         <label className="settings-toggle-row">
           <span className="settings-row-icon"><Vibrate size={17} /></span>
@@ -141,24 +136,114 @@ export default function SettingsScreen() {
   );
 }
 
-function SettingSelect({
+function SettingPicker({
   icon: Icon,
   label,
   description,
   value,
+  options,
+  getLabel,
+  getAvatarSrc,
   onChange,
-  children,
 }) {
+  const [open, setOpen] = useState(false);
+  const pickerRef = useRef(null);
+  const selectedOption = options.find((option) => option.id === value) || options[0];
+  const selectedLabel = selectedOption ? getLabel(selectedOption) : 'Select';
+  const selectedAvatar = selectedOption && getAvatarSrc ? getAvatarSrc(selectedOption) : '';
+  const hasAvatars = Boolean(getAvatarSrc);
+
+  useEffect(() => {
+    if (!open) return undefined;
+
+    function handlePointerDown(event) {
+      if (!pickerRef.current?.contains(event.target)) setOpen(false);
+    }
+
+    document.addEventListener('pointerdown', handlePointerDown);
+    return () => document.removeEventListener('pointerdown', handlePointerDown);
+  }, [open]);
+
+  function selectOption(option) {
+    onChange(option.id);
+    setOpen(false);
+  }
+
   return (
-    <label className="settings-select-row">
+    <div className={open ? 'settings-picker-row is-open' : 'settings-picker-row'} ref={pickerRef}>
       <span className="settings-row-icon"><Icon size={17} /></span>
       <span className="settings-row-copy">
         <strong>{label}</strong>
         <small>{description}</small>
       </span>
-      <select value={value} onChange={(event) => onChange(event.target.value)}>
-        {children}
-      </select>
-    </label>
+      <button
+        type="button"
+        className={hasAvatars ? 'settings-picker-pill has-avatar' : 'settings-picker-pill'}
+        onClick={() => setOpen((current) => !current)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+      >
+        {hasAvatars && (
+          <span className="settings-picker-avatar" aria-hidden="true">
+            <img
+              src={selectedAvatar}
+              alt=""
+              onError={(event) => { event.currentTarget.style.display = 'none'; }}
+            />
+          </span>
+        )}
+        <span className="settings-picker-selected">{selectedLabel}</span>
+        <span className="settings-picker-chevron" aria-hidden="true"><ChevronDown size={17} /></span>
+      </button>
+
+      <div className="settings-picker-panel" aria-hidden={!open}>
+        <div className="settings-picker-list" role="listbox" aria-label={label}>
+          {options.map((option) => {
+            const isSelected = option.id === selectedOption?.id;
+            const avatarSrc = getAvatarSrc ? getAvatarSrc(option) : '';
+
+            return (
+              <button
+                key={option.id}
+                type="button"
+                className={[
+                  'settings-picker-item',
+                  hasAvatars ? 'has-avatar' : '',
+                  isSelected ? 'selected' : '',
+                ].filter(Boolean).join(' ')}
+                onClick={() => selectOption(option)}
+                role="option"
+                aria-selected={isSelected}
+                tabIndex={open ? 0 : -1}
+              >
+                {hasAvatars && (
+                  <span className="settings-picker-avatar" aria-hidden="true">
+                    <img
+                      src={avatarSrc}
+                      alt=""
+                      onError={(event) => { event.currentTarget.style.display = 'none'; }}
+                    />
+                  </span>
+                )}
+                <span className="settings-picker-item-label">{getLabel(option)}</span>
+                <span className="settings-picker-check" aria-hidden="true">
+                  {isSelected ? <Check size={17} /> : <span className="settings-picker-option-radio" />}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
   );
+}
+
+function getReciterDisplayName(reciter) {
+  return reciter?.displayName || reciter?.reciter_name || reciter?.name || 'Reciter';
+}
+
+function getReciterImageSrc(reciter) {
+  const name = getReciterDisplayName(reciter);
+  const ext = reciter?.id === 'mishari-rashid-al-afasy' ? 'jpeg' : 'png';
+  return `/reciters/${encodeURIComponent(name)}.${ext}`;
 }

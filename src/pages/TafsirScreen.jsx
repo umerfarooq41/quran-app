@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { BookOpen } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { findPageForReference, getSurah } from '../lib/quran';
-import { getTranslation, getTranslationOption } from '../lib/translations';
+import { getTranslationOption, loadTranslationEntry } from '../lib/translations';
 import { parseQuranInternalHref, sanitizeSurahHtml } from '../lib/sanitizeHtml';
 import { useAppStore } from '../store/useAppStore';
 import { BackButton, Empty, Header, Screen } from '../components/common/AppChrome';
@@ -15,7 +15,7 @@ export default function TafsirScreen() {
     openSurahInfo: state.openSurahInfo,
     settings: state.settings,
   })));
-  const [translation, setTranslation] = useState('');
+  const [translation, setTranslation] = useState({ plainText: '', footnotes: [] });
   const [status, setStatus] = useState('Loading translation...');
   const surah = getSurah(tafsirTarget?.surahNumber);
   const surahInfo = surah?.shortText || surah?.text || '';
@@ -40,19 +40,19 @@ export default function TafsirScreen() {
   useEffect(() => {
     let mounted = true;
     if (!tafsirTarget?.surahNumber || !tafsirTarget?.ayahNumber) {
-      setTranslation('');
+      setTranslation({ plainText: '', footnotes: [] });
       setStatus('No ayah selected.');
       return () => { mounted = false; };
     }
-    getTranslation(settings.translation, tafsirTarget.surahNumber, tafsirTarget.ayahNumber)
-      .then((text) => {
+    loadTranslationEntry(settings.translation, tafsirTarget.surahNumber, tafsirTarget.ayahNumber)
+      .then((entry) => {
         if (!mounted) return;
-        setTranslation(text || 'Translation is not available for this ayah.');
+        setTranslation(entry?.plainText ? entry : { plainText: 'Translation is not available for this ayah.', footnotes: [] });
         setStatus('');
       })
       .catch(() => {
         if (!mounted) return;
-        setTranslation('Translation is not available for this ayah.');
+        setTranslation({ plainText: 'Translation is not available for this ayah.', footnotes: [] });
         setStatus('');
       });
     return () => { mounted = false; };
@@ -79,7 +79,21 @@ export default function TafsirScreen() {
         <p dir="rtl" className="tafsir-arabic">{tafsirTarget.arabic}</p>
         <section className="tafsir-section">
           <h3>{translationOption.label}</h3>
-          {status ? <p>{status}</p> : <p dir={translationOption.direction}>{translation}</p>}
+          {status ? <p>{status}</p> : (
+            <>
+              <p dir={translationOption.direction}>{translation.plainText}</p>
+              {translation.footnotes?.length > 0 && (
+                <div className="tafsir-footnotes" dir={translationOption.direction}>
+                  {translation.footnotes.map((footnote) => (
+                    <p key={footnote.id}>
+                      <span>{footnote.number}</span>
+                      {footnote.text}
+                    </p>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
         </section>
         {cleanSurahInfo && (
           <section className="tafsir-section">
