@@ -2,13 +2,13 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { getSurah, getSurahAyahs, surahs } from '../../../lib/quran';
-import { getTranslation, getTranslationOption } from '../../../lib/translations';
+import { getTranslationOption, loadTranslationEntry } from '../../../lib/translations';
 
 const MISSING_TRANSLATION = 'Translation not available.';
 
 export function AyahTranslationCard({ target, translationId, onClose }) {
   const [activeTarget, setActiveTarget] = useState(() => normalizeTarget(target));
-  const [translation, setTranslation] = useState('');
+  const [translation, setTranslation] = useState({ plainText: '', footnotes: [] });
   const [translationLoaded, setTranslationLoaded] = useState(false);
   const ayah = useMemo(() => getAyah(activeTarget), [
     activeTarget?.surahNumber,
@@ -34,15 +34,15 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
 
     if (!activeTarget?.surahNumber || !activeTarget?.ayahNumber) return undefined;
 
-    setTranslation('');
+    setTranslation({ plainText: '', footnotes: [] });
     setTranslationLoaded(false);
 
-    getTranslation(translationId, activeTarget.surahNumber, activeTarget.ayahNumber)
-      .then((text) => {
-        if (mounted) setTranslation(text || '');
+    loadTranslationEntry(translationId, activeTarget.surahNumber, activeTarget.ayahNumber)
+      .then((entry) => {
+        if (mounted) setTranslation(entry || { plainText: '', footnotes: [] });
       })
       .catch(() => {
-        if (mounted) setTranslation('');
+        if (mounted) setTranslation({ plainText: '', footnotes: [] });
       })
       .finally(() => {
         if (mounted) setTranslationLoaded(true);
@@ -78,8 +78,18 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
 
         <div className="ayah-translation-body">
           <p className="ayah-translation-text" dir={translationOption.direction || 'ltr'}>
-            {translationLoaded ? (translation || MISSING_TRANSLATION) : ''}
+            {translationLoaded ? (translation.plainText || MISSING_TRANSLATION) : ''}
           </p>
+          {translationLoaded && translation.footnotes?.length > 0 && (
+            <div className="ayah-translation-footnotes" dir={translationOption.direction || 'ltr'}>
+              {translation.footnotes.map((footnote) => (
+                <p key={footnote.id}>
+                  <span>{footnote.number}</span>
+                  {footnote.text}
+                </p>
+              ))}
+            </div>
+          )}
           <p className="ayah-translation-arabic" dir="rtl">
             {ayah?.text || ''}
           </p>
