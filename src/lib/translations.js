@@ -93,32 +93,65 @@ async function loadRawTranslation(translationId) {
 }
 
 function normalizeTranslationEntry(value) {
-  if (!value) return { text: '', plainText: '', footnotes: [] };
+  if (!value) return { text: '', plainText: '', parts: [], footnotes: [] };
 
   const text = typeof value === 'string' ? value : String(value.t || '');
   const footnoteMap = typeof value === 'object' && value.f && typeof value.f === 'object'
     ? value.f
     : {};
   const footnoteOrder = [];
-  let footnoteNumber = 0;
+  const idToNumber = new Map();
+  let generatedFootnoteNumber = 0;
 
-  const plainText = text
-    .replace(/<sup\s+foot_note="([^"]+)"\s*>\s*([^<]*)\s*<\/sup>/gi, (_, id, visibleNumber) => {
-      if (!footnoteOrder.includes(id)) footnoteOrder.push(id);
-      const number = String(visibleNumber || '').trim() || String(++footnoteNumber);
-      return ` [${number}]`;
-    })
-    .replace(/<[^>]+>/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
+  const parts = [];
+  let cursor = 0;
+  const footnoteRegex = /<sup\s+foot_note="([^"]+)"\s*>\s*([^<]*)\s*<\/sup>/gi;
+  let match;
+
+  while ((match = footnoteRegex.exec(text)) !== null) {
+    const before = cleanInlineText(text.slice(cursor, match.index));
+    if (before) parts.push({ type: 'text', text: before });
+
+    const id = match[1];
+    if (!footnoteOrder.includes(id)) footnoteOrder.push(id);
+
+    const visibleNumber = String(match[2] || '').trim();
+    const number = idToNumber.get(id)
+      || visibleNumber
+      || String(++generatedFootnoteNumber);
+    idToNumber.set(id, number);
+
+    parts.push({ type: 'footnote', id, number });
+    cursor = match.index + match[0].length;
+  }
+
+  const after = cleanInlineText(text.slice(cursor));
+  if (after) parts.push({ type: 'text', text: after });
+
+  const plainText = partsToPlainText(parts);
 
   const footnotes = footnoteOrder
     .filter((id) => footnoteMap[id])
     .map((id, index) => ({
       id,
-      number: index + 1,
-      text: String(footnoteMap[id]).replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim(),
+      number: idToNumber.get(id) || String(index + 1),
+      text: cleanInlineText(String(footnoteMap[id])),
     }));
 
-  return { text, plainText, footnotes };
+  return { text, plainText, parts, footnotes };
+}
+
+function cleanInlineText(value) {
+  return String(value || '')
+    .replace(/<[^>]+>/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function partsToPlainText(parts) {
+  return parts
+    .map((part) => (part.type === 'footnote' ? ` [${part.number}]` : part.text))
+    .join(' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
