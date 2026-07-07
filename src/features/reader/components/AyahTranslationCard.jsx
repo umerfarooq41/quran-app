@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getSurah, getSurahAyahs, surahs } from '../../../lib/quran';
 import { getTranslationOption, loadTranslationEntry } from '../../../lib/translations';
 
@@ -10,6 +10,7 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
   const [activeTarget, setActiveTarget] = useState(() => normalizeTarget(target));
   const [translation, setTranslation] = useState({ plainText: '', footnotes: [] });
   const [translationLoaded, setTranslationLoaded] = useState(false);
+  const [footnotesOpen, setFootnotesOpen] = useState(false);
   const ayah = useMemo(() => getAyah(activeTarget), [
     activeTarget?.surahNumber,
     activeTarget?.ayahNumber,
@@ -36,6 +37,7 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
 
     setTranslation({ plainText: '', footnotes: [] });
     setTranslationLoaded(false);
+    setFootnotesOpen(false);
 
     loadTranslationEntry(translationId, activeTarget.surahNumber, activeTarget.ayahNumber)
       .then((entry) => {
@@ -76,23 +78,39 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
           {reference}
         </header>
 
-        <div className="ayah-translation-body">
-          <p className="ayah-translation-text" dir={translationOption.direction || 'ltr'}>
-            {translationLoaded ? (translation.plainText || MISSING_TRANSLATION) : ''}
-          </p>
-          {translationLoaded && translation.footnotes?.length > 0 && (
-            <div className="ayah-translation-footnotes" dir={translationOption.direction || 'ltr'}>
-              {translation.footnotes.map((footnote) => (
-                <p key={footnote.id}>
-                  <span>{footnote.number}</span>
-                  {footnote.text}
-                </p>
-              ))}
-            </div>
-          )}
+        <div className="ayah-translation-body" data-translation-language={translationOption.language || 'En'}>
           <p className="ayah-translation-arabic" dir="rtl">
             {ayah?.text || ''}
           </p>
+
+          <p className="ayah-translation-text" dir={translationOption.direction || 'ltr'}>
+            {translationLoaded ? (translation.plainText || MISSING_TRANSLATION) : ''}
+          </p>
+
+          {translationLoaded && translation.footnotes?.length > 0 && (
+            <div className="ayah-translation-footnote-wrap" dir={translationOption.direction || 'ltr'}>
+              <button
+                type="button"
+                className="ayah-translation-footnote-toggle"
+                aria-expanded={footnotesOpen}
+                onClick={() => setFootnotesOpen((open) => !open)}
+              >
+                <span>{footnotesOpen ? 'Hide footnotes' : `Show footnotes (${translation.footnotes.length})`}</span>
+                <ChevronDown size={16} aria-hidden="true" />
+              </button>
+
+              {footnotesOpen && (
+                <div className="ayah-translation-footnotes">
+                  {translation.footnotes.map((footnote) => (
+                    <p key={footnote.id}>
+                      <span>{footnote.number}</span>
+                      {footnote.text}
+                    </p>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <footer className="ayah-translation-footer">
