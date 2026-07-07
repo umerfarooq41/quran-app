@@ -2539,3 +2539,43 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
     box-shadow: inset 0 0 0 1px rgba(14, 165, 233, .16);
   }
 }
+
+[data-theme='dark'] .settings-picker-row {
+  background: rgba(34, 39, 45, .82);
+}
+
+[data-theme='dark'] .settings-picker-pill,
+[data-theme='dark'] .settings-picker-panel {
+  background: rgba(24, 29, 34, .96);
+  color: #eef2f3;
+  border-color: rgba(255, 255, 255, .08);
+}
+
+[data-theme='dark'] .settings-picker-item {
+  color: #d9dee2;
+}
+
+[data-theme='dark'] .settings-picker-item.selected {
+  background: rgba(87, 191, 161, .16);
+  color: #aef1dc;
+}
+
+[data-theme='dark'] .settings-picker-avatar {
+  background: rgba(87, 191, 161, .16);
+}
+
+[data-theme='dark'] .settings-picker-option-radio {
+  border-color: rgba(227, 234, 238, .4);
+}
+
+[data-theme='dark'] .ayah-translation-footnotes,
+[data-theme='dark'] .tafsir-footnotes {
+  background: rgba(87, 191, 161, .12);
+  color: #d9dee2;
+}
+
+[data-theme='dark'] .ayah-translation-footnotes span,
+[data-theme='dark'] .tafsir-footnotes span {
+  background: rgba(87, 191, 161, .18);
+  color: #aef1dc;
+}

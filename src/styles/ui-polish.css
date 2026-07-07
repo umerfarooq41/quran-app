@@ -1056,3 +1056,34 @@
     min-width: 48px;
   }
 }
+
+.tafsir-footnotes {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+  border-radius: 14px;
+  background: rgba(45, 110, 94, .08);
+  padding: 10px;
+  color: #4a535b;
+  font-size: .76rem;
+  line-height: 1.65;
+}
+
+.tafsir-footnotes p {
+  display: flex;
+  gap: 7px;
+  margin: 0;
+}
+
+.tafsir-footnotes span {
+  display: inline-grid;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(45, 110, 94, .15);
+  color: #245f51;
+  font-size: .62rem;
+  font-weight: 800;
+}
