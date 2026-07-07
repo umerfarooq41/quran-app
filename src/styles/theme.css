@@ -2586,3 +2586,93 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
   background: rgba(87, 191, 161, .18);
   color: #aef1dc;
 }
+
+/* Readability pass: keep Urdu content and translation footnotes consistent. */
+.index-surah-info-preview p,
+.index-surah-info-copy {
+  font-family: var(--translation-urdu-font);
+  font-size: clamp(1.08rem, 4.7vw, 1.22rem) !important;
+  line-height: 2.02 !important;
+  letter-spacing: 0 !important;
+  text-align: right;
+  direction: rtl;
+}
+
+.index-surah-info-preview {
+  padding: 20px 18px 18px !important;
+}
+
+.surah-info-html {
+  font-family: var(--translation-urdu-font) !important;
+  font-size: clamp(1.16rem, 4.9vw, 1.34rem) !important;
+  line-height: 2.08 !important;
+  letter-spacing: 0 !important;
+  direction: rtl;
+  text-align: right;
+}
+
+.surah-info-html p,
+.surah-info-html li {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.surah-info-html h2 {
+  font-family: var(--translation-urdu-font) !important;
+  font-size: clamp(1.35rem, 5.5vw, 1.7rem) !important;
+  line-height: 1.75 !important;
+  letter-spacing: 0 !important;
+}
+
+.surah-info-html h3 {
+  font-family: var(--translation-urdu-font) !important;
+  font-size: clamp(1.2rem, 4.9vw, 1.45rem) !important;
+  line-height: 1.75 !important;
+  letter-spacing: 0 !important;
+}
+
+.ayah-translation-body[data-translation-language="Ur"] .ayah-translation-text,
+.tafsir-section[data-translation-language="Ur"] .tafsir-translation-text {
+  font-family: var(--translation-urdu-font) !important;
+  font-size: clamp(1.2rem, 5vw, 1.36rem) !important;
+  line-height: 2.15 !important;
+  letter-spacing: 0 !important;
+}
+
+.ayah-translation-footnote-toggle,
+.tafsir-footnote-toggle {
+  font-family: var(--translation-english-font) !important;
+  font-size: .92rem !important;
+  min-height: 42px;
+  padding: 10px 16px !important;
+}
+
+.ayah-translation-footnotes,
+.tafsir-footnotes {
+  font-size: clamp(.98rem, 4vw, 1.08rem) !important;
+  line-height: 1.85 !important;
+  padding: 14px !important;
+}
+
+.ayah-translation-body[data-translation-language="Ur"] .ayah-translation-footnotes,
+.tafsir-section[data-translation-language="Ur"] .tafsir-footnotes {
+  font-family: var(--translation-urdu-font) !important;
+  font-size: clamp(1.1rem, 4.6vw, 1.24rem) !important;
+  line-height: 2.05 !important;
+  direction: rtl;
+  text-align: right;
+}
+
+.ayah-translation-footnotes p,
+.tafsir-footnotes p {
+  align-items: flex-start;
+}
+
+.ayah-translation-footnotes span,
+.tafsir-footnotes span {
+  font-family: var(--translation-english-font) !important;
+  width: 22px !important;
+  height: 22px !important;
+  font-size: .72rem !important;
+  line-height: 1 !important;
+}
