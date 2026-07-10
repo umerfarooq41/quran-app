@@ -43,7 +43,6 @@ export const useAppStore = create((set, get) => ({
   expandedIndexJuz: null,
   page: 1,
   previousReaderPage: null,
-  readerNavigationRevision: 0,
   selectedSurah: 1,
   controlsVisible: false,
   selectedLine: null,
@@ -67,7 +66,6 @@ export const useAppStore = create((set, get) => ({
   hydrateLastRead: (lastRead) => set((state) => ({
     ...transitionToView(state, VIEWS.READER, { replace: true }),
     page: clampPage(lastRead?.page || 1),
-    readerNavigationRevision: state.readerNavigationRevision + 1,
     controlsVisible: false,
   })),
   navigateTo: (view, options = {}) => set((state) => transitionToView(
@@ -106,12 +104,7 @@ export const useAppStore = create((set, get) => ({
       pendingQuarterFlash: null,
       navDirection: 'forward',
       controlsVisible: options.keepControlsVisible ? true : false,
-      readerNavigationRevision: state.readerNavigationRevision + 1,
     };
-  }),
-  syncReaderPageFromScroll: (page) => set((state) => {
-    const nextPage = clampPage(page);
-    return nextPage === state.page ? state : { page: nextPage };
   }),
   goPreviousReaderPage: () => set((state) => {
     if (!state.previousReaderPage || state.previousReaderPage === state.page) return state;
@@ -124,7 +117,6 @@ export const useAppStore = create((set, get) => ({
       view: VIEWS.READER,
       navDirection: 'back',
       controlsVisible: true,
-      readerNavigationRevision: state.readerNavigationRevision + 1,
     };
   }),
   setSelectedSurah: (selectedSurah) => set((state) => ({
@@ -260,7 +252,6 @@ export const useAppStore = create((set, get) => ({
       pendingQuarterFlash: null,
       navDirection: 'forward',
       controlsVisible: false,
-      readerNavigationRevision: state.readerNavigationRevision + 1,
     };
   }),
   goQuarterTarget: (target) => set((state) => {
@@ -291,7 +282,6 @@ export const useAppStore = create((set, get) => ({
           },
       navDirection: 'forward',
       controlsVisible: false,
-      readerNavigationRevision: state.readerNavigationRevision + 1,
     };
   }),
   clearPendingAyah: () => set({ pendingAyah: null }),

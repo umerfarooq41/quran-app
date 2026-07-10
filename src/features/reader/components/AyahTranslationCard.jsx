@@ -1,14 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronDown, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getSurah, getSurahAyahs, surahs } from '../../../lib/quran';
 import { getTranslationOption, loadTranslationEntry } from '../../../lib/translations';
-import { useReaderLandscape } from '../hooks/useReaderLandscape';
 
 const MISSING_TRANSLATION = 'Translation not available.';
 
 export function AyahTranslationCard({ target, translationId, onClose }) {
-  const isReaderLandscape = useReaderLandscape();
   const [activeTarget, setActiveTarget] = useState(() => normalizeTarget(target));
   const [translation, setTranslation] = useState({ plainText: '', parts: [], footnotes: [] });
   const [translationLoaded, setTranslationLoaded] = useState(false);
@@ -66,9 +64,9 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
   return (
     <div className="ayah-translation-backdrop" data-reader-ui onClick={onClose}>
       <motion.section
-        initial={isReaderLandscape ? { x: '-100%', y: 0 } : { y: '100%', x: 0 }}
-        animate={{ x: 0, y: 0 }}
-        exit={isReaderLandscape ? { x: '-100%', y: 0 } : { y: '100%', x: 0 }}
+        initial={{ y: '100%' }}
+        animate={{ y: 0 }}
+        exit={{ y: '100%' }}
         transition={{ type: 'spring', stiffness: 380, damping: 38, mass: .9 }}
         className="ayah-translation-card"
         role="dialog"
@@ -77,13 +75,7 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
         onClick={(event) => event.stopPropagation()}
       >
         <header id="ayah-translation-reference" className="ayah-translation-header">
-          {isReaderLandscape && <span className="ayah-translation-header-spacer" aria-hidden="true" />}
-          <span>{reference}</span>
-          {isReaderLandscape && (
-            <button type="button" onClick={onClose} aria-label="Close translation">
-              <X size={18} aria-hidden="true" />
-            </button>
-          )}
+          {reference}
         </header>
 
         <div className="ayah-translation-body" data-translation-language={translationOption.language || 'En'}>

@@ -5,7 +5,6 @@ import { getSurah, getSurahAyahs } from '../../../lib/quran';
 import { generateQuranShareImage } from '../../../lib/shareCanvas';
 import { surahArabicNames } from '../../../utils/quranLabels';
 import { BackButton } from '../../../components/common/AppChrome';
-import { useReaderLandscape } from '../hooks/useReaderLandscape';
 
 const BACKGROUNDS = [
   { id: 'sand', color: '#ead8b8', label: 'Sand' },
@@ -16,7 +15,6 @@ const BACKGROUNDS = [
 ];
 
 export function ShareAyahSheet({ ayah, onClose }) {
-  const isReaderLandscape = useReaderLandscape();
   const surah = getSurah(ayah.surahNumber);
   const surahAyahs = useMemo(() => getSurahAyahs(ayah.surahNumber), [ayah.surahNumber]);
   const selectedIndex = Math.max(0, surahAyahs.findIndex((item) => item.ayahNumber === ayah.ayahNumber));
@@ -128,9 +126,9 @@ export function ShareAyahSheet({ ayah, onClose }) {
   return (
     <div className="share-sheet-backdrop" data-reader-ui onClick={onClose}>
       <motion.section
-        initial={isReaderLandscape ? { opacity: 0, scale: 0.97, y: 10 } : { y: '100%' }}
-        animate={isReaderLandscape ? { opacity: 1, scale: 1, y: 0 } : { y: 0 }}
-        exit={isReaderLandscape ? { opacity: 0, scale: 0.97, y: 10 } : { y: '100%' }}
+        initial={{ y: '100%' }}
+        animate={{ y: 0 }}
+        exit={{ y: '100%' }}
         transition={{ type: 'spring', stiffness: 360, damping: 38 }}
         className="share-sheet"
         onClick={(event) => event.stopPropagation()}

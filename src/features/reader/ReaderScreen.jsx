@@ -11,11 +11,9 @@ import { MushafPage } from './components/MushafPage';
 import { ReaderBottomControls } from './components/ReaderBottomControls';
 import { ReaderFooterMeta, ReaderPassiveHeader } from './components/ReaderPassiveMeta';
 import { ReaderTopControls } from './components/ReaderTopControls';
-import { ReaderLandscapeView } from './components/ReaderLandscapeView';
 import { ShareAyahSheet } from './components/ShareAyahSheet';
 import { usePagePersistence } from './hooks/usePagePersistence';
 import { useReaderGestures } from './hooks/useReaderGestures';
-import { useReaderLandscape } from './hooks/useReaderLandscape';
 
 const PAGE_SLIDE_SETTLE_MS = 190;
 const PAGE_SLIDE_IDLE = {
@@ -30,9 +28,7 @@ export default function ReaderScreen() {
   const {
     page,
     previousReaderPage,
-    readerNavigationRevision,
     goPage,
-    syncReaderPageFromScroll,
     goPreviousReaderPage,
     controlsVisible,
     setControlsVisible,
@@ -62,9 +58,7 @@ export default function ReaderScreen() {
   } = useAppStore(useShallow((state) => ({
     page: state.page,
     previousReaderPage: state.previousReaderPage,
-    readerNavigationRevision: state.readerNavigationRevision,
     goPage: state.goPage,
-    syncReaderPageFromScroll: state.syncReaderPageFromScroll,
     goPreviousReaderPage: state.goPreviousReaderPage,
     controlsVisible: state.controlsVisible,
     setControlsVisible: state.setControlsVisible,
@@ -92,14 +86,6 @@ export default function ReaderScreen() {
     clearPendingAyah: state.clearPendingAyah,
     clearPendingQuarterFlash: state.clearPendingQuarterFlash,
   })));
-  const isReaderLandscape = useReaderLandscape();
-
-  useEffect(() => {
-    document.documentElement.dataset.readerLandscape = isReaderLandscape ? 'true' : 'false';
-    return () => {
-      delete document.documentElement.dataset.readerLandscape;
-    };
-  }, [isReaderLandscape]);
   const [sliderPreviewPage, setSliderPreviewPage] = useState(null);
   const [sliderInteracting, setSliderInteracting] = useState(false);
   const [translationTarget, setTranslationTarget] = useState(null);
@@ -161,7 +147,7 @@ export default function ReaderScreen() {
   const readerInteractionsBlocked = Boolean(
     controlsVisible ||
       audioPlayerVisible ||
-      (!isReaderLandscape && translationTarget) ||
+      translationTarget ||
       ayahTooltipVisible ||
       shareSheetVisible
   );
@@ -183,16 +169,13 @@ export default function ReaderScreen() {
   }, []);
 
   useEffect(() => {
-    if (isReaderLandscape) return;
     window.clearTimeout(pageSlideTimer.current);
     setPageSlide(PAGE_SLIDE_IDLE);
-  }, [page, isReaderLandscape]);
+  }, [page]);
 
-  usePagePersistence({ page, pageData, debounceMs: isReaderLandscape ? 320 : 0 });
+  usePagePersistence({ page, pageData });
 
   useEffect(() => {
-    if (isReaderLandscape) return undefined;
-
     const handleKeyDown = (event) => {
       if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
       if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
@@ -211,7 +194,6 @@ export default function ReaderScreen() {
     ayahTooltipVisible,
     shareSheetVisible,
     audioPlayerVisible,
-    isReaderLandscape,
   ]);
 
   useEffect(() => {
@@ -246,7 +228,7 @@ export default function ReaderScreen() {
     return () => {
       mounted = false;
     };
-  }, [annotationVersion]);
+  }, [page, annotationVersion]);
 
   useEffect(() => {
     if (!pendingAyah) return undefined;
@@ -333,7 +315,7 @@ export default function ReaderScreen() {
     const safeNextPage = clampPage(nextPage);
     const { skipSlideTransition, ...goPageOptions } = options || {};
 
-    if (!skipSlideTransition && !isReaderLandscape) {
+    if (!skipSlideTransition) {
       startPageTransition(safeNextPage);
     }
 
@@ -341,7 +323,7 @@ export default function ReaderScreen() {
   }
 
   function goPreviousReaderPageWithSlide() {
-    if (!isReaderLandscape && previousReaderPage && previousReaderPage !== page) {
+    if (previousReaderPage && previousReaderPage !== page) {
       startPageTransition(previousReaderPage);
     }
 
@@ -451,7 +433,7 @@ export default function ReaderScreen() {
     }, 1300);
   }
 
-  function selectAyah(sourcePage, line, lineIndex, selection) {
+  function selectAyah(line, lineIndex, selection) {
     if (readerInteractionsBlocked || isAyahInteractionSuppressed()) {
       suppressTapUntil.current = Date.now() + 700;
       dismissVisibleReaderUi();
@@ -469,7 +451,7 @@ export default function ReaderScreen() {
     suppressTapUntil.current = Date.now() + 700;
     setTranslationTarget(null);
     openAyahSheet({
-      page: sourcePage,
+      page,
       surah: line.surahNumber,
       ayah: ayahNumber,
       surahNumber: line.surahNumber,
@@ -487,7 +469,7 @@ export default function ReaderScreen() {
     });
   }
 
-  function openTranslationCard(sourcePage, line, lineIndex, selection) {
+  function openTranslationCard(line, lineIndex, selection) {
     if (line.type !== 'ayah' || !line.surahNumber || !line.ayahStart) return;
     if (readerInteractionsBlocked || isAyahInteractionSuppressed()) {
       dismissVisibleReaderUi();
@@ -496,7 +478,7 @@ export default function ReaderScreen() {
 
     const ayahNumber = Number(selection?.ayahNumber || line.ayahStart);
     setTranslationTarget({
-      page: sourcePage,
+      page,
       surahNumber: line.surahNumber,
       ayahNumber,
       lineIndex,
@@ -571,7 +553,7 @@ export default function ReaderScreen() {
     }
   }
 
-  function renderMushafPage(renderedPageData, { interactive = true, layoutMode = 'portrait' } = {}) {
+  function renderMushafPage(renderedPageData, { interactive = true } = {}) {
     const renderedPage = renderedPageData.page;
     const activeAudioAyah = audioPlayerActive && audioTarget?.page === renderedPage
       ? audioTarget
@@ -590,9 +572,8 @@ export default function ReaderScreen() {
         interactionsBlocked={!interactive || readerInteractionsBlocked}
         enableTextHighlights={interactive}
         onBlockedInteraction={interactive ? dismissVisibleReaderUi : undefined}
-        layoutMode={layoutMode}
-        onSelectAyah={interactive ? (line, lineIndex, selection) => selectAyah(renderedPage, line, lineIndex, selection) : () => {}}
-        onTapAyah={interactive ? (line, lineIndex, selection) => openTranslationCard(renderedPage, line, lineIndex, selection) : () => {}}
+        onSelectAyah={interactive ? selectAyah : () => {}}
+        onTapAyah={interactive ? openTranslationCard : () => {}}
       />
     );
   }
@@ -609,8 +590,12 @@ export default function ReaderScreen() {
     pageSlideDirection < 0 ? 'is-previous' : '',
   ].filter(Boolean).join(' ');
 
-  const portraitReader = (
-    <>
+  return (
+    <section
+      className="fixed inset-0 overflow-hidden bg-reader text-slate-950"
+      onPointerDownCapture={handleReaderPointerDownCapture}
+      onClick={handleReaderTap}
+    >
       <div
         ref={readerShellRef}
         className={`reader-shell relative mx-auto flex h-dvh max-w-[576px] flex-col overflow-hidden bg-[#fffaf1] text-[#13100a] shadow-2xl shadow-slate-900/10 ${audioPlayerActive ? 'reader-shell-audio-active' : ''} ${audioPlayerActive && !audioPlayerVisible ? 'reader-shell-audio-collapsed' : ''}`}
@@ -677,52 +662,6 @@ export default function ReaderScreen() {
           />
         )}
       </AnimatePresence>
-    </>
-  );
-
-  const landscapeReader = (
-    <ReaderLandscapeView
-      page={page}
-      meta={meta}
-      displayPage={displayPage}
-      navigationRevision={readerNavigationRevision}
-      pendingAyah={pendingAyah}
-      pendingQuarterFlash={pendingQuarterFlash}
-      selectedAyah={selectedAyah}
-      audioTarget={audioTarget}
-      audioPlayerActive={audioPlayerActive}
-      audioPlayerVisible={audioPlayerVisible}
-      controlsVisible={controlsVisible}
-      footerDisplayPage={footerDisplayPage}
-      juzProgress={juzProgress}
-      onBack={() => goBack()}
-      onBookmarks={openBookmarks}
-      onIndex={openIndex}
-      onSettings={openSettings}
-      onSearch={openSearch}
-      onAudio={() => openAudioPanel()}
-      onPreviousPage={goPreviousReaderPageWithSlide}
-      onGoPage={goReaderPage}
-      onSyncPage={syncReaderPageFromScroll}
-      onHideChrome={hideReaderChrome}
-      onReaderScrolled={() => {
-        suppressTapUntil.current = Date.now() + 320;
-        if (ayahTooltipVisible) closeAyahSheet();
-        if (controlsVisible) setControlsVisible(false);
-      }}
-      onPreviewPageChange={setSliderPreviewPage}
-      onSliderInteractionChange={setSliderInteracting}
-      renderMushafPage={renderMushafPage}
-    />
-  );
-
-  return (
-    <section
-      className={`fixed inset-0 overflow-hidden bg-reader text-slate-950 ${isReaderLandscape ? 'reader-landscape-mode' : 'reader-portrait-mode'}`}
-      onPointerDownCapture={handleReaderPointerDownCapture}
-      onClick={handleReaderTap}
-    >
-      {isReaderLandscape ? landscapeReader : portraitReader}
 
       <AnimatePresence>
         {translationTarget && (

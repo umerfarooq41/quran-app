@@ -17,7 +17,7 @@ import SurahScreen from './pages/SurahScreen';
 import SurahInfoScreen from './pages/SurahInfoScreen';
 import { ReaderAudioPanel } from './features/reader/components/ReaderAudioPanel';
 
-function syncOrientationState(activeView) {
+function syncPortraitFallbackState() {
   const root = document.documentElement;
   const landscapeQuery = window.matchMedia?.('(orientation: landscape)');
   const isLandscape = Boolean(landscapeQuery?.matches || window.innerWidth > window.innerHeight);
@@ -26,67 +26,23 @@ function syncOrientationState(activeView) {
     : window.screen?.orientation?.angle;
   const angle = Number(angleValue) || 0;
 
-  root.dataset.activeView = activeView;
   root.dataset.appOrientation = isLandscape ? 'landscape' : 'portrait';
   root.dataset.appLandscapeLock = isLandscape
     ? (angle === -90 || angle === 270 ? 'counterclockwise' : 'clockwise')
     : 'none';
 }
 
-function isStandaloneDisplayMode() {
-  return Boolean(
-    window.matchMedia?.('(display-mode: standalone)').matches
-      || window.matchMedia?.('(display-mode: fullscreen)').matches
-      || window.navigator.standalone === true
-      || document.fullscreenElement,
-  );
-}
-
-function requestOrientationMode(orientation, type) {
-  if (!orientation?.lock) return;
-
-  Promise.resolve(orientation.lock(type)).catch(() => {
-    // Ordinary browser tabs and iOS may reject orientation requests. The
-    // Reader still follows the device through its native viewport orientation.
-  });
-}
-
-function allowNativeReaderOrientation() {
-  const orientation = window.screen?.orientation;
-
-  try {
-    // Remove the portrait policy used outside Reader. With manifest
-    // orientation="any", Android can then use normal sensor rotation and may
-    // show its own rotate-suggestion button when system Auto-rotate is off.
-    orientation?.unlock?.();
-  } catch {
-    // Screen Orientation is optional and browser-dependent.
-  }
-
-  // In an installed PWA/fullscreen context, "any" explicitly allows both
-  // portrait and landscape without forcing either direction. This also helps
-  // override a stale portrait API lock while preserving native OS behavior.
-  if (isStandaloneDisplayMode()) {
-    requestOrientationMode(orientation, 'any');
-  }
-}
-
-function applyOrientationPolicy(activeView) {
-  syncOrientationState(activeView);
+function requestPortraitLock() {
+  syncPortraitFallbackState();
 
   if (document.visibilityState === 'hidden') return;
 
-  if (activeView === VIEWS.READER) {
-    allowNativeReaderOrientation();
-    return;
-  }
+  const orientation = window.screen?.orientation;
+  if (!orientation?.lock) return;
 
-  // Keep the rest of the installed app portrait-first. Avoid issuing this in
-  // a normal browser tab, where it is normally rejected and can interfere
-  // with the browser/OS native rotation experience.
-  if (isStandaloneDisplayMode()) {
-    requestOrientationMode(window.screen?.orientation, 'portrait');
-  }
+  Promise.resolve(orientation.lock('portrait')).catch(() => {
+    // Some browsers only allow locking for installed/fullscreen PWAs.
+  });
 }
 
 export default function App() {
@@ -107,46 +63,23 @@ export default function App() {
   const [booted, setBooted] = useState(false);
 
   useEffect(() => {
-    let orientationFrame = 0;
-    let orientationSettleTimer = 0;
+    requestPortraitLock();
 
-    const applyCurrentPolicy = () => applyOrientationPolicy(activeView);
-    const handleOrientationChange = () => applyCurrentPolicy();
-    const handleResize = () => syncOrientationState(activeView);
     const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') applyCurrentPolicy();
+      if (document.visibilityState === 'visible') requestPortraitLock();
     };
 
-    applyCurrentPolicy();
-
-    // Some installed browsers finish changing display mode after the React
-    // view transition. Releasing the previous portrait policy again avoids a
-    // stale lock without forcing landscape.
-    if (activeView === VIEWS.READER) {
-      orientationFrame = window.requestAnimationFrame(applyCurrentPolicy);
-      orientationSettleTimer = window.setTimeout(applyCurrentPolicy, 180);
-    }
-
-    window.addEventListener('resize', handleResize);
-    window.addEventListener('orientationchange', handleOrientationChange);
-    window.screen?.orientation?.addEventListener?.('change', handleOrientationChange);
+    window.addEventListener('resize', syncPortraitFallbackState);
+    window.addEventListener('orientationchange', requestPortraitLock);
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
-      window.cancelAnimationFrame(orientationFrame);
-      window.clearTimeout(orientationSettleTimer);
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('orientationchange', handleOrientationChange);
-      window.screen?.orientation?.removeEventListener?.('change', handleOrientationChange);
+      window.removeEventListener('resize', syncPortraitFallbackState);
+      window.removeEventListener('orientationchange', requestPortraitLock);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
+      delete document.documentElement.dataset.appOrientation;
+      delete document.documentElement.dataset.appLandscapeLock;
     };
-  }, [activeView]);
-
-  useEffect(() => () => {
-    delete document.documentElement.dataset.activeView;
-    delete document.documentElement.dataset.appOrientation;
-    delete document.documentElement.dataset.appLandscapeLock;
-    delete document.documentElement.dataset.readerLandscape;
   }, []);
 
   useEffect(() => {

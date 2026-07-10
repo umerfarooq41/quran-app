@@ -16,24 +16,6 @@ const MANAGED_HIGHLIGHTS = [
   ...SAVED_HIGHLIGHTS.map((color) => `reader-highlight-${color}`),
   ...BOOKMARK_TONES.map((tone) => `reader-bookmark-${tone}`),
 ];
-
-const PAGE_HIGHLIGHT_REGISTRY = new Map();
-
-function rebuildManagedHighlights() {
-  if (typeof CSS === 'undefined' || !CSS.highlights || typeof Highlight === 'undefined') return;
-
-  MANAGED_HIGHLIGHTS.forEach((name) => CSS.highlights.delete(name));
-  const grouped = new Map();
-
-  PAGE_HIGHLIGHT_REGISTRY.forEach((registration) => {
-    registration.forEach((ranges, name) => addRanges(grouped, name, ranges));
-  });
-
-  grouped.forEach((ranges, name) => {
-    if (ranges.length) CSS.highlights.set(name, new Highlight(...ranges));
-  });
-}
-
 const LINE_FIT_EVENT = 'quran-line-fit';
 const MUSHAF_FONT_FAMILY = 'IndopakNastaleeq';
 const MUSHAF_FONT_SAMPLE = 'اللَّهُ';
@@ -59,10 +41,8 @@ export function MushafPage({
   onBlockedInteraction,
   onSelectAyah,
   onTapAyah,
-  layoutMode = 'portrait',
 }) {
   const pageRef = useRef(null);
-  const highlightOwnerRef = useRef(Symbol(`mushaf-page-${pageData.page}`));
   const [highlightRects, setHighlightRects] = useState({
     saved: [],
     savedWords: [],
@@ -186,12 +166,10 @@ export function MushafPage({
   ]);
 
   useEffect(() => {
-    const owner = highlightOwnerRef.current;
-    if (!supportsTextHighlights || !pageRef.current) {
-      PAGE_HIGHLIGHT_REGISTRY.delete(owner);
-      rebuildManagedHighlights();
-      return undefined;
-    }
+    if (!supportsTextHighlights) return undefined;
+
+    MANAGED_HIGHLIGHTS.forEach((name) => CSS.highlights.delete(name));
+    if (!pageRef.current) return undefined;
 
     const groupedRanges = new Map();
 
@@ -203,14 +181,16 @@ export function MushafPage({
       addRanges(groupedRanges, `reader-bookmark-${tone}`, markerRange ? [markerRange] : []);
     });
 
-    PAGE_HIGHLIGHT_REGISTRY.set(owner, groupedRanges);
-    rebuildManagedHighlights();
+    groupedRanges.forEach((ranges, name) => {
+      if (!ranges.length) return;
+      const highlight = new Highlight(...ranges);
+      CSS.highlights.set(name, highlight);
+    });
 
     return () => {
-      PAGE_HIGHLIGHT_REGISTRY.delete(owner);
-      rebuildManagedHighlights();
+      MANAGED_HIGHLIGHTS.forEach((name) => CSS.highlights.delete(name));
     };
-  }, [pageData, bookmarkMarkers, supportsTextHighlights]);
+  }, [pageData, savedHighlights, bookmarkMarkers, supportsTextHighlights]);
 
   useLayoutEffect(() => {
     const pageElement = pageRef.current;
@@ -277,8 +257,7 @@ export function MushafPage({
   return (
     <div
       ref={pageRef}
-      data-mushaf-page={pageData.page}
-      className={`reader-page grid grid-rows-16 ${layoutMode === 'landscape-stream' ? 'reader-page-landscape' : 'reader-page-portrait flex-1 overflow-hidden px-4'} ${isOpeningMushafPage ? 'reader-page-opening' : ''}`}
+      className={`reader-page grid flex-1 grid-rows-16 overflow-hidden px-4 ${isOpeningMushafPage ? 'reader-page-opening' : ''}`}
       style={{ '--font-scale': settings.fontScale }}
     >
       <div className="reader-ayah-highlight-layer" aria-hidden="true">
