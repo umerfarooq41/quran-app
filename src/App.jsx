@@ -17,7 +17,7 @@ import SurahScreen from './pages/SurahScreen';
 import SurahInfoScreen from './pages/SurahInfoScreen';
 import { ReaderAudioPanel } from './features/reader/components/ReaderAudioPanel';
 
-function syncPortraitFallbackState() {
+function syncOrientationState(activeView) {
   const root = document.documentElement;
   const landscapeQuery = window.matchMedia?.('(orientation: landscape)');
   const isLandscape = Boolean(landscapeQuery?.matches || window.innerWidth > window.innerHeight);
@@ -26,20 +26,29 @@ function syncPortraitFallbackState() {
     : window.screen?.orientation?.angle;
   const angle = Number(angleValue) || 0;
 
+  root.dataset.activeView = activeView;
   root.dataset.appOrientation = isLandscape ? 'landscape' : 'portrait';
   root.dataset.appLandscapeLock = isLandscape
     ? (angle === -90 || angle === 270 ? 'counterclockwise' : 'clockwise')
     : 'none';
 }
 
-function requestPortraitLock() {
-  syncPortraitFallbackState();
+function applyOrientationPolicy(activeView) {
+  syncOrientationState(activeView);
 
   if (document.visibilityState === 'hidden') return;
 
   const orientation = window.screen?.orientation;
-  if (!orientation?.lock) return;
+  if (activeView === VIEWS.READER) {
+    try {
+      orientation?.unlock?.();
+    } catch {
+      // Orientation APIs are optional and browser-dependent.
+    }
+    return;
+  }
 
+  if (!orientation?.lock) return;
   Promise.resolve(orientation.lock('portrait')).catch(() => {
     // Some browsers only allow locking for installed/fullscreen PWAs.
   });
@@ -63,23 +72,32 @@ export default function App() {
   const [booted, setBooted] = useState(false);
 
   useEffect(() => {
-    requestPortraitLock();
+    applyOrientationPolicy(activeView);
 
+    const handleOrientationChange = () => applyOrientationPolicy(activeView);
+    const handleResize = () => syncOrientationState(activeView);
     const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') requestPortraitLock();
+      if (document.visibilityState === 'visible') applyOrientationPolicy(activeView);
     };
 
-    window.addEventListener('resize', syncPortraitFallbackState);
-    window.addEventListener('orientationchange', requestPortraitLock);
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleOrientationChange);
+    window.screen?.orientation?.addEventListener?.('change', handleOrientationChange);
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
-      window.removeEventListener('resize', syncPortraitFallbackState);
-      window.removeEventListener('orientationchange', requestPortraitLock);
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleOrientationChange);
+      window.screen?.orientation?.removeEventListener?.('change', handleOrientationChange);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
-      delete document.documentElement.dataset.appOrientation;
-      delete document.documentElement.dataset.appLandscapeLock;
     };
+  }, [activeView]);
+
+  useEffect(() => () => {
+    delete document.documentElement.dataset.activeView;
+    delete document.documentElement.dataset.appOrientation;
+    delete document.documentElement.dataset.appLandscapeLock;
+    delete document.documentElement.dataset.readerLandscape;
   }, []);
 
   useEffect(() => {
