@@ -1,5 +1,5 @@
 /* Native Reader-only landscape mode. Imported after theme.css on purpose. */
-@media (orientation: landscape) and (hover: none) and (pointer: coarse) {
+@media (orientation: landscape) {
   html[data-active-view='reader'][data-reader-landscape='true'],
   html[data-active-view='reader'][data-reader-landscape='true'] body,
   html[data-active-view='reader'][data-reader-landscape='true'] #root {
@@ -468,7 +468,7 @@
   }
 }
 
-@media (orientation: landscape) and (hover: none) and (pointer: coarse) and (max-width: 650px) {
+@media (orientation: landscape) and (max-width: 650px) {
   .reader-landscape-mode .share-sheet {
     grid-template-columns: 1fr !important;
     grid-template-rows: auto auto auto minmax(0, 1fr) auto auto !important;
@@ -490,7 +490,7 @@
   }
 }
 
-@media (orientation: landscape) and (hover: none) and (pointer: coarse) {
+@media (orientation: landscape) {
   .reader-landscape-mode .ayah-translation-backdrop {
     pointer-events: none;
   }
@@ -526,7 +526,7 @@
   }
 }
 
-@media (orientation: landscape) and (hover: none) and (pointer: coarse) {
+@media (orientation: landscape) {
   .reader-landscape-leading-space,
   .reader-landscape-trailing-space {
     width: 1px;

@@ -33,6 +33,15 @@ function syncOrientationState(activeView) {
     : 'none';
 }
 
+function requestOrientationLock(orientation, type) {
+  if (!orientation?.lock) return;
+
+  Promise.resolve(orientation.lock(type)).catch(() => {
+    // Browser tabs and iOS may reject orientation locks. In that case the
+    // layout still follows the device orientation through matchMedia.
+  });
+}
+
 function applyOrientationPolicy(activeView) {
   syncOrientationState(activeView);
 
@@ -41,17 +50,18 @@ function applyOrientationPolicy(activeView) {
   const orientation = window.screen?.orientation;
   if (activeView === VIEWS.READER) {
     try {
+      // Clear the portrait lock used by the rest of the app before asking
+      // supported installed/fullscreen environments for landscape.
       orientation?.unlock?.();
     } catch {
       // Orientation APIs are optional and browser-dependent.
     }
+
+    requestOrientationLock(orientation, 'landscape');
     return;
   }
 
-  if (!orientation?.lock) return;
-  Promise.resolve(orientation.lock('portrait')).catch(() => {
-    // Some browsers only allow locking for installed/fullscreen PWAs.
-  });
+  requestOrientationLock(orientation, 'portrait');
 }
 
 export default function App() {
