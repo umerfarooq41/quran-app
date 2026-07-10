@@ -33,13 +33,42 @@ function syncOrientationState(activeView) {
     : 'none';
 }
 
-function requestOrientationLock(orientation, type) {
+function isStandaloneDisplayMode() {
+  return Boolean(
+    window.matchMedia?.('(display-mode: standalone)').matches
+      || window.matchMedia?.('(display-mode: fullscreen)').matches
+      || window.navigator.standalone === true
+      || document.fullscreenElement,
+  );
+}
+
+function requestOrientationMode(orientation, type) {
   if (!orientation?.lock) return;
 
   Promise.resolve(orientation.lock(type)).catch(() => {
-    // Browser tabs and iOS may reject orientation locks. In that case the
-    // layout still follows the device orientation through matchMedia.
+    // Ordinary browser tabs and iOS may reject orientation requests. The
+    // Reader still follows the device through its native viewport orientation.
   });
+}
+
+function allowNativeReaderOrientation() {
+  const orientation = window.screen?.orientation;
+
+  try {
+    // Remove the portrait policy used outside Reader. With manifest
+    // orientation="any", Android can then use normal sensor rotation and may
+    // show its own rotate-suggestion button when system Auto-rotate is off.
+    orientation?.unlock?.();
+  } catch {
+    // Screen Orientation is optional and browser-dependent.
+  }
+
+  // In an installed PWA/fullscreen context, "any" explicitly allows both
+  // portrait and landscape without forcing either direction. This also helps
+  // override a stale portrait API lock while preserving native OS behavior.
+  if (isStandaloneDisplayMode()) {
+    requestOrientationMode(orientation, 'any');
+  }
 }
 
 function applyOrientationPolicy(activeView) {
@@ -47,21 +76,17 @@ function applyOrientationPolicy(activeView) {
 
   if (document.visibilityState === 'hidden') return;
 
-  const orientation = window.screen?.orientation;
   if (activeView === VIEWS.READER) {
-    try {
-      // Clear the portrait lock used by the rest of the app before asking
-      // supported installed/fullscreen environments for landscape.
-      orientation?.unlock?.();
-    } catch {
-      // Orientation APIs are optional and browser-dependent.
-    }
-
-    requestOrientationLock(orientation, 'landscape');
+    allowNativeReaderOrientation();
     return;
   }
 
-  requestOrientationLock(orientation, 'portrait');
+  // Keep the rest of the installed app portrait-first. Avoid issuing this in
+  // a normal browser tab, where it is normally rejected and can interfere
+  // with the browser/OS native rotation experience.
+  if (isStandaloneDisplayMode()) {
+    requestOrientationMode(window.screen?.orientation, 'portrait');
+  }
 }
 
 export default function App() {
@@ -82,13 +107,25 @@ export default function App() {
   const [booted, setBooted] = useState(false);
 
   useEffect(() => {
-    applyOrientationPolicy(activeView);
+    let orientationFrame = 0;
+    let orientationSettleTimer = 0;
 
-    const handleOrientationChange = () => applyOrientationPolicy(activeView);
+    const applyCurrentPolicy = () => applyOrientationPolicy(activeView);
+    const handleOrientationChange = () => applyCurrentPolicy();
     const handleResize = () => syncOrientationState(activeView);
     const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') applyOrientationPolicy(activeView);
+      if (document.visibilityState === 'visible') applyCurrentPolicy();
     };
+
+    applyCurrentPolicy();
+
+    // Some installed browsers finish changing display mode after the React
+    // view transition. Releasing the previous portrait policy again avoids a
+    // stale lock without forcing landscape.
+    if (activeView === VIEWS.READER) {
+      orientationFrame = window.requestAnimationFrame(applyCurrentPolicy);
+      orientationSettleTimer = window.setTimeout(applyCurrentPolicy, 180);
+    }
 
     window.addEventListener('resize', handleResize);
     window.addEventListener('orientationchange', handleOrientationChange);
@@ -96,6 +133,8 @@ export default function App() {
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
+      window.cancelAnimationFrame(orientationFrame);
+      window.clearTimeout(orientationSettleTimer);
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('orientationchange', handleOrientationChange);
       window.screen?.orientation?.removeEventListener?.('change', handleOrientationChange);
