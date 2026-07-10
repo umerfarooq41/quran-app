@@ -60,29 +60,17 @@ export function getWordAtRenderedPoint(textElement, clientX, clientY) {
   if (!textElement) return null;
 
   const words = Array.from(textElement.querySelectorAll('[data-quran-word-index]'));
-  let closestIndex = null;
-  let closestDistance = Number.POSITIVE_INFINITY;
 
-  words.forEach((word) => {
+  for (const word of words) {
     const rect = word.getBoundingClientRect();
-    if (!rect.width || !rect.height) return;
+    if (!rect.width || !rect.height) continue;
+    if (!pointInsideRect(clientX, clientY, rect)) continue;
 
     const wordIndex = Number(word.dataset.quranWordIndex);
-    if (pointInsideRect(clientX, clientY, rect)) {
-      closestIndex = wordIndex;
-      closestDistance = -1;
-      return;
-    }
+    return Number.isInteger(wordIndex) ? wordIndex : null;
+  }
 
-    if (closestDistance < 0) return;
-    const distance = distanceToRect(clientX, clientY, rect);
-    if (distance < closestDistance) {
-      closestDistance = distance;
-      closestIndex = wordIndex;
-    }
-  });
-
-  return Number.isInteger(closestIndex) ? closestIndex : null;
+  return null;
 }
 
 export function getAyahAtRenderedPoint(line, textElement, clientX, clientY) {

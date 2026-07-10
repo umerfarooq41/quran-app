@@ -286,7 +286,7 @@ export function ReaderLandscapeView({
         </button>
       )}
 
-      {controlsVisible && (
+      {controlsVisible && !audioPlayerActive && (
         <ReaderLandscapeBottomDock
           page={page}
           displayPage={footerDisplayPage}

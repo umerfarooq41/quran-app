@@ -258,11 +258,14 @@ export function QuranLine({
       return;
     }
 
+    const selection = getSelectionFromEvent(event);
+    if (!Number.isInteger(selection?.wordIndex)) return;
+
     longPressed.current = false;
     ignoreNextClick.current = false;
     pressMoved.current = false;
     pressPoint.current = { x: event.clientX, y: event.clientY };
-    pressedSelection.current = getSelectionFromEvent(event);
+    pressedSelection.current = selection;
     capturedPointer.current = event.pointerId;
     event.currentTarget.setPointerCapture?.(event.pointerId);
     window.clearTimeout(longPressTimer.current);
@@ -402,9 +405,12 @@ export function QuranLine({
         }
 
         if (line.type === 'ayah' && line.ayahStart) {
+          const selection = getSelectionFromEvent(event);
+          if (!Number.isInteger(selection?.wordIndex)) return;
+
           event.preventDefault();
           event.stopPropagation();
-          onTap?.(getSelectionFromEvent(event));
+          onTap?.(selection);
         }
       }}
       onContextMenu={(event) => {
@@ -417,7 +423,8 @@ export function QuranLine({
         }
 
         if (line.type === 'ayah' && line.ayahStart) {
-          onSelect(getSelectionFromEvent(event));
+          const selection = getSelectionFromEvent(event);
+          if (Number.isInteger(selection?.wordIndex)) onSelect(selection);
         }
       }}
       className={`quran-line quran-line-${isBasmallah ? 'basmallah' : line.type} ${marked ? 'quran-line-marked' : ''} ${jumped ? 'quran-line-jumped' : ''} ${isJuzStartLine ? 'quran-line--juz-start' : ''} ${line.type === 'spacer' ? 'opacity-0' : ''} ${centered ? 'quran-line-centered' : 'quran-line-normal'}`}

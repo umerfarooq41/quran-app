@@ -44,26 +44,33 @@ export function ReaderLandscapeBottomDock({
         </div>
       )}
 
-      <div className="reader-landscape-dock-meta" aria-hidden="true">
-        <span>{preview?.page ?? displayPage}</span>
-        <span>{preview?.juzProgress ?? progress}</span>
+      <button
+        type="button"
+        className="reader-landscape-listen-button"
+        onClick={onAudio}
+        aria-label="Play Quran audio"
+      >
+        <Play size={22} fill="currentColor" strokeWidth={1.7} />
+      </button>
+
+      <div className="reader-landscape-bottom-sheet">
+        <div className="reader-landscape-dock-meta" aria-hidden="true">
+          <span>{preview?.page ?? displayPage}</span>
+          <span>{preview?.juzProgress ?? progress}</span>
+        </div>
+
+        <button type="button" onClick={onPreviousPage} aria-label="Previous reader page">
+          <Undo2 size={21} strokeWidth={1.9} />
+        </button>
+
+        <div className="reader-landscape-wave-wrap">
+          <PageWaveSlider page={page} goPage={goPage} onPreviewChange={handlePreview} />
+        </div>
+
+        <button type="button" onClick={onSearch} aria-label="Search">
+          <Search size={21} strokeWidth={1.9} />
+        </button>
       </div>
-
-      <button type="button" onClick={onPreviousPage} aria-label="Previous reader page">
-        <Undo2 size={21} strokeWidth={1.9} />
-      </button>
-
-      <div className="reader-landscape-wave-wrap">
-        <PageWaveSlider page={page} goPage={goPage} onPreviewChange={handlePreview} />
-      </div>
-
-      <button type="button" onClick={onSearch} aria-label="Search">
-        <Search size={21} strokeWidth={1.9} />
-      </button>
-
-      <button type="button" onClick={onAudio} aria-label="Play Quran audio">
-        <Play size={21} fill="currentColor" strokeWidth={1.7} />
-      </button>
     </div>
   );
 }
