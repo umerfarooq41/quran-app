@@ -3,7 +3,7 @@ import { AnimatePresence } from 'framer-motion';
 import { useShallow } from 'zustand/react/shallow';
 import { db } from '../../lib/db';
 import { getCurrentIndoPakJuzProgress } from '../../data/indoPakParaQuarters';
-import { clampPage, getMushafPageNumber, getPage, getPageMeta, getSurahAyahs } from '../../lib/quran';
+import { clampPage, getMushafPageNumber, getPage, getPageMeta, getSurah, getSurahAyahs } from '../../lib/quran';
 import { OVERLAY_TYPES, useAppStore } from '../../store/useAppStore';
 import { AyahActionSheet } from './components/AyahActionSheet';
 import { AyahTranslationCard } from './components/AyahTranslationCard';
@@ -48,6 +48,7 @@ export default function ReaderScreen() {
     audioTarget,
     audioPlayerActive,
     audioPlayerVisible,
+    audioPlaying,
     openAudioPlayer,
     showAudioPlayer,
     hideAudioPlayer,
@@ -78,6 +79,7 @@ export default function ReaderScreen() {
     audioTarget: state.audioTarget,
     audioPlayerActive: state.audioPlayerActive,
     audioPlayerVisible: state.audioPlayerVisible,
+    audioPlaying: state.audioPlaying,
     openAudioPlayer: state.openAudioPlayer,
     showAudioPlayer: state.showAudioPlayer,
     hideAudioPlayer: state.hideAudioPlayer,
@@ -92,6 +94,9 @@ export default function ReaderScreen() {
   const [copyToastVisible, setCopyToastVisible] = useState(false);
   const [pageSlide, setPageSlide] = useState(PAGE_SLIDE_IDLE);
   const [pageTransition, setPageTransition] = useState(null);
+  const [audioFollowEnabled, setAudioFollowEnabled] = useState(() => (
+    !audioPlayerActive || !audioTarget?.page || Number(audioTarget.page) === Number(page)
+  ));
   const pageData = getPage(page);
   const meta = getPageMeta(page);
   const displayPage = getMushafPageNumber(page);
@@ -157,6 +162,16 @@ export default function ReaderScreen() {
   const activeSlideTargetPageData = activeSlideTargetPage ? getPage(activeSlideTargetPage) : null;
   const pageSlideActive = pageSlide.active || pageSlide.settling;
   const pageTransitionActive = Boolean(pageTransition && pageTransition.page !== page);
+  const showReturnToAudioChip = Boolean(
+    audioPlayerActive &&
+      audioPlaying &&
+      !audioFollowEnabled &&
+      audioTarget?.page &&
+      Number(audioTarget.page) !== Number(page)
+  );
+  const playingSurah = audioTarget?.surahNumber
+    ? getSurah(audioTarget.surahNumber)
+    : null;
 
   useEffect(() => {
     if (!sliderInteracting) setSliderPreviewPage(null);
@@ -284,12 +299,31 @@ export default function ReaderScreen() {
     const targetChanged = nextKey && nextKey !== previousAudioTargetKey.current;
     previousAudioTargetKey.current = nextKey;
 
-    if (targetChanged && audioPlayerActive && audioTarget?.page && audioTarget.page !== page) {
+    if (
+      targetChanged &&
+      audioPlayerActive &&
+      audioFollowEnabled &&
+      audioTarget?.page &&
+      Number(audioTarget.page) !== Number(page)
+    ) {
       const keepControlsVisible = controlsVisible;
-      goReaderPage(audioTarget.page);
+      goReaderPage(audioTarget.page, null, { navigationSource: 'audio' });
       if (keepControlsVisible) setControlsVisible(true);
     }
-  }, [audioTarget?.surahNumber, audioTarget?.ayahNumber]);
+  }, [
+    audioTarget?.surahNumber,
+    audioTarget?.ayahNumber,
+    audioTarget?.page,
+    audioPlayerActive,
+    audioFollowEnabled,
+    controlsVisible,
+    page,
+    setControlsVisible,
+  ]);
+
+  useEffect(() => {
+    if (!audioPlayerActive) setAudioFollowEnabled(true);
+  }, [audioPlayerActive]);
 
   function getPageSlideWidth() {
     return readerShellRef.current?.getBoundingClientRect().width || window.innerWidth || 390;
@@ -311,9 +345,26 @@ export default function ReaderScreen() {
     }, PAGE_SLIDE_SETTLE_MS + 40);
   }
 
+  function updateAudioFollowForDestination(nextPage, navigationSource = 'user') {
+    if (!audioPlayerActive || !audioTarget?.page) return;
+
+    if (navigationSource === 'audio' || navigationSource === 'return-to-audio') {
+      setAudioFollowEnabled(true);
+      return;
+    }
+
+    setAudioFollowEnabled(Number(nextPage) === Number(audioTarget.page));
+  }
+
   function goReaderPage(nextPage, pendingAyah = null, options = {}) {
     const safeNextPage = clampPage(nextPage);
-    const { skipSlideTransition, ...goPageOptions } = options || {};
+    const {
+      skipSlideTransition,
+      navigationSource = 'user',
+      ...goPageOptions
+    } = options || {};
+
+    updateAudioFollowForDestination(safeNextPage, navigationSource);
 
     if (!skipSlideTransition) {
       startPageTransition(safeNextPage);
@@ -324,6 +375,7 @@ export default function ReaderScreen() {
 
   function goPreviousReaderPageWithSlide() {
     if (previousReaderPage && previousReaderPage !== page) {
+      updateAudioFollowForDestination(previousReaderPage, 'user');
       startPageTransition(previousReaderPage);
     }
 
@@ -398,6 +450,7 @@ export default function ReaderScreen() {
   }
 
   function openAudioPanel(targetLine = null) {
+    setAudioFollowEnabled(true);
     if (!targetLine && audioPlayerActive && !audioPlayerVisible) {
       showAudioPlayer();
       return;
@@ -415,6 +468,13 @@ export default function ReaderScreen() {
     if (!target) return;
 
     openAudioPlayer(target);
+  }
+
+  function returnToPlayingAyah() {
+    if (!audioPlaying || !audioTarget?.page) return;
+
+    setAudioFollowEnabled(true);
+    goReaderPage(audioTarget.page, null, { navigationSource: 'return-to-audio' });
   }
 
   function annotationsChanged() {
@@ -644,6 +704,26 @@ export default function ReaderScreen() {
 
         <ReaderFooterMeta displayPage={footerDisplayPage} progress={juzProgress} />
       </div>
+
+      {showReturnToAudioChip && (
+        <button
+          type="button"
+          className="reader-return-to-audio-chip"
+          data-reader-ui
+          onClick={returnToPlayingAyah}
+          aria-label={`Return to reciting ayah ${audioTarget.surahNumber}:${audioTarget.ayahNumber}`}
+        >
+          <span className="reader-return-to-audio-dot" aria-hidden="true" />
+          <span className="reader-return-to-audio-text">
+            <strong>Return to recitation</strong>
+            <span>
+              {playingSurah?.name || `Surah ${audioTarget.surahNumber}`}
+              {' '}
+              {audioTarget.surahNumber}:{audioTarget.ayahNumber}
+            </span>
+          </span>
+        </button>
+      )}
 
       <AnimatePresence>
         {controlsVisible && (

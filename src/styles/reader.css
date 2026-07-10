@@ -2292,3 +2292,86 @@ body {
   font-size: .62rem;
   font-weight: 800;
 }
+
+/* Return to the ayah currently being recited after browsing away. */
+.reader-return-to-audio-chip {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 52px);
+  left: 50%;
+  z-index: 79;
+  display: inline-flex;
+  max-width: min(calc(100vw - 28px), 360px);
+  align-items: center;
+  gap: 10px;
+  transform: translateX(-50%);
+  border: 1px solid var(--reader-border, rgba(44, 42, 38, .10));
+  border-radius: 999px;
+  background: var(--reader-surface, rgba(255, 250, 241, .98));
+  padding: 8px 14px 8px 10px;
+  color: var(--reader-text, #201c15);
+  box-shadow: 0 10px 28px rgba(28, 23, 16, .14);
+  text-align: left;
+  animation: readerReturnToAudioIn .18s ease-out both;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.reader-return-to-audio-chip:active {
+  transform: translateX(-50%) scale(.98);
+}
+
+.reader-return-to-audio-dot {
+  width: 10px;
+  height: 10px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: var(--reader-primary, #2d6e5e);
+  box-shadow: 0 0 0 4px rgba(45, 110, 94, .14);
+}
+
+.reader-return-to-audio-text {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+  line-height: 1.05;
+}
+
+.reader-return-to-audio-text strong {
+  overflow: hidden;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.reader-return-to-audio-text > span {
+  overflow: hidden;
+  color: var(--reader-muted, #756f65);
+  font-size: 11px;
+  font-weight: 550;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+[data-theme='dark'] .reader-return-to-audio-chip {
+  border-color: var(--reader-border, rgba(255, 255, 255, .10));
+  background: var(--reader-surface, rgba(30, 35, 32, .98));
+  color: var(--reader-text, #f1f3ef);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .42);
+}
+
+@keyframes readerReturnToAudioIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -6px) scale(.98);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reader-return-to-audio-chip {
+    animation: none;
+  }
+}
