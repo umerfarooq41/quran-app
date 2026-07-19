@@ -149,27 +149,41 @@
   position: relative;
   min-width: 0;
   overflow: hidden;
-  border-radius: 23px;
+  border-radius: 18px;
   background: transparent;
   box-shadow: 0 7px 22px rgba(38, 52, 45, .07);
   touch-action: pan-y;
+}
+
+.home-favorite-swipe.is-swiped {
+  background: #c83a35;
 }
 
 .home-favorite-delete {
   position: absolute;
   inset-block: 0;
   right: 0;
-  width: 104px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
+  display: grid;
+  width: 92px;
+  place-content: center;
+  gap: 5px;
   border: 0;
-  border-radius: 0 23px 23px 0;
+  border-radius: 0 18px 18px 0;
   background: #c83a35;
   color: #fff;
-  font-size: .76rem;
-  font-weight: 720;
+  font-size: .72rem;
+  font-weight: 700;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.home-favorite-delete svg {
+  margin-inline: auto;
+}
+
+.home-favorite-swipe.is-swiped .home-favorite-delete {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .home-favorite-row {
@@ -182,13 +196,19 @@
   align-items: center;
   gap: 14px;
   border: 1px solid rgba(255,255,255,.88);
-  border-radius: 23px;
+  border-radius: 18px;
   background: #fff;
   padding: 14px 18px;
   color: #30291f;
   text-align: left;
   box-shadow: 0 7px 22px rgba(38, 52, 45, .07);
   cursor: pointer;
+  transition: transform .2s ease;
+  touch-action: pan-y;
+}
+
+.home-favorite-swipe.is-swiped .home-favorite-row {
+  transform: translateX(-92px);
 }
 
 .home-favorite-row:active {
