@@ -22,6 +22,32 @@ const LOCAL_OVERLAY_TYPES = new Set([
   OVERLAY_TYPES.SHARE,
 ]);
 
+
+const FAVORITE_SURAHS_STORAGE_KEY = 'quran-app-favorite-surahs';
+
+function getInitialFavoriteSurahs() {
+  if (typeof window === 'undefined') return [];
+
+  try {
+    const stored = JSON.parse(window.localStorage.getItem(FAVORITE_SURAHS_STORAGE_KEY) || '[]');
+    if (!Array.isArray(stored)) return [];
+
+    return [...new Set(stored.map(Number).filter((number) => number >= 1 && number <= 114))];
+  } catch {
+    return [];
+  }
+}
+
+function persistFavoriteSurahs(favoriteSurahs) {
+  if (typeof window === 'undefined') return;
+
+  try {
+    window.localStorage.setItem(FAVORITE_SURAHS_STORAGE_KEY, JSON.stringify(favoriteSurahs));
+  } catch {
+    // Keep favorites available for this session when storage is unavailable.
+  }
+}
+
 export const DEFAULT_SETTINGS = Object.freeze({
   fontScale: 1,
   theme: getInitialTheme(),
@@ -41,6 +67,7 @@ export const useAppStore = create((set, get) => ({
   indexTab: 'juz',
   expandedIndexSurah: null,
   expandedIndexJuz: null,
+  favoriteSurahs: getInitialFavoriteSurahs(),
   page: 1,
   previousReaderPage: null,
   selectedSurah: 1,
@@ -135,6 +162,18 @@ export const useAppStore = create((set, get) => ({
   }),
   setExpandedIndexJuz: (expandedIndexJuz) => set({
     expandedIndexJuz: Number(expandedIndexJuz) || null,
+  }),
+  toggleFavoriteSurah: (surahNumber) => set((state) => {
+    const number = Number(surahNumber);
+    if (number < 1 || number > 114) return state;
+
+    const isFavorite = state.favoriteSurahs.includes(number);
+    const favoriteSurahs = isFavorite
+      ? state.favoriteSurahs.filter((item) => item !== number)
+      : [...state.favoriteSurahs, number];
+
+    persistFavoriteSurahs(favoriteSurahs);
+    return { favoriteSurahs };
   }),
   setControlsVisible: (controlsVisible) => set({ controlsVisible }),
   toggleControls: () => set((state) => ({ controlsVisible: !state.controlsVisible })),
