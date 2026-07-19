@@ -150,7 +150,7 @@
   min-width: 0;
   overflow: hidden;
   border-radius: 23px;
-  background: rgba(143, 58, 48, .9);
+  background: transparent;
   box-shadow: 0 7px 22px rgba(38, 52, 45, .07);
   touch-action: pan-y;
 }
@@ -165,7 +165,8 @@
   justify-content: center;
   gap: 7px;
   border: 0;
-  background: transparent;
+  border-radius: 0 23px 23px 0;
+  background: #cf3a37;
   color: #fff;
   font-size: .76rem;
   font-weight: 720;
@@ -182,17 +183,16 @@
   gap: 14px;
   border: 1px solid rgba(255,255,255,.88);
   border-radius: 23px;
-  background: rgba(255,255,255,.76);
+  background: #fff;
   padding: 14px 18px;
   color: #30291f;
   text-align: left;
   box-shadow: 0 7px 22px rgba(38, 52, 45, .07);
-  backdrop-filter: blur(14px);
   cursor: pointer;
 }
 
 .home-favorite-row:active {
-  background: rgba(255,255,255,.88);
+  background: #fff;
 }
 
 .home-favorite-number {
