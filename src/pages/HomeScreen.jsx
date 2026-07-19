@@ -1,5 +1,5 @@
-import React from 'react';
-import { Bookmark, BookOpen, Library, Search, SlidersHorizontal, Star, X } from 'lucide-react';
+import React, { useState } from 'react';
+import { Bookmark, BookOpen, Library, Search, SlidersHorizontal, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../store/useAppStore';
@@ -32,7 +32,7 @@ export default function HomeScreen() {
     goAyah: state.goAyah,
   })));
   const meta = getPageMeta(page);
-  const favoriteItems = favoriteSurahs.slice(0, 4).map(getSurah);
+  const favoriteItems = favoriteSurahs.map(getSurah).filter(Boolean);
 
   function openSurahIndex() {
     setIndexTab('surahs');
@@ -94,46 +94,22 @@ export default function HomeScreen() {
         transition={{ delay: 0.3, type: 'spring', stiffness: 260, damping: 28 }}
       >
         <div className="home-section-heading">
-          <div>
-            <span className="home-section-kicker">Quick access</span>
-            <h2>Favorite Surahs</h2>
-          </div>
-          <button type="button" onClick={openSurahIndex}>
-            {favoriteSurahs.length > 4 ? `View all (${favoriteSurahs.length})` : 'Manage'}
-          </button>
+          <h2>Favorite Surahs</h2>
         </div>
 
         {favoriteItems.length ? (
-          <div className="home-favorites-grid">
+          <div className="home-favorites-list">
             {favoriteItems.map((surah) => (
-              <motion.article key={surah.number} className="home-favorite-card" whileTap={{ scale: 0.975 }}>
-                <button
-                  type="button"
-                  className="home-favorite-open"
-                  onClick={() => goAyah(surah.number, 1, findPageForReference(surah.number, 1))}
-                  aria-label={`Read ${surah.name} from the start`}
-                >
-                  <span className="home-favorite-number">{surah.number}</span>
-                  <span className="home-favorite-copy">
-                    <strong>{surah.name}</strong>
-                    <small>{surah.verses} Ayahs · {surah.revelation}</small>
-                  </span>
-                  <Star className="home-favorite-star" size={18} fill="currentColor" />
-                </button>
-                <button
-                  type="button"
-                  className="home-favorite-remove"
-                  onClick={() => toggleFavoriteSurah(surah.number)}
-                  aria-label={`Remove ${surah.name} from favorites`}
-                >
-                  <X size={15} />
-                </button>
-              </motion.article>
+              <FavoriteSurahRow
+                key={surah.number}
+                surah={surah}
+                onOpen={() => goAyah(surah.number, 1, findPageForReference(surah.number, 1))}
+                onRemove={() => toggleFavoriteSurah(surah.number)}
+              />
             ))}
           </div>
         ) : (
           <button type="button" className="home-favorites-empty" onClick={openSurahIndex}>
-            <span className="home-empty-icon"><Star size={23} /></span>
             <span>
               <strong>No favorite Surahs yet</strong>
               <small>Add Surahs from the Index for quick access.</small>
@@ -143,5 +119,64 @@ export default function HomeScreen() {
         )}
       </motion.section>
     </Screen>
+  );
+}
+
+
+function FavoriteSurahRow({ surah, onOpen, onRemove }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [didDrag, setDidDrag] = useState(false);
+
+  function handleDragEnd(_, info) {
+    const shouldOpen = info.offset.x < -54 || info.velocity.x < -450;
+    setIsOpen(shouldOpen);
+    window.setTimeout(() => setDidDrag(false), 80);
+  }
+
+  function handleOpen() {
+    if (didDrag) return;
+    if (isOpen) {
+      setIsOpen(false);
+      return;
+    }
+    onOpen();
+  }
+
+  return (
+    <motion.article
+      className="home-favorite-swipe"
+      layout
+      exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+    >
+      <button
+        type="button"
+        className="home-favorite-delete"
+        onClick={onRemove}
+        aria-label={`Remove ${surah.name} from favorites`}
+      >
+        <Trash2 size={18} />
+        <span>Remove</span>
+      </button>
+
+      <motion.button
+        type="button"
+        className="home-favorite-row"
+        drag="x"
+        dragConstraints={{ left: -104, right: 0 }}
+        dragElastic={0.08}
+        animate={{ x: isOpen ? -104 : 0 }}
+        transition={{ type: 'spring', stiffness: 420, damping: 36 }}
+        onDragStart={() => setDidDrag(true)}
+        onDragEnd={handleDragEnd}
+        onClick={handleOpen}
+        aria-label={`Read ${surah.name} from the start`}
+      >
+        <span className="home-favorite-number">{surah.number}</span>
+        <span className="home-favorite-copy">
+          <strong>{surah.name}</strong>
+          <small>{surah.verses} Ayahs · {surah.revelation}</small>
+        </span>
+      </motion.button>
+    </motion.article>
   );
 }
