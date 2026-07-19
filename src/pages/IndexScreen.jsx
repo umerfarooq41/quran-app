@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Play, Star } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../store/useAppStore';
 import { BackButton } from '../components/common/AppChrome';
@@ -156,11 +156,20 @@ function getQuarterPillLabel(id) {
 }
 
 function SurahIndex() {
-  const { expandedSurah, setExpandedSurah, goAyah, openSurahInfo } = useAppStore(useShallow((state) => ({
+  const {
+    expandedSurah,
+    setExpandedSurah,
+    goAyah,
+    openSurahInfo,
+    favoriteSurahs,
+    toggleFavoriteSurah,
+  } = useAppStore(useShallow((state) => ({
     expandedSurah: state.expandedIndexSurah,
     setExpandedSurah: state.setExpandedIndexSurah,
     goAyah: state.goAyah,
     openSurahInfo: state.openSurahInfo,
+    favoriteSurahs: state.favoriteSurahs,
+    toggleFavoriteSurah: state.toggleFavoriteSurah,
   })));
 
   const grouped = useMemo(() => surahs.reduce((groups, surah) => {
@@ -235,6 +244,26 @@ function SurahIndex() {
                         >
                           Read more
                         </button>
+
+                        <div className="index-surah-quick-actions" aria-label={`${surah.name} quick actions`}>
+                          <button
+                            type="button"
+                            className={`index-surah-text-action ${favoriteSurahs.includes(surah.number) ? 'is-favorite' : ''}`}
+                            onClick={() => toggleFavoriteSurah(surah.number)}
+                            aria-pressed={favoriteSurahs.includes(surah.number)}
+                          >
+                            <Star size={17} fill={favoriteSurahs.includes(surah.number) ? 'currentColor' : 'none'} />
+                            <span>{favoriteSurahs.includes(surah.number) ? 'Remove from Favorites' : 'Add to Favorites'}</span>
+                          </button>
+                          <button
+                            type="button"
+                            className="index-surah-text-action"
+                            onClick={() => goAyah(surah.number, 1, findPageForReference(surah.number, 1))}
+                          >
+                            <Play size={17} fill="currentColor" />
+                            <span>Read from Start</span>
+                          </button>
+                        </div>
                       </div>
 
                       <div className="index-ayah-grid" aria-label={`${surah.name} ayahs`}>
