@@ -285,3 +285,51 @@
     margin-bottom: 32px;
   }
 }
+
+.index-surah-quick-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 15px;
+  padding-top: 13px;
+  border-top: 1px solid rgba(116, 123, 136, .13);
+}
+
+.index-surah-info-preview .index-surah-text-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  padding: 2px 0;
+  color: #4f5863;
+  font-size: clamp(.76rem, 3.2vw, .88rem);
+  font-weight: 650;
+  line-height: 1.2;
+  text-decoration: none;
+  text-underline-offset: 0;
+}
+
+.index-surah-info-preview .index-surah-text-action.is-favorite {
+  color: #ad7d22;
+}
+
+.index-surah-text-action svg {
+  flex: 0 0 auto;
+}
+
+.index-surah-text-action span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 360px) {
+  .index-surah-quick-actions {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
