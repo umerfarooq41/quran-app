@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Bookmark, BookOpen, Library, Search, SlidersHorizontal, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useShallow } from 'zustand/react/shallow';
@@ -125,16 +125,38 @@ export default function HomeScreen() {
 
 function FavoriteSurahRow({ surah, onOpen, onRemove }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [didDrag, setDidDrag] = useState(false);
+  const swipeStart = useRef(null);
+  const suppressClick = useRef(false);
 
-  function handleDragEnd(_, info) {
-    const shouldOpen = info.offset.x < -54 || info.velocity.x < -450;
-    setIsOpen(shouldOpen);
-    window.setTimeout(() => setDidDrag(false), 80);
+  function startSwipe(event) {
+    const touch = event.touches[0];
+    swipeStart.current = touch ? { x: touch.clientX, y: touch.clientY } : null;
+  }
+
+  function finishSwipe(event) {
+    const start = swipeStart.current;
+    const touch = event.changedTouches[0];
+    swipeStart.current = null;
+    if (!start || !touch) return;
+
+    const deltaX = touch.clientX - start.x;
+    const deltaY = touch.clientY - start.y;
+    if (Math.abs(deltaX) < Math.abs(deltaY)) return;
+
+    if (deltaX < -44) {
+      suppressClick.current = true;
+      setIsOpen(true);
+    } else if (deltaX > 30) {
+      suppressClick.current = true;
+      setIsOpen(false);
+    }
   }
 
   function handleOpen() {
-    if (didDrag) return;
+    if (suppressClick.current) {
+      suppressClick.current = false;
+      return;
+    }
     if (isOpen) {
       setIsOpen(false);
       return;
@@ -144,7 +166,7 @@ function FavoriteSurahRow({ surah, onOpen, onRemove }) {
 
   return (
     <motion.article
-      className="home-favorite-swipe"
+      className={`home-favorite-swipe ${isOpen ? 'is-swiped' : ''}`}
       layout
       exit={{ opacity: 0, height: 0, marginBottom: 0 }}
     >
@@ -154,20 +176,15 @@ function FavoriteSurahRow({ surah, onOpen, onRemove }) {
         onClick={onRemove}
         aria-label={`Remove ${surah.name} from favorites`}
       >
-        <Trash2 size={18} />
+        <Trash2 size={19} />
         <span>Remove</span>
       </button>
 
-      <motion.button
+      <button
         type="button"
         className="home-favorite-row"
-        drag="x"
-        dragConstraints={{ left: -104, right: 0 }}
-        dragElastic={0.08}
-        animate={{ x: isOpen ? -104 : 0 }}
-        transition={{ type: 'spring', stiffness: 420, damping: 36 }}
-        onDragStart={() => setDidDrag(true)}
-        onDragEnd={handleDragEnd}
+        onTouchStart={startSwipe}
+        onTouchEnd={finishSwipe}
         onClick={handleOpen}
         aria-label={`Read ${surah.name} from the start`}
       >
@@ -176,7 +193,7 @@ function FavoriteSurahRow({ surah, onOpen, onRemove }) {
           <strong>{surah.name}</strong>
           <small>{surah.verses} Ayahs · {surah.revelation}</small>
         </span>
-      </motion.button>
+      </button>
     </motion.article>
   );
 }
