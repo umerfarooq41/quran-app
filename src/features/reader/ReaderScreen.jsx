@@ -56,6 +56,8 @@ export default function ReaderScreen() {
     pendingQuarterFlash,
     clearPendingAyah,
     clearPendingQuarterFlash,
+    lastReadTarget,
+    setLastReadTarget,
   } = useAppStore(useShallow((state) => ({
     page: state.page,
     previousReaderPage: state.previousReaderPage,
@@ -87,6 +89,8 @@ export default function ReaderScreen() {
     pendingQuarterFlash: state.pendingQuarterFlash,
     clearPendingAyah: state.clearPendingAyah,
     clearPendingQuarterFlash: state.clearPendingQuarterFlash,
+    lastReadTarget: state.lastReadTarget,
+    setLastReadTarget: state.setLastReadTarget,
   })));
   const [sliderPreviewPage, setSliderPreviewPage] = useState(null);
   const [sliderInteracting, setSliderInteracting] = useState(false);
@@ -188,7 +192,7 @@ export default function ReaderScreen() {
     setPageSlide(PAGE_SLIDE_IDLE);
   }, [page]);
 
-  usePagePersistence({ page, pageData });
+  usePagePersistence({ page, pageData, lastReadTarget, setLastReadTarget });
 
   useEffect(() => {
     const handleKeyDown = (event) => {
