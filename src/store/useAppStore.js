@@ -69,6 +69,7 @@ export const useAppStore = create((set, get) => ({
   expandedIndexJuz: null,
   favoriteSurahs: getInitialFavoriteSurahs(),
   page: 1,
+  lastReadTarget: { page: 1, surahNumber: 1, ayahNumber: 1 },
   previousReaderPage: null,
   selectedSurah: 1,
   controlsVisible: false,
@@ -93,6 +94,11 @@ export const useAppStore = create((set, get) => ({
   hydrateLastRead: (lastRead) => set((state) => ({
     ...transitionToView(state, VIEWS.READER, { replace: true }),
     page: clampPage(lastRead?.page || 1),
+    lastReadTarget: {
+      page: clampPage(lastRead?.page || 1),
+      surahNumber: Number(lastRead?.surahNumber) || 1,
+      ayahNumber: Number(lastRead?.ayahNumber) || 1,
+    },
     controlsVisible: false,
   })),
   navigateTo: (view, options = {}) => set((state) => transitionToView(
@@ -128,6 +134,9 @@ export const useAppStore = create((set, get) => ({
       page: nextPage,
       previousReaderPage: nextPage === state.page ? state.previousReaderPage : state.page,
       pendingAyah,
+      lastReadTarget: pendingAyah?.surahNumber && pendingAyah?.ayahNumber
+        ? { page: nextPage, surahNumber: Number(pendingAyah.surahNumber), ayahNumber: Number(pendingAyah.ayahNumber) }
+        : state.lastReadTarget,
       pendingQuarterFlash: null,
       navDirection: 'forward',
       controlsVisible: options.keepControlsVisible ? true : false,
@@ -175,12 +184,30 @@ export const useAppStore = create((set, get) => ({
     persistFavoriteSurahs(favoriteSurahs);
     return { favoriteSurahs };
   }),
+  setLastReadTarget: (target) => set((state) => {
+    if (!target?.surahNumber || !target?.ayahNumber) return state;
+    return {
+      lastReadTarget: {
+        page: clampPage(target.page || state.page),
+        surahNumber: Number(target.surahNumber),
+        ayahNumber: Number(target.ayahNumber),
+      },
+    };
+  }),
   setControlsVisible: (controlsVisible) => set({ controlsVisible }),
   toggleControls: () => set((state) => ({ controlsVisible: !state.controlsVisible })),
   setSelectedLine: (selectedLine) => set({ selectedLine }),
-  setSelectedAyah: (selectedAyah) => set({ selectedAyah }),
+  setSelectedAyah: (selectedAyah) => set((state) => ({
+    selectedAyah,
+    lastReadTarget: selectedAyah?.surahNumber && selectedAyah?.ayahNumber
+      ? { page: clampPage(selectedAyah.page || state.page), surahNumber: Number(selectedAyah.surahNumber), ayahNumber: Number(selectedAyah.ayahNumber) }
+      : state.lastReadTarget,
+  })),
   openAyahSheet: (selectedAyah) => set((state) => ({
     selectedAyah,
+    lastReadTarget: selectedAyah?.surahNumber && selectedAyah?.ayahNumber
+      ? { page: clampPage(selectedAyah.page || state.page), surahNumber: Number(selectedAyah.surahNumber), ayahNumber: Number(selectedAyah.ayahNumber) }
+      : state.lastReadTarget,
     overlayStack: pushOverlay(state.overlayStack, OVERLAY_TYPES.AYAH),
   })),
   closeAyahSheet: () => set((state) => ({
@@ -204,6 +231,9 @@ export const useAppStore = create((set, get) => ({
 
     return {
       audioTarget: target,
+      lastReadTarget: target?.surahNumber && target?.ayahNumber
+        ? { page: clampPage(target.page || state.page), surahNumber: Number(target.surahNumber), ayahNumber: Number(target.ayahNumber) }
+        : state.lastReadTarget,
       audioQueue: [target],
       audioQueueIndex: 0,
       audioPosition: sameTarget ? state.audioPosition : 0,
@@ -240,6 +270,9 @@ export const useAppStore = create((set, get) => ({
 
     return {
       audioTarget: target,
+      lastReadTarget: target?.surahNumber && target?.ayahNumber
+        ? { page: clampPage(target.page || state.page), surahNumber: Number(target.surahNumber), ayahNumber: Number(target.ayahNumber) }
+        : state.lastReadTarget,
       audioQueue: target
         ? (existingIndex >= 0 ? state.audioQueue : [target])
         : state.audioQueue,
@@ -288,6 +321,7 @@ export const useAppStore = create((set, get) => ({
       page: nextPage,
       previousReaderPage: nextPage === state.page ? state.previousReaderPage : state.page,
       pendingAyah: { surahNumber: Number(surahNumber), ayahNumber: Number(ayahNumber) },
+      lastReadTarget: { page: nextPage, surahNumber: Number(surahNumber), ayahNumber: Number(ayahNumber) },
       pendingQuarterFlash: null,
       navDirection: 'forward',
       controlsVisible: false,
