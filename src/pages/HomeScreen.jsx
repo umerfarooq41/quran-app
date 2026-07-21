@@ -19,6 +19,7 @@ export default function HomeScreen() {
     toggleFavoriteSurah,
     setIndexTab,
     goAyah,
+    lastReadTarget,
   } = useAppStore(useShallow((state) => ({
     page: state.page,
     goPage: state.goPage,
@@ -30,8 +31,10 @@ export default function HomeScreen() {
     toggleFavoriteSurah: state.toggleFavoriteSurah,
     setIndexTab: state.setIndexTab,
     goAyah: state.goAyah,
+    lastReadTarget: state.lastReadTarget,
   })));
   const meta = getPageMeta(page);
+  const continueSurah = getSurah(lastReadTarget?.surahNumber) || meta.surah;
   const pageData = getPage(page);
   const firstPageAyah = pageData.lines.find((line) => line.surahNumber && line.ayahStart);
   const quarterLabel = formatIndoPakQuarterLabel(getCurrentIndoPakJuzProgress(
@@ -63,7 +66,9 @@ export default function HomeScreen() {
       </motion.div>
 
       <motion.button
-        onClick={() => goPage(page)}
+        onClick={() => lastReadTarget?.surahNumber && lastReadTarget?.ayahNumber
+          ? goAyah(lastReadTarget.surahNumber, lastReadTarget.ayahNumber, lastReadTarget.page || page)
+          : goPage(page)}
         className="home-hero-card"
         whileTap={{ scale: 0.985 }}
         initial={{ opacity: 0, y: 20 }}
@@ -72,7 +77,7 @@ export default function HomeScreen() {
       >
         <div className="home-hero-content">
           <span className="home-hero-label">Continue Reading</span>
-          <h2 className="home-hero-surah">{meta.surah.name}</h2>
+          <h2 className="home-hero-surah">{continueSurah.name}</h2>
           <p className="home-hero-meta">Page {getMushafPageNumber(page)} · Juz {meta.juz} · {quarterLabel}</p>
         </div>
         <div className="home-hero-ornament"><BookOpen size={30} /></div>
