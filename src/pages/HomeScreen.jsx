@@ -3,8 +3,8 @@ import { Bookmark, BookOpen, Library, Search, SlidersHorizontal, Trash2 } from '
 import { motion } from 'framer-motion';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../store/useAppStore';
-import { findPageForReference, getMushafPageNumber, getPageMeta, getSurah } from '../lib/quran';
-import { getJuzPartByPage } from '../data/quranMeta';
+import { findPageForReference, getMushafPageNumber, getPage, getPageMeta, getSurah } from '../lib/quran';
+import { formatIndoPakQuarterLabel, getCurrentIndoPakJuzProgress } from '../data/indoPakParaQuarters';
 import { Screen } from '../components/common/AppChrome';
 
 export default function HomeScreen() {
@@ -32,6 +32,14 @@ export default function HomeScreen() {
     goAyah: state.goAyah,
   })));
   const meta = getPageMeta(page);
+  const pageData = getPage(page);
+  const firstPageAyah = pageData.lines.find((line) => line.surahNumber && line.ayahStart);
+  const quarterLabel = formatIndoPakQuarterLabel(getCurrentIndoPakJuzProgress(
+    page,
+    firstPageAyah?.surahNumber,
+    firstPageAyah?.ayahStart,
+    meta.juz,
+  ));
   const favoriteItems = favoriteSurahs.map(getSurah).filter(Boolean);
 
   function openSurahIndex() {
@@ -65,7 +73,7 @@ export default function HomeScreen() {
         <div className="home-hero-content">
           <span className="home-hero-label">Continue Reading</span>
           <h2 className="home-hero-surah">{meta.surah.name}</h2>
-          <p className="home-hero-meta">Page {getMushafPageNumber(page)} · Juz {meta.juz} · {getJuzPartByPage(page)}</p>
+          <p className="home-hero-meta">Page {getMushafPageNumber(page)} · Juz {meta.juz} · {quarterLabel}</p>
         </div>
         <div className="home-hero-ornament"><BookOpen size={30} /></div>
       </motion.button>
