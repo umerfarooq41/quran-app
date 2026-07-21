@@ -192,6 +192,16 @@ export function getIndoPakParaQuarterTargets(juzNumber) {
   return indoPakParaQuarters[Number(juzNumber)] || indoPakParaQuarters[1];
 }
 
+export function formatIndoPakQuarterLabel(progress) {
+  const labels = {
+    Q1: '1st Quarter',
+    Q2: '2nd Quarter',
+    Q3: '3rd Quarter',
+    Q4: '4th Quarter',
+  };
+  return labels[progress] || labels.Q1;
+}
+
 export function getCurrentIndoPakJuzProgress(page, surah, ayah, juzNumber) {
   const targets = getIndoPakParaQuarterTargets(juzNumber);
   const current = {
