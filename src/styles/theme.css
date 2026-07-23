@@ -575,7 +575,6 @@ body,
 }
 
 .reader-page {
-  --reader-page-x-padding: 1rem;
   position: relative !important;
   isolation: isolate;
 }
