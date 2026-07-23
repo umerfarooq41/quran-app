@@ -27,14 +27,18 @@
 }
 
 .surah-banner {
-  position: relative;
+  position: absolute;
   z-index: 5;
   box-sizing: border-box;
-  /* Extend through the Mushaf padding, but retain a 1px safety inset so
-     the outer SVG strokes are not clipped by the reader shell. */
-  width: calc(100% + (var(--reader-page-x-padding, 1rem) * 2) - 2px);
+  /* Overlay the artwork across the existing Mushaf row without allowing its
+     extended width to participate in RTL grid sizing. A small 3px inset keeps
+     the outer SVG stroke visible instead of clipping it at the screen edge. */
+  inset-block: 0;
+  left: calc((var(--reader-page-x-padding, 1rem) * -1) + 3px);
+  right: calc((var(--reader-page-x-padding, 1rem) * -1) + 3px);
+  width: auto;
   height: 100%;
-  margin-inline: calc((var(--reader-page-x-padding, 1rem) * -1) + 1px);
+  margin: 0;
   direction: ltr;
   font-family: IndopakNastaleeq, serif;
   color: #12110c;
@@ -43,38 +47,75 @@
   background-position: center !important;
   background-size: 100% 100% !important;
   pointer-events: none;
-}
-
-.surah-banner--single,
-.surah-banner--inline {
-  display: grid;
-  align-items: center;
-  gap: clamp(2px, .7vw, 5px);
-  padding-block: 0;
-  padding-inline: clamp(48px, 8.5%, 68px);
-  background-image: url('/border/Border Quran-01.svg') !important;
-}
-
-.surah-banner--single {
-  grid-template-columns: minmax(54px, .8fr) minmax(0, 2.6fr);
-}
-
-.surah-banner--inline {
-  grid-template-columns: minmax(58px, .72fr) minmax(0, 1.55fr) minmax(82px, 1.25fr);
+  overflow: visible;
 }
 
 /*
- * The two-row artwork has three real text compartments:
- * - a small upper-left capsule for the ayah count
- * - a wide upper-centre capsule for the Surah name
- * - a wide lower-centre capsule for Bismillah
- * Absolute slots keep text aligned to those SVG compartments instead of
- * distributing it across equal CSS grid columns.
+ * One-row artwork zones. Absolute positioning keeps Bismillah centred on the
+ * complete page while the Surah name and ayah count remain inside their own
+ * ornament-safe side areas.
+ */
+.surah-banner--single,
+.surah-banner--inline {
+  display: block;
+  padding: 0;
+  background-image: url('/border/Border Quran-01.svg') !important;
+}
+
+.surah-banner--single .surah-banner-ayahs,
+.surah-banner--single .surah-banner-name,
+.surah-banner--inline .surah-banner-ayahs,
+.surah-banner--inline .surah-banner-name,
+.surah-banner--inline .surah-banner-basmallah {
+  position: absolute;
+  top: 8%;
+  height: 84%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  overflow: hidden;
+  text-align: center;
+}
+
+.surah-banner--inline .surah-banner-ayahs,
+.surah-banner--single .surah-banner-ayahs {
+  left: 7.2%;
+  width: 14.5% !important;
+  font-size: calc(clamp(.70rem, 1.70vh, .96rem) * var(--font-scale, 1));
+}
+
+.surah-banner--inline .surah-banner-name {
+  right: 7.2%;
+  width: 25.5% !important;
+  font-size: calc(clamp(.80rem, 1.92vh, 1.10rem) * var(--font-scale, 1));
+}
+
+.surah-banner--inline .surah-banner-basmallah {
+  /* Geometrically centred on the full border, independent of side labels. */
+  left: 50%;
+  width: 43%;
+  transform: translateX(-50%);
+  font-size: calc(clamp(.84rem, 2.00vh, 1.15rem) * var(--font-scale, 1));
+}
+
+.surah-banner--single .surah-banner-name {
+  left: 23%;
+  right: 23%;
+  width: auto !important;
+  font-size: calc(clamp(.86rem, 2.02vh, 1.18rem) * var(--font-scale, 1));
+}
+
+/*
+ * Two-row artwork zones. The artwork covers the existing Surah-name row and
+ * its following Bismillah row. Its width is only visual and never changes the
+ * 16-row grid measurement.
  */
 .surah-banner--double {
   display: block;
+  top: 0;
+  bottom: auto;
   height: 200%;
-  align-self: flex-start;
   background-image: url('/border/Border Quran-02.svg') !important;
 }
 
@@ -85,76 +126,47 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: auto;
-  height: auto;
   min-width: 0;
   overflow: hidden;
   text-align: center;
 }
 
 .surah-banner--double .surah-banner-ayahs {
-  /* The only text allowed in the small upper-left capsule. */
-  left: 4.7%;
-  right: auto;
-  top: 4%;
-  width: 12.2% !important;
-  height: 37%;
-  justify-content: center;
-  text-align: center;
+  left: 4.8%;
+  top: 3.5%;
+  width: 13.4% !important;
+  height: 38%;
   font-size: calc(clamp(.70rem, 1.66vh, .94rem) * var(--font-scale, 1));
 }
 
 .surah-banner--double .surah-banner-name {
-  /* Centre the Surah title inside the complete upper middle compartment. */
-  left: 18.2%;
-  right: 18.2%;
-  top: 3%;
+  /* Exact centre of the upper middle capsule. */
+  left: 19.2%;
+  right: 19.2%;
+  top: 3.5%;
   width: auto !important;
   height: 38%;
-  justify-content: center;
-  text-align: center;
-  font-size: calc(clamp(.86rem, 2.02vh, 1.18rem) * var(--font-scale, 1));
+  font-size: calc(clamp(.84rem, 1.98vh, 1.14rem) * var(--font-scale, 1));
 }
 
 .surah-banner--double .surah-banner-basmallah {
-  /* Centre Bismillah inside the lower middle compartment. */
-  left: 17.2%;
-  right: 17.2%;
-  top: 49%;
+  /* Exact centre of the lower middle capsule. */
+  left: 17.8%;
+  right: 17.8%;
+  top: 50%;
   width: auto !important;
-  height: 42%;
-  justify-content: center;
-  text-align: center;
-  font-size: calc(clamp(.9rem, 2.14vh, 1.24rem) * var(--font-scale, 1));
+  height: 40%;
+  font-size: calc(clamp(.88rem, 2.08vh, 1.20rem) * var(--font-scale, 1));
 }
 
 .surah-banner-name,
 .surah-banner-ayahs,
 .surah-banner-basmallah {
   min-width: 0;
-  width: 100%;
   overflow: hidden;
   white-space: nowrap;
   direction: rtl;
   line-height: 1;
-}
-
-.surah-banner-name {
-  justify-self: end;
-  text-align: right;
-  font-size: calc(clamp(.86rem, 2.02vh, 1.18rem) * var(--font-scale, 1));
-}
-
-.surah-banner-ayahs {
-  justify-self: start;
-  text-align: left;
-  font-size: calc(clamp(.74rem, 1.78vh, 1rem) * var(--font-scale, 1));
-}
-
-.surah-banner-basmallah {
-  justify-self: center;
-  text-align: center;
-  font-size: calc(clamp(.86rem, 2.02vh, 1.18rem) * var(--font-scale, 1));
 }
 
 .surah-banner-fit-text {
@@ -165,31 +177,46 @@
   transform-origin: center;
 }
 
-.surah-banner-name .surah-banner-fit-text {
-  transform-origin: right center;
-}
-
-.surah-banner-ayahs .surah-banner-fit-text {
-  transform-origin: left center;
-}
-
+.surah-banner--single .surah-banner-name .surah-banner-fit-text,
+.surah-banner--inline .surah-banner-name .surah-banner-fit-text,
+.surah-banner--inline .surah-banner-ayahs .surah-banner-fit-text,
 .surah-banner--double .surah-banner-name .surah-banner-fit-text,
 .surah-banner--double .surah-banner-ayahs .surah-banner-fit-text,
 .surah-banner--double .surah-banner-basmallah .surah-banner-fit-text {
   transform-origin: center;
 }
 
-/* Keep the double-header slots independent from the shared width:100% rule. */
-.surah-banner--double .surah-banner-name,
-.surah-banner--double .surah-banner-basmallah {
-  width: auto !important;
-  justify-self: auto;
-}
+@media (max-width: 420px) {
+  .surah-banner--inline .surah-banner-ayahs,
+  .surah-banner--single .surah-banner-ayahs {
+    left: 6.8%;
+    width: 15.2% !important;
+  }
 
-.surah-banner--double .surah-banner-ayahs {
-  justify-self: auto;
-}
+  .surah-banner--inline .surah-banner-name {
+    right: 6.8%;
+    width: 26.3% !important;
+  }
 
+  .surah-banner--inline .surah-banner-basmallah {
+    width: 42%;
+  }
+
+  .surah-banner--double .surah-banner-ayahs {
+    left: 4.5%;
+    width: 14% !important;
+  }
+
+  .surah-banner--double .surah-banner-name {
+    left: 18.8%;
+    right: 18.8%;
+  }
+
+  .surah-banner--double .surah-banner-basmallah {
+    left: 17.4%;
+    right: 17.4%;
+  }
+}
 
 .quran-line-surah_name {
   z-index: 5;
