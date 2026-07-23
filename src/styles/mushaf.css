@@ -30,9 +30,11 @@
   position: relative;
   z-index: 5;
   box-sizing: border-box;
-  width: calc(100% + (var(--reader-page-x-padding, 1rem) * 2));
+  /* Extend through the Mushaf padding, but retain a 1px safety inset so
+     the outer SVG strokes are not clipped by the reader shell. */
+  width: calc(100% + (var(--reader-page-x-padding, 1rem) * 2) - 2px);
   height: 100%;
-  margin-inline: calc(var(--reader-page-x-padding, 1rem) * -1);
+  margin-inline: calc((var(--reader-page-x-padding, 1rem) * -1) + 1px);
   direction: ltr;
   font-family: IndopakNastaleeq, serif;
   color: #12110c;
@@ -91,26 +93,38 @@
 }
 
 .surah-banner--double .surah-banner-ayahs {
-  left: 5.2%;
-  top: 5%;
-  width: 10.8%;
-  height: 34%;
-  font-size: calc(clamp(.72rem, 1.72vh, .98rem) * var(--font-scale, 1));
+  /* The only text allowed in the small upper-left capsule. */
+  left: 4.7%;
+  right: auto;
+  top: 4%;
+  width: 12.2% !important;
+  height: 37%;
+  justify-content: center;
+  text-align: center;
+  font-size: calc(clamp(.70rem, 1.66vh, .94rem) * var(--font-scale, 1));
 }
 
 .surah-banner--double .surah-banner-name {
-  left: 18.5%;
-  right: 18.5%;
-  top: 4%;
-  height: 36%;
+  /* Centre the Surah title inside the complete upper middle compartment. */
+  left: 18.2%;
+  right: 18.2%;
+  top: 3%;
+  width: auto !important;
+  height: 38%;
+  justify-content: center;
+  text-align: center;
   font-size: calc(clamp(.86rem, 2.02vh, 1.18rem) * var(--font-scale, 1));
 }
 
 .surah-banner--double .surah-banner-basmallah {
-  left: 18.5%;
-  right: 18.5%;
-  top: 50%;
-  height: 39%;
+  /* Centre Bismillah inside the lower middle compartment. */
+  left: 17.2%;
+  right: 17.2%;
+  top: 49%;
+  width: auto !important;
+  height: 42%;
+  justify-content: center;
+  text-align: center;
   font-size: calc(clamp(.9rem, 2.14vh, 1.24rem) * var(--font-scale, 1));
 }
 
@@ -165,6 +179,18 @@
   transform-origin: center;
 }
 
+/* Keep the double-header slots independent from the shared width:100% rule. */
+.surah-banner--double .surah-banner-name,
+.surah-banner--double .surah-banner-basmallah {
+  width: auto !important;
+  justify-self: auto;
+}
+
+.surah-banner--double .surah-banner-ayahs {
+  justify-self: auto;
+}
+
+
 .quran-line-surah_name {
   z-index: 5;
   overflow: visible !important;
@@ -198,14 +224,20 @@
   }
 
   .surah-banner--double .surah-banner-ayahs {
-    left: 4.8%;
-    width: 11.8%;
+    left: 4.5%;
+    width: 12.8% !important;
   }
 
-  .surah-banner--double .surah-banner-name,
+  .surah-banner--double .surah-banner-name {
+    left: 17.8%;
+    right: 17.8%;
+    width: auto !important;
+  }
+
   .surah-banner--double .surah-banner-basmallah {
-    left: 17.5%;
-    right: 17.5%;
+    left: 16.8%;
+    right: 16.8%;
+    width: auto !important;
   }
 }
 
