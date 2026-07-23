@@ -2,8 +2,8 @@ import React, { useLayoutEffect, useRef } from 'react';
 import { getSurah } from '../../../lib/quran';
 import { basmallahText, getDisplayLineText } from '../../../utils/quranLabels';
 
-const MIN_TEXT_SCALE = 0.68;
-const MIN_WORD_SPACING = -4;
+const MIN_TEXT_SCALE = 0.58;
+const MIN_WORD_SPACING = -3.5;
 
 export function SurahHeader({ line, inlineBasmallah, hasSeparateBasmallah = false }) {
   const bannerRef = useRef(null);
@@ -62,7 +62,7 @@ export function SurahHeader({ line, inlineBasmallah, hasSeparateBasmallah = fals
       <span className="surah-banner-ayahs" data-surah-header-fit>
         <span className="surah-banner-fit-text">آياتها {surah?.verses}</span>
       </span>
-      {(inlineBasmallah || hasSeparateBasmallah) && (
+      {inlineBasmallah && (
         <span className="surah-banner-basmallah" data-surah-header-fit>
           <span className="surah-banner-fit-text">{basmallahText}</span>
         </span>
