@@ -521,3 +521,59 @@
 .quran-line-soft-centered .quran-line-text {
   margin-inline: auto !important;
 }
+
+/* Header optical corrections -------------------------------------------------
+ * A double header in row 1 has no ayah row above it, so its outer SVG stroke
+ * needs a tiny vertical inset to look balanced inside the first two grid rows.
+ * This does not change the 16-row grid or any ayah metrics. */
+.reader-page--starts-with-double-header .surah-banner--double {
+  top: 1px;
+  height: calc(200% - 2px);
+}
+
+.reader-page--starts-with-double-header .surah-banner--double .surah-banner-ayahs,
+.reader-page--starts-with-double-header .surah-banner--double .surah-banner-name {
+  padding-top: calc(2.6% + 1px);
+}
+
+.reader-page--starts-with-double-header .surah-banner--double .surah-banner-basmallah {
+  padding-top: calc(.9% + 1px);
+}
+
+/* Give one-row headers more usable text width. This prevents the fitter from
+ * applying negative word spacing to Bismillah and keeps all three labels clear
+ * of the decorative ends. */
+.surah-banner--inline .surah-banner-ayahs,
+.surah-banner--single .surah-banner-ayahs {
+  left: 13.8%;
+  width: 14% !important;
+}
+
+.surah-banner--inline .surah-banner-name {
+  right: 13.8%;
+  width: 20.5% !important;
+}
+
+.surah-banner--inline .surah-banner-basmallah {
+  left: 30.5%;
+  width: 39%;
+  font-size: calc(clamp(.92rem, 2.12vh, 1.22rem) * var(--font-scale, 1));
+}
+
+@media (max-width: 420px) {
+  .surah-banner--inline .surah-banner-ayahs,
+  .surah-banner--single .surah-banner-ayahs {
+    left: 14%;
+    width: 13.5% !important;
+  }
+
+  .surah-banner--inline .surah-banner-name {
+    right: 14%;
+    width: 20% !important;
+  }
+
+  .surah-banner--inline .surah-banner-basmallah {
+    left: 30.8%;
+    width: 38.4%;
+  }
+}
