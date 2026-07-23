@@ -432,7 +432,11 @@ export function QuranLine({
       tabIndex={line.type === 'spacer' ? -1 : 0}
     >
       {line.type === 'surah_name' ? (
-        <SurahHeader line={line} inlineBasmallah={inlineBasmallah} />
+        <SurahHeader
+          line={line}
+          inlineBasmallah={inlineBasmallah}
+          hasSeparateBasmallah={hasSeparateBasmallah}
+        />
       ) : (
         <span
           ref={textRef}
