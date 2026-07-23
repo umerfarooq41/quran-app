@@ -566,7 +566,7 @@ body,
 }
 
 .surah-banner {
-  background: var(--mushaf-banner-bg) !important;
+  background-color: transparent !important;
   color: var(--mushaf-banner-text) !important;
 }
 

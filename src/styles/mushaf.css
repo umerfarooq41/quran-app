@@ -27,42 +27,117 @@
 }
 
 .surah-banner {
+  position: relative;
+  z-index: 2;
   display: grid;
   width: 100%;
   height: 100%;
-  grid-template-columns: minmax(54px, .72fr) 1fr minmax(92px, .95fr);
   align-items: center;
-  gap: 8px;
   direction: ltr;
-  padding: 0 12px;
+  gap: clamp(4px, 1.4vw, 8px);
+  padding: 0 clamp(24px, 8vw, 54px);
   font-family: IndopakNastaleeq, serif;
-  background: #b9dfbf;
   color: #12110c;
+  background-color: transparent !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: 100% 100% !important;
 }
 
-.surah-banner:not(.surah-banner-inline) {
-  grid-template-columns: minmax(80px, 1fr) minmax(0, 1fr);
+.surah-banner--single,
+.surah-banner--inline {
+  background-image: url('/border/Border Quran-01.svg') !important;
+}
+
+.surah-banner--single {
+  grid-template-columns: minmax(68px, .72fr) minmax(0, 1fr);
+}
+
+.surah-banner--inline {
+  grid-template-columns: minmax(54px, .7fr) minmax(0, 1.45fr) minmax(78px, .9fr);
+}
+
+.surah-banner--double {
+  height: 200%;
+  align-self: start;
+  grid-template-columns: minmax(54px, .72fr) minmax(0, 3fr) minmax(54px, .72fr);
+  grid-template-rows: 50% 50%;
+  padding-top: 0;
+  padding-bottom: 50%;
+  background-image: url('/border/Border Quran-02.svg') !important;
+}
+
+.surah-banner--double .surah-banner-ayahs {
+  grid-column: 1;
+}
+
+.surah-banner--double .surah-banner-name {
+  grid-column: 2;
+  justify-self: center;
+  text-align: center;
+}
+
+.surah-banner-name,
+.surah-banner-ayahs,
+.surah-banner-basmallah {
+  min-width: 0;
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  direction: rtl;
+  line-height: 1;
 }
 
 .surah-banner-name {
   justify-self: end;
-  white-space: nowrap;
-  direction: rtl;
-  font-size: calc(clamp(1rem, 2.45vh, 1.45rem) * var(--font-scale, 1));
+  text-align: right;
+  font-size: calc(clamp(.96rem, 2.35vh, 1.38rem) * var(--font-scale, 1));
 }
 
 .surah-banner-ayahs {
   justify-self: start;
-  white-space: nowrap;
-  direction: rtl;
-  font-size: calc(clamp(.95rem, 2.35vh, 1.34rem) * var(--font-scale, 1));
+  text-align: left;
+  font-size: calc(clamp(.88rem, 2.12vh, 1.24rem) * var(--font-scale, 1));
 }
 
 .surah-banner-basmallah {
   justify-self: center;
-  white-space: nowrap;
-  direction: rtl;
-  font-size: calc(clamp(1.02rem, 2.55vh, 1.52rem) * var(--font-scale, 1));
+  text-align: center;
+  font-size: calc(clamp(.94rem, 2.28vh, 1.38rem) * var(--font-scale, 1));
+}
+
+.surah-banner-fit-text {
+  display: inline-block;
+  max-width: 100%;
+  word-spacing: var(--header-word-spacing, 0px);
+  font-size: calc(1em * var(--header-text-scale, 1));
+  transform-origin: center;
+}
+
+.surah-banner-name .surah-banner-fit-text {
+  transform-origin: right center;
+}
+
+.surah-banner-ayahs .surah-banner-fit-text {
+  transform-origin: left center;
+}
+
+.quran-line-basmallah,
+.quran-line-bismillah {
+  position: relative;
+  z-index: 3;
+  background: transparent !important;
+}
+
+@media (max-width: 420px) {
+  .surah-banner {
+    padding-inline: clamp(20px, 7vw, 34px);
+    gap: 4px;
+  }
+
+  .surah-banner--inline {
+    grid-template-columns: minmax(48px, .65fr) minmax(0, 1.35fr) minmax(68px, .85fr);
+  }
 }
 
 @keyframes ayah-pulse {
@@ -73,13 +148,6 @@
 
 .quran-line-jumped {
   animation: ayah-pulse 0.9s cubic-bezier(0.4, 0, 0.2, 1) 2;
-}
-
-@media (max-width: 420px) {
-  .surah-banner {
-    padding-inline: 8px;
-    gap: 5px;
-  }
 }
 
 .reader-page {
@@ -311,7 +379,7 @@
 }
 
 .surah-banner {
-  background: transparent !important;
+  background-color: transparent !important;
 }
 
 @media (max-width: 420px) {
