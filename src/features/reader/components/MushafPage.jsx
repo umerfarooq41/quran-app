@@ -254,6 +254,40 @@ export function MushafPage({
 
   const isOpeningMushafPage = pageData.page === 1 || pageData.page === 2;
 
+  const renderedLines = useMemo(() => {
+    const lines = pageData.lines.map((line, sourceIndex) => ({ ...line, sourceIndex }));
+    const trailingSpacerIndex = lines.map((line) => line.type).lastIndexOf('spacer');
+
+    if (trailingSpacerIndex < 0) return lines;
+
+    const inlineHeaderIndex = lines.findIndex((line, index) => {
+      if (line.type !== 'surah_name') return false;
+      const nextType = lines[index + 1]?.type;
+      const hasSeparateBasmallah = nextType === 'basmallah' || nextType === 'bismillah';
+      return line.surahNumber !== 1 && line.surahNumber !== 9 && !hasSeparateBasmallah;
+    });
+
+    if (inlineHeaderIndex < 0) return lines;
+
+    const header = lines[inlineHeaderIndex];
+    const withoutSpacer = lines.filter((_, index) => index !== trailingSpacerIndex);
+    withoutSpacer.splice(inlineHeaderIndex + 1, 0, {
+      line: `${header.line}-basmallah`,
+      text: '',
+      surahNumber: header.surahNumber,
+      ayahStart: null,
+      ayahEnd: null,
+      type: 'basmallah',
+      isCentered: true,
+      firstWordId: null,
+      lastWordId: null,
+      sourceIndex: null,
+      syntheticHeaderLine: true,
+    });
+
+    return withoutSpacer;
+  }, [pageData.lines]);
+
   return (
     <div
       ref={pageRef}
@@ -322,9 +356,9 @@ export function MushafPage({
         ))}
       </div>
 
-      {pageData.lines.map((line, index) => {
-        const previousLine = pageData.lines[index - 1];
-        const nextLine = pageData.lines[index + 1];
+      {renderedLines.map((line, index) => {
+        const previousLine = renderedLines[index - 1];
+        const nextLine = renderedLines[index + 1];
         const hasSeparateBasmallah = nextLine?.type === 'basmallah' || nextLine?.type === 'bismillah';
         const coveredByCombinedHeader = (
           (line.type === 'basmallah' || line.type === 'bismillah') &&
@@ -341,8 +375,8 @@ export function MushafPage({
             interactionsBlocked={interactionsBlocked}
             isJuzStartLine={juzStartLines.has(line.line)}
             onBlockedInteraction={onBlockedInteraction}
-            onSelect={(selection) => onSelectAyah(line, index, selection)}
-            onTap={(selection) => onTapAyah?.(line, index, selection)}
+            onSelect={(selection) => onSelectAyah(line, line.sourceIndex ?? index, selection)}
+            onTap={(selection) => onTapAyah?.(line, line.sourceIndex ?? index, selection)}
             marked={!supportsTextHighlights && lineHasSavedHighlight(line, savedHighlights)}
             jumped={Boolean(
               (
