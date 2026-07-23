@@ -323,14 +323,20 @@ export function MushafPage({
       </div>
 
       {pageData.lines.map((line, index) => {
+        const previousLine = pageData.lines[index - 1];
         const nextLine = pageData.lines[index + 1];
         const hasSeparateBasmallah = nextLine?.type === 'basmallah' || nextLine?.type === 'bismillah';
+        const coveredByCombinedHeader = (
+          (line.type === 'basmallah' || line.type === 'bismillah') &&
+          previousLine?.type === 'surah_name'
+        );
 
         return (
           <QuranLine
             key={`${pageData.page}:${line.line}`}
             line={line}
             hasSeparateBasmallah={hasSeparateBasmallah}
+            coveredByCombinedHeader={coveredByCombinedHeader}
             forceCentered={isOpeningMushafPage && line.type === 'ayah'}
             interactionsBlocked={interactionsBlocked}
             isJuzStartLine={juzStartLines.has(line.line)}

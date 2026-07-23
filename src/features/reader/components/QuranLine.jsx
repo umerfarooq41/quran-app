@@ -29,6 +29,7 @@ export function QuranLine({
   jumped = false,
   isJuzStartLine = false,
   hasSeparateBasmallah = false,
+  coveredByCombinedHeader = false,
   forceCentered = false,
 }) {
   const lineRef = useRef(null);
@@ -427,11 +428,11 @@ export function QuranLine({
           if (Number.isInteger(selection?.wordIndex)) onSelect(selection);
         }
       }}
-      className={`quran-line quran-line-${isBasmallah ? 'basmallah' : line.type} ${marked ? 'quran-line-marked' : ''} ${jumped ? 'quran-line-jumped' : ''} ${isJuzStartLine ? 'quran-line--juz-start' : ''} ${line.type === 'spacer' ? 'opacity-0' : ''} ${centered ? 'quran-line-centered' : 'quran-line-normal'}`}
+      className={`quran-line quran-line-${isBasmallah ? 'basmallah' : line.type} ${marked ? 'quran-line-marked' : ''} ${jumped ? 'quran-line-jumped' : ''} ${isJuzStartLine ? 'quran-line--juz-start' : ''} ${line.type === 'spacer' ? 'opacity-0' : ''} ${coveredByCombinedHeader ? 'quran-line--combined-header-covered' : ''} ${centered ? 'quran-line-centered' : 'quran-line-normal'}`}
       aria-label={line.type === 'spacer' ? 'Blank line' : text}
       tabIndex={line.type === 'spacer' ? -1 : 0}
     >
-      {line.type === 'surah_name' ? (
+      {coveredByCombinedHeader ? null : line.type === 'surah_name' ? (
         <SurahHeader
           line={line}
           inlineBasmallah={inlineBasmallah}
