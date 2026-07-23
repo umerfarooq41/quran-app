@@ -62,7 +62,7 @@ export function SurahHeader({ line, inlineBasmallah, hasSeparateBasmallah = fals
       <span className="surah-banner-ayahs" data-surah-header-fit>
         <span className="surah-banner-fit-text">آياتها {surah?.verses}</span>
       </span>
-      {inlineBasmallah && (
+      {(inlineBasmallah || hasSeparateBasmallah) && (
         <span className="surah-banner-basmallah" data-surah-header-fit>
           <span className="surah-banner-fit-text">{basmallahText}</span>
         </span>
