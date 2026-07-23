@@ -118,31 +118,39 @@
   text-align: center;
 }
 
-/* Exact text compartments for the 1200 × 239 two-row SVG. */
+/* Exact text compartments for the 1200 × 239 two-row SVG.
+ * Nastaleeq has a visually high baseline, so each compartment receives
+ * a small top inset rather than being shifted with transforms. */
 .surah-banner--double .surah-banner-ayahs {
+  box-sizing: border-box;
   left: 4.2%;
-  top: 1.5%;
+  top: 0;
   width: 13.2% !important;
-  height: 45.5%;
-  font-size: calc(clamp(.60rem, 1.42vh, .82rem) * var(--font-scale, 1));
+  height: 48.5%;
+  padding: 3.8% 1.2% 0;
+  font-size: calc(clamp(.68rem, 1.60vh, .92rem) * var(--font-scale, 1));
 }
 
 .surah-banner--double .surah-banner-name {
+  box-sizing: border-box;
   left: 18.7%;
   right: 18.7%;
-  top: 1.5%;
+  top: 0;
   width: auto !important;
-  height: 45.5%;
-  font-size: calc(clamp(.76rem, 1.80vh, 1.04rem) * var(--font-scale, 1));
+  height: 48.5%;
+  padding: 3.8% 2% 0;
+  font-size: calc(clamp(.88rem, 2.02vh, 1.18rem) * var(--font-scale, 1));
 }
 
 .surah-banner--double .surah-banner-basmallah {
+  box-sizing: border-box;
   left: 14.5%;
   right: 14.5%;
-  top: 50%;
+  top: 48.5%;
   width: auto !important;
-  height: 46%;
-  font-size: calc(clamp(.80rem, 1.90vh, 1.09rem) * var(--font-scale, 1));
+  height: 51.5%;
+  padding: 2.6% 2.5% 0;
+  font-size: calc(clamp(1.02rem, 2.42vh, 1.38rem) * var(--font-scale, 1));
 }
 
 .surah-banner-name,
