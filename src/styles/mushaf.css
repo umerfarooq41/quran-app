@@ -80,23 +80,25 @@
 
 .surah-banner--inline .surah-banner-ayahs,
 .surah-banner--single .surah-banner-ayahs {
-  left: 7.2%;
-  width: 14.5% !important;
-  font-size: calc(clamp(.70rem, 1.70vh, .96rem) * var(--font-scale, 1));
+  /* Inside the SVG's left clear capsule; never touches the ornament. */
+  left: 13.5%;
+  width: 14% !important;
+  font-size: calc(clamp(.66rem, 1.58vh, .90rem) * var(--font-scale, 1));
 }
 
 .surah-banner--inline .surah-banner-name {
-  right: 7.2%;
-  width: 25.5% !important;
-  font-size: calc(clamp(.80rem, 1.92vh, 1.10rem) * var(--font-scale, 1));
+  /* Inside the SVG's right clear capsule; independent from Bismillah. */
+  right: 13.5%;
+  width: 17% !important;
+  font-size: calc(clamp(.72rem, 1.72vh, 1.00rem) * var(--font-scale, 1));
 }
 
 .surah-banner--inline .surah-banner-basmallah {
-  /* Geometrically centred on the full border, independent of side labels. */
-  left: 50%;
-  width: 43%;
-  transform: translateX(-50%);
-  font-size: calc(clamp(.84rem, 2.00vh, 1.15rem) * var(--font-scale, 1));
+  /* True page centre, with hard boundaries before both side labels. */
+  left: 31%;
+  width: 38%;
+  transform: none;
+  font-size: calc(clamp(.80rem, 1.90vh, 1.08rem) * var(--font-scale, 1));
 }
 
 .surah-banner--single .surah-banner-name {
@@ -132,31 +134,32 @@
 }
 
 .surah-banner--double .surah-banner-ayahs {
-  left: 4.8%;
-  top: 3.5%;
-  width: 13.4% !important;
-  height: 38%;
-  font-size: calc(clamp(.70rem, 1.66vh, .94rem) * var(--font-scale, 1));
+  /* Exact small upper-left SVG box. */
+  left: 6.2%;
+  top: 2%;
+  width: 10.4% !important;
+  height: 44%;
+  font-size: calc(clamp(.64rem, 1.52vh, .88rem) * var(--font-scale, 1));
 }
 
 .surah-banner--double .surah-banner-name {
-  /* Exact centre of the upper middle capsule. */
-  left: 19.2%;
-  right: 19.2%;
-  top: 3.5%;
+  /* Exact large upper-middle SVG capsule (x≈320–875 of 1200). */
+  left: 26.7%;
+  right: 27.1%;
+  top: 2%;
   width: auto !important;
-  height: 38%;
-  font-size: calc(clamp(.84rem, 1.98vh, 1.14rem) * var(--font-scale, 1));
+  height: 44%;
+  font-size: calc(clamp(.80rem, 1.88vh, 1.08rem) * var(--font-scale, 1));
 }
 
 .surah-banner--double .surah-banner-basmallah {
-  /* Exact centre of the lower middle capsule. */
-  left: 17.8%;
-  right: 17.8%;
-  top: 50%;
+  /* Optical and geometric centre of the open lower section. */
+  left: 17.2%;
+  right: 16.5%;
+  top: 49%;
   width: auto !important;
-  height: 40%;
-  font-size: calc(clamp(.88rem, 2.08vh, 1.20rem) * var(--font-scale, 1));
+  height: 46%;
+  font-size: calc(clamp(.84rem, 1.98vh, 1.14rem) * var(--font-scale, 1));
 }
 
 .surah-banner-name,
@@ -189,32 +192,33 @@
 @media (max-width: 420px) {
   .surah-banner--inline .surah-banner-ayahs,
   .surah-banner--single .surah-banner-ayahs {
-    left: 6.8%;
-    width: 15.2% !important;
+    left: 13.2%;
+    width: 14.3% !important;
   }
 
   .surah-banner--inline .surah-banner-name {
-    right: 6.8%;
-    width: 26.3% !important;
+    right: 13.2%;
+    width: 17.2% !important;
   }
 
   .surah-banner--inline .surah-banner-basmallah {
-    width: 42%;
+    left: 31%;
+    width: 38%;
   }
 
   .surah-banner--double .surah-banner-ayahs {
-    left: 4.5%;
-    width: 14% !important;
+    left: 6.1%;
+    width: 10.7% !important;
   }
 
   .surah-banner--double .surah-banner-name {
-    left: 18.8%;
-    right: 18.8%;
+    left: 26.5%;
+    right: 26.9%;
   }
 
   .surah-banner--double .surah-banner-basmallah {
-    left: 17.4%;
-    right: 17.4%;
+    left: 17%;
+    right: 16.3%;
   }
 }
 
@@ -239,34 +243,7 @@
   visibility: hidden;
 }
 
-@media (max-width: 420px) {
-  .surah-banner--single,
-  .surah-banner--inline {
-    padding-inline: clamp(42px, 8%, 54px);
-    gap: 2px;
-  }
 
-  .surah-banner--inline {
-    grid-template-columns: minmax(50px, .7fr) minmax(0, 1.48fr) minmax(72px, 1.18fr);
-  }
-
-  .surah-banner--double .surah-banner-ayahs {
-    left: 4.5%;
-    width: 12.8% !important;
-  }
-
-  .surah-banner--double .surah-banner-name {
-    left: 17.8%;
-    right: 17.8%;
-    width: auto !important;
-  }
-
-  .surah-banner--double .surah-banner-basmallah {
-    left: 16.8%;
-    right: 16.8%;
-    width: auto !important;
-  }
-}
 
 @keyframes ayah-pulse {
   0% { box-shadow: inset 0 0 0 1px rgba(14,165,233,0); background: rgba(14,165,233,0.12); }
