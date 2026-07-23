@@ -260,19 +260,28 @@ export function MushafPage({
 
     if (trailingSpacerIndex < 0) return lines;
 
-    const inlineHeaderIndex = lines.findIndex((line, index) => {
-      if (line.type !== 'surah_name') return false;
+    const inlineHeaderIndexes = lines.reduce((indexes, line, index) => {
+      if (line.type !== 'surah_name') return indexes;
+
       const nextType = lines[index + 1]?.type;
       const hasSeparateBasmallah = nextType === 'basmallah' || nextType === 'bismillah';
-      return line.surahNumber !== 1 && line.surahNumber !== 9 && !hasSeparateBasmallah;
-    });
+      const mayUseBasmallah = line.surahNumber !== 1 && line.surahNumber !== 9;
 
-    if (inlineHeaderIndex < 0) return lines;
+      if (mayUseBasmallah && !hasSeparateBasmallah) indexes.push(index);
+      return indexes;
+    }, []);
 
+    // Only expand a one-row header when the page has one unambiguous header
+    // and one spare grid row. Pages containing several compact Surah headers
+    // must keep their original one-row arrangement to preserve all 16 lines.
+    if (inlineHeaderIndexes.length !== 1) return lines;
+
+    const inlineHeaderIndex = inlineHeaderIndexes[0];
     const header = lines[inlineHeaderIndex];
     const withoutSpacer = lines.filter((_, index) => index !== trailingSpacerIndex);
+
     withoutSpacer.splice(inlineHeaderIndex + 1, 0, {
-      line: `${header.line}-basmallah`,
+      line: `synthetic-basmallah-${pageData.page}-${header.line}`,
       text: '',
       surahNumber: header.surahNumber,
       ayahStart: null,
@@ -286,7 +295,7 @@ export function MushafPage({
     });
 
     return withoutSpacer;
-  }, [pageData.lines]);
+  }, [pageData.page, pageData.lines]);
 
   return (
     <div
