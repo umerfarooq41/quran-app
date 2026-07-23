@@ -297,10 +297,15 @@ export function MushafPage({
     return withoutSpacer;
   }, [pageData.page, pageData.lines]);
 
+  const startsWithDoubleHeader = (
+    renderedLines[0]?.type === 'surah_name' &&
+    (renderedLines[1]?.type === 'basmallah' || renderedLines[1]?.type === 'bismillah')
+  );
+
   return (
     <div
       ref={pageRef}
-      className={`reader-page grid flex-1 grid-rows-16 overflow-hidden px-4 ${isOpeningMushafPage ? 'reader-page-opening' : ''}`}
+      className={`reader-page grid flex-1 grid-rows-16 overflow-hidden px-4 ${isOpeningMushafPage ? 'reader-page-opening' : ''} ${startsWithDoubleHeader ? 'reader-page--starts-with-double-header' : ''}`}
       style={{ '--font-scale': settings.fontScale }}
     >
       <div className="reader-ayah-highlight-layer" aria-hidden="true">
