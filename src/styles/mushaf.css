@@ -76,26 +76,26 @@
 .surah-banner--single .surah-banner-ayahs {
   left: 13.5%;
   width: 12.5% !important;
-  font-size: calc(clamp(.60rem, 1.42vh, .82rem) * var(--font-scale, 1));
+  font-size: calc(clamp(.66rem, 1.56vh, .90rem) * var(--font-scale, 1));
 }
 
 .surah-banner--inline .surah-banner-name {
   right: 13.5%;
   width: 19% !important;
-  font-size: calc(clamp(.65rem, 1.55vh, .90rem) * var(--font-scale, 1));
+  font-size: calc(clamp(.72rem, 1.70vh, .98rem) * var(--font-scale, 1));
 }
 
 .surah-banner--inline .surah-banner-basmallah {
   left: 32.5%;
   width: 35%;
-  font-size: calc(clamp(.76rem, 1.82vh, 1.04rem) * var(--font-scale, 1));
+  font-size: calc(clamp(.84rem, 1.98vh, 1.14rem) * var(--font-scale, 1));
 }
 
 .surah-banner--single .surah-banner-name {
   left: 27%;
   right: 27%;
   width: auto !important;
-  font-size: calc(clamp(.82rem, 1.96vh, 1.12rem) * var(--font-scale, 1));
+  font-size: calc(clamp(.90rem, 2.12vh, 1.22rem) * var(--font-scale, 1));
 }
 
 .surah-banner--double {
@@ -127,7 +127,7 @@
   top: 0;
   width: 13.2% !important;
   height: 48.5%;
-  padding: 2.2% 1.2% 0;
+  padding: 3.1% 1.2% 0;
   font-size: calc(clamp(.68rem, 1.60vh, .92rem) * var(--font-scale, 1));
 }
 
