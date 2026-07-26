@@ -9,7 +9,7 @@
     "preview": "vite preview --host 0.0.0.0",
     "inspect:sqlite": "node scripts/inspect-sqlite.mjs",
     "convert:data": "node scripts/convert-sqlite-to-json.mjs",
-    "qf:proxy": "node server/qf-proxy.mjs"
+    "qf:proxy": "node --env-file=.env server/qf-proxy.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^5.0.4",

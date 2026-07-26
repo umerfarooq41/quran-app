@@ -15,6 +15,14 @@ export default defineConfig({
       },
     },
   },
+  server: {
+    proxy: {
+      '/api/qf': {
+        target: 'http://localhost:8787',
+        changeOrigin: true,
+      },
+    },
+  },
   plugins: [
     react(),
     VitePWA({
@@ -67,6 +75,23 @@ export default defineConfig({
               expiration: {
                 maxEntries: 12,
                 maxAgeSeconds: 60 * 60 * 24 * 30,
+              },
+            },
+          },
+          {
+            urlPattern: ({ url }) => (
+              url.origin === self.location.origin
+              && url.pathname.startsWith('/api/qf/')
+            ),
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'quran-foundation-content',
+              expiration: {
+                maxEntries: 500,
+                maxAgeSeconds: 60 * 60 * 24 * 30,
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
               },
             },
           },
