@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { normalizeLocalReciters } from '../lib/localAudio';
 import { TRANSLATION_OPTIONS } from '../lib/translations';
+import { WORD_BY_WORD_LANGUAGES } from '../services/quranFoundation';
 import { useAppStore } from '../store/useAppStore';
 import { Header, Screen } from '../components/common/AppChrome';
 
@@ -80,7 +81,7 @@ export default function SettingsScreen() {
           <span className="settings-row-icon"><ListTree size={17} /></span>
           <span className="settings-row-copy">
             <strong>Word-by-word translation</strong>
-            <small>Show English meanings below the Arabic ayah in the translation card</small>
+            <small>Show individual English or Urdu meanings inside the translation card</small>
           </span>
           <input
             type="checkbox"
@@ -88,6 +89,18 @@ export default function SettingsScreen() {
             onChange={(event) => updateSettings({ wordByWordTranslation: event.target.checked })}
           />
         </label>
+
+        {settings.wordByWordTranslation && (
+          <SettingPicker
+            icon={Languages}
+            label="Word-by-word language"
+            description="Choose English or Urdu individual word meanings"
+            value={settings.wordByWordLanguage || 'en'}
+            options={WORD_BY_WORD_LANGUAGES}
+            getLabel={(language) => language.label}
+            onChange={(value) => updateSettings({ wordByWordLanguage: value })}
+          />
+        )}
 
         <SettingPicker
           icon={Mic2}
