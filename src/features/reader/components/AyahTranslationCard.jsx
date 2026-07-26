@@ -10,6 +10,7 @@ const MISSING_TRANSLATION = 'Translation not available.';
 
 export function AyahTranslationCard({ target, translationId, onClose }) {
   const wordByWordEnabled = useAppStore((state) => state.settings.wordByWordTranslation);
+  const wordByWordLanguage = useAppStore((state) => state.settings.wordByWordLanguage);
   const [activeTarget, setActiveTarget] = useState(() => normalizeTarget(target));
   const [translation, setTranslation] = useState({ plainText: '', parts: [], footnotes: [] });
   const [translationLoaded, setTranslationLoaded] = useState(false);
@@ -90,6 +91,7 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
             surahNumber={activeTarget.surahNumber}
             ayahNumber={activeTarget.ayahNumber}
             enabled={wordByWordEnabled}
+            language={wordByWordLanguage}
           />
 
           <p className="ayah-translation-text" dir={translationOption.direction || 'ltr'}>

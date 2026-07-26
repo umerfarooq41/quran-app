@@ -1,7 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { getWordByWordTranslation } from '../../../services/quranFoundation';
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  getWordByWordTranslation,
+  getWordLanguage,
+} from '../../../services/quranFoundation';
 
-export function WordByWordTranslation({ surahNumber, ayahNumber, enabled }) {
+export function WordByWordTranslation({
+  surahNumber,
+  ayahNumber,
+  enabled,
+  language = 'en',
+}) {
+  const languageOption = useMemo(() => getWordLanguage(language), [language]);
   const [state, setState] = useState({ status: 'idle', words: [] });
 
   useEffect(() => {
@@ -14,41 +23,61 @@ export function WordByWordTranslation({ surahNumber, ayahNumber, enabled }) {
     setState({ status: 'loading', words: [] });
 
     getWordByWordTranslation(surahNumber, ayahNumber, {
-      language: 'en',
+      language: languageOption.id,
       signal: controller.signal,
     })
       .then((result) => setState({ status: 'ready', words: result.words }))
       .catch((error) => {
-        if (error?.name !== 'AbortError') setState({ status: 'error', words: [] });
+        if (error?.name !== 'AbortError') {
+          setState({ status: 'error', words: [] });
+        }
       });
 
     return () => controller.abort();
-  }, [enabled, surahNumber, ayahNumber]);
+  }, [enabled, surahNumber, ayahNumber, languageOption.id]);
 
   if (!enabled) return null;
 
   return (
-    <section className="ayah-word-by-word" aria-label="Word-by-word translation">
-      <div className="ayah-word-by-word-heading">Word by word</div>
+    <section
+      className={`ayah-word-by-word is-${languageOption.id}`}
+      aria-label={`${languageOption.label} word-by-word translation`}
+      data-word-language={languageOption.id}
+    >
+      <div className="ayah-word-by-word-heading">
+        Word by word · {languageOption.label}
+      </div>
 
       {state.status === 'loading' && (
         <p className="ayah-word-by-word-status">Loading word meanings…</p>
       )}
 
       {state.status === 'error' && (
-        <p className="ayah-word-by-word-status is-error">Word meanings are unavailable right now.</p>
+        <p className="ayah-word-by-word-status is-error">
+          {languageOption.label} word meanings are unavailable right now.
+        </p>
       )}
 
       {state.status === 'ready' && state.words.length === 0 && (
-        <p className="ayah-word-by-word-status">No word meanings are available for this ayah.</p>
+        <p className="ayah-word-by-word-status">
+          No {languageOption.label.toLowerCase()} word meanings are available for this ayah.
+        </p>
       )}
 
       {state.words.length > 0 && (
         <div className="ayah-word-by-word-list" dir="rtl">
           {state.words.map((word) => (
             <div className="ayah-word-by-word-item" key={word.id}>
-              <span className="ayah-word-by-word-arabic" lang="ar">{word.arabic}</span>
-              <span className="ayah-word-by-word-meaning" dir="ltr">{word.meaning}</span>
+              <span className="ayah-word-by-word-arabic" lang="ar">
+                {word.arabic}
+              </span>
+              <span
+                className="ayah-word-by-word-meaning"
+                dir={languageOption.direction}
+                lang={languageOption.id}
+              >
+                {word.meaning}
+              </span>
             </div>
           ))}
         </div>
