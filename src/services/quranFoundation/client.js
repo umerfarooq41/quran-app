@@ -1,22 +1,38 @@
-const API_PREFIX = '/api/qf';
+const API_ENDPOINT = '/api/qf';
 
+/**
+ * Make an authenticated Quran Foundation Content API request through the
+ * app's Vercel serverless proxy. Keeping all URL construction here means
+ * future Quran Foundation features can reuse the same client.
+ */
 export async function qfGet(path, params = {}, { signal } = {}) {
-  const safePath = path.startsWith('/') ? path : `/${path}`;
-  const query = new URLSearchParams();
+  const normalizedPath = String(path || '').replace(/^\/+/, '');
+
+  if (!normalizedPath) {
+    throw new Error('Quran API path is required.');
+  }
+
+  const query = new URLSearchParams({ path: normalizedPath });
 
   Object.entries(params).forEach(([key, value]) => {
     if (value === undefined || value === null || value === '') return;
-    if (Array.isArray(value)) value.forEach((item) => query.append(key, String(item)));
-    else query.set(key, String(value));
+
+    if (Array.isArray(value)) {
+      value.forEach((item) => query.append(key, String(item)));
+      return;
+    }
+
+    query.set(key, String(value));
   });
 
-  const response = await fetch(`${API_PREFIX}${safePath}${query.size ? `?${query}` : ''}`, {
+  const response = await fetch(`${API_ENDPOINT}?${query.toString()}`, {
     method: 'GET',
     headers: { accept: 'application/json' },
     signal,
   });
 
   let data;
+
   try {
     data = await response.json();
   } catch {
@@ -24,7 +40,11 @@ export async function qfGet(path, params = {}, { signal } = {}) {
   }
 
   if (!response.ok) {
-    throw new Error(data?.error || data?.message || `Quran API request failed (${response.status}).`);
+    throw new Error(
+      data?.message
+      || data?.error
+      || `Quran API request failed (${response.status}).`,
+    );
   }
 
   return data;
