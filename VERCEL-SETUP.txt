@@ -1,0 +1,12 @@
+GitHub -> Vercel deployment
+
+1. Replace the matching files in your project and commit them to GitHub.
+2. In Vercel open Project -> Settings -> Environment Variables.
+3. Add QF_CLIENT_ID and QF_CLIENT_SECRET for Production (and Preview if needed).
+4. Redeploy the project.
+5. Do not upload or commit the local .env file.
+6. You do not need to run npm run qf:proxy on Vercel. The PWA calls /api/qf/* and Vercel executes api/qf/[...path].js.
+7. The existing VitePWA registerType: autoUpdate setting will install the updated app after deployment.
+
+Test after deployment:
+https://YOUR-DOMAIN/api/qf/verses/by_key/1:1?words=true&language=en&word_fields=text_indopak,text_uthmani,translation,transliteration,location,char_type_name,position
