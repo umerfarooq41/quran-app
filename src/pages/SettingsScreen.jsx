@@ -4,6 +4,7 @@ import {
   Check,
   ChevronDown,
   Languages,
+  ListTree,
   Mic2,
   Moon,
   RotateCcw,
@@ -75,6 +76,19 @@ export default function SettingsScreen() {
           onChange={(value) => updateSettings({ translation: value })}
         />
 
+        <label className="settings-toggle-row">
+          <span className="settings-row-icon"><ListTree size={17} /></span>
+          <span className="settings-row-copy">
+            <strong>Word-by-word translation</strong>
+            <small>Show English meanings below the Arabic ayah in the translation card</small>
+          </span>
+          <input
+            type="checkbox"
+            checked={settings.wordByWordTranslation}
+            onChange={(event) => updateSettings({ wordByWordTranslation: event.target.checked })}
+          />
+        </label>
+
         <SettingPicker
           icon={Mic2}
           label="Audio reciter"
@@ -124,7 +138,7 @@ export default function SettingsScreen() {
               <X size={17} />
             </button>
             <h2 id="reset-settings-title">Reset settings?</h2>
-            <p>This restores Light Mode, the default reciter, translation, playback settings, and haptic feedback.</p>
+            <p>This restores Light Mode, the default reciter, translation, word-by-word display, playback settings, and haptic feedback.</p>
             <div>
               <button type="button" className="secondary" onClick={() => setConfirmReset(false)}>Cancel</button>
               <button type="button" className="danger" onClick={resetAllSettings}>Reset</button>
