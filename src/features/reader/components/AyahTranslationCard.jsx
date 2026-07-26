@@ -3,10 +3,13 @@ import { motion } from 'framer-motion';
 import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getSurah, getSurahAyahs, surahs } from '../../../lib/quran';
 import { getTranslationOption, loadTranslationEntry } from '../../../lib/translations';
+import { useAppStore } from '../../../store/useAppStore';
+import { WordByWordTranslation } from './WordByWordTranslation';
 
 const MISSING_TRANSLATION = 'Translation not available.';
 
 export function AyahTranslationCard({ target, translationId, onClose }) {
+  const wordByWordEnabled = useAppStore((state) => state.settings.wordByWordTranslation);
   const [activeTarget, setActiveTarget] = useState(() => normalizeTarget(target));
   const [translation, setTranslation] = useState({ plainText: '', parts: [], footnotes: [] });
   const [translationLoaded, setTranslationLoaded] = useState(false);
@@ -68,7 +71,7 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
         animate={{ y: 0 }}
         exit={{ y: '100%' }}
         transition={{ type: 'spring', stiffness: 380, damping: 38, mass: .9 }}
-        className="ayah-translation-card"
+        className={wordByWordEnabled ? 'ayah-translation-card has-word-by-word' : 'ayah-translation-card'}
         role="dialog"
         aria-modal="true"
         aria-labelledby="ayah-translation-reference"
@@ -82,6 +85,12 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
           <p className="ayah-translation-arabic" dir="rtl">
             {ayah?.text || ''}
           </p>
+
+          <WordByWordTranslation
+            surahNumber={activeTarget.surahNumber}
+            ayahNumber={activeTarget.ayahNumber}
+            enabled={wordByWordEnabled}
+          />
 
           <p className="ayah-translation-text" dir={translationOption.direction || 'ltr'}>
             {translationLoaded
