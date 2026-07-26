@@ -36,6 +36,8 @@ async function getAccessToken(env = process.env) {
   }
 
   const token = await response.json();
+  if (!token.access_token) throw new Error('Quran Foundation did not return an access token.');
+
   tokenCache = {
     accessToken: token.access_token,
     expiresAt: Date.now() + Number(token.expires_in ?? 3600) * 1000,
@@ -46,10 +48,7 @@ async function getAccessToken(env = process.env) {
 export async function qfRequest(pathWithQuery, env = process.env) {
   const accessToken = await getAccessToken(env);
   const safePath = pathWithQuery.startsWith('/') ? pathWithQuery : `/${pathWithQuery}`;
-  const separator = safePath.includes('?') ? '&' : '?';
-  const url = `${API_BASE}${safePath}${separator}mushaf=7`;
-
-  const response = await fetch(url, {
+  const response = await fetch(`${API_BASE}${safePath}`, {
     headers: {
       'x-auth-token': accessToken,
       'x-client-id': env.QF_CLIENT_ID,
@@ -57,11 +56,11 @@ export async function qfRequest(pathWithQuery, env = process.env) {
     },
   });
 
-  const text = await response.text();
+  const body = await response.text();
   return {
     ok: response.ok,
     status: response.status,
     contentType: response.headers.get('content-type') || 'application/json',
-    body: text,
+    body,
   };
 }
