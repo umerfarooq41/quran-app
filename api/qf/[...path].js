@@ -1,6 +1,11 @@
 import { qfRequest } from '../../server/qf-core.mjs';
 
 export default async function handler(req, res) {
+  if (req.method !== 'GET') {
+    res.setHeader('Allow', 'GET');
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
   try {
     const rawPath = Array.isArray(req.query.path) ? req.query.path.join('/') : req.query.path || '';
     const query = new URLSearchParams();
@@ -16,8 +21,11 @@ export default async function handler(req, res) {
 
     res.status(upstream.status);
     res.setHeader('content-type', upstream.contentType || 'application/json');
-    res.send(upstream.body);
+    if (upstream.ok) {
+      res.setHeader('Cache-Control', 'public, s-maxage=86400, stale-while-revalidate=604800');
+    }
+    return res.send(upstream.body);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 }
