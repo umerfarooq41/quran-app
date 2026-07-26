@@ -56,6 +56,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
   playbackRate: 1,
   autoplay: false,
   haptics: true,
+  wordByWordTranslation: false,
 });
 
 export const useAppStore = create((set, get) => ({
@@ -510,6 +511,7 @@ export function sanitizeSettings(value = {}) {
     playbackRate: clampPlaybackRate(value.playbackRate),
     autoplay: Boolean(value.autoplay),
     haptics: value.haptics !== false,
+    wordByWordTranslation: Boolean(value.wordByWordTranslation),
   };
 }
 
