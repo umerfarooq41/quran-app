@@ -57,6 +57,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
   autoplay: false,
   haptics: true,
   wordByWordTranslation: false,
+  wordByWordLanguage: 'en',
 });
 
 export const useAppStore = create((set, get) => ({
@@ -512,6 +513,7 @@ export function sanitizeSettings(value = {}) {
     autoplay: Boolean(value.autoplay),
     haptics: value.haptics !== false,
     wordByWordTranslation: Boolean(value.wordByWordTranslation),
+    wordByWordLanguage: value.wordByWordLanguage === 'ur' ? 'ur' : 'en',
   };
 }
 
