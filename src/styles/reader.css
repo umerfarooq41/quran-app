@@ -2446,3 +2446,13 @@ body {
 .ayah-word-by-word-status.is-error {
   color: #a55348;
 }
+
+.ayah-word-by-word.is-ur .ayah-word-by-word-item {
+  max-width: 150px;
+}
+
+.ayah-word-by-word.is-ur .ayah-word-by-word-meaning {
+  font-family: var(--translation-urdu-font, "Noto Nastaliq Urdu", serif);
+  font-size: 13px;
+  line-height: 1.75;
+}
