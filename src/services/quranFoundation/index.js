@@ -1,2 +1,8 @@
 export { qfGet } from './client';
-export { getWordByWordTranslation, clearWordTranslationCache } from './words';
+export {
+  WORD_BY_WORD_LANGUAGES,
+  clearWordTranslationCache,
+  getWordByWordTranslation,
+  getWordLanguage,
+  normalizeWordLanguage,
+} from './words';
