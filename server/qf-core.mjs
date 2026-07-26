@@ -10,7 +10,7 @@ export function hasQfConfig(env = process.env) {
 
 async function getAccessToken(env = process.env) {
   if (!hasQfConfig(env)) {
-    throw new Error('QF_CLIENT_ID and QF_CLIENT_SECRET must be set in environment variables.');
+    throw new Error('QF_CLIENT_ID and QF_CLIENT_SECRET must be configured in Vercel environment variables.');
   }
 
   if (tokenCache && Date.now() < tokenCache.expiresAt - SKEW_MS) {
@@ -19,6 +19,7 @@ async function getAccessToken(env = process.env) {
 
   const credentials = Buffer.from(
     `${env.QF_CLIENT_ID}:${env.QF_CLIENT_SECRET}`,
+    'utf8',
   ).toString('base64');
 
   const body = new URLSearchParams({
@@ -38,7 +39,7 @@ async function getAccessToken(env = process.env) {
 
   if (!response.ok) {
     const detail = await response.text();
-    throw new Error(`QF auth failed with ${response.status}: ${detail.slice(0, 200)}`);
+    throw new Error(`Quran Foundation authentication failed (${response.status}): ${detail.slice(0, 240)}`);
   }
 
   const token = await response.json();
@@ -59,6 +60,7 @@ export async function qfRequest(pathWithQuery, env = process.env) {
   const safePath = pathWithQuery.startsWith('/') ? pathWithQuery : `/${pathWithQuery}`;
 
   const response = await fetch(`${API_BASE}${safePath}`, {
+    method: 'GET',
     headers: {
       'x-auth-token': accessToken,
       'x-client-id': env.QF_CLIENT_ID,
