@@ -2375,3 +2375,74 @@ body {
     animation: none;
   }
 }
+
+
+/* Quran Foundation word-by-word translation inside the ayah card. */
+.ayah-translation-card.has-word-by-word {
+  height: clamp(360px, 68dvh, 72dvh);
+  max-height: 72dvh;
+}
+
+.ayah-word-by-word {
+  margin: 14px 0 0;
+  padding: 13px 0 15px;
+  border-top: 1px solid var(--translation-card-border);
+  border-bottom: 1px solid var(--translation-card-border);
+}
+
+.ayah-word-by-word-heading {
+  margin-bottom: 10px;
+  color: var(--translation-card-secondary);
+  font-family: var(--translation-english-font);
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: .04em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.ayah-word-by-word-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 13px 11px;
+}
+
+.ayah-word-by-word-item {
+  display: inline-flex;
+  max-width: 132px;
+  min-width: 42px;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.ayah-word-by-word-arabic {
+  color: var(--translation-card-text);
+  font-family: IndopakNastaleeq, serif;
+  font-size: 18px;
+  line-height: 1.8;
+  white-space: nowrap;
+}
+
+.ayah-word-by-word-meaning {
+  margin-top: 1px;
+  color: var(--translation-card-secondary);
+  font-family: var(--translation-english-font);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.ayah-word-by-word-status {
+  margin: 0;
+  color: var(--translation-card-secondary);
+  font-family: var(--translation-english-font);
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.ayah-word-by-word-status.is-error {
+  color: #a55348;
+}
