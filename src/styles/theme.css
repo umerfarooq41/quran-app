@@ -2764,3 +2764,35 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
 [data-theme='dark'] .ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.pn {
   color: #bc91de !important;
 }
+
+
+/* English WBW: apply the QUL grammatical category to the matching Arabic word. */
+.ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.n {
+  color: #2e7d32 !important;
+}
+.ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.v {
+  color: #1565c0 !important;
+}
+.ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.p {
+  color: #b56b00 !important;
+}
+.ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.pn {
+  color: #7b1fa2 !important;
+}
+.ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.paren,
+.ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.punc {
+  color: currentColor !important;
+}
+
+[data-theme='dark'] .ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.n {
+  color: #72cf79 !important;
+}
+[data-theme='dark'] .ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.v {
+  color: #78b8ff !important;
+}
+[data-theme='dark'] .ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.p {
+  color: #f0bd63 !important;
+}
+[data-theme='dark'] .ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.pn {
+  color: #d09aef !important;
+}
