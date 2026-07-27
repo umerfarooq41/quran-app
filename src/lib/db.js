@@ -12,6 +12,17 @@ db.version(1).stores({
   memorizationProgress: '++id, surahNumber, ayahNumber, status, updatedAt',
 });
 
+db.version(2).stores({
+  bookmarks: '++id, category, surahNumber, ayahNumber, page, createdAt',
+  highlights: '++id, color, surahNumber, ayahNumber, page, createdAt',
+  notes: '++id, surahNumber, ayahNumber, page, updatedAt',
+  lastRead: 'id, page, surahNumber, ayahNumber, updatedAt',
+  settings: 'id',
+  recentSearches: '++id, query, createdAt',
+  memorizationProgress: '++id, surahNumber, ayahNumber, status, updatedAt',
+  wordTranslations: '&key, language, surahNumber, ayahNumber, fetchedAt, expiresAt',
+});
+
 export async function saveLastRead(payload) {
   await db.lastRead.put({ id: 'current', updatedAt: Date.now(), ...payload });
 }
