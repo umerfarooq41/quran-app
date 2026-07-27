@@ -68,9 +68,18 @@ export function WordByWordTranslation({
         <div className="ayah-word-by-word-list" dir="rtl">
           {state.words.map((word) => (
             <div className="ayah-word-by-word-item" key={word.id}>
-              <span className="ayah-word-by-word-arabic" lang="ar">
-                {word.arabic}
-              </span>
+              {languageOption.id === 'en' && word.arabicHtml ? (
+                <span
+                  className="ayah-word-by-word-arabic wbw-colored-arabic"
+                  lang="ar"
+                  dir="rtl"
+                  dangerouslySetInnerHTML={{ __html: word.arabicHtml }}
+                />
+              ) : (
+                <span className="ayah-word-by-word-arabic" lang="ar" dir="rtl">
+                  {word.arabic}
+                </span>
+              )}
               {languageOption.id === 'en' && word.meaningHtml ? (
                 <span
                   className="ayah-word-by-word-meaning wbw-colored-meaning"
