@@ -40,11 +40,31 @@ export default defineConfig({
       ],
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,json}'],
-        globIgnores: ['data/audio/*.json'],
+        globIgnores: [
+          'data/audio/*.json',
+          'data/translations/wbw-translation-en.json',
+        ],
         maximumFileSizeToCacheInBytes: 12 * 1024 * 1024,
         cleanupOutdatedCaches: true,
         navigateFallback: '/index.html',
         runtimeCaching: [
+          {
+            urlPattern: ({ url }) => (
+              url.origin === self.location.origin
+              && url.pathname === '/data/translations/wbw-translation-en.json'
+            ),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'word-by-word-english',
+              expiration: {
+                maxEntries: 1,
+                maxAgeSeconds: 60 * 60 * 24 * 365,
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
           {
             urlPattern: ({ url }) => (
               url.origin === self.location.origin
@@ -81,7 +101,7 @@ export default defineConfig({
           {
             urlPattern: ({ url }) => (
               url.origin === self.location.origin
-              && url.pathname.startsWith('/api/qf/')
+              && url.pathname.startsWith('/api/qf')
             ),
             handler: 'StaleWhileRevalidate',
             options: {
