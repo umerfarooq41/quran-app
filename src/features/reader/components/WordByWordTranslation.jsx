@@ -71,13 +71,22 @@ export function WordByWordTranslation({
               <span className="ayah-word-by-word-arabic" lang="ar">
                 {word.arabic}
               </span>
-              <span
-                className="ayah-word-by-word-meaning"
-                dir={languageOption.direction}
-                lang={languageOption.id}
-              >
-                {word.meaning}
-              </span>
+              {languageOption.id === 'en' && word.meaningHtml ? (
+                <span
+                  className="ayah-word-by-word-meaning wbw-colored-meaning"
+                  dir="ltr"
+                  lang="en"
+                  dangerouslySetInnerHTML={{ __html: word.meaningHtml }}
+                />
+              ) : (
+                <span
+                  className="ayah-word-by-word-meaning"
+                  dir={languageOption.direction}
+                  lang={languageOption.id}
+                >
+                  {word.meaning}
+                </span>
+              )}
             </div>
           ))}
         </div>
