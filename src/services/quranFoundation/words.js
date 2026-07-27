@@ -1,5 +1,4 @@
 import quranWords from '../../data/quranWords.json';
-import englishWordMeanings from '../../data/wbw-translation-en.json';
 import { qfGet } from './client';
 
 export const WORD_BY_WORD_LANGUAGES = Object.freeze([
@@ -26,6 +25,47 @@ const quranWordsByVerse = new Map(
 
 const wordCache = new Map();
 
+const ENGLISH_WBW_URL = '/data/translations/wbw-translation-en.json';
+let englishWordMeaningsPromise = null;
+
+async function loadEnglishWordMeanings(signal) {
+  if (!englishWordMeaningsPromise) {
+    englishWordMeaningsPromise = fetch(ENGLISH_WBW_URL, {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error(
+            `Unable to load English word meanings (${response.status}).`,
+          );
+        }
+        return response.json();
+      })
+      .catch((error) => {
+        englishWordMeaningsPromise = null;
+        throw error;
+      });
+  }
+
+  if (!signal) return englishWordMeaningsPromise;
+
+  if (signal.aborted) {
+    throw new DOMException('The request was aborted.', 'AbortError');
+  }
+
+  return Promise.race([
+    englishWordMeaningsPromise,
+    new Promise((_, reject) => {
+      signal.addEventListener(
+        'abort',
+        () => reject(new DOMException('The request was aborted.', 'AbortError')),
+        { once: true },
+      );
+    }),
+  ]);
+}
+
 export async function getWordByWordTranslation(surah, ayah, options = {}) {
   const surahNumber = Number(surah);
   const ayahNumber = Number(ayah);
@@ -37,7 +77,7 @@ export async function getWordByWordTranslation(surah, ayah, options = {}) {
   if (wordCache.has(cacheKey)) return wordCache.get(cacheKey);
 
   const request = language === 'en'
-    ? getLocalEnglishWords(surahNumber, ayahNumber)
+    ? getLocalEnglishWords(surahNumber, ayahNumber, options.signal)
     : getApiWords(surahNumber, ayahNumber, language, options.signal);
 
   if (!options.signal) wordCache.set(cacheKey, request);
@@ -67,7 +107,8 @@ export function clearWordTranslationCache() {
   wordCache.clear();
 }
 
-function getLocalEnglishWords(surah, ayah) {
+async function getLocalEnglishWords(surah, ayah, signal) {
+  const englishWordMeanings = await loadEnglishWordMeanings(signal);
   const verseKey = `${surah}:${ayah}`;
   const verse = quranWordsByVerse.get(verseKey);
   const rawWords = Array.isArray(verse?.words) ? verse.words : [];
@@ -92,13 +133,13 @@ function getLocalEnglishWords(surah, ayah) {
     })
     .filter((word) => word.meaningHtml || word.meaning);
 
-  return Promise.resolve({
+  return {
     verseKey,
     language: 'en',
     direction: 'ltr',
-    source: 'local',
+    source: 'local-public-json',
     words,
-  });
+  };
 }
 
 async function getApiWords(surah, ayah, language, signal) {
