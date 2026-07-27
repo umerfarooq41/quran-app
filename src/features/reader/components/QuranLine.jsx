@@ -8,6 +8,7 @@ import {
 } from '../utils/ayahDomRange';
 import { SurahHeader } from './SurahHeader';
 import { isAyahMarkerToken } from '../../../lib/mushafText';
+import { triggerHaptic } from '../../../lib/haptics';
 
 const LINE_FIT_EVENT = 'quran-line-fit';
 const LINE_EDGE_GUTTER = 4;
@@ -275,9 +276,7 @@ export function QuranLine({
       longPressed.current = true;
       ignoreNextClick.current = true;
 
-      if (document.documentElement.dataset.haptics !== 'off' && navigator.vibrate) {
-        navigator.vibrate([24]);
-      }
+      triggerHaptic('longPress');
 
       onSelect({
         ayahNumber: pressedSelection.current?.ayahNumber || line.ayahStart,
