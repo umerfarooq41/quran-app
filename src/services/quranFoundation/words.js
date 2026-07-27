@@ -1,19 +1,30 @@
-import { db } from '../../lib/db';
+import quranWords from '../../data/quranWords.json';
+import englishWordMeanings from '../../data/wbw-translation-en.json';
 import { qfGet } from './client';
 
 export const WORD_BY_WORD_LANGUAGES = Object.freeze([
-  { id: 'en', label: 'English', direction: 'ltr', source: 'local' },
-  { id: 'ur', label: 'Urdu', direction: 'rtl', source: 'api' },
+  { id: 'en', label: 'English', direction: 'ltr' },
+  { id: 'ur', label: 'Urdu', direction: 'rtl' },
 ]);
 
 const SUPPORTED_LANGUAGE_CODES = new Set(
   WORD_BY_WORD_LANGUAGES.map((language) => language.id),
 );
 
-const CACHE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
+const ALLOWED_ENGLISH_CLASSES = new Set([
+  'n',
+  'v',
+  'p',
+  'pn',
+  'paren',
+  'punc',
+]);
+
+const quranWordsByVerse = new Map(
+  quranWords.map((verse) => [String(verse.key), verse]),
+);
+
 const wordCache = new Map();
-const pendingRequests = new Map();
-let englishDataPromise;
 
 export async function getWordByWordTranslation(surah, ayah, options = {}) {
   const surahNumber = Number(surah);
@@ -22,11 +33,23 @@ export async function getWordByWordTranslation(surah, ayah, options = {}) {
 
   validateReference(surahNumber, ayahNumber);
 
-  if (language === 'en') {
-    return getLocalEnglishWords(surahNumber, ayahNumber);
-  }
+  const cacheKey = `${language}:${surahNumber}:${ayahNumber}`;
+  if (wordCache.has(cacheKey)) return wordCache.get(cacheKey);
 
-  return getCachedApiWords(surahNumber, ayahNumber, language, options);
+  const request = language === 'en'
+    ? getLocalEnglishWords(surahNumber, ayahNumber)
+    : getApiWords(surahNumber, ayahNumber, language, options.signal);
+
+  if (!options.signal) wordCache.set(cacheKey, request);
+
+  try {
+    const result = await request;
+    if (!options.signal) wordCache.set(cacheKey, result);
+    return result;
+  } catch (error) {
+    if (!options.signal) wordCache.delete(cacheKey);
+    throw error;
+  }
 }
 
 export function getWordLanguage(language) {
@@ -42,92 +65,44 @@ export function normalizeWordLanguage(language) {
 
 export function clearWordTranslationCache() {
   wordCache.clear();
-  pendingRequests.clear();
 }
 
-async function getLocalEnglishWords(surahNumber, ayahNumber) {
-  const cacheKey = `en:${surahNumber}:${ayahNumber}`;
-  if (wordCache.has(cacheKey)) return wordCache.get(cacheKey);
+function getLocalEnglishWords(surah, ayah) {
+  const verseKey = `${surah}:${ayah}`;
+  const verse = quranWordsByVerse.get(verseKey);
+  const rawWords = Array.isArray(verse?.words) ? verse.words : [];
 
-  const { meanings, arabicByVerse } = await loadEnglishData();
-  const verseKey = `${surahNumber}:${ayahNumber}`;
-  const arabicWords = arabicByVerse.get(verseKey) || [];
+  const words = rawWords
+    .map((word, index) => {
+      const location = word.location || `${verseKey}:${index + 1}`;
+      const meaningHtml = sanitizeEnglishMeaningHtml(
+        englishWordMeanings[location] || '',
+      );
+      const meaning = htmlToPlainText(meaningHtml);
 
-  const words = arabicWords
-    .filter((word) => meanings[word.location] !== undefined)
-    .map((word, index) => ({
-      id: word.location || `en-${verseKey}-${index + 1}`,
-      position: Number(word.word) || index + 1,
-      arabic: word.text || '',
-      meaning: htmlToPlainText(meanings[word.location]),
-      transliteration: '',
-      language: 'en',
-      source: 'local',
-    }))
-    .filter((word) => word.arabic || word.meaning);
+      return {
+        id: location,
+        position: Number(word.word) || index + 1,
+        arabic: String(word.text || ''),
+        meaning,
+        meaningHtml,
+        transliteration: '',
+        language: 'en',
+      };
+    })
+    .filter((word) => word.meaningHtml || word.meaning);
 
-  const result = {
+  return Promise.resolve({
     verseKey,
     language: 'en',
     direction: 'ltr',
     source: 'local',
     words,
-  };
-
-  wordCache.set(cacheKey, result);
-  return result;
+  });
 }
 
-async function loadEnglishData() {
-  if (!englishDataPromise) {
-    englishDataPromise = Promise.all([
-      import('../../data/wbw-translation-en.json'),
-      import('../../data/quranWords.json'),
-    ]).then(([translationModule, wordsModule]) => {
-      const meanings = translationModule.default || translationModule;
-      const rows = wordsModule.default || wordsModule;
-      const arabicByVerse = new Map(
-        rows.map((row) => [row.key || `${row.surahNumber}:${row.ayahNumber}`, row.words || []]),
-      );
-
-      return { meanings, arabicByVerse };
-    });
-  }
-
-  return englishDataPromise;
-}
-
-async function getCachedApiWords(surahNumber, ayahNumber, language, options) {
-  const cacheKey = `${language}:${surahNumber}:${ayahNumber}`;
-  const memoryValue = wordCache.get(cacheKey);
-  if (memoryValue) return memoryValue;
-
-  const stored = await db.wordTranslations.get(cacheKey).catch(() => null);
-  if (stored?.result?.words?.length) {
-    wordCache.set(cacheKey, stored.result);
-
-    if (Number(stored.expiresAt) <= Date.now()) {
-      refreshApiWords(surahNumber, ayahNumber, language).catch(() => {});
-    }
-
-    return stored.result;
-  }
-
-  return fetchAndCacheApiWords(surahNumber, ayahNumber, language, options);
-}
-
-async function refreshApiWords(surahNumber, ayahNumber, language) {
-  return fetchAndCacheApiWords(surahNumber, ayahNumber, language, { force: true });
-}
-
-async function fetchAndCacheApiWords(surahNumber, ayahNumber, language, options = {}) {
-  const cacheKey = `${language}:${surahNumber}:${ayahNumber}`;
-
-  if (!options.force && pendingRequests.has(cacheKey)) {
-    return pendingRequests.get(cacheKey);
-  }
-
-  const request = qfGet(`/verses/by_key/${surahNumber}:${ayahNumber}`, {
+async function getApiWords(surah, ayah, language, signal) {
+  const data = await qfGet(`/verses/by_key/${surah}:${ayah}`, {
     words: true,
     language,
     word_fields: [
@@ -139,43 +114,22 @@ async function fetchAndCacheApiWords(surahNumber, ayahNumber, language, options 
       'char_type_name',
       'position',
     ].join(','),
-  }, { signal: options.signal })
-    .then((data) => {
-      const verse = data?.verse || data?.verses?.[0] || data;
-      const rawWords = Array.isArray(verse?.words) ? verse.words : [];
-      const words = rawWords
-        .filter((word) => !word?.char_type_name || word.char_type_name === 'word')
-        .map((word, index) => normalizeApiWord(word, index, language))
-        .filter((word) => word.arabic || word.meaning);
+  }, { signal });
 
-      const result = {
-        verseKey: verse?.verse_key || `${surahNumber}:${ayahNumber}`,
-        language,
-        direction: getWordLanguage(language).direction,
-        source: 'api',
-        words,
-      };
+  const verse = data?.verse || data?.verses?.[0] || data;
+  const rawWords = Array.isArray(verse?.words) ? verse.words : [];
+  const words = rawWords
+    .filter((word) => !word?.char_type_name || word.char_type_name === 'word')
+    .map((word, index) => normalizeApiWord(word, index, language))
+    .filter((word) => word.arabic || word.meaning);
 
-      const fetchedAt = Date.now();
-      wordCache.set(cacheKey, result);
-      db.wordTranslations.put({
-        key: cacheKey,
-        language,
-        surahNumber,
-        ayahNumber,
-        result,
-        fetchedAt,
-        expiresAt: fetchedAt + CACHE_MAX_AGE_MS,
-      }).catch(() => {});
-
-      return result;
-    })
-    .finally(() => {
-      if (pendingRequests.get(cacheKey) === request) pendingRequests.delete(cacheKey);
-    });
-
-  pendingRequests.set(cacheKey, request);
-  return request;
+  return {
+    verseKey: verse?.verse_key || `${surah}:${ayah}`,
+    language,
+    direction: getWordLanguage(language).direction,
+    source: 'api',
+    words,
+  };
 }
 
 function normalizeApiWord(word, index, requestedLanguage) {
@@ -187,34 +141,58 @@ function normalizeApiWord(word, index, requestedLanguage) {
   return {
     id: word.location || word.id || `word-${index + 1}`,
     position: Number(word.position) || index + 1,
-    arabic: word.text_indopak || word.text_uthmani || word.text || word.code_v1 || '',
+    arabic: word.text_indopak || word.text_uthmani || word.text || '',
     meaning: translation?.text || translation || '',
+    meaningHtml: '',
     transliteration: word.transliteration?.text || word.transliteration || '',
     language: translationLanguage,
-    source: 'api',
   };
 }
 
-function htmlToPlainText(value) {
-  const html = String(value || '');
-  if (!html) return '';
+function sanitizeEnglishMeaningHtml(value) {
+  const input = String(value || '');
+  if (!input) return '';
 
-  if (typeof document !== 'undefined') {
-    const element = document.createElement('div');
-    element.innerHTML = html;
-    return (element.textContent || '').replace(/\s+/g, ' ').trim();
+  let output = '';
+  let cursor = 0;
+  const tagPattern = /<[^>]*>/g;
+  let match;
+
+  while ((match = tagPattern.exec(input))) {
+    output += escapeHtml(input.slice(cursor, match.index));
+
+    const tag = match[0];
+    const opening = tag.match(
+      /^<span\s+class\s*=\s*['"]([a-z]+)['"]\s*>$/i,
+    );
+
+    if (opening && ALLOWED_ENGLISH_CLASSES.has(opening[1].toLowerCase())) {
+      output += `<span class="${opening[1].toLowerCase()}">`;
+    } else if (/^<\/span\s*>$/i.test(tag)) {
+      output += '</span>';
+    }
+
+    cursor = match.index + tag.length;
   }
 
-  return html
-    .replace(/<[^>]*>/g, ' ')
-    .replace(/&nbsp;/gi, ' ')
-    .replace(/&amp;/gi, '&')
-    .replace(/&lt;/gi, '<')
-    .replace(/&gt;/gi, '>')
-    .replace(/&#39;/g, "'")
-    .replace(/&quot;/gi, '"')
+  output += escapeHtml(input.slice(cursor));
+  return output;
+}
+
+function htmlToPlainText(value) {
+  return String(value || '')
+    .replace(/<[^>]+>/g, '')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+function escapeHtml(value) {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 function normalizeReturnedLanguage(language) {
