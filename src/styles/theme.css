@@ -2720,3 +2720,47 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
   box-shadow: none !important;
   color: inherit !important;
 }
+
+/* Word-by-word grammatical colors.
+   This theme-layer override is intentionally last and uses !important because
+   theme.css is the final color authority and may otherwise flatten nested spans. */
+.ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.n {
+  color: #2f8f5b !important;
+}
+
+.ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.v {
+  color: #2f6fc2 !important;
+}
+
+.ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.p {
+  color: #b97918 !important;
+}
+
+.ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.pn {
+  color: #8a59b5 !important;
+}
+
+.ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.paren {
+  color: var(--translation-card-secondary) !important;
+  opacity: .74;
+}
+
+.ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.punc {
+  color: var(--translation-card-secondary) !important;
+}
+
+[data-theme='dark'] .ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.n {
+  color: #78c89d !important;
+}
+
+[data-theme='dark'] .ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.v {
+  color: #7eace8 !important;
+}
+
+[data-theme='dark'] .ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.p {
+  color: #d9a44e !important;
+}
+
+[data-theme='dark'] .ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.pn {
+  color: #bc91de !important;
+}
