@@ -12,6 +12,7 @@ import {
   Vibrate,
   X,
 } from 'lucide-react';
+import { triggerHaptic } from '../lib/haptics';
 import { normalizeLocalReciters } from '../lib/localAudio';
 import { TRANSLATION_OPTIONS } from '../lib/translations';
 import { WORD_BY_WORD_LANGUAGES } from '../services/quranFoundation';
@@ -77,18 +78,13 @@ export default function SettingsScreen() {
           onChange={(value) => updateSettings({ translation: value })}
         />
 
-        <label className="settings-toggle-row">
-          <span className="settings-row-icon"><ListTree size={17} /></span>
-          <span className="settings-row-copy">
-            <strong>Word-by-word translation</strong>
-            <small>Show individual English or Urdu meanings inside the translation card</small>
-          </span>
-          <input
-            type="checkbox"
-            checked={settings.wordByWordTranslation}
-            onChange={(event) => updateSettings({ wordByWordTranslation: event.target.checked })}
-          />
-        </label>
+        <SettingSwitch
+          icon={ListTree}
+          label="Word-by-word translation"
+          description="Show individual English or Urdu meanings inside the translation card"
+          checked={settings.wordByWordTranslation}
+          onChange={(checked) => updateSettings({ wordByWordTranslation: checked })}
+        />
 
         {settings.wordByWordTranslation && (
           <SettingPicker
@@ -113,18 +109,17 @@ export default function SettingsScreen() {
           onChange={(value) => updateSettings({ reciter: value })}
         />
 
-        <label className="settings-toggle-row">
-          <span className="settings-row-icon"><Vibrate size={17} /></span>
-          <span className="settings-row-copy">
-            <strong>Haptic feedback</strong>
-            <small>Vibrate briefly on supported long-press actions</small>
-          </span>
-          <input
-            type="checkbox"
-            checked={settings.haptics}
-            onChange={(event) => updateSettings({ haptics: event.target.checked })}
-          />
-        </label>
+        <SettingSwitch
+          icon={Vibrate}
+          label="Haptic feedback"
+          description="Vibrate briefly on supported long-press actions"
+          checked={settings.haptics}
+          onChange={(checked) => {
+            updateSettings({ haptics: checked });
+            document.documentElement.dataset.haptics = checked ? 'on' : 'off';
+            if (checked) triggerHaptic('confirmation', { ignorePreference: true });
+          }}
+        />
       </section>
 
       <button type="button" className="settings-reset-button" onClick={() => setConfirmReset(true)}>
@@ -160,6 +155,28 @@ export default function SettingsScreen() {
         </div>
       )}
     </Screen>
+  );
+}
+
+function SettingSwitch({ icon: Icon, label, description, checked, onChange }) {
+  return (
+    <div className="settings-toggle-row">
+      <span className="settings-row-icon"><Icon size={18} /></span>
+      <span className="settings-row-copy">
+        <strong>{label}</strong>
+        <small>{description}</small>
+      </span>
+      <button
+        type="button"
+        className={checked ? 'settings-switch is-on' : 'settings-switch'}
+        role="switch"
+        aria-checked={checked}
+        aria-label={label}
+        onClick={() => onChange(!checked)}
+      >
+        <span className="settings-switch-thumb" aria-hidden="true" />
+      </button>
+    </div>
   );
 }
 
