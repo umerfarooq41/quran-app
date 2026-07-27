@@ -40,6 +40,7 @@ async function loadEnglishWordMeanings(signal) {
             `Unable to load English word meanings (${response.status}).`,
           );
         }
+
         return response.json();
       })
       .catch((error) => {
@@ -120,11 +121,18 @@ async function getLocalEnglishWords(surah, ayah, signal) {
         englishWordMeanings[location] || '',
       );
       const meaning = htmlToPlainText(meaningHtml);
+      const grammarClass = getPrimaryGrammarClass(meaningHtml);
+      const arabic = String(word.text || '');
+      const arabicHtml = grammarClass
+        ? `<span class="${grammarClass}">${escapeHtml(arabic)}</span>`
+        : escapeHtml(arabic);
 
       return {
         id: location,
         position: Number(word.word) || index + 1,
-        arabic: String(word.text || ''),
+        arabic,
+        arabicHtml,
+        grammarClass,
         meaning,
         meaningHtml,
         transliteration: '',
@@ -218,6 +226,29 @@ function sanitizeEnglishMeaningHtml(value) {
 
   output += escapeHtml(input.slice(cursor));
   return output;
+}
+
+function getPrimaryGrammarClass(value) {
+  const classes = [];
+  const pattern = /<span class="([a-z]+)">/gi;
+  let match;
+
+  while ((match = pattern.exec(String(value || '')))) {
+    const className = match[1].toLowerCase();
+    if (
+      ALLOWED_ENGLISH_CLASSES.has(className)
+      && className !== 'paren'
+      && className !== 'punc'
+    ) {
+      classes.push(className);
+    }
+  }
+
+  if (classes.length === 0) return '';
+
+  // Prefer the lexical class when explanatory particles/parentheses
+  // precede the main translated word.
+  return classes[classes.length - 1];
 }
 
 function htmlToPlainText(value) {
