@@ -2459,19 +2459,19 @@ body {
 
 /* QUL/Tarteel English word-by-word grammatical colors. */
 .wbw-colored-meaning .n {
-  color: #2f8f5b;
+  color: #4f8fc9;
 }
 
 .wbw-colored-meaning .v {
-  color: #2f6fc2;
+  color: #55a64f;
 }
 
 .wbw-colored-meaning .p {
-  color: #b97918;
+  color: #c45b58;
 }
 
 .wbw-colored-meaning .pn {
-  color: #8a59b5;
+  color: #7457b8;
 }
 
 .wbw-colored-meaning .paren {
@@ -2484,17 +2484,17 @@ body {
 }
 
 [data-theme="dark"] .wbw-colored-meaning .n {
-  color: #78c89d;
+  color: #7db7e8;
 }
 
 [data-theme="dark"] .wbw-colored-meaning .v {
-  color: #7eace8;
+  color: #83d17d;
 }
 
 [data-theme="dark"] .wbw-colored-meaning .p {
-  color: #d9a44e;
+  color: #ef8a86;
 }
 
 [data-theme="dark"] .wbw-colored-meaning .pn {
-  color: #bc91de;
+  color: #b59ae8;
 }

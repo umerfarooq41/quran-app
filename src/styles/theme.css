@@ -2725,19 +2725,19 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
    This theme-layer override is intentionally last and uses !important because
    theme.css is the final color authority and may otherwise flatten nested spans. */
 .ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.n {
-  color: #2f8f5b !important;
+  color: #4f8fc9 !important;
 }
 
 .ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.v {
-  color: #2f6fc2 !important;
+  color: #55a64f !important;
 }
 
 .ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.p {
-  color: #b97918 !important;
+  color: #c45b58 !important;
 }
 
 .ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.pn {
-  color: #8a59b5 !important;
+  color: #7457b8 !important;
 }
 
 .ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.paren {
@@ -2750,34 +2750,34 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
 }
 
 [data-theme='dark'] .ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.n {
-  color: #78c89d !important;
+  color: #7db7e8 !important;
 }
 
 [data-theme='dark'] .ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.v {
-  color: #7eace8 !important;
+  color: #83d17d !important;
 }
 
 [data-theme='dark'] .ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.p {
-  color: #d9a44e !important;
+  color: #ef8a86 !important;
 }
 
 [data-theme='dark'] .ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.pn {
-  color: #bc91de !important;
+  color: #b59ae8 !important;
 }
 
 
 /* English WBW: apply the QUL grammatical category to the matching Arabic word. */
 .ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.n {
-  color: #2e7d32 !important;
+  color: #4f8fc9 !important;
 }
 .ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.v {
-  color: #1565c0 !important;
+  color: #55a64f !important;
 }
 .ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.p {
-  color: #b56b00 !important;
+  color: #c45b58 !important;
 }
 .ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.pn {
-  color: #7b1fa2 !important;
+  color: #7457b8 !important;
 }
 .ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.paren,
 .ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.punc {
@@ -2785,14 +2785,14 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
 }
 
 [data-theme='dark'] .ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.n {
-  color: #72cf79 !important;
+  color: #7db7e8 !important;
 }
 [data-theme='dark'] .ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.v {
-  color: #78b8ff !important;
+  color: #83d17d !important;
 }
 [data-theme='dark'] .ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.p {
-  color: #f0bd63 !important;
+  color: #ef8a86 !important;
 }
 [data-theme='dark'] .ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.pn {
-  color: #d09aef !important;
+  color: #b59ae8 !important;
 }
