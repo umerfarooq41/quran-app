@@ -2456,3 +2456,45 @@ body {
   font-size: 13px;
   line-height: 1.75;
 }
+
+/* QUL/Tarteel English word-by-word grammatical colors. */
+.wbw-colored-meaning .n {
+  color: #2f8f5b;
+}
+
+.wbw-colored-meaning .v {
+  color: #2f6fc2;
+}
+
+.wbw-colored-meaning .p {
+  color: #b97918;
+}
+
+.wbw-colored-meaning .pn {
+  color: #8a59b5;
+}
+
+.wbw-colored-meaning .paren {
+  color: var(--translation-card-secondary);
+  opacity: .74;
+}
+
+.wbw-colored-meaning .punc {
+  color: var(--translation-card-secondary);
+}
+
+[data-theme="dark"] .wbw-colored-meaning .n {
+  color: #78c89d;
+}
+
+[data-theme="dark"] .wbw-colored-meaning .v {
+  color: #7eace8;
+}
+
+[data-theme="dark"] .wbw-colored-meaning .p {
+  color: #d9a44e;
+}
+
+[data-theme="dark"] .wbw-colored-meaning .pn {
+  color: #bc91de;
+}
