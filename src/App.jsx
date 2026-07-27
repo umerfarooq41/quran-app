@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useShallow } from 'zustand/react/shallow';
 import { getLastRead, getSettings, upsertSetting } from './lib/db';
-import { sanitizeSettings, useAppStore } from './store/useAppStore';
+import { OVERLAY_TYPES, sanitizeSettings, useAppStore } from './store/useAppStore';
 import { Shell } from './components/common/AppChrome';
 import { panel } from './components/common/ui';
 import { VIEWS, normalizeView } from './app/routes';
@@ -52,15 +52,28 @@ export default function App() {
     settings,
     updateSettings,
     goBack,
+    openHome,
+    navDirection,
+    overlayStack,
   } = useAppStore(useShallow((state) => ({
     view: state.view,
     hydrateLastRead: state.hydrateLastRead,
     settings: state.settings,
     updateSettings: state.updateSettings,
     goBack: state.goBack,
+    openHome: state.openHome,
+    navDirection: state.navDirection,
+    overlayStack: state.overlayStack,
   })));
   const activeView = normalizeView(view);
   const [booted, setBooted] = useState(false);
+  const historyReadyRef = useRef(false);
+  const navigationFromPopRef = useRef(false);
+  const ignoreNextPopRef = useRef(false);
+  const previousNavigationRef = useRef({ view: activeView, overlayDepth: overlayStack.length });
+  const latestNavigationRef = useRef({ activeView, overlayStack, goBack, openHome });
+
+  latestNavigationRef.current = { activeView, overlayStack, goBack, openHome };
 
   useEffect(() => {
     requestPortraitLock();
@@ -102,6 +115,101 @@ export default function App() {
       mounted = false;
     };
   }, [hydrateLastRead, updateSettings]);
+
+
+
+  useEffect(() => {
+    const createHistoryState = () => ({
+      ...(window.history.state || {}),
+      quranApp: true,
+      view: activeView,
+      overlayDepth: overlayStack.length,
+    });
+
+    if (!historyReadyRef.current) {
+      window.history.replaceState(createHistoryState(), document.title);
+      historyReadyRef.current = true;
+      previousNavigationRef.current = {
+        view: activeView,
+        overlayDepth: overlayStack.length,
+      };
+      return;
+    }
+
+    const previous = previousNavigationRef.current;
+    const overlayClosed = overlayStack.length < previous.overlayDepth;
+    const movedBackward = navDirection === 'back' || overlayClosed;
+
+    previousNavigationRef.current = {
+      view: activeView,
+      overlayDepth: overlayStack.length,
+    };
+
+    if (navigationFromPopRef.current) {
+      navigationFromPopRef.current = false;
+      window.history.replaceState(createHistoryState(), document.title);
+      return;
+    }
+
+    if (movedBackward && window.history.length > 1) {
+      ignoreNextPopRef.current = true;
+      window.history.back();
+      return;
+    }
+
+    window.history.pushState(createHistoryState(), document.title);
+  }, [activeView, navDirection, overlayStack.length]);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      if (ignoreNextPopRef.current) {
+        ignoreNextPopRef.current = false;
+        window.history.replaceState(
+          {
+            ...(window.history.state || {}),
+            quranApp: true,
+            view: latestNavigationRef.current.activeView,
+            overlayDepth: latestNavigationRef.current.overlayStack.length,
+          },
+          document.title,
+        );
+        return;
+      }
+
+      const {
+        activeView: currentView,
+        overlayStack: currentOverlays,
+        goBack: navigateBack,
+        openHome: navigateHome,
+      } = latestNavigationRef.current;
+      const topOverlay = currentOverlays.at(-1);
+      const hasLocalOverlay = topOverlay && (
+        topOverlay.type === OVERLAY_TYPES.AYAH
+        || topOverlay.type === OVERLAY_TYPES.SHARE
+      );
+
+      if (hasLocalOverlay) {
+        navigationFromPopRef.current = true;
+        navigateBack();
+        return;
+      }
+
+      if (currentView === VIEWS.READER) {
+        navigationFromPopRef.current = true;
+        navigateHome();
+        return;
+      }
+
+      if (currentView !== VIEWS.HOME) {
+        navigationFromPopRef.current = true;
+        navigateBack();
+      }
+      // On Home, do not intercept again; Android/browser back may leave the PWA.
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
