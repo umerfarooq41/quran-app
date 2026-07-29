@@ -5,6 +5,7 @@ import {
   ChevronDown,
   Languages,
   ListTree,
+  LocateFixed,
   Mic2,
   Moon,
   RotateCcw,
@@ -20,8 +21,10 @@ import { useAppStore } from '../store/useAppStore';
 import { Header, Screen } from '../components/common/AppChrome';
 
 export default function SettingsScreen() {
-  const { settings, updateSettings, resetSettings } = useAppStore(useShallow((state) => ({
+  const { settings, followRecitation, setFollowRecitation, updateSettings, resetSettings } = useAppStore(useShallow((state) => ({
     settings: state.settings,
+    followRecitation: state.followRecitation,
+    setFollowRecitation: state.setFollowRecitation,
     updateSettings: state.updateSettings,
     resetSettings: state.resetSettings,
   })));
@@ -98,6 +101,14 @@ export default function SettingsScreen() {
           />
         )}
 
+        <SettingSwitch
+          icon={LocateFixed}
+          label="Follow Recitation"
+          description="Automatically move to the page containing the ayah currently being recited"
+          checked={followRecitation}
+          onChange={setFollowRecitation}
+        />
+
         <SettingPicker
           icon={Mic2}
           label="Audio reciter"
@@ -146,7 +157,7 @@ export default function SettingsScreen() {
               <X size={17} />
             </button>
             <h2 id="reset-settings-title">Reset settings?</h2>
-            <p>This restores Light Mode, the default reciter, translation, word-by-word display, playback settings, and haptic feedback.</p>
+            <p>This restores Light Mode, Follow Recitation, the default reciter, translation, word-by-word display, playback settings, and haptic feedback.</p>
             <div>
               <button type="button" className="secondary" onClick={() => setConfirmReset(false)}>Cancel</button>
               <button type="button" className="danger" onClick={resetAllSettings}>Reset</button>
