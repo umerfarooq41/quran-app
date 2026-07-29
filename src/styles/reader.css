@@ -2502,7 +2502,7 @@ body {
 /* Playback-only word color. The ayah-wide highlight is drawn by the overlay layer. */
 .reader-page .quran-word.is-recited-word {
   color: #8b641f !important;
-  background: transparent;
+  background: transparent !important;
   font-size: inherit;
   font-weight: inherit;
   text-shadow: none;
@@ -2511,25 +2511,5 @@ body {
 
 [data-theme='dark'] .reader-page .quran-word.is-recited-word {
   color: #d9ad57 !important;
-  background: transparent;
-}
-
-/* Full-ayah playback state. Visual-only: no Mushaf metric changes. */
-.reader-page .quran-word.is-recited-ayah {
-  background: rgba(200, 164, 93, 0.16);
-}
-
-[data-theme='dark'] .reader-page .quran-word.is-recited-ayah {
-  background: rgba(217, 173, 87, 0.18);
-}
-
-/* The exact word changes text color only. Never draw a second word box. */
-.reader-page .quran-word.is-recited-ayah.is-recited-word {
-  background: transparent !important;
-  font-size: inherit;
-  font-weight: inherit;
-}
-
-[data-theme='dark'] .reader-page .quran-word.is-recited-ayah.is-recited-word {
   background: transparent !important;
 }

@@ -112,7 +112,11 @@ export function buildSurahTimeline(segmentsByVerse, surahNumber) {
     const occurrenceCounts = new Map();
     const wordSegments = (Array.isArray(timing.segments) ? timing.segments : [])
       .map(normalizeWordSegment)
-      .filter(Boolean)
+      .filter((segment) => (
+        segment
+        && segment.startMs >= startMs
+        && segment.endMs <= endMs
+      ))
       .sort((first, second) => (
         first.startMs - second.startMs
         || first.endMs - second.endMs
@@ -228,6 +232,9 @@ function parseVerseKey(verseKey) {
 }
 
 function normalizeWordSegment(segment, sourceIndex) {
+  // Local JSON stores [word position, absolute Surah start ms, absolute
+  // Surah end ms]. Repeated positions are valid; buildSurahTimeline derives
+  // their zero-based occurrenceIndex after chronological normalization.
   if (!Array.isArray(segment) || segment.length < 3) return null;
 
   const position = Number(segment[0]);

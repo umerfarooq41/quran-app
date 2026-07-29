@@ -675,7 +675,13 @@ export function ReaderAudioPanel() {
 
   async function loadFullSurahTarget(target, reciterId, loadToken) {
     const playback = await getFullSurahPlayback(reciterId, target.surahNumber);
-    if (isStaleLoad(loadToken) || !playback) return false;
+    if (
+      isStaleLoad(loadToken)
+      || !playback
+      || playback.reciterId !== reciterId
+    ) {
+      return false;
+    }
 
     const timing = findAyahTiming(playback.timeline, target.ayahNumber);
     if (!timing) return false;
@@ -687,7 +693,7 @@ export function ReaderAudioPanel() {
       seekSeconds: timing.startMs / 1000,
       source: {
         mode: 'full-surah',
-        reciterId,
+        reciterId: playback.reciterId,
         surahNumber: target.surahNumber,
         audioUrl: playback.audioUrl,
         timeline: playback.timeline,
@@ -869,7 +875,9 @@ export function ReaderAudioPanel() {
       return;
     }
 
-    let nextTarget = getAdjacentTarget(currentTargetRef.current, 1);
+    let nextTarget = source?.mode === 'full-surah'
+      ? getFirstTargetOfSurah(Number(source.surahNumber) + 1)
+      : getAdjacentTarget(currentTargetRef.current, 1);
 
     if (repeatMode === 'surah' && source?.mode === 'ayah-fallback') {
       if (!nextTarget || nextTarget.surahNumber !== currentTargetRef.current?.surahNumber) {
