@@ -2499,25 +2499,29 @@ body {
   color: #b59ae8;
 }
 
-/* Repeat mode badge: A = current ayah, S = current Surah. */
-.reader-transport-modern .transport-repeat {
-  position: relative;
+/* Playback-only recitation highlights. These backgrounds do not affect text metrics. */
+.reader-page .quran-word.is-recited-ayah {
+  background-color: rgba(200, 164, 93, 0.16);
+  border-radius: 0.18em;
+  transition: background-color 150ms ease;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
-.reader-transport-modern .transport-repeat-badge {
-  position: absolute;
-  inset-inline-end: 2px;
-  inset-block-start: 1px;
-  display: grid;
-  place-items: center;
-  min-width: 15px;
-  height: 15px;
-  padding-inline: 3px;
-  border-radius: 999px;
-  background: currentColor;
-  color: var(--audio-panel-bg, #fff);
-  font-size: 9px;
-  font-weight: 800;
-  line-height: 1;
-  pointer-events: none;
+.reader-page .quran-word.is-recited-word {
+  color: var(--color-gold, #C8A45D);
+  background: transparent !important;
+  font-size: inherit;
+  font-weight: inherit;
+  text-shadow: none;
+  box-shadow: none;
+  transition: color 150ms ease;
+}
+
+[data-theme='dark'] .reader-page .quran-word.is-recited-ayah {
+  background-color: rgba(134, 239, 172, 0.18);
+}
+
+[data-theme='dark'] .reader-page .quran-word.is-recited-word {
+  background-color: rgba(250, 204, 21, 0.58);
 }
