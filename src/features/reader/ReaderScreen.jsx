@@ -49,6 +49,7 @@ export default function ReaderScreen() {
     audioPlayerActive,
     audioPlayerVisible,
     audioPlaying,
+    followRecitation,
     playingVerseKey,
     playingWordPosition,
     playingWordOccurrenceIndex,
@@ -85,6 +86,7 @@ export default function ReaderScreen() {
     audioPlayerActive: state.audioPlayerActive,
     audioPlayerVisible: state.audioPlayerVisible,
     audioPlaying: state.audioPlaying,
+    followRecitation: state.followRecitation,
     playingVerseKey: state.playingVerseKey,
     playingWordPosition: state.playingWordPosition,
     playingWordOccurrenceIndex: state.playingWordOccurrenceIndex,
@@ -105,7 +107,8 @@ export default function ReaderScreen() {
   const [pageSlide, setPageSlide] = useState(PAGE_SLIDE_IDLE);
   const [pageTransition, setPageTransition] = useState(null);
   const [audioFollowEnabled, setAudioFollowEnabled] = useState(() => (
-    !audioPlayerActive || !audioTarget?.page || Number(audioTarget.page) === Number(page)
+    followRecitation
+    && (!audioPlayerActive || !audioTarget?.page || Number(audioTarget.page) === Number(page))
   ));
   const pageData = getPage(page);
   const meta = getPageMeta(page);
@@ -312,6 +315,7 @@ export default function ReaderScreen() {
     if (
       targetChanged &&
       audioPlayerActive &&
+      followRecitation &&
       audioFollowEnabled &&
       audioTarget?.page &&
       Number(audioTarget.page) !== Number(page)
@@ -325,6 +329,7 @@ export default function ReaderScreen() {
     audioTarget?.ayahNumber,
     audioTarget?.page,
     audioPlayerActive,
+    followRecitation,
     audioFollowEnabled,
     controlsVisible,
     page,
@@ -332,8 +337,27 @@ export default function ReaderScreen() {
   ]);
 
   useEffect(() => {
-    if (!audioPlayerActive) setAudioFollowEnabled(true);
-  }, [audioPlayerActive]);
+    if (!audioPlayerActive) {
+      setAudioFollowEnabled(followRecitation);
+      return;
+    }
+
+    if (!followRecitation) {
+      setAudioFollowEnabled(false);
+    }
+  }, [audioPlayerActive, followRecitation]);
+
+  useEffect(() => {
+    if (
+      followRecitation
+      && audioPlayerActive
+      && audioTarget?.page
+      && Number(audioTarget.page) !== Number(page)
+    ) {
+      setAudioFollowEnabled(followRecitation);
+      goReaderPage(audioTarget.page, null, { navigationSource: 'audio' });
+    }
+  }, [followRecitation]);
 
   function getPageSlideWidth() {
     return readerShellRef.current?.getBoundingClientRect().width || window.innerWidth || 390;
@@ -464,7 +488,7 @@ export default function ReaderScreen() {
     // Full-Surah metadata is loaded asynchronously, so the audio element is
     // primed here before that browser activation window is lost.
     window.dispatchEvent(new Event('quran:audio-user-play-request'));
-    setAudioFollowEnabled(true);
+    setAudioFollowEnabled(followRecitation);
     if (!targetLine && audioPlayerActive && !audioPlayerVisible) {
       showAudioPlayer();
       return;
