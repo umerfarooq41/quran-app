@@ -2499,29 +2499,29 @@ body {
   color: #b59ae8;
 }
 
-/* Playback-only recitation highlights. These backgrounds do not affect text metrics. */
+/* Playback-only recitation highlights. These styles do not affect Mushaf text metrics. */
 .reader-page .quran-word.is-recited-ayah {
-  background-color: rgba(200, 164, 93, 0.16);
+  background-color: rgba(184, 136, 42, 0.18);
   border-radius: 0.18em;
-  transition: background-color 150ms ease;
+  transition: background-color 150ms ease, color 150ms ease;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
 
 .reader-page .quran-word.is-recited-word {
-  color: var(--color-gold, #C8A45D);
-  background: transparent !important;
+  color: #8b641f;
+  background-color: rgba(184, 136, 42, 0.18);
   font-size: inherit;
   font-weight: inherit;
   text-shadow: none;
   box-shadow: none;
-  transition: color 150ms ease;
 }
 
 [data-theme='dark'] .reader-page .quran-word.is-recited-ayah {
-  background-color: rgba(134, 239, 172, 0.18);
+  background-color: rgba(184, 136, 42, 0.24);
 }
 
 [data-theme='dark'] .reader-page .quran-word.is-recited-word {
-  background-color: rgba(250, 204, 21, 0.58);
+  color: var(--brand-gold, #b8882a);
+  background-color: rgba(184, 136, 42, 0.24);
 }
