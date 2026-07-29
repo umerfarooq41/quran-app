@@ -1123,13 +1123,13 @@ export function ReaderAudioPanel() {
           {repeat === 'surah' && <span className="transport-repeat-badge" aria-hidden="true">S</span>}
         </button>
         <button type="button" onClick={() => moveAyah(1)} aria-label="Next ayah">
-          <SkipForward size={31} />
+          <SkipBack size={31} />
         </button>
         <button type="button" className="transport-main" onClick={togglePlay} aria-label={playing ? 'Pause' : 'Play'}>
           {playing ? <Pause size={36} fill="currentColor" /> : <Play size={36} fill="currentColor" />}
         </button>
         <button type="button" onClick={() => moveAyah(-1)} aria-label="Previous ayah">
-          <SkipBack size={31} />
+          <SkipForward size={31} />
         </button>
         <button type="button" className="transport-speed" onClick={cycleSpeed} aria-label="Playback speed">
           {audioPlaybackRate || settings.playbackRate || 1}x

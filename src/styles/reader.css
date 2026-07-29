@@ -2510,7 +2510,7 @@ body {
 
 .reader-page .quran-word.is-recited-word {
   color: #8b641f;
-  background-color: rgba(184, 136, 42, 0.18);
+  background: transparent;
   font-size: inherit;
   font-weight: inherit;
   text-shadow: none;
@@ -2522,6 +2522,6 @@ body {
 }
 
 [data-theme='dark'] .reader-page .quran-word.is-recited-word {
-  color: var(--brand-gold, #b8882a);
-  background-color: rgba(184, 136, 42, 0.24);
+  color: var(--gold, #a87537);
+  background: transparent;
 }
