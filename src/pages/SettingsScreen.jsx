@@ -13,7 +13,7 @@ import {
   X,
 } from 'lucide-react';
 import { triggerHaptic } from '../lib/haptics';
-import { normalizeLocalReciters } from '../lib/localAudio';
+import { getReciterImageUrl, normalizeLocalReciters } from '../lib/localAudio';
 import { TRANSLATION_OPTIONS } from '../lib/translations';
 import { WORD_BY_WORD_LANGUAGES } from '../services/quranFoundation';
 import { useAppStore } from '../store/useAppStore';
@@ -287,7 +287,5 @@ function getReciterDisplayName(reciter) {
 }
 
 function getReciterImageSrc(reciter) {
-  const name = getReciterDisplayName(reciter);
-  const ext = reciter?.id === 'mishari-rashid-al-afasy' ? 'jpeg' : 'png';
-  return `/reciters/${encodeURIComponent(name)}.${ext}`;
+  return getReciterImageUrl(reciter);
 }

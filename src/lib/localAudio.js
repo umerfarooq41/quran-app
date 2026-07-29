@@ -1,13 +1,14 @@
 export const RECITERS = [
-  { id: 'mishari-rashid-al-afasy', displayName: 'Mishari Rashid Al Afasy', ayahCount: 6236, hasAyahAudioUrls: true },
-  { id: 'abdur-rahman-as-sudais', displayName: 'Abdur Rahman As Sudais', ayahCount: 6236, hasAyahAudioUrls: true },
-  { id: 'abdul-basit-abdul-samad', displayName: 'Abdul Basit Abdul Samad', ayahCount: 6236, hasAyahAudioUrls: true },
-  { id: 'abu-bakr-al-shatri', displayName: 'Abu Bakr Al Shatri', ayahCount: 6236, hasAyahAudioUrls: true },
-  { id: 'maher-al-mu-aiqly', displayName: 'Maher Al Muaiqly', ayahCount: 6236, hasAyahAudioUrls: true },
-  { id: 'mahmoud-khalil-al-husary', displayName: 'Mahmoud Khalil Al Husary', ayahCount: 6236, hasAyahAudioUrls: true },
-  { id: 'saad-al-ghamdi', displayName: 'Saad Al Ghamdi', ayahCount: 6236, hasAyahAudioUrls: true },
-  { id: 'saud-al-shuraim', displayName: 'Saud Al Shuraim', ayahCount: 6236, hasAyahAudioUrls: true },
-  { id: 'yasser-al-dosari', displayName: 'Yasser Al Dosari', ayahCount: 6236, hasAyahAudioUrls: true },
+  { id: 'mishari-rashid-al-afasy', displayName: 'Mishari Rashid Al Afasy', imageFile: 'Mishari Rashid Al Afasy.jpeg', ayahCount: 6236, hasAyahAudioUrls: true },
+  { id: 'abdur-rahman-as-sudais', displayName: 'Abdur Rahman As Sudais', imageFile: 'Abdur Rahman As Sudais.png', ayahCount: 6236, hasAyahAudioUrls: true },
+  { id: 'abdul-basit-abdul-samad', displayName: 'Abdul Basit Abdul Samad', imageFile: 'Abdul Basit Abdul Samad.png', ayahCount: 6236, hasAyahAudioUrls: true },
+  { id: 'abdullah-awad-al-juhani', displayName: 'Abdullah Awad Al Juhani', imageFile: 'Abdullah Awad Al Juhani.png', ayahCount: 6236, hasAyahAudioUrls: false },
+  { id: 'abu-bakr-al-shatri', displayName: 'Abu Bakr Al Shatri', imageFile: 'Abu Bakr Al Shatri.png', ayahCount: 6236, hasAyahAudioUrls: true },
+  { id: 'maher-al-mu-aiqly', displayName: 'Maher Al Muaiqly', imageFile: 'Maher Al Muaiqly.png', ayahCount: 6236, hasAyahAudioUrls: true },
+  { id: 'mahmoud-khalil-al-husary', displayName: 'Mahmoud Khalil Al Husary', imageFile: 'Mahmoud Khalil Al Husary.png', ayahCount: 6236, hasAyahAudioUrls: true },
+  { id: 'saad-al-ghamdi', displayName: 'Saad Al Ghamdi', imageFile: 'Saad Al Ghamdi.png', ayahCount: 6236, hasAyahAudioUrls: true },
+  { id: 'saud-al-shuraim', displayName: 'Saud Al Shuraim', imageFile: 'Saud Al Shuraim.png', ayahCount: 6236, hasAyahAudioUrls: true },
+  { id: 'yasser-al-dosari', displayName: 'Yasser Al Dosari', imageFile: 'Yasser Al Dosari.png', ayahCount: 6236, hasAyahAudioUrls: true },
 ];
 
 const audioCache = new Map();
@@ -32,9 +33,16 @@ export function normalizeLocalReciters() {
     id: reciter.id,
     name: reciter.displayName,
     reciter_name: reciter.displayName,
+    imageFile: reciter.imageFile,
     ayahCount: reciter.ayahCount,
+    hasAyahAudioUrls: reciter.hasAyahAudioUrls,
     source: 'bundled-json',
   }));
+}
+
+export function getReciterImageUrl(reciter) {
+  const imageFile = reciter?.imageFile;
+  return imageFile ? `/reciters/${encodeURIComponent(imageFile)}` : '';
 }
 
 export async function loadReciterAudio(reciterId) {
@@ -48,6 +56,9 @@ export async function loadReciterAudio(reciterId) {
 }
 
 export async function getAudioUrl(reciterId, surahNumber, ayahNumber) {
+  const reciter = RECITERS.find((item) => item.id === (reciterId || getDefaultReciterId()));
+  if (reciter && !reciter.hasAyahAudioUrls) return '';
+
   const directUrl = getBundledAudioUrl(reciterId, surahNumber, ayahNumber);
   if (directUrl) return directUrl;
 

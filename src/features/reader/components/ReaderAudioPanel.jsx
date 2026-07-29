@@ -3,11 +3,21 @@ import { Check, ChevronDown, Pause, Play, Repeat, SkipBack, SkipForward, X } fro
 import { useShallow } from 'zustand/react/shallow';
 import { VIEWS } from '../../../app/routes';
 import { findPageForReference, getSurah, quranAyahs } from '../../../lib/quran';
-import { getAudioUrl, getBundledAudioUrl, getDefaultReciterId, normalizeLocalReciters } from '../../../lib/localAudio';
+import {
+  findAyahAtTime,
+  findAyahTiming,
+  getFullSurahPlayback,
+} from '../../../lib/fullSurahAudio';
+import {
+  getAudioUrl,
+  getDefaultReciterId,
+  getReciterImageUrl,
+  normalizeLocalReciters,
+} from '../../../lib/localAudio';
 import { useAppStore } from '../../../store/useAppStore';
 
 const SPEEDS = [1, 1.25, 1.5, 2];
-const PRELOAD_THRESHOLD_SECONDS = 6;
+const AUDIO_METADATA_TIMEOUT_MS = 20000;
 
 function formatTime(seconds = 0) {
   const safe = Math.max(0, Math.floor(Number(seconds) || 0));
@@ -21,9 +31,7 @@ function getReciterDisplayName(reciter) {
 }
 
 function getReciterImageSrc(reciter) {
-  const name = getReciterDisplayName(reciter);
-  const ext = reciter?.id === 'mishari-rashid-al-afasy' ? 'jpeg' : 'png';
-  return `/reciters/${encodeURIComponent(name)}.${ext}`;
+  return getReciterImageUrl(reciter);
 }
 
 export function ReaderAudioPanel() {
@@ -74,14 +82,15 @@ export function ReaderAudioPanel() {
   const currentAudioRef = useRef(null);
   const currentTargetRef = useRef(null);
   const currentReciterRef = useRef('');
-  const preloadRef = useRef(null);
+  const currentSourceRef = useRef(null);
   const audioHandlersRef = useRef(new WeakMap());
   const loadTokenRef = useRef(0);
   const loadingRef = useRef(null);
-  const preloadTokenRef = useRef(0);
   const playIntentRef = useRef(playing);
   const repeatRef = useRef(repeat);
   const playbackRateRef = useRef(audioPlaybackRate || settings.playbackRate || 1);
+  const sourceTransitionRef = useRef(false);
+  const recoveringRef = useRef(false);
   const unmountedRef = useRef(false);
   const rafRef = useRef(0);
   const reciterPickerRef = useRef(null);
@@ -165,15 +174,21 @@ export function ReaderAudioPanel() {
 
   useEffect(() => {
     unmountedRef.current = false;
+    const audio = nativeAudioRef.current;
+    if (audio) {
+      currentAudioRef.current = audio;
+      audio.preload = 'auto';
+      audio.setAttribute('playsinline', '');
+      bindCurrentAudio(audio);
+    }
 
     return () => {
       unmountedRef.current = true;
       loadTokenRef.current += 1;
-      preloadTokenRef.current += 1;
       loadingRef.current = null;
       cancelAnimationFrame(rafRef.current);
-      disposeAudio(currentAudioRef.current);
-      disposePreload();
+      resetAudio(audio);
+      unbindAudio(audio);
       currentAudioRef.current = null;
     };
   }, []);
@@ -207,14 +222,10 @@ export function ReaderAudioPanel() {
 
       const reciterId = state.audioReciter || state.settings.reciter || getDefaultReciterId();
       const target = normalizeTarget(state.audioTarget);
-      const directUrl = target
-        ? getBundledAudioUrl(reciterId, target.surahNumber, target.ayahNumber)
-        : '';
-
-      if (!target || !directUrl) return;
+      if (!target) return;
 
       playIntentRef.current = true;
-      loadTarget(target, reciterId, true, { directUrl });
+      loadTarget(target, reciterId, true);
     });
 
     return unsubscribe;
@@ -295,7 +306,7 @@ export function ReaderAudioPanel() {
     const currentMatches = (
       sameTarget(currentTargetRef.current, target) &&
       currentReciterRef.current === selectedReciter &&
-      currentAudioRef.current
+      currentSourceRef.current
     );
     const loadingMatches = (
       sameTarget(loadingRef.current?.target, target) &&
@@ -314,9 +325,6 @@ export function ReaderAudioPanel() {
 
     if (currentAudioRef.current) {
       currentAudioRef.current.playbackRate = rate;
-    }
-    if (preloadRef.current?.audio) {
-      preloadRef.current.audio.playbackRate = rate;
     }
   }, [audioPlaybackRate, settings.playbackRate]);
 
@@ -388,15 +396,32 @@ export function ReaderAudioPanel() {
       timeupdate: () => {
         if (audio !== currentAudioRef.current) return;
 
+        if (
+          repeatRef.current
+          && currentSourceRef.current?.mode === 'full-surah'
+        ) {
+          const timing = findAyahTiming(
+            currentSourceRef.current.timeline,
+            currentTargetRef.current?.ayahNumber,
+          );
+          if (timing && audio.currentTime * 1000 >= timing.endMs) {
+            audio.currentTime = timing.startMs / 1000;
+            setAudioProgress(
+              audio.currentTime || 0,
+              Number.isFinite(audio.duration) ? audio.duration : 0,
+            );
+            return;
+          }
+        }
+
+        if (!sourceTransitionRef.current) {
+          syncFullSurahTarget(audio.currentTime || 0);
+        }
         setAudioProgress(
           audio.currentTime || 0,
           Number.isFinite(audio.duration) ? audio.duration : 0,
         );
         syncMediaSessionPosition(audio);
-        const remaining = (audio.duration || 0) - (audio.currentTime || 0);
-        if (remaining > 0 && remaining <= PRELOAD_THRESHOLD_SECONDS) {
-          ensureNextPreloaded(currentTargetRef.current, currentReciterRef.current);
-        }
       },
       play: () => {
         if (audio !== currentAudioRef.current) return;
@@ -404,7 +429,13 @@ export function ReaderAudioPanel() {
         setStatus('');
       },
       pause: () => {
-        if (audio !== currentAudioRef.current || audio.ended) return;
+        if (
+          audio !== currentAudioRef.current
+          || audio.ended
+          || sourceTransitionRef.current
+        ) {
+          return;
+        }
         setAudioPlaying(false);
       },
       ended: () => {
@@ -412,10 +443,14 @@ export function ReaderAudioPanel() {
         handleEnded(audio);
       },
       error: () => {
-        if (audio !== currentAudioRef.current) return;
-        playIntentRef.current = false;
-        setAudioPlaying(false);
-        setStatus('Audio playback could not continue.');
+        if (
+          audio !== currentAudioRef.current
+          || sourceTransitionRef.current
+          || loadingRef.current
+        ) {
+          return;
+        }
+        recoverFromAudioError(audio);
       },
     };
 
@@ -437,13 +472,13 @@ export function ReaderAudioPanel() {
     audioHandlersRef.current.delete(audio);
   }
 
-  function disposeAudio(audio) {
+  function resetAudio(audio) {
     if (!audio) return;
 
-    unbindAudio(audio);
     audio.pause();
     audio.removeAttribute('src');
     audio.load();
+    currentSourceRef.current = null;
   }
 
   function syncMediaSessionPosition(audio) {
@@ -465,57 +500,30 @@ export function ReaderAudioPanel() {
     }
   }
 
-  function disposePreload() {
-    const preload = preloadRef.current;
-    preloadRef.current = null;
-    if (preload?.audio) disposeAudio(preload.audio);
-  }
-
-  function installCurrentAudio(audio, target, reciterId) {
-    const previousAudio = currentAudioRef.current;
-    if (previousAudio && previousAudio !== audio) {
-      disposeAudio(previousAudio);
-    }
-
-    currentAudioRef.current = audio;
-    currentTargetRef.current = target;
-    currentReciterRef.current = reciterId;
-    audio.playbackRate = playbackRateRef.current;
-    bindCurrentAudio(audio);
-    setAudioProgress(
-      audio.currentTime || 0,
-      Number.isFinite(audio.duration) ? audio.duration : 0,
-    );
-  }
-
-  function installAudioUrl(url, target, reciterId) {
-    const audio = nativeAudioRef.current || new Audio();
-    audio.preload = 'auto';
-    audio.setAttribute('playsinline', '');
-    audio.src = url;
-    audio.playbackRate = playbackRateRef.current;
-    installCurrentAudio(audio, target, reciterId);
-    loadingRef.current = null;
-    audio.load();
-    setStatus('');
-    ensureNextPreloaded(target, reciterId);
-  }
-
   async function startCurrentAudio() {
     const audio = currentAudioRef.current;
-    if (!audio || !playIntentRef.current || unmountedRef.current) return;
+    if (!audio || !playIntentRef.current || unmountedRef.current) return false;
 
     try {
       audio.playbackRate = playbackRateRef.current;
       await audio.play();
-      if (audio !== currentAudioRef.current) return;
+      if (audio !== currentAudioRef.current) return false;
       setAudioPlaying(true);
       setStatus('');
+      return true;
     } catch (error) {
-      if (audio !== currentAudioRef.current) return;
+      if (audio !== currentAudioRef.current) return false;
+      if (
+        currentSourceRef.current?.mode === 'full-surah'
+        && (error?.name === 'NotSupportedError' || error?.name === 'NetworkError')
+      ) {
+        recoverFromAudioError(audio);
+        return false;
+      }
       playIntentRef.current = false;
       setAudioPlaying(false);
       setStatus(error?.message || 'Audio playback could not start.');
+      return false;
     }
   }
 
@@ -524,128 +532,223 @@ export function ReaderAudioPanel() {
 
     const loadToken = ++loadTokenRef.current;
     loadingRef.current = { target, reciterId, loadToken };
-    preloadTokenRef.current += 1;
-    disposePreload();
-    disposeAudio(currentAudioRef.current);
-    currentAudioRef.current = null;
     currentTargetRef.current = target;
     currentReciterRef.current = reciterId;
-    setAudioProgress(0, 0);
+    playIntentRef.current = Boolean(autoplay);
+    updateAudioQueue(target);
     setStatus('Loading audio...');
 
+    let fullSurahError = null;
+
     try {
-      const directUrl = options.directUrl || getBundledAudioUrl(
-        reciterId,
-        target.surahNumber,
-        target.ayahNumber,
-      );
-
-      if (directUrl) {
-        installAudioUrl(directUrl, target, reciterId);
-
-        if (autoplay) {
-          playIntentRef.current = true;
-          await startCurrentAudio();
-        } else {
-          setAudioPlaying(false);
+      if (!options.skipFullSurah) {
+        try {
+          const installed = await loadFullSurahTarget(target, reciterId, loadToken);
+          if (isStaleLoad(loadToken)) return;
+          if (installed) {
+            loadingRef.current = null;
+            setStatus('');
+            if (autoplay) {
+              await startCurrentAudio();
+            } else {
+              currentAudioRef.current?.pause();
+              setAudioPlaying(false);
+            }
+            return;
+          }
+        } catch (error) {
+          if (isStaleLoad(loadToken)) return;
+          fullSurahError = error;
         }
-        return;
       }
 
-      const url = await getAudioUrl(reciterId, target.surahNumber, target.ayahNumber);
-      if (unmountedRef.current || loadToken !== loadTokenRef.current) return;
-
-      if (!url) {
-        loadingRef.current = null;
-        playIntentRef.current = false;
-        setAudioPlaying(false);
-        setStatus('Audio is not available for this ayah and reciter.');
-        return;
-      }
-
-      installAudioUrl(url, target, reciterId);
-
+      await loadAyahFallbackTarget(target, reciterId, loadToken);
+      if (isStaleLoad(loadToken)) return;
+      loadingRef.current = null;
+      setStatus('');
       if (autoplay) {
-        playIntentRef.current = true;
         await startCurrentAudio();
       } else {
+        currentAudioRef.current?.pause();
         setAudioPlaying(false);
       }
     } catch (error) {
-      if (unmountedRef.current || loadToken !== loadTokenRef.current) return;
+      if (isStaleLoad(loadToken)) return;
       loadingRef.current = null;
+      sourceTransitionRef.current = false;
       playIntentRef.current = false;
       setAudioPlaying(false);
-      setStatus(error?.message || 'Audio could not be loaded.');
+      setStatus(
+        error?.code === 'AUDIO_UNAVAILABLE' || fullSurahError
+          ? 'Audio is not available for this ayah and reciter.'
+          : (error?.message || 'Audio could not be loaded.'),
+      );
     }
   }
 
-  async function ensureNextPreloaded(target, reciterId) {
-    if (unmountedRef.current) return null;
+  async function loadFullSurahTarget(target, reciterId, loadToken) {
+    const playback = await getFullSurahPlayback(reciterId, target.surahNumber);
+    if (isStaleLoad(loadToken) || !playback) return false;
 
-    const nextTarget = getAdjacentTarget(target, 1);
-    if (!nextTarget || !reciterId) {
-      disposePreload();
-      setAudioQueue(target ? [target] : [], target ? 0 : -1);
-      return null;
-    }
+    const timing = findAyahTiming(playback.timeline, target.ayahNumber);
+    if (!timing) return false;
 
-    setAudioQueue([target, nextTarget], 0);
-
-    const existing = preloadRef.current;
-    if (
-      existing &&
-      existing.reciterId === reciterId &&
-      sameTarget(existing.target, nextTarget)
-    ) {
-      return existing.promise || existing;
-    }
-
-    const preloadToken = ++preloadTokenRef.current;
-    disposePreload();
-    const preload = {
-      audio: null,
-      target: nextTarget,
+    await installAudioSource({
+      audioUrl: playback.audioUrl,
+      loadToken,
       reciterId,
-      promise: null,
-    };
-    preloadRef.current = preload;
-
-    preload.promise = getAudioUrl(
-      reciterId,
-      nextTarget.surahNumber,
-      nextTarget.ayahNumber,
-    ).then((url) => {
-      if (
-        unmountedRef.current ||
-        preloadToken !== preloadTokenRef.current ||
-        preloadRef.current !== preload ||
-        !url
-      ) {
-        return null;
-      }
-
-      const audio = new Audio();
-      audio.preload = 'auto';
-      audio.src = url;
-      audio.playbackRate = playbackRateRef.current;
-      audio.load();
-      preload.audio = audio;
-      preload.promise = null;
-      return preload;
-    }).catch(() => {
-      if (preloadRef.current === preload) {
-        preloadRef.current = null;
-      }
-      return null;
+      seekSeconds: timing.startMs / 1000,
+      source: {
+        mode: 'full-surah',
+        reciterId,
+        surahNumber: target.surahNumber,
+        audioUrl: playback.audioUrl,
+        timeline: playback.timeline,
+      },
+      target,
     });
+    return true;
+  }
 
-    return preload.promise;
+  async function loadAyahFallbackTarget(target, reciterId, loadToken) {
+    const audioUrl = await getAudioUrl(reciterId, target.surahNumber, target.ayahNumber);
+    if (isStaleLoad(loadToken)) return;
+    if (!audioUrl) throw createUnavailableError();
+
+    await installAudioSource({
+      audioUrl,
+      loadToken,
+      reciterId,
+      seekSeconds: 0,
+      source: {
+        mode: 'ayah-fallback',
+        reciterId,
+        surahNumber: target.surahNumber,
+        verseKey: `${target.surahNumber}:${target.ayahNumber}`,
+        audioUrl,
+        timeline: null,
+      },
+      target,
+    });
+  }
+
+  async function installAudioSource({
+    audioUrl,
+    loadToken,
+    reciterId,
+    seekSeconds,
+    source,
+    target,
+  }) {
+    const audio = currentAudioRef.current;
+    if (!audio) throw new Error('Audio player is unavailable.');
+
+    const currentSource = currentSourceRef.current;
+    const sameSource = (
+      currentSource
+      && currentSource.mode === source.mode
+      && currentSource.reciterId === source.reciterId
+      && currentSource.audioUrl === source.audioUrl
+      && (
+        source.mode === 'full-surah'
+          ? currentSource.surahNumber === source.surahNumber
+          : currentSource.verseKey === source.verseKey
+      )
+    );
+
+    sourceTransitionRef.current = true;
+    try {
+      if (!sameSource) {
+        audio.pause();
+        currentSourceRef.current = source;
+        audio.src = audioUrl;
+        audio.playbackRate = playbackRateRef.current;
+        audio.load();
+        setAudioProgress(0, 0);
+      } else {
+        currentSourceRef.current = source;
+      }
+
+      await waitForSeekableAudio(audio, loadToken);
+      if (isStaleLoad(loadToken)) throw createAbortError();
+
+      currentTargetRef.current = target;
+      currentReciterRef.current = reciterId;
+      audio.playbackRate = playbackRateRef.current;
+      audio.currentTime = clampSeekTime(audio, seekSeconds);
+      setVisualTime(audio.currentTime || 0);
+      setAudioProgress(
+        audio.currentTime || 0,
+        Number.isFinite(audio.duration) ? audio.duration : 0,
+      );
+      syncMediaSessionPosition(audio);
+    } finally {
+      if (loadToken === loadTokenRef.current) {
+        sourceTransitionRef.current = false;
+      }
+    }
+  }
+
+  function waitForSeekableAudio(audio, loadToken) {
+    if (
+      audio.readyState >= HTMLMediaElement.HAVE_METADATA
+      && Number.isFinite(audio.duration)
+      && audio.duration > 0
+    ) {
+      return Promise.resolve();
+    }
+
+    return new Promise((resolve, reject) => {
+      let timeout = 0;
+
+      const cleanup = () => {
+        window.clearTimeout(timeout);
+        audio.removeEventListener('loadedmetadata', handleReady);
+        audio.removeEventListener('durationchange', handleReady);
+        audio.removeEventListener('canplay', handleReady);
+        audio.removeEventListener('error', handleError);
+      };
+      const handleReady = () => {
+        if (isStaleLoad(loadToken)) {
+          cleanup();
+          reject(createAbortError());
+          return;
+        }
+        if (
+          audio.readyState >= HTMLMediaElement.HAVE_METADATA
+          && Number.isFinite(audio.duration)
+          && audio.duration > 0
+        ) {
+          cleanup();
+          resolve();
+        }
+      };
+      const handleError = () => {
+        cleanup();
+        reject(new Error('Audio metadata could not be loaded.'));
+      };
+
+      audio.addEventListener('loadedmetadata', handleReady);
+      audio.addEventListener('durationchange', handleReady);
+      audio.addEventListener('canplay', handleReady);
+      audio.addEventListener('error', handleError);
+      timeout = window.setTimeout(() => {
+        cleanup();
+        reject(new Error('Audio metadata took too long to load.'));
+      }, AUDIO_METADATA_TIMEOUT_MS);
+      handleReady();
+    });
   }
 
   async function handleEnded(endedAudio) {
     if (repeatRef.current) {
-      endedAudio.currentTime = 0;
+      const timing = currentSourceRef.current?.mode === 'full-surah'
+        ? findAyahTiming(
+            currentSourceRef.current.timeline,
+            currentTargetRef.current?.ayahNumber,
+          )
+        : null;
+      endedAudio.currentTime = timing ? timing.startMs / 1000 : 0;
       playIntentRef.current = true;
       await startCurrentAudio();
       return;
@@ -659,54 +762,84 @@ export function ReaderAudioPanel() {
     }
 
     playIntentRef.current = true;
-    const preload = await ensureNextPreloaded(
-      currentTargetRef.current,
-      currentReciterRef.current,
-    );
+    setAudioTarget(nextTarget);
+    await loadTarget(nextTarget, currentReciterRef.current, true);
+  }
+
+  function syncFullSurahTarget(timeSeconds) {
+    const source = currentSourceRef.current;
+    if (source?.mode !== 'full-surah') return;
+
+    const timing = findAyahAtTime(source.timeline, timeSeconds * 1000);
+    if (!timing || sameTarget(currentTargetRef.current, timing)) return;
+
+    const target = targetFromTiming(timing);
+    currentTargetRef.current = target;
+    setAudioTarget(target);
+    updateAudioQueue(target);
+  }
+
+  function updateAudioQueue(target) {
+    const adjacent = getAdjacentTarget(target, 1);
+    setAudioQueue(adjacent ? [target, adjacent] : [target], 0);
+  }
+
+  function recoverFromAudioError(audio) {
     if (
-      unmountedRef.current ||
-      endedAudio !== currentAudioRef.current
+      audio !== currentAudioRef.current
+      || recoveringRef.current
+      || unmountedRef.current
     ) {
       return;
     }
 
-    if (!preload?.audio || !sameTarget(preload.target, nextTarget)) {
-      setAudioTarget(nextTarget);
-      await loadTarget(nextTarget, currentReciterRef.current, true);
+    const source = currentSourceRef.current;
+    if (source?.mode !== 'full-surah') {
+      playIntentRef.current = false;
+      setAudioPlaying(false);
+      setStatus('Audio playback could not continue.');
       return;
     }
 
-    if (nativeAudioRef.current) {
-      disposePreload();
-      setAudioTarget(nextTarget);
-      await loadTarget(nextTarget, currentReciterRef.current, true);
-      return;
-    }
+    const target = currentTargetRef.current;
+    const reciterId = currentReciterRef.current;
+    const shouldResume = playIntentRef.current;
+    recoveringRef.current = true;
+    loadTarget(target, reciterId, shouldResume, { skipFullSurah: true })
+      .finally(() => {
+        recoveringRef.current = false;
+      });
+  }
 
-    preloadRef.current = null;
-    const previousAudio = currentAudioRef.current;
-    unbindAudio(previousAudio);
-
-    currentAudioRef.current = null;
-    installCurrentAudio(preload.audio, nextTarget, preload.reciterId);
-    disposeAudio(previousAudio);
-    setAudioTarget(nextTarget);
-    await startCurrentAudio();
-    ensureNextPreloaded(nextTarget, preload.reciterId);
+  function isStaleLoad(loadToken) {
+    return unmountedRef.current || loadToken !== loadTokenRef.current;
   }
 
   function seek(value) {
     const audio = currentAudioRef.current;
     const nextTime = Number(value) || 0;
     setVisualTime(nextTime);
-    setAudioProgress(nextTime, duration);
-    if (audio) audio.currentTime = nextTime;
+    if (audio) {
+      audio.currentTime = clampSeekTime(audio, nextTime);
+      syncFullSurahTarget(audio.currentTime);
+    }
+    setAudioProgress(audio?.currentTime || nextTime, duration);
     syncMediaSessionPosition(audio);
   }
 
   function togglePlay() {
     const audio = currentAudioRef.current;
     if (!audio) return;
+
+    if (!currentSourceRef.current) {
+      const target = currentTargetRef.current || normalizeTarget(ayah);
+      if (target) {
+        playIntentRef.current = true;
+        setAudioPlaying(true);
+        loadTarget(target, selectedReciter, true);
+      }
+      return;
+    }
 
     if (!audio.paused) {
       playIntentRef.current = false;
@@ -724,10 +857,11 @@ export function ReaderAudioPanel() {
     const nextTarget = getAdjacentTarget(sourceTarget, direction);
     if (!nextTarget) return;
 
-    playIntentRef.current = true;
-    setAudioPlaying(true);
+    const shouldPlay = playIntentRef.current && !currentAudioRef.current?.ended;
+    playIntentRef.current = shouldPlay;
+    setAudioPlaying(shouldPlay);
     setAudioTarget(nextTarget);
-    loadTarget(nextTarget, selectedReciter, true);
+    loadTarget(nextTarget, selectedReciter, shouldPlay);
   }
 
   function cycleSpeed() {
@@ -746,11 +880,10 @@ export function ReaderAudioPanel() {
     playIntentRef.current = false;
     loadTokenRef.current += 1;
     loadingRef.current = null;
-    preloadTokenRef.current += 1;
-    disposeAudio(currentAudioRef.current);
-    disposePreload();
-    currentAudioRef.current = null;
+    sourceTransitionRef.current = false;
+    resetAudio(currentAudioRef.current);
     currentTargetRef.current = null;
+    currentReciterRef.current = '';
     setAudioPlaying(false);
     closeAudioPlayer();
   }
@@ -1014,4 +1147,37 @@ function sameTarget(first, second) {
       Number(first.surahNumber) === Number(second.surahNumber) &&
       Number(first.ayahNumber) === Number(second.ayahNumber)
   );
+}
+
+function targetFromTiming(timing) {
+  const ayah = quranAyahs.find(
+    (item) =>
+      item.surahNumber === timing.surahNumber
+      && item.ayahNumber === timing.ayahNumber,
+  );
+
+  return normalizeTarget({
+    ...ayah,
+    surahNumber: timing.surahNumber,
+    ayahNumber: timing.ayahNumber,
+    reference: timing.verseKey,
+  });
+}
+
+function clampSeekTime(audio, value) {
+  const requested = Math.max(0, Number(value) || 0);
+  if (!Number.isFinite(audio?.duration) || audio.duration <= 0) return requested;
+  return Math.min(requested, Math.max(0, audio.duration - 0.001));
+}
+
+function createUnavailableError() {
+  const error = new Error('Audio is unavailable.');
+  error.code = 'AUDIO_UNAVAILABLE';
+  return error;
+}
+
+function createAbortError() {
+  const error = new Error('Audio load was superseded.');
+  error.name = 'AbortError';
+  return error;
 }
