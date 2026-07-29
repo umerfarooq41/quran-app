@@ -6,6 +6,7 @@ import { findPageForReference, getSurah, quranAyahs } from '../../../lib/quran';
 import {
   findAyahAtTime,
   findAyahTiming,
+  findWordAtTime,
   getFullSurahPlayback,
 } from '../../../lib/fullSurahAudio';
 import {
@@ -63,6 +64,7 @@ export function ReaderAudioPanel() {
     setAudioMode,
     setAudioSurahNumber,
     setPlayingVerseKey,
+    setPlayingWord,
     setSurahTimeline,
     goAyah,
   } = useAppStore(useShallow((state) => ({
@@ -89,6 +91,7 @@ export function ReaderAudioPanel() {
     setAudioMode: state.setAudioMode,
     setAudioSurahNumber: state.setAudioSurahNumber,
     setPlayingVerseKey: state.setPlayingVerseKey,
+    setPlayingWord: state.setPlayingWord,
     setSurahTimeline: state.setSurahTimeline,
     goAyah: state.goAyah,
   })));
@@ -169,6 +172,7 @@ export function ReaderAudioPanel() {
   useEffect(() => {
     if (!playing) {
       setVisualTime(currentTime || 0);
+      setPlayingWord(null);
       rafRunningRef.current = false;
       cancelAnimationFrame(rafRef.current);
       return undefined;
@@ -861,15 +865,25 @@ export function ReaderAudioPanel() {
 
   function syncFullSurahTarget(timeSeconds) {
     const source = currentSourceRef.current;
-    if (source?.mode !== 'full-surah') return;
+    if (source?.mode !== 'full-surah') {
+      setPlayingWord(null);
+      return;
+    }
 
-    const timing = findAyahAtTime(source.timeline, timeSeconds * 1000);
-    if (!timing) return;
+    const timeMs = timeSeconds * 1000;
+    const timing = findAyahAtTime(source.timeline, timeMs);
+    if (!timing) {
+      setPlayingWord(null);
+      return;
+    }
 
     if (lastSyncedVerseKeyRef.current !== timing.verseKey) {
       lastSyncedVerseKeyRef.current = timing.verseKey;
       setPlayingVerseKey(timing.verseKey);
     }
+
+    const wordTiming = findWordAtTime(timing, timeMs);
+    setPlayingWord(wordTiming?.position, wordTiming?.occurrenceIndex);
 
     if (sameTarget(currentTargetRef.current, timing)) return;
 
@@ -890,6 +904,7 @@ export function ReaderAudioPanel() {
     const isFullSurah = source?.mode === 'full-surah';
     const verseKey = `${target.surahNumber}:${target.ayahNumber}`;
 
+    setPlayingWord(null);
     setAudioMode(isFullSurah ? 'surah' : 'ayah');
     setAudioSurahNumber(target.surahNumber);
     setSurahTimeline(isFullSurah ? source.timeline : []);

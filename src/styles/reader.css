@@ -2501,7 +2501,7 @@ body {
 
 /* Playback-only word color. The ayah-wide highlight is drawn by the overlay layer. */
 .reader-page .quran-word.is-recited-word {
-  color: #8b641f;
+  color: #8b641f !important;
   background: transparent;
   font-size: inherit;
   font-weight: inherit;
@@ -2510,6 +2510,6 @@ body {
 }
 
 [data-theme='dark'] .reader-page .quran-word.is-recited-word {
-  color: #d9ad57;
+  color: #d9ad57 !important;
   background: transparent;
 }

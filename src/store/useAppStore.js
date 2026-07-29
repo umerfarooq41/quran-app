@@ -83,6 +83,8 @@ export const useAppStore = create((set, get) => ({
   audioMode: null,
   audioSurahNumber: null,
   playingVerseKey: null,
+  playingWordPosition: null,
+  playingWordOccurrenceIndex: null,
   surahTimeline: [],
   followRecitation: true,
   audioQueue: [],
@@ -262,6 +264,9 @@ export const useAppStore = create((set, get) => ({
     audioDuration: 0,
     audioPlaying: false,
     audioRepeat: 'off',
+    playingVerseKey: null,
+    playingWordPosition: null,
+    playingWordOccurrenceIndex: null,
     audioPlayerActive: false,
     audioPlayerVisible: false,
   }),
@@ -322,7 +327,36 @@ export const useAppStore = create((set, get) => ({
   }),
   setPlayingVerseKey: (playingVerseKey) => set((state) => {
     const nextVerseKey = typeof playingVerseKey === 'string' && playingVerseKey ? playingVerseKey : null;
-    return state.playingVerseKey === nextVerseKey ? state : { playingVerseKey: nextVerseKey };
+    if (state.playingVerseKey === nextVerseKey) return state;
+    return {
+      playingVerseKey: nextVerseKey,
+      playingWordPosition: null,
+      playingWordOccurrenceIndex: null,
+    };
+  }),
+  setPlayingWord: (playingWordPosition, playingWordOccurrenceIndex = null) => set((state) => {
+    const position = Number(playingWordPosition);
+    const occurrenceIndex = Number(playingWordOccurrenceIndex);
+    const nextPosition = Number.isInteger(position) && position > 0 ? position : null;
+    const nextOccurrenceIndex = (
+      nextPosition !== null
+      && Number.isInteger(occurrenceIndex)
+      && occurrenceIndex >= 0
+    )
+      ? occurrenceIndex
+      : null;
+
+    if (
+      state.playingWordPosition === nextPosition
+      && state.playingWordOccurrenceIndex === nextOccurrenceIndex
+    ) {
+      return state;
+    }
+
+    return {
+      playingWordPosition: nextPosition,
+      playingWordOccurrenceIndex: nextOccurrenceIndex,
+    };
   }),
   setSurahTimeline: (surahTimeline) => set((state) => {
     const nextTimeline = Array.isArray(surahTimeline) ? surahTimeline : [];
