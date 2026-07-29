@@ -18,6 +18,8 @@ import { useAppStore } from '../../../store/useAppStore';
 
 const SPEEDS = [1, 1.25, 1.5, 2];
 const AUDIO_METADATA_TIMEOUT_MS = 20000;
+const AUDIO_USER_PLAY_REQUEST_EVENT = 'quran:audio-user-play-request';
+const SILENT_AUDIO_UNLOCK_SRC = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAAAA';
 
 function formatTime(seconds = 0) {
   const safe = Math.max(0, Math.floor(Number(seconds) || 0));
@@ -182,7 +184,14 @@ export function ReaderAudioPanel() {
       bindCurrentAudio(audio);
     }
 
+    const handleUserPlayRequest = () => {
+      playIntentRef.current = true;
+      primeAudioFromUserGesture();
+    };
+    window.addEventListener(AUDIO_USER_PLAY_REQUEST_EVENT, handleUserPlayRequest);
+
     return () => {
+      window.removeEventListener(AUDIO_USER_PLAY_REQUEST_EVENT, handleUserPlayRequest);
       unmountedRef.current = true;
       loadTokenRef.current += 1;
       loadingRef.current = null;
@@ -498,6 +507,43 @@ export function ReaderAudioPanel() {
     } catch {
       // Position state is advisory and may reject partial media metadata.
     }
+  }
+
+  function primeAudioFromUserGesture() {
+    const audio = currentAudioRef.current;
+    if (
+      !audio
+      || unmountedRef.current
+      || currentSourceRef.current
+      || audio.currentSrc
+    ) {
+      return;
+    }
+
+    const wasMuted = audio.muted;
+    sourceTransitionRef.current = true;
+    audio.muted = true;
+    audio.src = SILENT_AUDIO_UNLOCK_SRC;
+    audio.load();
+    const primedSource = audio.src;
+
+    const unlockPromise = audio.play();
+    Promise.resolve(unlockPromise)
+      .catch(() => {
+        // Some browsers do not require an explicit unlock. The real source
+        // will still be loaded and played by the normal autoplay intent.
+      })
+      .finally(() => {
+        // Never tear down a real Surah source if loading replaced the silent
+        // source before this short unlock operation completed.
+        if (audio.src !== primedSource) return;
+
+        audio.pause();
+        audio.removeAttribute('src');
+        audio.load();
+        audio.muted = wasMuted;
+        sourceTransitionRef.current = false;
+      });
   }
 
   async function startCurrentAudio() {
