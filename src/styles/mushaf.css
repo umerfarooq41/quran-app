@@ -409,8 +409,8 @@
 }
 
 .reader-ayah-highlight-audio {
-  background: rgba(45, 184, 150, .24);
-  box-shadow: inset 0 0 0 1px rgba(31, 130, 107, .12);
+  background: rgba(184, 136, 42, .18);
+  box-shadow: inset 0 0 0 1px rgba(139, 100, 31, .10);
 }
 
 .reader-word-highlight-block {

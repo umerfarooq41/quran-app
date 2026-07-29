@@ -2499,15 +2499,7 @@ body {
   color: #b59ae8;
 }
 
-/* Playback-only recitation highlights. These styles do not affect Mushaf text metrics. */
-.reader-page .quran-word.is-recited-ayah {
-  background-color: rgba(184, 136, 42, 0.18);
-  border-radius: 0.18em;
-  transition: background-color 150ms ease, color 150ms ease;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
-}
-
+/* Playback-only word color. The ayah-wide highlight is drawn by the overlay layer. */
 .reader-page .quran-word.is-recited-word {
   color: #8b641f;
   background: transparent;
@@ -2517,11 +2509,7 @@ body {
   box-shadow: none;
 }
 
-[data-theme='dark'] .reader-page .quran-word.is-recited-ayah {
-  background-color: rgba(184, 136, 42, 0.24);
-}
-
 [data-theme='dark'] .reader-page .quran-word.is-recited-word {
-  color: var(--gold, #a87537);
+  color: #d9ad57;
   background: transparent;
 }
