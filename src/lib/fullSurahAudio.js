@@ -149,11 +149,11 @@ export function findAyahTiming(timeline, ayahNumber) {
 export function findAyahAtTime(timeline, timeMs) {
   const time = Number(timeMs);
   if (!Array.isArray(timeline) || !timeline.length || !Number.isFinite(time)) return null;
-  if (time <= timeline[0].startMs) return timeline[0];
+  if (time < timeline[0].startMs) return null;
 
   let low = 0;
   let high = timeline.length - 1;
-  let match = timeline[0];
+  let match = null;
 
   while (low <= high) {
     const middle = Math.floor((low + high) / 2);
@@ -166,7 +166,9 @@ export function findAyahAtTime(timeline, timeMs) {
     }
   }
 
-  return match;
+  // Do not leak the previous ayah into inter-ayah gaps or past the end of
+  // the Surah. Exact starts belong to the new ayah; exact ends do not.
+  return match && time < match.endMs ? match : null;
 }
 
 
@@ -177,15 +179,25 @@ export function findWordAtTime(ayahTiming, timeMs) {
     return null;
   }
 
-  // Word segments are already chronological. Restrict the lookup to the
-  // active ayah so repeated positions remain distinct and cheap to search.
-  for (let index = 0; index < wordSegments.length; index += 1) {
-    const segment = wordSegments[index];
-    if (time < segment.startMs) return null;
-    if (time >= segment.startMs && time < segment.endMs) return segment;
+  // Prefer the most recently started segment. Some source timelines contain
+  // small overlaps; choosing the latest start prevents an older long segment
+  // from hiding the word that has actually begun.
+  let low = 0;
+  let high = wordSegments.length - 1;
+  let match = null;
+
+  while (low <= high) {
+    const middle = Math.floor((low + high) / 2);
+    const candidate = wordSegments[middle];
+    if (candidate.startMs <= time) {
+      match = candidate;
+      low = middle + 1;
+    } else {
+      high = middle - 1;
+    }
   }
 
-  return null;
+  return match && time < match.endMs ? match : null;
 }
 
 export function clearFullSurahAudioCache() {

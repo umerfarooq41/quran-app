@@ -28,6 +28,11 @@ export function getDefaultReciterId() {
   return RECITERS[0]?.id || '';
 }
 
+export function hasAyahAudio(reciterId) {
+  const id = reciterId || getDefaultReciterId();
+  return Boolean(RECITERS.find((reciter) => reciter.id === id)?.hasAyahAudioUrls);
+}
+
 export function normalizeLocalReciters() {
   return RECITERS.map((reciter) => ({
     id: reciter.id,
