@@ -6,7 +6,6 @@ import { findPageForReference, getSurah, quranAyahs } from '../../../lib/quran';
 import {
   findAyahAtTime,
   findAyahTiming,
-  findWordAtTime,
   getFullSurahPlayback,
 } from '../../../lib/fullSurahAudio';
 import {
@@ -19,6 +18,8 @@ import { useAppStore } from '../../../store/useAppStore';
 
 const SPEEDS = [1, 1.25, 1.5, 2];
 const AUDIO_METADATA_TIMEOUT_MS = 20000;
+const RESTART_CURRENT_AYAH_THRESHOLD_MS = 2000;
+const REPEAT_MODES = ['off', 'ayah', 'surah'];
 const AUDIO_USER_PLAY_REQUEST_EVENT = 'quran:audio-user-play-request';
 const SILENT_AUDIO_UNLOCK_SRC = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAAAA';
 
@@ -62,9 +63,8 @@ export function ReaderAudioPanel() {
     setAudioMode,
     setAudioSurahNumber,
     setPlayingVerseKey,
-    setPlayingWord,
-    clearPlayingWord,
     setSurahTimeline,
+    goAyah,
   } = useAppStore(useShallow((state) => ({
     view: state.view,
     settings: state.settings,
@@ -89,9 +89,8 @@ export function ReaderAudioPanel() {
     setAudioMode: state.setAudioMode,
     setAudioSurahNumber: state.setAudioSurahNumber,
     setPlayingVerseKey: state.setPlayingVerseKey,
-    setPlayingWord: state.setPlayingWord,
-    clearPlayingWord: state.clearPlayingWord,
     setSurahTimeline: state.setSurahTimeline,
+    goAyah: state.goAyah,
   })));
   const nativeAudioRef = useRef(null);
   const currentAudioRef = useRef(null);
@@ -102,7 +101,7 @@ export function ReaderAudioPanel() {
   const loadTokenRef = useRef(0);
   const loadingRef = useRef(null);
   const playIntentRef = useRef(playing);
-  const repeatRef = useRef(repeat);
+  const repeatRef = useRef(repeat || 'off');
   const playbackRateRef = useRef(audioPlaybackRate || settings.playbackRate || 1);
   const sourceTransitionRef = useRef(false);
   const recoveringRef = useRef(false);
@@ -110,7 +109,6 @@ export function ReaderAudioPanel() {
   const rafRef = useRef(0);
   const rafRunningRef = useRef(false);
   const lastSyncedVerseKeyRef = useRef(null);
-  const lastSyncedWordRef = useRef({ position: null, occurrenceIndex: null });
   const reciterPickerRef = useRef(null);
   const reciterNameWindowRef = useRef(null);
   const reciterNameTextRef = useRef(null);
@@ -139,7 +137,7 @@ export function ReaderAudioPanel() {
   const displayedTime = playing && duration > 0 ? visualTime : currentTime;
   const progressRatio = duration > 0 ? Math.min(1, Math.max(0, displayedTime / duration)) : 0;
   const panelExpanded = audioPlayerVisible;
-  repeatRef.current = repeat;
+  repeatRef.current = repeat || 'off';
   playbackRateRef.current = audioPlaybackRate || settings.playbackRate || 1;
 
   useEffect(() => {
@@ -173,7 +171,6 @@ export function ReaderAudioPanel() {
       setVisualTime(currentTime || 0);
       rafRunningRef.current = false;
       cancelAnimationFrame(rafRef.current);
-      clearSyncedWord();
       return undefined;
     }
 
@@ -436,7 +433,7 @@ export function ReaderAudioPanel() {
         if (audio !== currentAudioRef.current) return;
 
         if (
-          repeatRef.current
+          repeatRef.current === 'ayah'
           && currentSourceRef.current?.mode === 'full-surah'
         ) {
           const timing = findAyahTiming(
@@ -444,7 +441,8 @@ export function ReaderAudioPanel() {
             currentTargetRef.current?.ayahNumber,
           );
           if (timing && audio.currentTime * 1000 >= timing.endMs) {
-            audio.currentTime = timing.startMs / 1000;
+            audio.currentTime = clampSeekTime(audio, timing.startMs / 1000);
+            syncFullSurahTarget(audio.currentTime);
             setAudioProgress(
               audio.currentTime || 0,
               Number.isFinite(audio.duration) ? audio.duration : 0,
@@ -548,28 +546,26 @@ export function ReaderAudioPanel() {
       return;
     }
 
-    const wasMuted = audio.muted;
     sourceTransitionRef.current = true;
+    audio.loop = true;
     audio.muted = true;
     audio.src = SILENT_AUDIO_UNLOCK_SRC;
     audio.load();
     const primedSource = audio.src;
 
-    const unlockPromise = audio.play();
-    Promise.resolve(unlockPromise)
+    Promise.resolve(audio.play())
       .catch(() => {
-        // Some browsers do not require an explicit unlock. The real source
-        // will still be loaded and played by the normal autoplay intent.
+        // The real source will still use the normal play path. A rejected
+        // unlock attempt must never leave the shared element muted.
       })
       .finally(() => {
-        // Never tear down a real Surah source if loading replaced the silent
-        // source before this short unlock operation completed.
-        if (audio.src !== primedSource) return;
-
-        audio.pause();
-        audio.removeAttribute('src');
-        audio.load();
-        audio.muted = wasMuted;
+        if (audio.src === primedSource && !loadingRef.current) {
+          audio.pause();
+          audio.removeAttribute('src');
+          audio.load();
+        }
+        audio.loop = false;
+        audio.muted = false;
         sourceTransitionRef.current = false;
       });
   }
@@ -596,7 +592,7 @@ export function ReaderAudioPanel() {
       }
       playIntentRef.current = false;
       setAudioPlaying(false);
-      setStatus(error?.message || 'Audio playback could not start.');
+      setStatus('Tap Play to allow audio on this device.');
       return false;
     }
   }
@@ -732,6 +728,9 @@ export function ReaderAudioPanel() {
 
     sourceTransitionRef.current = true;
     try {
+      audio.loop = false;
+      audio.muted = false;
+      audio.volume = 1;
       if (!sameSource) {
         audio.pause();
         currentSourceRef.current = source;
@@ -817,23 +816,41 @@ export function ReaderAudioPanel() {
   }
 
   async function handleEnded(endedAudio) {
-    if (repeatRef.current) {
-      const timing = currentSourceRef.current?.mode === 'full-surah'
-        ? findAyahTiming(
-            currentSourceRef.current.timeline,
-            currentTargetRef.current?.ayahNumber,
-          )
+    const source = currentSourceRef.current;
+    const repeatMode = repeatRef.current || 'off';
+
+    if (repeatMode === 'ayah') {
+      const timing = source?.mode === 'full-surah'
+        ? findAyahTiming(source.timeline, currentTargetRef.current?.ayahNumber)
         : null;
-      endedAudio.currentTime = timing ? timing.startMs / 1000 : 0;
+      endedAudio.currentTime = clampSeekTime(endedAudio, timing ? timing.startMs / 1000 : 0);
       playIntentRef.current = true;
+      syncFullSurahTarget(endedAudio.currentTime);
       await startCurrentAudio();
       return;
     }
 
-    const nextTarget = getAdjacentTarget(currentTargetRef.current, 1);
+    if (repeatMode === 'surah' && source?.mode === 'full-surah') {
+      const firstTiming = source.timeline?.[0];
+      endedAudio.currentTime = clampSeekTime(endedAudio, (firstTiming?.startMs || 0) / 1000);
+      playIntentRef.current = true;
+      syncFullSurahTarget(endedAudio.currentTime);
+      await startCurrentAudio();
+      return;
+    }
+
+    let nextTarget = getAdjacentTarget(currentTargetRef.current, 1);
+
+    if (repeatMode === 'surah' && source?.mode === 'ayah-fallback') {
+      if (!nextTarget || nextTarget.surahNumber !== currentTargetRef.current?.surahNumber) {
+        nextTarget = getFirstTargetOfSurah(currentTargetRef.current?.surahNumber);
+      }
+    }
+
     if (!nextTarget) {
       playIntentRef.current = false;
       setAudioPlaying(false);
+      setPlayingVerseKey(null);
       return;
     }
 
@@ -844,25 +861,15 @@ export function ReaderAudioPanel() {
 
   function syncFullSurahTarget(timeSeconds) {
     const source = currentSourceRef.current;
-    if (source?.mode !== 'full-surah') {
-      clearSyncedWord();
-      return;
-    }
+    if (source?.mode !== 'full-surah') return;
 
-    const timeMs = timeSeconds * 1000;
-    const timing = findAyahAtTime(source.timeline, timeMs);
-    if (!timing) {
-      clearSyncedWord();
-      return;
-    }
+    const timing = findAyahAtTime(source.timeline, timeSeconds * 1000);
+    if (!timing) return;
 
     if (lastSyncedVerseKeyRef.current !== timing.verseKey) {
       lastSyncedVerseKeyRef.current = timing.verseKey;
       setPlayingVerseKey(timing.verseKey);
-      clearSyncedWord();
     }
-
-    syncFullSurahWord(timing, timeMs);
 
     if (sameTarget(currentTargetRef.current, timing)) return;
 
@@ -870,38 +877,6 @@ export function ReaderAudioPanel() {
     currentTargetRef.current = target;
     setAudioTarget(target);
     updateAudioQueue(target);
-  }
-
-  function syncFullSurahWord(ayahTiming, timeMs) {
-    const wordTiming = findWordAtTime(ayahTiming, timeMs);
-    if (!wordTiming) {
-      clearSyncedWord();
-      return;
-    }
-
-    const nextPosition = wordTiming.position;
-    const nextOccurrenceIndex = wordTiming.occurrenceIndex || 0;
-    const previous = lastSyncedWordRef.current;
-    if (
-      previous.position === nextPosition
-      && previous.occurrenceIndex === nextOccurrenceIndex
-    ) {
-      return;
-    }
-
-    lastSyncedWordRef.current = {
-      position: nextPosition,
-      occurrenceIndex: nextOccurrenceIndex,
-    };
-    setPlayingWord(nextPosition, nextOccurrenceIndex);
-  }
-
-  function clearSyncedWord() {
-    const previous = lastSyncedWordRef.current;
-    if (previous.position === null && previous.occurrenceIndex === null) return;
-
-    lastSyncedWordRef.current = { position: null, occurrenceIndex: null };
-    clearPlayingWord();
   }
 
   function syncPlaybackStateForCurrentSource() {
@@ -922,10 +897,7 @@ export function ReaderAudioPanel() {
     if (lastSyncedVerseKeyRef.current !== verseKey) {
       lastSyncedVerseKeyRef.current = verseKey;
       setPlayingVerseKey(verseKey);
-      clearSyncedWord();
     }
-
-    if (!isFullSurah) clearSyncedWord();
   }
 
   function updateAudioQueue(target) {
@@ -1002,15 +974,59 @@ export function ReaderAudioPanel() {
   }
 
   function moveAyah(direction) {
+    const audio = currentAudioRef.current;
+    const source = currentSourceRef.current;
     const sourceTarget = currentTargetRef.current || normalizeTarget(ayah);
-    const nextTarget = getAdjacentTarget(sourceTarget, direction);
-    if (!nextTarget) return;
+    if (!sourceTarget) return;
 
-    const shouldPlay = playIntentRef.current && !currentAudioRef.current?.ended;
+    if (source?.mode === 'full-surah' && audio) {
+      const activeTiming = findAyahAtTime(source.timeline, audio.currentTime * 1000)
+        || findAyahTiming(source.timeline, sourceTarget.ayahNumber);
+
+      if (direction < 0 && activeTiming) {
+        const elapsedMs = audio.currentTime * 1000 - activeTiming.startMs;
+        if (elapsedMs > RESTART_CURRENT_AYAH_THRESHOLD_MS) {
+          audio.currentTime = clampSeekTime(audio, activeTiming.startMs / 1000);
+          syncFullSurahTarget(audio.currentTime);
+          setAudioProgress(audio.currentTime, Number.isFinite(audio.duration) ? audio.duration : 0);
+          return;
+        }
+      }
+
+      const adjacentTiming = source.timeline?.[source.timeline.indexOf(activeTiming) + direction];
+      if (adjacentTiming) {
+        audio.currentTime = clampSeekTime(audio, adjacentTiming.startMs / 1000);
+        syncFullSurahTarget(audio.currentTime);
+        setAudioProgress(audio.currentTime, Number.isFinite(audio.duration) ? audio.duration : 0);
+        return;
+      }
+    }
+
+    const nextTarget = getAdjacentTarget(sourceTarget, direction);
+    if (!nextTarget) {
+      setStatus(direction < 0 ? 'No previous Surah is available.' : 'No next Surah is available.');
+      return;
+    }
+
+    const shouldPlay = playIntentRef.current && !audio?.ended;
     playIntentRef.current = shouldPlay;
     setAudioPlaying(shouldPlay);
     setAudioTarget(nextTarget);
     loadTarget(nextTarget, selectedReciter, shouldPlay);
+  }
+
+  function cycleRepeatMode() {
+    const currentMode = repeat || 'off';
+    const currentIndex = REPEAT_MODES.indexOf(currentMode);
+    const nextMode = REPEAT_MODES[(currentIndex + 1) % REPEAT_MODES.length];
+    setAudioRepeat(nextMode);
+    setStatus(
+      nextMode === 'ayah'
+        ? 'Repeat current ayah'
+        : nextMode === 'surah'
+          ? 'Repeat current Surah'
+          : 'Repeat off',
+    );
   }
 
   function cycleSpeed() {
@@ -1025,6 +1041,13 @@ export function ReaderAudioPanel() {
     setReciterPickerOpen(false);
   }
 
+  function returnToCurrentRecitation(event) {
+    if (event?.target?.closest?.('button, input, select, a')) return;
+    const target = currentTargetRef.current || normalizeTarget(ayah);
+    if (!target) return;
+    goAyah(target.surahNumber, target.ayahNumber, target.page);
+  }
+
   function closePlayer() {
     playIntentRef.current = false;
     loadTokenRef.current += 1;
@@ -1034,7 +1057,6 @@ export function ReaderAudioPanel() {
     currentTargetRef.current = null;
     currentReciterRef.current = '';
     lastSyncedVerseKeyRef.current = null;
-    clearSyncedWord();
     setAudioMode(null);
     setAudioSurahNumber(null);
     setPlayingVerseKey(null);
@@ -1092,11 +1114,13 @@ export function ReaderAudioPanel() {
       <div className={compact ? 'reader-transport-row reader-transport-modern reader-transport-mini' : 'reader-transport-row reader-transport-modern'}>
         <button
           type="button"
-          className={repeat ? 'transport-active' : ''}
-          onClick={() => setAudioRepeat(!repeat)}
-          aria-label="Repeat ayah"
+          className={`transport-repeat ${repeat !== 'off' ? 'transport-active' : ''}`.trim()}
+          onClick={cycleRepeatMode}
+          aria-label={repeat === 'ayah' ? 'Repeat current ayah' : repeat === 'surah' ? 'Repeat current Surah' : 'Repeat off'}
         >
           <Repeat size={30} />
+          {repeat === 'ayah' && <span className="transport-repeat-badge" aria-hidden="true">A</span>}
+          {repeat === 'surah' && <span className="transport-repeat-badge" aria-hidden="true">S</span>}
         </button>
         <button type="button" onClick={() => moveAyah(-1)} aria-label="Previous ayah">
           <SkipBack size={31} />
@@ -1249,6 +1273,8 @@ export function ReaderAudioPanel() {
           className={`reader-audio-panel reader-audio-panel-modern reader-audio-mini-panel ${panelExpanded ? 'is-inactive' : 'is-active'}`}
           aria-hidden={panelExpanded}
           inert={panelExpanded ? true : undefined}
+          onClick={returnToCurrentRecitation}
+          title="Return to the currently recited ayah"
         >
           <div className="reader-audio-mini-content">
             {renderGrabber('expand')}
@@ -1293,6 +1319,18 @@ function getAdjacentTarget(target, direction) {
     reference: `${adjacent.surahNumber}:${adjacent.ayahNumber}`,
     arabic: adjacent.text,
   };
+}
+
+function getFirstTargetOfSurah(surahNumber) {
+  const firstAyah = quranAyahs.find(
+    (item) => item.surahNumber === Number(surahNumber),
+  );
+  if (!firstAyah) return null;
+
+  return normalizeTarget({
+    ...firstAyah,
+    reference: `${firstAyah.surahNumber}:${firstAyah.ayahNumber}`,
+  });
 }
 
 function sameTarget(first, second) {

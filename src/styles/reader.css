@@ -2499,24 +2499,25 @@ body {
   color: #b59ae8;
 }
 
-/* Playback-only recitation highlights. These backgrounds do not affect text metrics. */
-.reader-page .quran-word.is-recited-ayah {
-  background-color: rgba(34, 125, 104, 0.14);
-  border-radius: 0.18em;
-  transition: background-color 150ms ease;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
+/* Repeat mode badge: A = current ayah, S = current Surah. */
+.reader-transport-modern .transport-repeat {
+  position: relative;
 }
 
-.reader-page .quran-word.is-recited-word {
-  background-color: rgba(243, 184, 62, 0.62);
-  transition: background-color 150ms ease;
-}
-
-[data-theme='dark'] .reader-page .quran-word.is-recited-ayah {
-  background-color: rgba(134, 239, 172, 0.18);
-}
-
-[data-theme='dark'] .reader-page .quran-word.is-recited-word {
-  background-color: rgba(250, 204, 21, 0.58);
+.reader-transport-modern .transport-repeat-badge {
+  position: absolute;
+  inset-inline-end: 2px;
+  inset-block-start: 1px;
+  display: grid;
+  place-items: center;
+  min-width: 15px;
+  height: 15px;
+  padding-inline: 3px;
+  border-radius: 999px;
+  background: currentColor;
+  color: var(--audio-panel-bg, #fff);
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1;
+  pointer-events: none;
 }
