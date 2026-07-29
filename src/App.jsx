@@ -55,6 +55,8 @@ export default function App() {
     openHome,
     navDirection,
     overlayStack,
+    audioPlayerVisible,
+    hideAudioPlayer,
   } = useAppStore(useShallow((state) => ({
     view: state.view,
     hydrateLastRead: state.hydrateLastRead,
@@ -64,6 +66,8 @@ export default function App() {
     openHome: state.openHome,
     navDirection: state.navDirection,
     overlayStack: state.overlayStack,
+    audioPlayerVisible: state.audioPlayerVisible,
+    hideAudioPlayer: state.hideAudioPlayer,
   })));
   const activeView = normalizeView(view);
   const [booted, setBooted] = useState(false);
@@ -71,9 +75,23 @@ export default function App() {
   const navigationFromPopRef = useRef(false);
   const ignoreNextPopRef = useRef(false);
   const previousNavigationRef = useRef({ view: activeView, overlayDepth: overlayStack.length });
-  const latestNavigationRef = useRef({ activeView, overlayStack, goBack, openHome });
+  const latestNavigationRef = useRef({
+    activeView,
+    overlayStack,
+    goBack,
+    openHome,
+    audioPlayerVisible,
+    hideAudioPlayer,
+  });
 
-  latestNavigationRef.current = { activeView, overlayStack, goBack, openHome };
+  latestNavigationRef.current = {
+    activeView,
+    overlayStack,
+    goBack,
+    openHome,
+    audioPlayerVisible,
+    hideAudioPlayer,
+  };
 
   useEffect(() => {
     requestPortraitLock();
@@ -181,7 +199,25 @@ export default function App() {
         overlayStack: currentOverlays,
         goBack: navigateBack,
         openHome: navigateHome,
+        audioPlayerVisible: isAudioPlayerExpanded,
+        hideAudioPlayer: collapseAudioPlayer,
       } = latestNavigationRef.current;
+      // Android/PWA back should first collapse the expanded player. Re-add
+      // the current history entry because popstate has already moved backward.
+      if (isAudioPlayerExpanded) {
+        collapseAudioPlayer();
+        window.history.pushState(
+          {
+            ...(window.history.state || {}),
+            quranApp: true,
+            view: currentView,
+            overlayDepth: currentOverlays.length,
+          },
+          document.title,
+        );
+        return;
+      }
+
       const topOverlay = currentOverlays.at(-1);
       const hasLocalOverlay = topOverlay && (
         topOverlay.type === OVERLAY_TYPES.AYAH
