@@ -49,6 +49,9 @@ export default function ReaderScreen() {
     audioPlayerActive,
     audioPlayerVisible,
     audioPlaying,
+    playingVerseKey,
+    playingWordPosition,
+    playingWordOccurrenceIndex,
     openAudioPlayer,
     showAudioPlayer,
     hideAudioPlayer,
@@ -82,6 +85,9 @@ export default function ReaderScreen() {
     audioPlayerActive: state.audioPlayerActive,
     audioPlayerVisible: state.audioPlayerVisible,
     audioPlaying: state.audioPlaying,
+    playingVerseKey: state.playingVerseKey,
+    playingWordPosition: state.playingWordPosition,
+    playingWordOccurrenceIndex: state.playingWordOccurrenceIndex,
     openAudioPlayer: state.openAudioPlayer,
     showAudioPlayer: state.showAudioPlayer,
     hideAudioPlayer: state.hideAudioPlayer,
@@ -637,6 +643,9 @@ export default function ReaderScreen() {
         quarterFlashTarget={interactive ? quarterFlashTarget : null}
         selectedAyah={interactive ? selectedAyah : null}
         activeAudioAyah={activeAudioAyah}
+        playingVerseKey={playingVerseKey}
+        playingWordPosition={playingWordPosition}
+        playingWordOccurrenceIndex={playingWordOccurrenceIndex}
         interactionsBlocked={!interactive || readerInteractionsBlocked}
         enableTextHighlights={interactive}
         onBlockedInteraction={interactive ? dismissVisibleReaderUi : undefined}

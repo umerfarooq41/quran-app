@@ -2498,3 +2498,25 @@ body {
 [data-theme="dark"] .wbw-colored-meaning .pn {
   color: #b59ae8;
 }
+
+/* Playback-only recitation highlights. These backgrounds do not affect text metrics. */
+.reader-page .quran-word.is-recited-ayah {
+  background-color: rgba(34, 125, 104, 0.14);
+  border-radius: 0.18em;
+  transition: background-color 150ms ease;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.reader-page .quran-word.is-recited-word {
+  background-color: rgba(243, 184, 62, 0.62);
+  transition: background-color 150ms ease;
+}
+
+[data-theme='dark'] .reader-page .quran-word.is-recited-ayah {
+  background-color: rgba(134, 239, 172, 0.18);
+}
+
+[data-theme='dark'] .reader-page .quran-word.is-recited-word {
+  background-color: rgba(250, 204, 21, 0.58);
+}

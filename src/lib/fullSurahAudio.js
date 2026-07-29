@@ -107,6 +107,7 @@ export function buildSurahTimeline(segmentsByVerse, surahNumber) {
       return;
     }
 
+    const occurrenceCounts = new Map();
     const wordSegments = (Array.isArray(timing.segments) ? timing.segments : [])
       .map(normalizeWordSegment)
       .filter(Boolean)
@@ -115,7 +116,11 @@ export function buildSurahTimeline(segmentsByVerse, surahNumber) {
         || first.endMs - second.endMs
         || first.sourceIndex - second.sourceIndex
       ))
-      .map(({ sourceIndex, ...segment }) => segment);
+      .map(({ sourceIndex, ...segment }) => {
+        const occurrenceIndex = occurrenceCounts.get(segment.position) || 0;
+        occurrenceCounts.set(segment.position, occurrenceIndex + 1);
+        return { ...segment, occurrenceIndex };
+      });
 
     timeline.push({
       verseKey: `${parsed.surahNumber}:${parsed.ayahNumber}`,
@@ -160,6 +165,25 @@ export function findAyahAtTime(timeline, timeMs) {
   }
 
   return match;
+}
+
+
+export function findWordAtTime(ayahTiming, timeMs) {
+  const time = Number(timeMs);
+  const wordSegments = ayahTiming?.wordSegments;
+  if (!Array.isArray(wordSegments) || !wordSegments.length || !Number.isFinite(time)) {
+    return null;
+  }
+
+  // Word segments are already chronological. Restrict the lookup to the
+  // active ayah so repeated positions remain distinct and cheap to search.
+  for (let index = 0; index < wordSegments.length; index += 1) {
+    const segment = wordSegments[index];
+    if (time < segment.startMs) return null;
+    if (time >= segment.startMs && time < segment.endMs) return segment;
+  }
+
+  return null;
 }
 
 export function clearFullSurahAudioCache() {

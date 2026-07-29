@@ -9,6 +9,7 @@ import {
 import { SurahHeader } from './SurahHeader';
 import { isAyahMarkerToken } from '../../../lib/mushafText';
 import { triggerHaptic } from '../../../lib/haptics';
+import { mapRenderedTokensToQuranWords } from '../../../lib/quranWordMap';
 
 const LINE_FIT_EVENT = 'quran-line-fit';
 const LINE_EDGE_GUTTER = 4;
@@ -32,6 +33,9 @@ export function QuranLine({
   hasSeparateBasmallah = false,
   coveredByCombinedHeader = false,
   forceCentered = false,
+  playingVerseKey = null,
+  playingWordPosition = null,
+  playingWordOccurrenceIndex = null,
 }) {
   const lineRef = useRef(null);
   const textRef = useRef(null);
@@ -58,6 +62,10 @@ export function QuranLine({
       .filter((token) => token.isWord && isAyahMarkerToken(token.text, line))
       .map((token) => token.text),
   ), [line, renderedTokens]);
+  const wordMetadataByTokenIndex = useMemo(
+    () => mapRenderedTokensToQuranWords(line, renderedTokens),
+    [line, renderedTokens],
+  );
   const inlineBasmallah = line.type === 'surah_name' && line.surahNumber !== 1 && line.surahNumber !== 9 && !hasSeparateBasmallah;
 
   useLayoutEffect(() => {
@@ -446,21 +454,45 @@ export function QuranLine({
             whiteSpace: 'nowrap',
           }}
         >
-          {renderedTokens.map((token, index) => (
-            token.isWord ? (
+          {renderedTokens.map((token, index) => {
+            if (!token.isWord) {
+              return (
+                <React.Fragment key={`space-${token.start}-${index}`}>
+                  {token.text}
+                </React.Fragment>
+              );
+            }
+
+            const isMarker = markerTokens.has(token.text);
+            const wordMeta = wordMetadataByTokenIndex.get(token.wordIndex) || null;
+            const isRecitedAyah = Boolean(
+              !isMarker
+              && wordMeta?.verseKey
+              && wordMeta.verseKey === playingVerseKey
+            );
+            const isRecitedWord = Boolean(
+              isRecitedAyah
+              && Number(wordMeta.position) === Number(playingWordPosition)
+            );
+            const className = [
+              'quran-word',
+              isRecitedAyah ? 'is-recited-ayah' : '',
+              isRecitedWord ? 'is-recited-word' : '',
+            ].filter(Boolean).join(' ');
+
+            return (
               <span
                 key={`${token.start}-${token.end}`}
-                className="quran-word"
+                className={className}
                 data-quran-word-index={token.wordIndex}
+                data-verse-key={!isMarker ? wordMeta?.verseKey : undefined}
+                data-word-position={!isMarker ? wordMeta?.position : undefined}
+                data-word-occurrence-index={isRecitedWord ? playingWordOccurrenceIndex : undefined}
               >
-                {renderWordText(token.text, markerTokens.has(token.text))}
+                {renderWordText(token.text, isMarker)}
               </span>
-            ) : (
-              <React.Fragment key={`space-${token.start}-${index}`}>
-                {token.text}
-              </React.Fragment>
-            )
-          ))}
+            );
+          })}
         </span>
       )}
     </button>

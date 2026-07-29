@@ -6,6 +6,7 @@ import { findPageForReference, getSurah, quranAyahs } from '../../../lib/quran';
 import {
   findAyahAtTime,
   findAyahTiming,
+  findWordAtTime,
   getFullSurahPlayback,
 } from '../../../lib/fullSurahAudio';
 import {
@@ -61,6 +62,8 @@ export function ReaderAudioPanel() {
     setAudioMode,
     setAudioSurahNumber,
     setPlayingVerseKey,
+    setPlayingWord,
+    clearPlayingWord,
     setSurahTimeline,
   } = useAppStore(useShallow((state) => ({
     view: state.view,
@@ -86,6 +89,8 @@ export function ReaderAudioPanel() {
     setAudioMode: state.setAudioMode,
     setAudioSurahNumber: state.setAudioSurahNumber,
     setPlayingVerseKey: state.setPlayingVerseKey,
+    setPlayingWord: state.setPlayingWord,
+    clearPlayingWord: state.clearPlayingWord,
     setSurahTimeline: state.setSurahTimeline,
   })));
   const nativeAudioRef = useRef(null);
@@ -105,6 +110,7 @@ export function ReaderAudioPanel() {
   const rafRef = useRef(0);
   const rafRunningRef = useRef(false);
   const lastSyncedVerseKeyRef = useRef(null);
+  const lastSyncedWordRef = useRef({ position: null, occurrenceIndex: null });
   const reciterPickerRef = useRef(null);
   const reciterNameWindowRef = useRef(null);
   const reciterNameTextRef = useRef(null);
@@ -167,6 +173,7 @@ export function ReaderAudioPanel() {
       setVisualTime(currentTime || 0);
       rafRunningRef.current = false;
       cancelAnimationFrame(rafRef.current);
+      clearSyncedWord();
       return undefined;
     }
 
@@ -837,15 +844,25 @@ export function ReaderAudioPanel() {
 
   function syncFullSurahTarget(timeSeconds) {
     const source = currentSourceRef.current;
-    if (source?.mode !== 'full-surah') return;
+    if (source?.mode !== 'full-surah') {
+      clearSyncedWord();
+      return;
+    }
 
-    const timing = findAyahAtTime(source.timeline, timeSeconds * 1000);
-    if (!timing) return;
+    const timeMs = timeSeconds * 1000;
+    const timing = findAyahAtTime(source.timeline, timeMs);
+    if (!timing) {
+      clearSyncedWord();
+      return;
+    }
 
     if (lastSyncedVerseKeyRef.current !== timing.verseKey) {
       lastSyncedVerseKeyRef.current = timing.verseKey;
       setPlayingVerseKey(timing.verseKey);
+      clearSyncedWord();
     }
+
+    syncFullSurahWord(timing, timeMs);
 
     if (sameTarget(currentTargetRef.current, timing)) return;
 
@@ -853,6 +870,38 @@ export function ReaderAudioPanel() {
     currentTargetRef.current = target;
     setAudioTarget(target);
     updateAudioQueue(target);
+  }
+
+  function syncFullSurahWord(ayahTiming, timeMs) {
+    const wordTiming = findWordAtTime(ayahTiming, timeMs);
+    if (!wordTiming) {
+      clearSyncedWord();
+      return;
+    }
+
+    const nextPosition = wordTiming.position;
+    const nextOccurrenceIndex = wordTiming.occurrenceIndex || 0;
+    const previous = lastSyncedWordRef.current;
+    if (
+      previous.position === nextPosition
+      && previous.occurrenceIndex === nextOccurrenceIndex
+    ) {
+      return;
+    }
+
+    lastSyncedWordRef.current = {
+      position: nextPosition,
+      occurrenceIndex: nextOccurrenceIndex,
+    };
+    setPlayingWord(nextPosition, nextOccurrenceIndex);
+  }
+
+  function clearSyncedWord() {
+    const previous = lastSyncedWordRef.current;
+    if (previous.position === null && previous.occurrenceIndex === null) return;
+
+    lastSyncedWordRef.current = { position: null, occurrenceIndex: null };
+    clearPlayingWord();
   }
 
   function syncPlaybackStateForCurrentSource() {
@@ -873,7 +922,10 @@ export function ReaderAudioPanel() {
     if (lastSyncedVerseKeyRef.current !== verseKey) {
       lastSyncedVerseKeyRef.current = verseKey;
       setPlayingVerseKey(verseKey);
+      clearSyncedWord();
     }
+
+    if (!isFullSurah) clearSyncedWord();
   }
 
   function updateAudioQueue(target) {
@@ -982,6 +1034,7 @@ export function ReaderAudioPanel() {
     currentTargetRef.current = null;
     currentReciterRef.current = '';
     lastSyncedVerseKeyRef.current = null;
+    clearSyncedWord();
     setAudioMode(null);
     setAudioSurahNumber(null);
     setPlayingVerseKey(null);

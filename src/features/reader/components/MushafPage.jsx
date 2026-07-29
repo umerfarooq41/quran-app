@@ -36,6 +36,9 @@ export function MushafPage({
   quarterFlashTarget,
   selectedAyah,
   activeAudioAyah,
+  playingVerseKey,
+  playingWordPosition,
+  playingWordOccurrenceIndex,
   interactionsBlocked = false,
   enableTextHighlights = true,
   onBlockedInteraction,
@@ -392,6 +395,9 @@ export function MushafPage({
             onSelect={(selection) => onSelectAyah(line, line.sourceIndex ?? index, selection)}
             onTap={(selection) => onTapAyah?.(line, line.sourceIndex ?? index, selection)}
             marked={!supportsTextHighlights && lineHasSavedHighlight(line, savedHighlights)}
+            playingVerseKey={playingVerseKey}
+            playingWordPosition={playingWordPosition}
+            playingWordOccurrenceIndex={playingWordOccurrenceIndex}
             jumped={Boolean(
               (
                 quarterFlashTarget?.flashMode === 'first-rendered-line' &&

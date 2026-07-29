@@ -83,6 +83,8 @@ export const useAppStore = create((set, get) => ({
   audioMode: null,
   audioSurahNumber: null,
   playingVerseKey: null,
+  playingWordPosition: null,
+  playingWordOccurrenceIndex: null,
   surahTimeline: [],
   followRecitation: true,
   audioQueue: [],
@@ -256,6 +258,12 @@ export const useAppStore = create((set, get) => ({
   }),
   closeAudioPlayer: () => set({
     audioTarget: null,
+    audioMode: null,
+    audioSurahNumber: null,
+    playingVerseKey: null,
+    playingWordPosition: null,
+    playingWordOccurrenceIndex: null,
+    surahTimeline: [],
     audioQueue: [],
     audioQueueIndex: -1,
     audioPosition: 0,
@@ -322,7 +330,50 @@ export const useAppStore = create((set, get) => ({
   }),
   setPlayingVerseKey: (playingVerseKey) => set((state) => {
     const nextVerseKey = typeof playingVerseKey === 'string' && playingVerseKey ? playingVerseKey : null;
-    return state.playingVerseKey === nextVerseKey ? state : { playingVerseKey: nextVerseKey };
+    if (state.playingVerseKey === nextVerseKey) return state;
+
+    return {
+      playingVerseKey: nextVerseKey,
+      playingWordPosition: null,
+      playingWordOccurrenceIndex: null,
+    };
+  }),
+  setPlayingWord: (playingWordPosition, playingWordOccurrenceIndex = 0) => set((state) => {
+    const parsedPosition = Number(playingWordPosition);
+    const nextPosition = Number.isInteger(parsedPosition) && parsedPosition > 0
+      ? parsedPosition
+      : null;
+    const parsedOccurrenceIndex = Number(playingWordOccurrenceIndex);
+    const nextOccurrenceIndex = nextPosition === null
+      ? null
+      : (Number.isInteger(parsedOccurrenceIndex) && parsedOccurrenceIndex >= 0
+        ? parsedOccurrenceIndex
+        : 0);
+
+    if (
+      state.playingWordPosition === nextPosition
+      && state.playingWordOccurrenceIndex === nextOccurrenceIndex
+    ) {
+      return state;
+    }
+
+    return {
+      playingWordPosition: nextPosition,
+      playingWordOccurrenceIndex: nextOccurrenceIndex,
+    };
+  }),
+  clearPlayingWord: () => set((state) => {
+    if (
+      state.playingWordPosition === null
+      && state.playingWordOccurrenceIndex === null
+    ) {
+      return state;
+    }
+
+    return {
+      playingWordPosition: null,
+      playingWordOccurrenceIndex: null,
+    };
   }),
   setSurahTimeline: (surahTimeline) => set((state) => {
     const nextTimeline = Array.isArray(surahTimeline) ? surahTimeline : [];
@@ -338,7 +389,15 @@ export const useAppStore = create((set, get) => ({
   }),
   setAudioPlaying: (audioPlaying) => set((state) => {
     const nextPlaying = Boolean(audioPlaying);
-    return state.audioPlaying === nextPlaying ? state : { audioPlaying: nextPlaying };
+    if (state.audioPlaying === nextPlaying) return state;
+
+    return nextPlaying
+      ? { audioPlaying: true }
+      : {
+          audioPlaying: false,
+          playingWordPosition: null,
+          playingWordOccurrenceIndex: null,
+        };
   }),
   setAudioRepeat: (audioRepeat) => set({ audioRepeat: Boolean(audioRepeat) }),
   setTafsirTarget: (tafsirTarget) => set((state) => ({
