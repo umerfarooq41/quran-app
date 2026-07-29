@@ -11,6 +11,8 @@ export const FULL_SURAH_FOLDER_BY_RECITER = Object.freeze({
   'yasser-al-dosari': 'yasser-al-dosari',
 });
 
+// Store the Promise itself so resolved data remains in memory for the session
+// and concurrent callers share the same fetch-and-parse operation.
 const reciterDataCache = new Map();
 
 export function getFullSurahFolder(reciterId) {

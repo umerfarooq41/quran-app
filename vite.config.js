@@ -42,6 +42,9 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,json}'],
         globIgnores: [
           'data/audio/*.json',
+          'data/audio/full/**/surah.json',
+          'data/audio/full/**/segments.json',
+          'data/audio/full/**/*.mp3',
           'data/translations/wbw-translation-en.json',
         ],
         maximumFileSizeToCacheInBytes: 12 * 1024 * 1024,
@@ -86,7 +89,46 @@ export default defineConfig({
           {
             urlPattern: ({ url }) => (
               url.origin === self.location.origin
+              && url.pathname.startsWith('/data/audio/full/')
+              && url.pathname.endsWith('/surah.json')
+            ),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'full-surah-metadata',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 90,
+                purgeOnQuotaError: true,
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+          {
+            urlPattern: ({ url }) => (
+              url.origin === self.location.origin
+              && url.pathname.startsWith('/data/audio/full/')
+              && url.pathname.endsWith('/segments.json')
+            ),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'full-surah-segments',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 90,
+                purgeOnQuotaError: true,
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+          {
+            urlPattern: ({ url }) => (
+              url.origin === self.location.origin
               && url.pathname.startsWith('/data/audio/')
+              && !url.pathname.startsWith('/data/audio/full/')
               && url.pathname.endsWith('.json')
             ),
             handler: 'CacheFirst',
@@ -98,6 +140,9 @@ export default defineConfig({
               },
             },
           },
+          // Full-Surah MP3s stay network-streamed. The player relies on byte-range
+          // responses for seeking, and runtime caching partial responses would
+          // require a separate, user-initiated full-download workflow.
           {
             urlPattern: ({ url }) => (
               url.origin === self.location.origin
