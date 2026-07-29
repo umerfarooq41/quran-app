@@ -109,6 +109,7 @@ export function ReaderAudioPanel() {
   const playbackRateRef = useRef(audioPlaybackRate || settings.playbackRate || 1);
   const sourceTransitionRef = useRef(false);
   const recoveringRef = useRef(false);
+  const audioPrimedRef = useRef(false);
   const unmountedRef = useRef(false);
   const rafRef = useRef(0);
   const rafRunningRef = useRef(false);
@@ -559,7 +560,11 @@ export function ReaderAudioPanel() {
     const primedSource = audio.src;
 
     Promise.resolve(audio.play())
+      .then(() => {
+        audioPrimedRef.current = true;
+      })
       .catch(() => {
+        audioPrimedRef.current = false;
         // The real source will still use the normal play path. A rejected
         // unlock attempt must never leave the shared element muted.
       })
@@ -749,6 +754,17 @@ export function ReaderAudioPanel() {
         audio.src = audioUrl;
         audio.playbackRate = playbackRateRef.current;
         audio.load();
+
+        // Start the real source as soon as it is installed. The shared audio
+        // element was primed by the originating tap, so this avoids waiting
+        // until after asynchronous metadata work has lost user activation.
+        if (playIntentRef.current && audioPrimedRef.current) {
+          Promise.resolve(audio.play()).catch(() => {
+            // startCurrentAudio() retries after metadata becomes seekable and
+            // provides the user-facing message if the browser still blocks it.
+          });
+        }
+
         setAudioProgress(0, 0);
       } else {
         currentSourceRef.current = source;
@@ -764,6 +780,7 @@ export function ReaderAudioPanel() {
       audio.playbackRate = playbackRateRef.current;
       audio.currentTime = clampSeekTime(audio, seekSeconds);
       setVisualTime(audio.currentTime || 0);
+      syncFullSurahTarget(audio.currentTime || 0);
       setAudioProgress(
         audio.currentTime || 0,
         Number.isFinite(audio.duration) ? audio.duration : 0,
