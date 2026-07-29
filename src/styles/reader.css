@@ -2513,3 +2513,23 @@ body {
   color: #d9ad57 !important;
   background: transparent;
 }
+
+/* Full-ayah playback state. Visual-only: no Mushaf metric changes. */
+.reader-page .quran-word.is-recited-ayah {
+  background: rgba(200, 164, 93, 0.16);
+}
+
+[data-theme='dark'] .reader-page .quran-word.is-recited-ayah {
+  background: rgba(217, 173, 87, 0.18);
+}
+
+/* The exact word keeps the ayah background and changes text color only. */
+.reader-page .quran-word.is-recited-ayah.is-recited-word {
+  background: rgba(200, 164, 93, 0.16);
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+[data-theme='dark'] .reader-page .quran-word.is-recited-ayah.is-recited-word {
+  background: rgba(217, 173, 87, 0.18);
+}
