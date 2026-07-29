@@ -454,6 +454,10 @@ export default function ReaderScreen() {
   }
 
   function openAudioPanel(targetLine = null) {
+    // Preserve the originating tap/long-press as a real media user gesture.
+    // Full-Surah metadata is loaded asynchronously, so the audio element is
+    // primed here before that browser activation window is lost.
+    window.dispatchEvent(new Event('quran:audio-user-play-request'));
     setAudioFollowEnabled(true);
     if (!targetLine && audioPlayerActive && !audioPlayerVisible) {
       showAudioPlayer();
