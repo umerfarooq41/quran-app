@@ -58,6 +58,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
   haptics: true,
   wordByWordTranslation: false,
   wordByWordLanguage: 'en',
+  followRecitation: true,
 });
 
 export const useAppStore = create((set, get) => ({
@@ -79,6 +80,11 @@ export const useAppStore = create((set, get) => ({
   selectedAyah: null,
   shareTarget: null,
   audioTarget: null,
+  audioMode: null,
+  audioSurahNumber: null,
+  playingVerseKey: null,
+  surahTimeline: [],
+  followRecitation: true,
   audioQueue: [],
   audioQueueIndex: -1,
   audioPosition: 0,
@@ -306,7 +312,34 @@ export const useAppStore = create((set, get) => ({
       ? Math.max(0, Number(audioDuration))
       : state.audioDuration,
   })),
-  setAudioPlaying: (audioPlaying) => set({ audioPlaying: Boolean(audioPlaying) }),
+  setAudioMode: (audioMode) => set((state) => {
+    const nextMode = audioMode === 'surah' || audioMode === 'ayah' ? audioMode : null;
+    return state.audioMode === nextMode ? state : { audioMode: nextMode };
+  }),
+  setAudioSurahNumber: (audioSurahNumber) => set((state) => {
+    const nextSurahNumber = Number(audioSurahNumber) || null;
+    return state.audioSurahNumber === nextSurahNumber ? state : { audioSurahNumber: nextSurahNumber };
+  }),
+  setPlayingVerseKey: (playingVerseKey) => set((state) => {
+    const nextVerseKey = typeof playingVerseKey === 'string' && playingVerseKey ? playingVerseKey : null;
+    return state.playingVerseKey === nextVerseKey ? state : { playingVerseKey: nextVerseKey };
+  }),
+  setSurahTimeline: (surahTimeline) => set((state) => {
+    const nextTimeline = Array.isArray(surahTimeline) ? surahTimeline : [];
+    return state.surahTimeline === nextTimeline ? state : { surahTimeline: nextTimeline };
+  }),
+  setFollowRecitation: (followRecitation) => set((state) => {
+    const nextValue = Boolean(followRecitation);
+    if (state.followRecitation === nextValue && state.settings.followRecitation === nextValue) return state;
+    return {
+      followRecitation: nextValue,
+      settings: { ...state.settings, followRecitation: nextValue },
+    };
+  }),
+  setAudioPlaying: (audioPlaying) => set((state) => {
+    const nextPlaying = Boolean(audioPlaying);
+    return state.audioPlaying === nextPlaying ? state : { audioPlaying: nextPlaying };
+  }),
   setAudioRepeat: (audioRepeat) => set({ audioRepeat: Boolean(audioRepeat) }),
   setTafsirTarget: (tafsirTarget) => set((state) => ({
     ...transitionToView(state, VIEWS.TAFSIR, { direction: 'modal' }),
@@ -365,12 +398,14 @@ export const useAppStore = create((set, get) => ({
     const settings = sanitizeSettings({ ...state.settings, ...patch });
     return {
       settings,
+      followRecitation: settings.followRecitation,
       audioReciter: settings.reciter,
       audioPlaybackRate: settings.playbackRate,
     };
   }),
   resetSettings: () => set({
     settings: { ...DEFAULT_SETTINGS, theme: 'light' },
+    followRecitation: DEFAULT_SETTINGS.followRecitation,
     audioReciter: DEFAULT_SETTINGS.reciter,
     audioPlaybackRate: DEFAULT_SETTINGS.playbackRate,
   }),
@@ -514,6 +549,7 @@ export function sanitizeSettings(value = {}) {
     haptics: value.haptics !== false,
     wordByWordTranslation: Boolean(value.wordByWordTranslation),
     wordByWordLanguage: value.wordByWordLanguage === 'ur' ? 'ur' : 'en',
+    followRecitation: value.followRecitation !== false,
   };
 }
 
