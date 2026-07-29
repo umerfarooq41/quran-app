@@ -13,6 +13,7 @@ import {
   getAudioUrl,
   getDefaultReciterId,
   getReciterImageUrl,
+  hasAyahAudio,
   normalizeLocalReciters,
 } from '../../../lib/localAudio';
 import { useAppStore } from '../../../store/useAppStore';
@@ -609,6 +610,8 @@ export function ReaderAudioPanel() {
     currentTargetRef.current = target;
     currentReciterRef.current = reciterId;
     playIntentRef.current = Boolean(autoplay);
+    lastSyncedVerseKeyRef.current = null;
+    setPlayingVerseKey(null);
     updateAudioQueue(target);
     setStatus('Loading audio...');
 
@@ -636,6 +639,10 @@ export function ReaderAudioPanel() {
         }
       }
 
+      if (!hasAyahAudio(reciterId)) {
+        throw createUnavailableError();
+      }
+
       await loadAyahFallbackTarget(target, reciterId, loadToken);
       if (isStaleLoad(loadToken)) return;
       loadingRef.current = null;
@@ -652,6 +659,7 @@ export function ReaderAudioPanel() {
       sourceTransitionRef.current = false;
       playIntentRef.current = false;
       setAudioPlaying(false);
+      setPlayingVerseKey(null);
       setStatus(
         error?.code === 'AUDIO_UNAVAILABLE' || fullSurahError
           ? 'Audio is not available for this ayah and reciter.'
@@ -822,6 +830,7 @@ export function ReaderAudioPanel() {
   async function handleEnded(endedAudio) {
     const source = currentSourceRef.current;
     const repeatMode = repeatRef.current || 'off';
+    setPlayingVerseKey(null);
 
     if (repeatMode === 'ayah') {
       const timing = source?.mode === 'full-surah'
@@ -873,7 +882,8 @@ export function ReaderAudioPanel() {
     const timeMs = timeSeconds * 1000;
     const timing = findAyahAtTime(source.timeline, timeMs);
     if (!timing) {
-      setPlayingWord(null);
+      lastSyncedVerseKeyRef.current = null;
+      setPlayingVerseKey(null);
       return;
     }
 
@@ -940,6 +950,13 @@ export function ReaderAudioPanel() {
     const target = currentTargetRef.current;
     const reciterId = currentReciterRef.current;
     const shouldResume = playIntentRef.current;
+    if (!hasAyahAudio(reciterId)) {
+      playIntentRef.current = false;
+      setAudioPlaying(false);
+      setPlayingVerseKey(null);
+      setStatus('Full-Surah audio could not continue for this reciter.');
+      return;
+    }
     recoveringRef.current = true;
     loadTarget(target, reciterId, shouldResume, { skipFullSurah: true })
       .finally(() => {
