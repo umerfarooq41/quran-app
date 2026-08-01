@@ -266,3 +266,32 @@
   .settings-picker-chevron,
   .settings-theme-picker button { transition: none; }
 }
+
+.settings-group-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px 4px 2px;
+}
+
+.settings-group-heading strong {
+  color: var(--text-primary, #252525);
+  font-size: 0.98rem;
+  font-weight: 700;
+}
+
+.settings-group-heading small {
+  color: var(--text-muted, #848484);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.settings-group-heading-spaced {
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(36, 75, 66, 0.08);
+}
+
+[data-theme='dark'] .settings-group-heading strong {
+  color: var(--text-primary, #f4f4f4);
+}
