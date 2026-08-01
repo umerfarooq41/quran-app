@@ -909,16 +909,35 @@ export function ReaderAudioPanel() {
     if (!timing) {
       lastSyncedVerseKeyRef.current = null;
       setPlayingVerseKey(null);
+      setPlayingWord(null);
       return;
     }
 
-    if (lastSyncedVerseKeyRef.current !== timing.verseKey) {
-      lastSyncedVerseKeyRef.current = timing.verseKey;
-      setPlayingVerseKey(timing.verseKey);
-    }
+    const firstTimedWordStartMs = Number(timing.wordSegments?.[0]?.startMs);
+    const isBeforeFirstTimedWord = (
+      Number.isFinite(firstTimedWordStartMs)
+      && timeMs < firstTimedWordStartMs
+    );
 
-    const wordTiming = findWordAtTime(timing, timeMs);
-    setPlayingWord(wordTiming?.position, wordTiming?.occurrenceIndex);
+    // Some full-Surah recordings include a spoken Surah title and/or
+    // Bismillah inside ayah 1's broad timestamp, before the first actual
+    // Quran-word segment begins. Keep navigation on the correct page, but do
+    // not color an ayah or retain a stale word during that untimed intro.
+    if (isBeforeFirstTimedWord) {
+      if (lastSyncedVerseKeyRef.current !== null) {
+        lastSyncedVerseKeyRef.current = null;
+        setPlayingVerseKey(null);
+      }
+      setPlayingWord(null);
+    } else {
+      if (lastSyncedVerseKeyRef.current !== timing.verseKey) {
+        lastSyncedVerseKeyRef.current = timing.verseKey;
+        setPlayingVerseKey(timing.verseKey);
+      }
+
+      const wordTiming = findWordAtTime(timing, timeMs);
+      setPlayingWord(wordTiming?.position, wordTiming?.occurrenceIndex);
+    }
 
     const target = targetFromTiming(timing);
     const currentTarget = currentTargetRef.current;
