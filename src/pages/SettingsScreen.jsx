@@ -21,11 +21,7 @@ import {
   getTranslationLanguageId,
   getTranslationOptionsForLanguage,
 } from '../lib/translations';
-import {
-  WORD_BY_WORD_LANGUAGES,
-  getWordByWordSource,
-  getWordByWordSourcesForLanguage,
-} from '../services/quranFoundation';
+import { WORD_BY_WORD_LANGUAGES } from '../services/quranFoundation';
 import { useAppStore } from '../store/useAppStore';
 import { Header, Screen } from '../components/common/AppChrome';
 
@@ -42,11 +38,6 @@ export default function SettingsScreen() {
   const translationLanguage = getTranslationLanguageId(settings.translation);
   const translationOptions = getTranslationOptionsForLanguage(translationLanguage);
   const wordByWordLanguage = settings.wordByWordLanguage || 'en';
-  const wordByWordSources = getWordByWordSourcesForLanguage(wordByWordLanguage);
-  const selectedWordByWordSource = getWordByWordSource(
-    settings.wordByWordSource,
-    wordByWordLanguage,
-  );
 
   function resetAllSettings() {
     resetSettings();
@@ -118,7 +109,7 @@ export default function SettingsScreen() {
 
         <div className="settings-group-heading settings-group-heading-spaced">
           <strong>Word-by-word</strong>
-          <small>Choose a language and word-meaning source</small>
+          <small>Choose English or Urdu individual word meanings</small>
         </div>
 
         <SettingSwitch
@@ -138,32 +129,11 @@ export default function SettingsScreen() {
               value={wordByWordLanguage}
               options={WORD_BY_WORD_LANGUAGES}
               getLabel={(language) => language.label}
-              onChange={(value) => {
-                const nextSource = getWordByWordSourcesForLanguage(value)[0];
-                updateSettings({
-                  wordByWordLanguage: value,
-                  wordByWordSource: nextSource?.id || 'en-colored',
-                });
-              }}
-            />
-
-            <SettingPicker
-              icon={ListTree}
-              label="Word-by-word source"
-              description="English keeps your current colored word-by-word data"
-              value={selectedWordByWordSource.id}
-              options={wordByWordSources}
-              getLabel={(source) => source.shortName || source.label}
-              onChange={(value) => {
-                const source = getWordByWordSource(value, wordByWordLanguage);
-                updateSettings({
-                  wordByWordSource: source.id,
-                  wordByWordLanguage: source.language,
-                });
-              }}
+              onChange={(value) => updateSettings({ wordByWordLanguage: value })}
             />
           </>
         )}
+
 
         <SettingSwitch
           icon={LocateFixed}
