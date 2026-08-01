@@ -9,16 +9,16 @@ export const DEFAULT_TRANSLATION_ID = 'ur-al-maududi';
 export const TRANSLATION_OPTIONS = [
   {
     id: 'en-haleem',
-    label: "En — The Qur’an (M. A. S. Abdel Haleem)",
-    shortName: "The Qur’an (M. A. S. Abdel Haleem)",
+    label: "En — M. A. S. Abdel Haleem",
+    shortName: "M. A. S. Abdel Haleem",
     language: 'En',
     direction: 'ltr',
     file: 'en-haleem.json',
   },
   {
     id: 'en-saheeh-international',
-    label: "En — The Qur’an: English Meanings (Saheeh International)",
-    shortName: "The Qur’an: English Meanings (Saheeh International)",
+    label: "En — Saheeh International",
+    shortName: "Saheeh International",
     language: 'En',
     direction: 'ltr',
     apiLanguage: 'en',
@@ -26,8 +26,8 @@ export const TRANSLATION_OPTIONS = [
   },
   {
     id: 'en-pickthall',
-    label: "En — The Meaning of the Glorious Qur’an (Marmaduke Pickthall)",
-    shortName: "The Meaning of the Glorious Qur’an (Marmaduke Pickthall)",
+    label: "En — Marmaduke Pickthall",
+    shortName: "Marmaduke Pickthall",
     language: 'En',
     direction: 'ltr',
     apiLanguage: 'en',
@@ -35,8 +35,8 @@ export const TRANSLATION_OPTIONS = [
   },
   {
     id: 'en-yusuf-ali',
-    label: "En — The Holy Qur’an (Abdullah Yusuf Ali)",
-    shortName: "The Holy Qur’an (Abdullah Yusuf Ali)",
+    label: "En — Abdullah Yusuf Ali",
+    shortName: "Abdullah Yusuf Ali",
     language: 'En',
     direction: 'ltr',
     apiLanguage: 'en',
@@ -44,40 +44,40 @@ export const TRANSLATION_OPTIONS = [
   },
   {
     id: 'en-al-maududi',
-    label: "En — Tafhim-ul-Quran (Syed Abul A'la Maududi)",
-    shortName: "Tafhim-ul-Quran (Syed Abul A'la Maududi)",
+    label: "En — Syed Abul A'la Maududi",
+    shortName: "Syed Abul A'la Maududi",
     language: 'En',
     direction: 'ltr',
     file: 'en-al-maududi.json',
   },
   {
     id: 'en-maarif-ul-quran',
-    label: "En — Maarif-ul-Quran (Mufti Muhammad Shafi)",
-    shortName: "Maarif-ul-Quran (Mufti Muhammad Shafi)",
+    label: "En — Mufti Muhammad Shafi",
+    shortName: "Mufti Muhammad Shafi",
     language: 'En',
     direction: 'ltr',
     file: 'en-maarif-ul-quran.json',
   },
   {
     id: 'ur-al-maududi',
-    label: "Ur — Tafhim-ul-Quran (Syed Abul A'la Maududi)",
-    shortName: "Tafhim-ul-Quran (Syed Abul A'la Maududi)",
+    label: "Ur — Syed Abul A'la Maududi",
+    shortName: "Syed Abul A'la Maududi",
     language: 'Ur',
     direction: 'rtl',
     file: 'ur-al-maududi.json',
   },
   {
     id: 'ur-bayan-ul-quran',
-    label: "Ur — Bayan-ul-Quran (Dr. Israr Ahmad)",
-    shortName: "Bayan-ul-Quran (Dr. Israr Ahmad)",
+    label: "Ur — Dr. Israr Ahmad",
+    shortName: "Dr. Israr Ahmad",
     language: 'Ur',
     direction: 'rtl',
     file: 'ur-bayan-ul-quran.json',
   },
   {
     id: 'ur-fateh-jalandhry',
-    label: "Ur — The Holy Qur’an Urdu Translation (Fateh Muhammad Jalandhry)",
-    shortName: "The Holy Qur’an Urdu Translation (Fateh Muhammad Jalandhry)",
+    label: "Ur — Fateh Muhammad Jalandhry",
+    shortName: "Fateh Muhammad Jalandhry",
     language: 'Ur',
     direction: 'rtl',
     apiLanguage: 'ur',
@@ -91,8 +91,8 @@ export const TRANSLATION_OPTIONS = [
   },
   {
     id: 'ur-ahmed-ali',
-    label: "Ur — The Holy Qur’an Urdu Translation (Ahmed Ali)",
-    shortName: "The Holy Qur’an Urdu Translation (Ahmed Ali)",
+    label: "Ur — Ahmed Ali",
+    shortName: "Ahmed Ali",
     language: 'Ur',
     direction: 'rtl',
     apiLanguage: 'ur',
@@ -100,8 +100,8 @@ export const TRANSLATION_OPTIONS = [
   },
   {
     id: 'ur-kanzul-iman',
-    label: "Ur — Kanz-ul-Iman (Imam Ahmed Raza Khan)",
-    shortName: "Kanz-ul-Iman (Imam Ahmed Raza Khan)",
+    label: "Ur — Imam Ahmed Raza Khan",
+    shortName: "Imam Ahmed Raza Khan",
     language: 'Ur',
     direction: 'rtl',
     apiLanguage: 'ur',
@@ -109,8 +109,8 @@ export const TRANSLATION_OPTIONS = [
   },
   {
     id: 'ur-maarif-ul-quran',
-    label: "Ur — Maarif-ul-Quran (Mufti Muhammad Shafi)",
-    shortName: "Maarif-ul-Quran (Mufti Muhammad Shafi)",
+    label: "Ur — Mufti Muhammad Shafi",
+    shortName: "Mufti Muhammad Shafi",
     language: 'Ur',
     direction: 'rtl',
     apiLanguage: 'ur',
@@ -202,32 +202,53 @@ async function loadRawTranslation(option) {
 }
 
 async function loadRemoteTranslationEntry(option, surahNumber, ayahNumber, { signal } = {}) {
-  const verseKey = `${Number(surahNumber)}:${Number(ayahNumber)}`;
-  const cacheKey = `${option.id}:${verseKey}`;
+  const chapterNumber = Number(surahNumber);
+  const verseKey = `${chapterNumber}:${Number(ayahNumber)}`;
+  const chapterCacheKey = `${option.id}:chapter:${chapterNumber}`;
 
-  if (translationCache.has(cacheKey)) return translationCache.get(cacheKey);
+  let chapterEntries = translationCache.get(chapterCacheKey);
 
-  const resourceId = await resolveTranslationResourceId(option, signal);
-  const payload = await qfGet(
-    `translations/${resourceId}`,
-    {
-      verse_key: verseKey,
+  if (!chapterEntries) {
+    const resourceId = await resolveTranslationResourceId(option, signal);
+    const requestParams = {
+      chapter_number: chapterNumber,
       foot_notes: true,
       fields: 'resource_name,language_name,verse_key',
-    },
-    { signal },
-  );
-  const row = Array.isArray(payload?.translations)
-    ? payload.translations.find((item) => item?.verse_key === verseKey) || payload.translations[0]
-    : payload?.translation || payload;
+    };
 
-  const entry = {
-    t: String(row?.text || ''),
-    f: normalizeRemoteFootnotes(row),
-  };
+    // The current Content API exposes translations under quran/translations.
+    // Keep the legacy path as a fallback for older proxy deployments.
+    let payload;
+    try {
+      payload = await qfGet(`quran/translations/${resourceId}`, requestParams, { signal });
+    } catch (primaryError) {
+      try {
+        payload = await qfGet(`translations/${resourceId}`, requestParams, { signal });
+      } catch {
+        throw primaryError;
+      }
+    }
 
-  translationCache.set(cacheKey, entry);
-  return entry;
+    const rows = Array.isArray(payload?.translations)
+      ? payload.translations
+      : payload?.translation
+        ? [payload.translation]
+        : [];
+
+    chapterEntries = new Map();
+    rows.forEach((row) => {
+      const key = String(row?.verse_key || '');
+      if (!key) return;
+      chapterEntries.set(key, {
+        t: String(row?.text || ''),
+        f: normalizeRemoteFootnotes(row),
+      });
+    });
+
+    translationCache.set(chapterCacheKey, chapterEntries);
+  }
+
+  return chapterEntries.get(verseKey) || null;
 }
 
 async function resolveTranslationResourceId(option, signal) {
@@ -297,17 +318,26 @@ function normalizeTranslationEntry(value) {
 
   const parts = [];
   let cursor = 0;
-  const footnoteRegex = /<sup\s+foot_note="([^"]+)"\s*>\s*([^<]*)\s*<\/sup>/gi;
+  // Quran Foundation and local files may differ in attribute order, quoting,
+  // and marker attributes. Match any SUP tag, then extract its footnote id.
+  const supRegex = /<sup\b([^>]*)>([\s\S]*?)<\/sup>/gi;
   let match;
 
-  while ((match = footnoteRegex.exec(text)) !== null) {
+  while ((match = supRegex.exec(text)) !== null) {
+    const attributes = match[1] || '';
+    const idMatch = attributes.match(
+      /(?:foot_note|footnote|data-footnote-id|data-foot-note)\s*=\s*["']?([^\s"'>]+)["']?/i,
+    );
+
+    if (!idMatch) continue;
+
     const before = cleanInlineText(text.slice(cursor, match.index));
     if (before) parts.push({ type: 'text', text: before });
 
-    const id = match[1];
+    const id = String(idMatch[1]);
     if (!footnoteOrder.includes(id)) footnoteOrder.push(id);
 
-    const visibleNumber = String(match[2] || '').trim();
+    const visibleNumber = cleanInlineText(match[2]);
     const number = idToNumber.get(id)
       || visibleNumber
       || String(++generatedFootnoteNumber);
@@ -319,6 +349,16 @@ function normalizeTranslationEntry(value) {
 
   const after = cleanInlineText(text.slice(cursor));
   if (after) parts.push({ type: 'text', text: after });
+
+  // Some resources return a foot_notes map without embedding SUP markers in
+  // the translation text. Preserve those notes by appending numbered markers.
+  Object.keys(footnoteMap).forEach((id) => {
+    if (footnoteOrder.includes(id)) return;
+    footnoteOrder.push(id);
+    const number = String(++generatedFootnoteNumber);
+    idToNumber.set(id, number);
+    parts.push({ type: 'footnote', id, number });
+  });
 
   const plainText = partsToPlainText(parts);
 
