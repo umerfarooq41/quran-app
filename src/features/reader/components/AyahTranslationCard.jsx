@@ -11,7 +11,6 @@ const MISSING_TRANSLATION = 'Translation not available.';
 export function AyahTranslationCard({ target, translationId, onClose }) {
   const wordByWordEnabled = useAppStore((state) => state.settings.wordByWordTranslation);
   const wordByWordLanguage = useAppStore((state) => state.settings.wordByWordLanguage);
-  const wordByWordSource = useAppStore((state) => state.settings.wordByWordSource);
   const [activeTarget, setActiveTarget] = useState(() => normalizeTarget(target));
   const [translation, setTranslation] = useState({ plainText: '', parts: [], footnotes: [] });
   const [translationLoaded, setTranslationLoaded] = useState(false);
@@ -60,6 +59,7 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
     };
   }, [activeTarget?.surahNumber, activeTarget?.ayahNumber, translationId]);
 
+
   if (!activeTarget) return null;
 
   function moveTo(nextTarget) {
@@ -93,12 +93,11 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
             ayahNumber={activeTarget.ayahNumber}
             enabled={wordByWordEnabled}
             language={wordByWordLanguage}
-            source={wordByWordSource}
           />
 
           <p className="ayah-translation-text" dir={translationOption.direction || 'ltr'}>
             {translationLoaded
-              ? renderTranslationText(translation)
+              ? renderTranslationText(translation, () => setFootnotesOpen(true))
               : ''}
           </p>
 
@@ -110,19 +109,24 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
                 aria-expanded={footnotesOpen}
                 onClick={() => setFootnotesOpen((open) => !open)}
               >
-                <span>{footnotesOpen ? 'Hide footnotes' : `Show footnotes (${translation.footnotes.length})`}</span>
+                <span>{footnotesOpen ? 'Hide footnotes' : getNotesButtonLabel(translation.footnotes)}</span>
                 <ChevronDown size={16} aria-hidden="true" />
               </button>
 
               {footnotesOpen && (
                 <div className="ayah-translation-footnotes">
-                  {translation.footnotes.map((footnote) => (
-                    <p key={footnote.id}>
-                      <span>{footnote.number}</span>
-                      {footnote.text}
-                    </p>
-                  ))}
-                </div>
+                  {translation.footnotes?.length > 0 && (
+                    <section className="ayah-translation-note-section">
+                      <h4>Translator footnotes</h4>
+                      {translation.footnotes.map((footnote) => (
+                        <p key={footnote.id}>
+                          <span>{footnote.number}</span>
+                          {footnote.text}
+                        </p>
+                      ))}
+                    </section>
+                  )}
+               </div>
               )}
             </div>
           )}
@@ -152,7 +156,7 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
 }
 
 
-function renderTranslationText(translation) {
+function renderTranslationText(translation, onFootnoteOpen) {
   const parts = Array.isArray(translation?.parts) ? translation.parts : [];
 
   if (!parts.length) return translation?.plainText || MISSING_TRANSLATION;
@@ -160,18 +164,25 @@ function renderTranslationText(translation) {
   return parts.map((part, index) => {
     if (part.type === 'footnote') {
       return (
-        <span
+        <button
+          type="button"
           key={`${part.id || 'footnote'}-${index}`}
           className="ayah-translation-inline-footnote"
-          aria-label={`Footnote ${part.number}`}
+          aria-label={`Open footnote ${part.number}`}
+          onClick={onFootnoteOpen}
         >
           {part.number}
-        </span>
+        </button>
       );
     }
 
     return <React.Fragment key={`text-${index}`}>{part.text} </React.Fragment>;
   });
+}
+
+function getNotesButtonLabel(footnotes) {
+  const count = Array.isArray(footnotes) ? footnotes.length : 0;
+  return `Show footnotes (${count})`;
 }
 
 function normalizeTarget(target) {
