@@ -143,9 +143,6 @@ export default function ReaderScreen() {
   const readerShellRef = useRef(null);
   const pageSlideTimer = useRef(0);
   const pageTransitionTimer = useRef(0);
-  const previousAudioTargetKey = useRef(
-    audioTarget ? `${audioTarget.surahNumber}:${audioTarget.ayahNumber}` : '',
-  );
   const {
     handleTouchStart,
     handleTouchMove,
@@ -306,14 +303,7 @@ export default function ReaderScreen() {
   ]);
 
   useEffect(() => {
-    const nextKey = audioTarget
-      ? `${audioTarget.surahNumber}:${audioTarget.ayahNumber}`
-      : '';
-    const targetChanged = nextKey && nextKey !== previousAudioTargetKey.current;
-    previousAudioTargetKey.current = nextKey;
-
     if (
-      targetChanged &&
       audioPlayerActive &&
       followRecitation &&
       audioFollowEnabled &&
