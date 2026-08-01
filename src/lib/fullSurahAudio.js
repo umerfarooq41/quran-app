@@ -1,6 +1,5 @@
 export const FULL_SURAH_FOLDER_BY_RECITER = Object.freeze({
   'abdul-basit-abdul-samad': 'abdul-basit-abdul-samad',
-  'abdullah-awad-al-juhani': 'abdullah-awad-al-juhani',
   'abdur-rahman-as-sudais': 'abdur-rahman-as-sudais',
   'abu-bakr-al-shatri': 'abu-bakr-al-shatri',
   'khalid-al-jalil': 'khalid-al-jalil',
@@ -14,10 +13,22 @@ export const FULL_SURAH_FOLDER_BY_RECITER = Object.freeze({
 
 const QF_CHAPTER_RECITER_BY_RECITER = Object.freeze({
   // Quran.com/Quran Foundation chapter-reciter ID.
-  'ahmed-ibn-ali-al-ajmy': 19,
+  'ahmed-ibn-ali-al-ajmy': { id: 19 },
+  // Resolve this ID from the live chapter-reciter catalog so the app does not
+  // depend on generated local surah.json/segments.json files.
+  'abdullah-awad-al-juhani': {
+    aliases: [
+      'abdullah awad al juhani',
+      'abdullah awwad al juhany',
+      'abdullaah 3awwaad al juhaynee',
+      'abdullah awad al juhany',
+    ],
+  },
 });
 
 const qfPlaybackCache = new Map();
+const qfResolvedReciterIdCache = new Map();
+let qfChapterRecitersPromise = null;
 
 // Store the Promise itself so resolved data remains in memory for the session
 // and concurrent callers share the same fetch-and-parse operation.
@@ -74,8 +85,13 @@ export async function getFullSurahPlayback(reciterId, surahNumber, fetchImpl = g
   const surah = normalizePositiveInteger(surahNumber);
   if (!surah || surah > 114) return null;
 
-  const qfReciterId = QF_CHAPTER_RECITER_BY_RECITER[reciterId];
-  if (qfReciterId) {
+  const qfReciterConfig = QF_CHAPTER_RECITER_BY_RECITER[reciterId];
+  if (qfReciterConfig) {
+    const qfReciterId = await resolveQfChapterReciterId(
+      reciterId,
+      qfReciterConfig,
+      fetchImpl,
+    );
     return loadQfChapterPlayback(reciterId, qfReciterId, surah, fetchImpl);
   }
 
@@ -102,6 +118,90 @@ export async function getFullSurahPlayback(reciterId, surahNumber, fetchImpl = g
     audioUrl,
     timeline,
   };
+}
+
+
+async function resolveQfChapterReciterId(reciterId, config, fetchImpl) {
+  const configuredId = normalizePositiveInteger(config?.id);
+  if (configuredId) return configuredId;
+
+  if (qfResolvedReciterIdCache.has(reciterId)) {
+    return qfResolvedReciterIdCache.get(reciterId);
+  }
+
+  const aliases = (Array.isArray(config?.aliases) ? config.aliases : [])
+    .map(normalizeReciterName)
+    .filter(Boolean);
+  if (!aliases.length) {
+    throw new Error(`Quran Foundation reciter configuration is incomplete for ${reciterId}.`);
+  }
+
+  const reciters = await loadQfChapterReciters(fetchImpl);
+  const match = reciters.find((reciter) => {
+    const candidateNames = [
+      reciter?.name,
+      reciter?.reciter_name,
+      reciter?.translated_name?.name,
+      reciter?.style,
+    ].map(normalizeReciterName).filter(Boolean);
+
+    return candidateNames.some((candidate) => aliases.some((alias) => (
+      candidate === alias
+      || candidate.includes(alias)
+      || alias.includes(candidate)
+    )));
+  });
+
+  const resolvedId = normalizePositiveInteger(match?.id);
+  if (!resolvedId) {
+    throw new Error('Abdullah Awad Al Juhani is unavailable in the Quran Foundation chapter-reciter catalog.');
+  }
+
+  qfResolvedReciterIdCache.set(reciterId, resolvedId);
+  return resolvedId;
+}
+
+async function loadQfChapterReciters(fetchImpl) {
+  if (qfChapterRecitersPromise) return qfChapterRecitersPromise;
+
+  qfChapterRecitersPromise = (async () => {
+    const path = 'resources/chapter_reciters';
+    const response = await fetchImpl(`/api/qf?path=${encodeURIComponent(path)}&language=en`);
+    if (!response.ok) {
+      const detail = await response.text().catch(() => '');
+      throw new Error(`Quran Foundation reciter catalog request failed (${response.status})${detail ? `: ${detail.slice(0, 160)}` : ''}`);
+    }
+
+    const payload = await response.json();
+    const reciters = Array.isArray(payload?.reciters)
+      ? payload.reciters
+      : Array.isArray(payload?.chapter_reciters)
+        ? payload.chapter_reciters
+        : Array.isArray(payload)
+          ? payload
+          : [];
+
+    if (!reciters.length) {
+      throw new Error('Quran Foundation returned an empty chapter-reciter catalog.');
+    }
+    return reciters;
+  })();
+
+  try {
+    return await qfChapterRecitersPromise;
+  } catch (error) {
+    qfChapterRecitersPromise = null;
+    throw error;
+  }
+}
+
+function normalizeReciterName(value) {
+  return String(value || '')
+    .normalize('NFKD')
+    .toLowerCase()
+    .replace(/[ʿ‘’'`]/g, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
 }
 
 async function loadQfChapterPlayback(reciterId, qfReciterId, surahNumber, fetchImpl) {
