@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   getWordByWordTranslation,
+  getWordByWordSource,
   getWordLanguage,
 } from '../../../services/quranFoundation';
 
@@ -9,8 +10,10 @@ export function WordByWordTranslation({
   ayahNumber,
   enabled,
   language = 'en',
+  source = '',
 }) {
-  const languageOption = useMemo(() => getWordLanguage(language), [language]);
+  const sourceOption = useMemo(() => getWordByWordSource(source, language), [source, language]);
+  const languageOption = useMemo(() => getWordLanguage(sourceOption.language), [sourceOption.language]);
   const [state, setState] = useState({ status: 'idle', words: [] });
 
   useEffect(() => {
@@ -23,7 +26,8 @@ export function WordByWordTranslation({
     setState({ status: 'loading', words: [] });
 
     getWordByWordTranslation(surahNumber, ayahNumber, {
-      language: languageOption.id,
+      language: sourceOption.language,
+      source: sourceOption.id,
       signal: controller.signal,
     })
       .then((result) => setState({ status: 'ready', words: result.words }))
@@ -34,7 +38,7 @@ export function WordByWordTranslation({
       });
 
     return () => controller.abort();
-  }, [enabled, surahNumber, ayahNumber, languageOption.id]);
+  }, [enabled, surahNumber, ayahNumber, languageOption.id, sourceOption.id]);
 
   if (!enabled) return null;
 
@@ -45,7 +49,7 @@ export function WordByWordTranslation({
       data-word-language={languageOption.id}
     >
       <div className="ayah-word-by-word-heading">
-        Word by word · {languageOption.label}
+        Word by word · {sourceOption.shortName || languageOption.label}
       </div>
 
       {state.status === 'loading' && (
