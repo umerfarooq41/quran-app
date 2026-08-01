@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { VIEWS, normalizeView } from '../app/routes';
-import { clampPage, getAyahMarkerPage } from '../lib/quran';
+import { clampPage, findPageForReference, getAyahMarkerPage } from '../lib/quran';
 import { DEFAULT_TRANSLATION_ID, TRANSLATION_OPTIONS } from '../lib/translations';
 
 export const OVERLAY_TYPES = Object.freeze({
@@ -385,7 +385,10 @@ export const useAppStore = create((set, get) => ({
     tafsirTarget,
   })),
   goAyah: (surahNumber, ayahNumber, page) => set((state) => {
-    const nextPage = clampPage(page);
+    const safeSurahNumber = Number(surahNumber);
+    const safeAyahNumber = Number(ayahNumber);
+    const canonicalPage = findPageForReference(safeSurahNumber, safeAyahNumber);
+    const nextPage = clampPage(canonicalPage || page);
     const nextState = state.view === VIEWS.READER
       ? state
       : transitionToView(state, VIEWS.READER);
@@ -394,8 +397,8 @@ export const useAppStore = create((set, get) => ({
       ...nextState,
       page: nextPage,
       previousReaderPage: nextPage === state.page ? state.previousReaderPage : state.page,
-      pendingAyah: { surahNumber: Number(surahNumber), ayahNumber: Number(ayahNumber) },
-      lastReadTarget: { page: nextPage, surahNumber: Number(surahNumber), ayahNumber: Number(ayahNumber) },
+      pendingAyah: { surahNumber: safeSurahNumber, ayahNumber: safeAyahNumber },
+      lastReadTarget: { page: nextPage, surahNumber: safeSurahNumber, ayahNumber: safeAyahNumber },
       pendingQuarterFlash: null,
       navDirection: 'forward',
       controlsVisible: false,
@@ -552,11 +555,16 @@ function removeOverlay(stack, type) {
 function normalizeAudioTarget(target) {
   if (!target?.surahNumber || !target?.ayahNumber) return null;
 
+  const surahNumber = Number(target.surahNumber);
+  const ayahNumber = Number(target.ayahNumber);
+
   return {
     ...target,
-    page: Number(target.page) || null,
-    surahNumber: Number(target.surahNumber),
-    ayahNumber: Number(target.ayahNumber),
+    // Audio navigation must never trust a caller-provided page. The verse
+    // reference is the source of truth for every reciter and every Surah.
+    page: findPageForReference(surahNumber, ayahNumber),
+    surahNumber,
+    ayahNumber,
   };
 }
 
