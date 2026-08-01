@@ -45,6 +45,26 @@ export const TRANSLATION_OPTIONS = [
   },
 ];
 
+export const TRANSLATION_LANGUAGES = Object.freeze([
+  { id: 'en', label: 'English', direction: 'ltr' },
+  { id: 'ur', label: 'Urdu', direction: 'rtl' },
+]);
+
+export function getTranslationLanguageId(translationId = DEFAULT_TRANSLATION_ID) {
+  return String(getTranslationOption(translationId).language || 'En').toLowerCase();
+}
+
+export function getTranslationOptionsForLanguage(languageId) {
+  const normalized = String(languageId || '').toLowerCase();
+  return TRANSLATION_OPTIONS.filter(
+    (option) => String(option.language || '').toLowerCase() === normalized,
+  );
+}
+
+export function getDefaultTranslationForLanguage(languageId) {
+  return getTranslationOptionsForLanguage(languageId)[0] || getTranslationOption(DEFAULT_TRANSLATION_ID);
+}
+
 export async function loadTranslation(translationId = DEFAULT_TRANSLATION_ID) {
   const normalizedId = getTranslationOption(translationId).id;
   const rawData = await loadRawTranslation(normalizedId);
