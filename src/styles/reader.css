@@ -2522,3 +2522,48 @@ body {
   background-color: transparent !important;
   box-shadow: none !important;
 }
+
+.ayah-translation-note-section {
+  display: grid;
+  gap: 8px;
+}
+
+.ayah-translation-note-section + .ayah-translation-note-section {
+  margin-top: 4px;
+  border-top: 1px solid rgba(45, 110, 94, .14);
+  padding-top: 11px;
+}
+
+.ayah-translation-note-section h4 {
+  margin: 0;
+  color: #245f51;
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .01em;
+}
+
+.ayah-translation-tafsir-section p,
+.ayah-translation-note-status,
+.ayah-translation-tafsir-text {
+  display: block;
+  margin: 0;
+  white-space: pre-line;
+}
+
+.ayah-translation-tafsir-text {
+  max-height: 210px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-inline-end: 3px;
+}
+
+.ayah-translation-note-status {
+  color: rgba(74, 83, 91, .78);
+  font-style: italic;
+}
+
+.ayah-translation-inline-footnote {
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+}
