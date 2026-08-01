@@ -58,7 +58,6 @@ export const DEFAULT_SETTINGS = Object.freeze({
   haptics: true,
   wordByWordTranslation: false,
   wordByWordLanguage: 'en',
-  wordByWordSource: 'en-colored',
   followRecitation: true,
 });
 
@@ -597,9 +596,6 @@ export function sanitizeSettings(value = {}) {
     haptics: value.haptics !== false,
     wordByWordTranslation: Boolean(value.wordByWordTranslation),
     wordByWordLanguage: value.wordByWordLanguage === 'ur' ? 'ur' : 'en',
-    wordByWordSource: typeof value.wordByWordSource === 'string' && value.wordByWordSource
-      ? value.wordByWordSource
-      : (value.wordByWordLanguage === 'ur' ? 'ur-quran-foundation' : 'en-colored'),
     followRecitation: value.followRecitation !== false,
   };
 }
