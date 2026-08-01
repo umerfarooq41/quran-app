@@ -114,9 +114,18 @@ export function buildSurahTimeline(segmentsByVerse, surahNumber) {
       .map(normalizeWordSegment)
       .filter((segment) => (
         segment
-        && segment.startMs >= startMs
-        && segment.endMs <= endMs
+        // Keep segments that overlap the ayah window. Several downloaded
+        // reciter files are off by a few milliseconds at ayah boundaries;
+        // requiring full containment silently removed otherwise valid words.
+        && segment.endMs > startMs
+        && segment.startMs < endMs
       ))
+      .map((segment) => ({
+        ...segment,
+        startMs: Math.max(startMs, segment.startMs),
+        endMs: Math.min(endMs, segment.endMs),
+      }))
+      .filter((segment) => segment.endMs > segment.startMs)
       .sort((first, second) => (
         first.startMs - second.startMs
         || first.endMs - second.endMs
@@ -176,6 +185,8 @@ export function findAyahAtTime(timeline, timeMs) {
 }
 
 
+const WORD_GAP_TOLERANCE_MS = 120;
+
 export function findWordAtTime(ayahTiming, timeMs) {
   const time = Number(timeMs);
   const wordSegments = ayahTiming?.wordSegments;
@@ -183,25 +194,38 @@ export function findWordAtTime(ayahTiming, timeMs) {
     return null;
   }
 
-  // Prefer the most recently started segment. Some source timelines contain
-  // small overlaps; choosing the latest start prevents an older long segment
-  // from hiding the word that has actually begun.
+  // Select the most recently started segment. This handles source overlaps
+  // correctly because the newer word wins as soon as its segment begins.
   let low = 0;
   let high = wordSegments.length - 1;
-  let match = null;
+  let matchedIndex = -1;
 
   while (low <= high) {
     const middle = Math.floor((low + high) / 2);
     const candidate = wordSegments[middle];
     if (candidate.startMs <= time) {
-      match = candidate;
+      matchedIndex = middle;
       low = middle + 1;
     } else {
       high = middle - 1;
     }
   }
 
-  return match && time < match.endMs ? match : null;
+  if (matchedIndex < 0) return null;
+
+  const match = wordSegments[matchedIndex];
+  const next = wordSegments[matchedIndex + 1] || null;
+  const ayahEndMs = Number(ayahTiming?.endMs);
+  const hardEndMs = Number.isFinite(ayahEndMs) ? ayahEndMs : match.endMs;
+
+  // Bridge only tiny imperfections in source timing. Long pauses are left
+  // unhighlighted, and the cap prevents a word leaking into the next ayah.
+  const toleratedEndMs = match.endMs + WORD_GAP_TOLERANCE_MS;
+  const allowedEndMs = next
+    ? Math.min(next.startMs, toleratedEndMs, hardEndMs)
+    : Math.min(toleratedEndMs, hardEndMs);
+
+  return time < allowedEndMs ? match : null;
 }
 
 export function clearFullSurahAudioCache() {
