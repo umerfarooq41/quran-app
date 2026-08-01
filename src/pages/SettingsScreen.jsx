@@ -15,8 +15,17 @@ import {
 } from 'lucide-react';
 import { triggerHaptic } from '../lib/haptics';
 import { getReciterImageUrl, normalizeLocalReciters } from '../lib/localAudio';
-import { TRANSLATION_OPTIONS } from '../lib/translations';
-import { WORD_BY_WORD_LANGUAGES } from '../services/quranFoundation';
+import {
+  TRANSLATION_LANGUAGES,
+  getDefaultTranslationForLanguage,
+  getTranslationLanguageId,
+  getTranslationOptionsForLanguage,
+} from '../lib/translations';
+import {
+  WORD_BY_WORD_LANGUAGES,
+  getWordByWordSource,
+  getWordByWordSourcesForLanguage,
+} from '../services/quranFoundation';
 import { useAppStore } from '../store/useAppStore';
 import { Header, Screen } from '../components/common/AppChrome';
 
@@ -30,6 +39,14 @@ export default function SettingsScreen() {
   })));
   const [confirmReset, setConfirmReset] = useState(false);
   const reciters = normalizeLocalReciters();
+  const translationLanguage = getTranslationLanguageId(settings.translation);
+  const translationOptions = getTranslationOptionsForLanguage(translationLanguage);
+  const wordByWordLanguage = settings.wordByWordLanguage || 'en';
+  const wordByWordSources = getWordByWordSourcesForLanguage(wordByWordLanguage);
+  const selectedWordByWordSource = getWordByWordSource(
+    settings.wordByWordSource,
+    wordByWordLanguage,
+  );
 
   function resetAllSettings() {
     resetSettings();
@@ -71,15 +88,38 @@ export default function SettingsScreen() {
       </section>
 
       <section className="settings-card">
+        <div className="settings-group-heading">
+          <strong>Translation</strong>
+          <small>Choose a language and translator used across the app</small>
+        </div>
+
         <SettingPicker
           icon={Languages}
-          label="Translation"
-          description="Choose the translation used across the app"
+          label="Translation language"
+          description="Choose the language first"
+          value={translationLanguage}
+          options={TRANSLATION_LANGUAGES}
+          getLabel={(language) => language.label}
+          onChange={(value) => {
+            const nextTranslation = getDefaultTranslationForLanguage(value);
+            updateSettings({ translation: nextTranslation.id });
+          }}
+        />
+
+        <SettingPicker
+          icon={Languages}
+          label="Translator"
+          description="Choose the translation source"
           value={settings.translation}
-          options={TRANSLATION_OPTIONS}
-          getLabel={(translation) => translation.label}
+          options={translationOptions}
+          getLabel={(translation) => translation.shortName || translation.label}
           onChange={(value) => updateSettings({ translation: value })}
         />
+
+        <div className="settings-group-heading settings-group-heading-spaced">
+          <strong>Word-by-word</strong>
+          <small>Choose a language and word-meaning source</small>
+        </div>
 
         <SettingSwitch
           icon={ListTree}
@@ -90,15 +130,39 @@ export default function SettingsScreen() {
         />
 
         {settings.wordByWordTranslation && (
-          <SettingPicker
-            icon={Languages}
-            label="Word-by-word language"
-            description="Choose English or Urdu individual word meanings"
-            value={settings.wordByWordLanguage || 'en'}
-            options={WORD_BY_WORD_LANGUAGES}
-            getLabel={(language) => language.label}
-            onChange={(value) => updateSettings({ wordByWordLanguage: value })}
-          />
+          <>
+            <SettingPicker
+              icon={Languages}
+              label="Word-by-word language"
+              description="Choose English or Urdu individual word meanings"
+              value={wordByWordLanguage}
+              options={WORD_BY_WORD_LANGUAGES}
+              getLabel={(language) => language.label}
+              onChange={(value) => {
+                const nextSource = getWordByWordSourcesForLanguage(value)[0];
+                updateSettings({
+                  wordByWordLanguage: value,
+                  wordByWordSource: nextSource?.id || 'en-colored',
+                });
+              }}
+            />
+
+            <SettingPicker
+              icon={ListTree}
+              label="Word-by-word source"
+              description="English keeps your current colored word-by-word data"
+              value={selectedWordByWordSource.id}
+              options={wordByWordSources}
+              getLabel={(source) => source.shortName || source.label}
+              onChange={(value) => {
+                const source = getWordByWordSource(value, wordByWordLanguage);
+                updateSettings({
+                  wordByWordSource: source.id,
+                  wordByWordLanguage: source.language,
+                });
+              }}
+            />
+          </>
         )}
 
         <SettingSwitch
