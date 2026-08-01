@@ -2513,3 +2513,12 @@ body {
   color: #d9ad57 !important;
   background: transparent !important;
 }
+
+/* Recitation progress changes glyph colour only; never paint a word box. */
+.reader-page .quran-word.is-recited-word,
+.reader-page .quran-word.is-recited-word::before,
+.reader-page .quran-word.is-recited-word::after {
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
