@@ -6,34 +6,6 @@ export const WORD_BY_WORD_LANGUAGES = Object.freeze([
   { id: 'ur', label: 'Urdu', direction: 'rtl' },
 ]);
 
-export const WORD_BY_WORD_SOURCES = Object.freeze([
-  {
-    id: 'en-colored',
-    label: 'English (Current colored translation)',
-    shortName: 'Current colored translation',
-    language: 'en',
-    direction: 'ltr',
-  },
-  {
-    id: 'ur-quran-foundation',
-    label: 'Urdu — Quran Foundation',
-    shortName: 'Quran Foundation',
-    language: 'ur',
-    direction: 'rtl',
-  },
-]);
-
-export function getWordByWordSourcesForLanguage(language) {
-  const normalized = normalizeWordLanguage(language);
-  return WORD_BY_WORD_SOURCES.filter((source) => source.language === normalized);
-}
-
-export function getWordByWordSource(sourceId, fallbackLanguage = 'en') {
-  return WORD_BY_WORD_SOURCES.find((source) => source.id === sourceId)
-    || getWordByWordSourcesForLanguage(fallbackLanguage)[0]
-    || WORD_BY_WORD_SOURCES[0];
-}
-
 const SUPPORTED_LANGUAGE_CODES = new Set(
   WORD_BY_WORD_LANGUAGES.map((language) => language.id),
 );
