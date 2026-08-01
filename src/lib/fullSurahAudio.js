@@ -3,6 +3,7 @@ export const FULL_SURAH_FOLDER_BY_RECITER = Object.freeze({
   'abdullah-awad-al-juhani': 'abdullah-awad-al-juhani',
   'abdur-rahman-as-sudais': 'abdur-rahman-as-sudais',
   'abu-bakr-al-shatri': 'abu-bakr-al-shatri',
+  'khalid-al-jalil': 'khalid-al-jalil',
   'maher-al-mu-aiqly': 'maher-al-mu-aiqly',
   'mahmoud-khalil-al-husary': 'mahmoud-khalil-al-husary',
   'mishari-rashid-al-afasy': 'mishari-rashid-al-afasy',
@@ -10,6 +11,13 @@ export const FULL_SURAH_FOLDER_BY_RECITER = Object.freeze({
   'saud-al-shuraim': 'saud-al-shuraim',
   'yasser-al-dosari': 'yasser-al-dosari',
 });
+
+const QF_CHAPTER_RECITER_BY_RECITER = Object.freeze({
+  // Quran.com/Quran Foundation chapter-reciter ID.
+  'ahmed-ibn-ali-al-ajmy': 19,
+});
+
+const qfPlaybackCache = new Map();
 
 // Store the Promise itself so resolved data remains in memory for the session
 // and concurrent callers share the same fetch-and-parse operation.
@@ -20,7 +28,10 @@ export function getFullSurahFolder(reciterId) {
 }
 
 export function hasFullSurahAudio(reciterId) {
-  return Boolean(getFullSurahFolder(reciterId));
+  return Boolean(
+    getFullSurahFolder(reciterId)
+    || QF_CHAPTER_RECITER_BY_RECITER[reciterId],
+  );
 }
 
 export async function loadFullSurahReciterData(reciterId, fetchImpl = globalThis.fetch) {
@@ -63,6 +74,11 @@ export async function getFullSurahPlayback(reciterId, surahNumber, fetchImpl = g
   const surah = normalizePositiveInteger(surahNumber);
   if (!surah || surah > 114) return null;
 
+  const qfReciterId = QF_CHAPTER_RECITER_BY_RECITER[reciterId];
+  if (qfReciterId) {
+    return loadQfChapterPlayback(reciterId, qfReciterId, surah, fetchImpl);
+  }
+
   const reciterData = await loadFullSurahReciterData(reciterId, fetchImpl);
   if (!reciterData) return null;
 
@@ -86,6 +102,62 @@ export async function getFullSurahPlayback(reciterId, surahNumber, fetchImpl = g
     audioUrl,
     timeline,
   };
+}
+
+async function loadQfChapterPlayback(reciterId, qfReciterId, surahNumber, fetchImpl) {
+  if (typeof fetchImpl !== 'function') {
+    throw new Error('Quran Foundation audio cannot be loaded in this environment.');
+  }
+
+  const cacheKey = `${reciterId}:${surahNumber}`;
+  if (qfPlaybackCache.has(cacheKey)) return qfPlaybackCache.get(cacheKey);
+
+  const loadingPromise = (async () => {
+    const path = `chapter_recitations/${qfReciterId}/${surahNumber}`;
+    const response = await fetchImpl(`/api/qf?path=${encodeURIComponent(path)}&segments=true`);
+    if (!response.ok) {
+      const detail = await response.text().catch(() => '');
+      throw new Error(`Quran Foundation audio request failed (${response.status})${detail ? `: ${detail.slice(0, 160)}` : ''}`);
+    }
+
+    const payload = await response.json();
+    const audioFile = payload?.audio_file;
+    const audioUrl = typeof audioFile?.audio_url === 'string'
+      ? audioFile.audio_url.trim()
+      : '';
+    const timestamps = Array.isArray(audioFile?.timestamps)
+      ? audioFile.timestamps
+      : [];
+
+    if (!audioUrl || !timestamps.length) return null;
+
+    const segmentsByVerse = Object.fromEntries(
+      timestamps
+        .filter((timing) => typeof timing?.verse_key === 'string')
+        .map((timing) => [timing.verse_key, timing]),
+    );
+    const timeline = buildSurahTimeline(segmentsByVerse, surahNumber);
+    if (!timeline.length) return null;
+
+    return {
+      reciterId,
+      folder: '',
+      source: 'quran-foundation',
+      surahNumber,
+      audioUrl,
+      timeline,
+    };
+  })();
+
+  qfPlaybackCache.set(cacheKey, loadingPromise);
+  try {
+    return await loadingPromise;
+  } catch (error) {
+    if (qfPlaybackCache.get(cacheKey) === loadingPromise) {
+      qfPlaybackCache.delete(cacheKey);
+    }
+    throw error;
+  }
 }
 
 export function buildSurahTimeline(segmentsByVerse, surahNumber) {
@@ -230,6 +302,7 @@ export function findWordAtTime(ayahTiming, timeMs) {
 
 export function clearFullSurahAudioCache() {
   reciterDataCache.clear();
+  qfPlaybackCache.clear();
 }
 
 async function fetchJson(url, fetchImpl) {
