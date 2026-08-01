@@ -920,9 +920,16 @@ export function ReaderAudioPanel() {
     const wordTiming = findWordAtTime(timing, timeMs);
     setPlayingWord(wordTiming?.position, wordTiming?.occurrenceIndex);
 
-    if (sameTarget(currentTargetRef.current, timing)) return;
-
     const target = targetFromTiming(timing);
+    const currentTarget = currentTargetRef.current;
+    const sameVerse = sameTarget(currentTarget, timing);
+    const sameCanonicalPage = Number(currentTarget?.page) === Number(target?.page);
+
+    // A target can have the correct verse but a stale page (for example when
+    // playback starts from an ayah after an earlier navigation). Do not return
+    // early until both the verse and its canonical Mushaf page are correct.
+    if (sameVerse && sameCanonicalPage) return;
+
     currentTargetRef.current = target;
     setAudioTarget(target);
     updateAudioQueue(target);
@@ -1348,7 +1355,10 @@ function normalizeTarget(ayah) {
   if (!ayah?.surahNumber || !ayah?.ayahNumber) return null;
 
   return {
-    page: ayah.page || findPageForReference(ayah.surahNumber, ayah.ayahNumber),
+    // Always derive the canonical Mushaf page from the verse reference. A
+    // caller-provided page may describe the previously visible page and can
+    // otherwise send Follow Recitation to the start of the Surah.
+    page: findPageForReference(ayah.surahNumber, ayah.ayahNumber),
     surahNumber: Number(ayah.surahNumber),
     ayahNumber: Number(ayah.ayahNumber),
     reference: ayah.reference || `${ayah.surahNumber}:${ayah.ayahNumber}`,
