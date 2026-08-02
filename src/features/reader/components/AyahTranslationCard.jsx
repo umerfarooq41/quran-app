@@ -165,16 +165,10 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
                 <div className="ayah-translation-footnotes">
                   {translation.footnotes?.length > 0 && (
                     <section className="ayah-translation-note-section">
-                      <h4>{translation.footnotes.some((note) => note.kind === 'tafsir') ? 'Footnotes and tafsir' : 'Translator footnotes'}</h4>
                       {translation.footnotes.map((footnote) => (
                         <p key={footnote.id}>
-                          <span>{footnote.number}</span>
-                          <span className="ayah-translation-note-content">
-                            {footnote.kind === 'tafsir' && (
-                              <strong>{footnote.source ? `Tafsir — ${footnote.source}` : 'Tafsir'}</strong>
-                            )}
-                            {footnote.text}
-                          </span>
+                          <span className="ayah-translation-note-number">{footnote.number}</span>
+                          <span className="ayah-translation-note-content">{footnote.text}</span>
                         </p>
                       ))}
                     </section>
