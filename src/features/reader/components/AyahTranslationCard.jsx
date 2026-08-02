@@ -2,7 +2,11 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getSurah, getSurahAyahs, surahs } from '../../../lib/quran';
-import { getTranslationOption, loadTranslationEntry } from '../../../lib/translations';
+import {
+  getTranslationOption,
+  loadTranslationEntry,
+  prefetchTranslationEntry,
+} from '../../../lib/translations';
 import { useAppStore } from '../../../store/useAppStore';
 import { WordByWordTranslation } from './WordByWordTranslation';
 
@@ -39,25 +43,69 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
 
     if (!activeTarget?.surahNumber || !activeTarget?.ayahNumber) return undefined;
 
+    const { surahNumber, ayahNumber } = activeTarget;
     setTranslation({ plainText: '', parts: [], footnotes: [] });
     setTranslationLoaded(false);
     setFootnotesOpen(false);
 
-    loadTranslationEntry(translationId, activeTarget.surahNumber, activeTarget.ayahNumber)
+    // Show the selected translation as soon as it is ready. Matching tafsir is
+    // loaded in parallel and merged later, so optional tafsir never blocks the
+    // translation card.
+    loadTranslationEntry(translationId, surahNumber, ayahNumber, {
+      includeTafsir: false,
+    })
       .then((entry) => {
-        if (mounted) setTranslation(entry || { plainText: '', parts: [], footnotes: [] });
+        if (!mounted) return;
+        setTranslation(entry || { plainText: '', parts: [], footnotes: [] });
+        setTranslationLoaded(true);
       })
       .catch(() => {
-        if (mounted) setTranslation({ plainText: '', parts: [], footnotes: [] });
+        if (!mounted) return;
+        setTranslation({ plainText: '', parts: [], footnotes: [] });
+        setTranslationLoaded(true);
+      });
+
+    // This shares the same chapter-level translation request and separately
+    // preloads the matching tafsir chapter. When it resolves, replace the card
+    // entry only if this ayah is still active.
+    loadTranslationEntry(translationId, surahNumber, ayahNumber, {
+      includeTafsir: true,
+    })
+      .then((entry) => {
+        if (mounted && entry) setTranslation(entry);
       })
-      .finally(() => {
-        if (mounted) setTranslationLoaded(true);
+      .catch(() => {
+        // Translation-only content remains visible when tafsir is unavailable.
       });
 
     return () => {
       mounted = false;
     };
   }, [activeTarget?.surahNumber, activeTarget?.ayahNumber, translationId]);
+
+  useEffect(() => {
+    if (!activeTarget?.surahNumber || !activeTarget?.ayahNumber) return;
+
+    // Warm both directions after every navigation. Requests are deduplicated at
+    // chapter level, so moving between ayahs in the same Surah is instant and a
+    // Surah-boundary move starts loading the neighbouring chapter beforehand.
+    [previousTarget, nextTarget].filter(Boolean).forEach((targetToPrefetch) => {
+      prefetchTranslationEntry(
+        translationId,
+        targetToPrefetch.surahNumber,
+        targetToPrefetch.ayahNumber,
+        { includeTafsir: true },
+      );
+    });
+  }, [
+    activeTarget?.surahNumber,
+    activeTarget?.ayahNumber,
+    previousTarget?.surahNumber,
+    previousTarget?.ayahNumber,
+    nextTarget?.surahNumber,
+    nextTarget?.ayahNumber,
+    translationId,
+  ]);
 
 
   if (!activeTarget) return null;
@@ -117,11 +165,16 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
                 <div className="ayah-translation-footnotes">
                   {translation.footnotes?.length > 0 && (
                     <section className="ayah-translation-note-section">
-                      <h4>Translator footnotes</h4>
+                      <h4>{translation.footnotes.some((note) => note.kind === 'tafsir') ? 'Footnotes and tafsir' : 'Translator footnotes'}</h4>
                       {translation.footnotes.map((footnote) => (
                         <p key={footnote.id}>
                           <span>{footnote.number}</span>
-                          {footnote.text}
+                          <span className="ayah-translation-note-content">
+                            {footnote.kind === 'tafsir' && (
+                              <strong>{footnote.source ? `Tafsir — ${footnote.source}` : 'Tafsir'}</strong>
+                            )}
+                            {footnote.text}
+                          </span>
                         </p>
                       ))}
                     </section>
