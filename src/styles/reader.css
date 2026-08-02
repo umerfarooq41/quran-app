@@ -2274,11 +2274,12 @@ body {
   line-height: 1.65;
 }
 
-.ayah-translation-footnotes p {
+.ayah-translation-footnotes p,
+.ayah-translation-note-row {
   display: grid;
   grid-template-columns: 18px minmax(0, 1fr);
   align-items: start;
-  gap: 7px;
+  gap: 8px;
   width: 100%;
   margin: 0;
 }
@@ -2287,13 +2288,24 @@ body {
   display: inline-grid;
   width: 18px;
   height: 18px;
-  flex: 0 0 auto;
   place-items: center;
   border-radius: 50%;
   background: rgba(45, 110, 94, .15);
   color: #245f51;
+  font-family: var(--translation-english-font);
   font-size: .62rem;
   font-weight: 800;
+  line-height: 1;
+}
+
+.ayah-translation-note-content {
+  display: block;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  white-space: pre-line;
 }
 
 /* Return to the ayah currently being recited after browsing away. */
@@ -2571,22 +2583,3 @@ body {
   cursor: pointer;
 }
 
-.ayah-translation-note-content {
-  display: block;
-  min-width: 0;
-  width: 100%;
-  height: auto;
-  border-radius: 0;
-  background: transparent;
-  color: inherit;
-  font-size: inherit;
-  font-weight: inherit;
-  line-height: 1.8;
-  overflow-wrap: anywhere;
-  white-space: pre-line;
-}
-
-.ayah-translation-note-content strong {
-  font: inherit;
-  font-weight: 700;
-}
