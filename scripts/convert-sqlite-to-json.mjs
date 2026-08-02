@@ -5,7 +5,7 @@ import { dirname, join, resolve } from 'node:path';
 const root = resolve(process.argv[2] || process.cwd());
 const pageDbPath = join(root, 'taj-indopak-16-lines.db');
 const wordDbPath = join(root, 'indopak-nastaleeq word by word.db');
-const surahInfoPath = join(root, 'surah-info-en.json');
+const surahInfoPath = join(root, 'src/data/surahInfoEn.json');
 const pagesOutPath = join(root, 'src/data/quranPages16.json');
 const wordsOutPath = join(root, 'src/data/quranWords.json');
 const ayahsOutPath = join(root, 'src/data/quranAyahs.json');
