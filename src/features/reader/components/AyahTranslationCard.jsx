@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getSurah, getSurahAyahs, surahs } from '../../../lib/quran';
@@ -19,6 +19,7 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
   const [translation, setTranslation] = useState({ plainText: '', parts: [], footnotes: [] });
   const [translationLoaded, setTranslationLoaded] = useState(false);
   const [footnotesOpen, setFootnotesOpen] = useState(false);
+  const bodyRef = useRef(null);
   const ayah = useMemo(() => getAyah(activeTarget), [
     activeTarget?.surahNumber,
     activeTarget?.ayahNumber,
@@ -37,6 +38,10 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
   useEffect(() => {
     setActiveTarget(normalizeTarget(target));
   }, [target?.surahNumber, target?.ayahNumber]);
+
+  useLayoutEffect(() => {
+    bodyRef.current?.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [activeTarget?.surahNumber, activeTarget?.ayahNumber]);
 
   useEffect(() => {
     let mounted = true;
@@ -131,7 +136,7 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
           {reference}
         </header>
 
-        <div className="ayah-translation-body" data-translation-language={translationOption.language || 'En'}>
+        <div ref={bodyRef} className="ayah-translation-body" data-translation-language={translationOption.language || 'En'}>
           <p className="ayah-translation-arabic" dir="rtl">
             {ayah?.text || ''}
           </p>
@@ -166,7 +171,7 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
                   {translation.footnotes?.length > 0 && (
                     <section className="ayah-translation-note-section">
                       {translation.footnotes.map((footnote) => (
-                        <p key={footnote.id}>
+                        <p key={footnote.id} className="ayah-translation-note-row">
                           <span className="ayah-translation-note-number">{footnote.number}</span>
                           <span className="ayah-translation-note-content">{footnote.text}</span>
                         </p>

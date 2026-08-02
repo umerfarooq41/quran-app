@@ -346,22 +346,19 @@ export function QuranLine({
       event.clientX,
       event.clientY,
     );
-    const tappedWordMetadata = Number.isInteger(wordIndex)
-      ? wordMetadataByTokenIndex.get(wordIndex) || null
-      : null;
-    const metadataVerse = parseVerseKey(tappedWordMetadata?.verseKey);
-    const rangeAyahNumber = getAyahAtRenderedPoint(
-      line,
-      textRef.current,
-      event.clientX,
-      event.clientY,
-    );
-    const ayahNumber = metadataVerse?.surahNumber === Number(line.surahNumber)
-      ? metadataVerse.ayahNumber
-      : rangeAyahNumber;
     const wordElement = Number.isInteger(wordIndex)
       ? textRef.current?.querySelector(`[data-quran-word-index="${wordIndex}"]`)
       : null;
+    const metadataVerseKey = wordElement?.dataset?.verseKey || '';
+    const metadataAyahNumber = Number(metadataVerseKey.split(':')[1]);
+    const ayahNumber = Number.isInteger(metadataAyahNumber) && metadataAyahNumber > 0
+      ? metadataAyahNumber
+      : getAyahAtRenderedPoint(
+        line,
+        textRef.current,
+        event.clientX,
+        event.clientY,
+      );
     const wordToken = renderedTokens.find((token) => (
       token.isWord && token.wordIndex === wordIndex
     ));
@@ -579,12 +576,6 @@ function chooseAnchorRect(rects, clientX, clientY) {
   });
 
   return closestRect;
-}
-
-function parseVerseKey(value) {
-  const [surahNumber, ayahNumber] = String(value || '').split(':').map(Number);
-  if (!surahNumber || !ayahNumber) return null;
-  return { surahNumber, ayahNumber };
 }
 
 function normalizeRect(rect) {
