@@ -528,21 +528,22 @@ export default function ReaderScreen() {
       return;
     }
 
+    const surahNumber = Number(selection?.surahNumber || line.surahNumber);
     const ayahNumber = Number(selection?.ayahNumber || line.ayahStart);
     const wordIndex = Number.isInteger(selection?.wordIndex)
       ? selection.wordIndex
       : null;
-    const ayah = getSurahAyahs(line.surahNumber)
+    const ayah = getSurahAyahs(surahNumber)
       .find((candidate) => candidate.ayahNumber === ayahNumber);
-    const ayahKey = `${line.surahNumber}:${ayahNumber}`;
+    const ayahKey = `${surahNumber}:${ayahNumber}`;
 
     suppressTapUntil.current = Date.now() + 700;
     setTranslationTarget(null);
     openAyahSheet({
       page,
-      surah: line.surahNumber,
+      surah: surahNumber,
       ayah: ayahNumber,
-      surahNumber: line.surahNumber,
+      surahNumber,
       ayahNumber,
       lineIndex,
       wordIndex,
@@ -564,10 +565,11 @@ export default function ReaderScreen() {
       return;
     }
 
+    const surahNumber = Number(selection?.surahNumber || line.surahNumber);
     const ayahNumber = Number(selection?.ayahNumber || line.ayahStart);
     setTranslationTarget({
       page,
-      surahNumber: line.surahNumber,
+      surahNumber,
       ayahNumber,
       lineIndex,
     });
