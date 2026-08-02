@@ -3,6 +3,9 @@ import { qfGet } from '../services/quranFoundation/client';
 const translationCache = new Map();
 const translationResourceCache = new Map();
 const translationCatalogCache = new Map();
+const tafsirResourceCache = new Map();
+const tafsirCatalogCache = new Map();
+const tafsirChapterCache = new Map();
 
 export const DEFAULT_TRANSLATION_ID = 'ur-al-maududi';
 
@@ -57,6 +60,7 @@ export const TRANSLATION_OPTIONS = [
     language: 'En',
     direction: 'ltr',
     file: 'en-maarif-ul-quran.json',
+    tafsirAliases: ['maarif ul quran', 'maariful quran', "ma ariful quran"],
   },
   {
     id: 'ur-al-maududi',
@@ -73,6 +77,7 @@ export const TRANSLATION_OPTIONS = [
     language: 'Ur',
     direction: 'rtl',
     file: 'ur-bayan-ul-quran.json',
+    tafsirAliases: ['bayan ul quran', 'israr ahmad'],
   },
   {
     id: 'ur-fateh-jalandhry',
@@ -115,6 +120,7 @@ export const TRANSLATION_OPTIONS = [
     direction: 'rtl',
     apiLanguage: 'ur',
     resourceAliases: ['maarif ul quran', 'maariful quran', "ma'ariful quran"],
+    tafsirAliases: ['maarif ul quran', 'maariful quran', "ma ariful quran"],
   },
 ];
 
@@ -169,7 +175,21 @@ export async function loadTranslationEntry(translationId, surahNumber, ayahNumbe
     rawEntry = await loadRemoteTranslationEntry(option, surahNumber, ayahNumber, options);
   }
 
-  const entry = normalizeTranslationEntry(rawEntry);
+  let entry = normalizeTranslationEntry(rawEntry);
+
+  // A few translation resources also have a matching tafsir resource. Load it
+  // only for those explicitly configured sources, and never let a tafsir
+  // failure hide an otherwise valid translation. Existing translator
+  // footnotes stay first; the tafsir is appended as one additional note.
+  if (Array.isArray(option.tafsirAliases) && option.tafsirAliases.length) {
+    try {
+      const tafsir = await loadMatchingTafsirEntry(option, surahNumber, ayahNumber, options);
+      if (tafsir) entry = appendTafsirFootnote(entry, tafsir, option.shortName || option.label);
+    } catch {
+      // Tafsir is optional. Translation must remain usable when the catalog or
+      // selected tafsir resource is unavailable.
+    }
+  }
 
   return {
     ...entry,
@@ -216,24 +236,13 @@ async function loadRemoteTranslationEntry(option, surahNumber, ayahNumber, { sig
       fields: 'resource_name,language_name,verse_key',
     };
 
-    // The current Content API exposes translations under quran/translations.
-    // Keep the legacy path as a fallback for older proxy deployments.
-    let payload;
-    try {
-      payload = await qfGet(`quran/translations/${resourceId}`, requestParams, { signal });
-    } catch (primaryError) {
-      try {
-        payload = await qfGet(`translations/${resourceId}`, requestParams, { signal });
-      } catch {
-        throw primaryError;
-      }
-    }
-
-    const rows = Array.isArray(payload?.translations)
-      ? payload.translations
-      : payload?.translation
-        ? [payload.translation]
-        : [];
+    const rows = await loadAllPaginatedRows({
+      primaryPath: `quran/translations/${resourceId}`,
+      fallbackPath: `translations/${resourceId}`,
+      params: requestParams,
+      rowKeys: ['translations'],
+      signal,
+    });
 
     chapterEntries = new Map();
     rows.forEach((row) => {
@@ -292,6 +301,169 @@ async function loadTranslationCatalog(language, signal) {
 
   translationCatalogCache.set(language, request);
   return request;
+}
+
+
+
+async function loadAllPaginatedRows({
+  primaryPath,
+  fallbackPath = null,
+  params = {},
+  rowKeys = [],
+  signal,
+}) {
+  const perPage = 50;
+  const allRows = [];
+  let page = 1;
+  let totalPages = 1;
+  let activePath = primaryPath;
+
+  do {
+    let payload;
+    try {
+      payload = await qfGet(activePath, { ...params, per_page: perPage, page }, { signal });
+    } catch (primaryError) {
+      if (page === 1 && fallbackPath && activePath !== fallbackPath) {
+        activePath = fallbackPath;
+        payload = await qfGet(activePath, { ...params, per_page: perPage, page }, { signal });
+      } else {
+        throw primaryError;
+      }
+    }
+
+    const rows = extractRows(payload, rowKeys);
+    allRows.push(...rows);
+
+    const pagination = payload?.pagination || payload?.meta?.pagination || payload?.data?.pagination || {};
+    const reportedTotalPages = Number(
+      pagination?.total_pages
+      || pagination?.totalPages
+      || Math.ceil(Number(pagination?.total_records || pagination?.total || 0) / perPage),
+    );
+
+    if (Number.isFinite(reportedTotalPages) && reportedTotalPages > 0) {
+      totalPages = reportedTotalPages;
+    } else {
+      totalPages = rows.length === perPage ? page + 1 : page;
+    }
+
+    page += 1;
+  } while (page <= totalPages && page <= 20);
+
+  return allRows;
+}
+
+function extractRows(payload, rowKeys) {
+  for (const key of rowKeys) {
+    if (Array.isArray(payload?.[key])) return payload[key];
+    if (Array.isArray(payload?.data?.[key])) return payload.data[key];
+  }
+
+  for (const key of rowKeys) {
+    const singular = key.endsWith('s') ? key.slice(0, -1) : key;
+    if (payload?.[singular]) return [payload[singular]];
+    if (payload?.data?.[singular]) return [payload.data[singular]];
+  }
+
+  return [];
+}
+
+async function loadMatchingTafsirEntry(option, surahNumber, ayahNumber, { signal } = {}) {
+  const chapterNumber = Number(surahNumber);
+  const verseKey = `${chapterNumber}:${Number(ayahNumber)}`;
+  const resourceId = await resolveTafsirResourceId(option, signal);
+  if (!resourceId) return null;
+
+  const cacheKey = `${resourceId}:chapter:${chapterNumber}`;
+  let chapterEntries = tafsirChapterCache.get(cacheKey);
+
+  if (!chapterEntries) {
+    const rows = await loadAllPaginatedRows({
+      primaryPath: `tafsirs/${resourceId}`,
+      params: {
+        chapter_number: chapterNumber,
+        fields: 'verse_key,resource_name,language_name',
+      },
+      rowKeys: ['tafsirs'],
+      signal,
+    });
+
+    chapterEntries = new Map();
+    rows.forEach((row) => {
+      const key = String(row?.verse_key || '');
+      const text = cleanInlineText(row?.text || row?.tafsir || row?.body || '');
+      if (key && text) chapterEntries.set(key, text);
+    });
+    tafsirChapterCache.set(cacheKey, chapterEntries);
+  }
+
+  return chapterEntries.get(verseKey) || null;
+}
+
+async function resolveTafsirResourceId(option, signal) {
+  if (tafsirResourceCache.has(option.id)) return tafsirResourceCache.get(option.id);
+
+  const language = option.apiLanguage || getTranslationLanguageId(option.id);
+  const resources = await loadTafsirCatalog(language, signal);
+  const aliases = (option.tafsirAliases || []).map(normalizeResourceName).filter(Boolean);
+  const match = resources.find((resource) => {
+    const searchable = normalizeResourceName([
+      resource?.name,
+      resource?.translated_name?.name,
+      resource?.author_name,
+      resource?.slug,
+      resource?.language_name,
+    ].filter(Boolean).join(' '));
+    return aliases.some((alias) => searchable.includes(alias));
+  });
+
+  const resourceId = Number(match?.id);
+  tafsirResourceCache.set(option.id, resourceId || null);
+  return resourceId || null;
+}
+
+async function loadTafsirCatalog(language, signal) {
+  if (tafsirCatalogCache.has(language)) return tafsirCatalogCache.get(language);
+
+  const request = qfGet('resources/tafsirs', { language }, { signal })
+    .then((payload) => Array.isArray(payload?.tafsirs)
+      ? payload.tafsirs
+      : Array.isArray(payload?.data?.tafsirs)
+        ? payload.data.tafsirs
+        : [])
+    .catch((error) => {
+      tafsirCatalogCache.delete(language);
+      throw error;
+    });
+
+  tafsirCatalogCache.set(language, request);
+  return request;
+}
+
+function appendTafsirFootnote(entry, tafsirText, sourceName) {
+  if (!tafsirText) return entry;
+
+  const existing = Array.isArray(entry?.footnotes) ? entry.footnotes : [];
+  const number = String(existing.length + 1);
+  const id = `tafsir-${number}`;
+  const parts = Array.isArray(entry?.parts) ? [...entry.parts] : [];
+  parts.push({ type: 'footnote', id, number });
+
+  return {
+    ...entry,
+    parts,
+    plainText: partsToPlainText(parts),
+    footnotes: [
+      ...existing,
+      {
+        id,
+        number,
+        kind: 'tafsir',
+        source: sourceName,
+        text: tafsirText,
+      },
+    ],
+  };
 }
 
 function normalizeRemoteFootnotes(row) {
