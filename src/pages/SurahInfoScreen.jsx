@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { BookOpen } from 'lucide-react';
 import { useAppStore } from '../store/useAppStore';
 import { findPageForReference, getSurah, getSurahInfo } from '../lib/quran';
+import { getTranslationLanguageId } from '../lib/translations';
 import { parseQuranInternalHref, sanitizeSurahHtml } from '../lib/sanitizeHtml';
 import { BackButton } from '../components/common/AppChrome';
 
@@ -10,7 +11,7 @@ export default function SurahInfoScreen() {
   const closeSurahInfo = useAppStore((state) => state.closeSurahInfo);
   const goAyah = useAppStore((state) => state.goAyah);
   const translationId = useAppStore((state) => state.settings.translation);
-  const translationLanguage = String(translationId || '').startsWith('en-') ? 'en' : 'ur';
+  const translationLanguage = getTranslationLanguageId(translationId);
   const surah = getSurah(selectedSurah);
   const localizedInfo = getSurahInfo(selectedSurah, translationLanguage);
   const cleanHtml = useMemo(() => sanitizeSurahHtml(localizedInfo?.text || ''), [localizedInfo?.text]);
@@ -50,7 +51,9 @@ export default function SurahInfoScreen() {
 
         {cleanHtml ? (
           <div
-            className="surah-info-html"
+            className={`surah-info-html is-${translationLanguage}`}
+            lang={translationLanguage}
+            dir={translationLanguage === 'ur' ? 'rtl' : 'ltr'}
             onClick={handleContentClick}
             dangerouslySetInnerHTML={{ __html: cleanHtml }}
           />
