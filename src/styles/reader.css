@@ -1761,6 +1761,7 @@ body {
   overscroll-behavior: contain;
   padding: 16px 18px 18px;
   -webkit-overflow-scrolling: touch;
+  overflow-anchor: none;
 }
 
 .ayah-translation-text {
@@ -2276,11 +2277,11 @@ body {
 
 .ayah-translation-footnotes p,
 .ayah-translation-note-row {
-  display: grid;
-  grid-template-columns: 18px minmax(0, 1fr);
-  align-items: start;
+  display: flex;
+  align-items: flex-start;
   gap: 8px;
   width: 100%;
+  min-width: 0;
   margin: 0;
 }
 
@@ -2299,11 +2300,17 @@ body {
 }
 
 .ayah-translation-note-content {
-  display: block;
+  display: block !important;
+  flex: 1 1 auto;
   min-width: 0;
-  width: 100%;
+  width: auto !important;
   max-width: 100%;
-  overflow-wrap: anywhere;
+  height: auto !important;
+  background: transparent !important;
+  font-family: inherit !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+  overflow-wrap: break-word;
   word-break: normal;
   white-space: pre-line;
 }

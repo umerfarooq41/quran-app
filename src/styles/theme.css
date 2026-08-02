@@ -2584,8 +2584,8 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
   color: #d9dee2;
 }
 
-[data-theme='dark'] .ayah-translation-footnotes span,
-[data-theme='dark'] .tafsir-footnotes span {
+[data-theme='dark'] .ayah-translation-note-number,
+[data-theme='dark'] .tafsir-footnote-number {
   background: rgba(87, 191, 161, .18);
   color: #aef1dc;
 }
@@ -2671,8 +2671,8 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
   align-items: flex-start;
 }
 
-.ayah-translation-footnotes span,
-.tafsir-footnotes span {
+.ayah-translation-note-number,
+.tafsir-footnote-number {
   font-family: var(--translation-english-font) !important;
   width: 22px !important;
   height: 22px !important;
