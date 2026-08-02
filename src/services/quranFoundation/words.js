@@ -24,6 +24,7 @@ const quranWordsByVerse = new Map(
 );
 
 const wordCache = new Map();
+const wordPromiseCache = new Map();
 
 const ENGLISH_WBW_URL = '/data/translations/wbw-translation-en.json';
 let englishWordMeaningsPromise = null;
@@ -77,20 +78,40 @@ export async function getWordByWordTranslation(surah, ayah, options = {}) {
   const cacheKey = `${language}:${surahNumber}:${ayahNumber}`;
   if (wordCache.has(cacheKey)) return wordCache.get(cacheKey);
 
-  const request = language === 'en'
-    ? getLocalEnglishWords(surahNumber, ayahNumber, options.signal)
-    : getApiWords(surahNumber, ayahNumber, language, options.signal);
+  let request = wordPromiseCache.get(cacheKey);
+  if (!request) {
+    // The shared request is intentionally not tied to a component AbortSignal.
+    // Closing or changing an ayah must not cancel data that the next ayah/card
+    // instance can reuse from cache.
+    request = (language === 'en'
+      ? getLocalEnglishWords(surahNumber, ayahNumber)
+      : getApiWords(surahNumber, ayahNumber, language)
+    )
+      .then((result) => {
+        wordCache.set(cacheKey, result);
+        return result;
+      })
+      .finally(() => {
+        wordPromiseCache.delete(cacheKey);
+      });
 
-  if (!options.signal) wordCache.set(cacheKey, request);
-
-  try {
-    const result = await request;
-    if (!options.signal) wordCache.set(cacheKey, result);
-    return result;
-  } catch (error) {
-    if (!options.signal) wordCache.delete(cacheKey);
-    throw error;
+    wordPromiseCache.set(cacheKey, request);
   }
+
+  return waitForWordRequest(request, options.signal);
+}
+
+export function getCachedWordByWordTranslation(surah, ayah, language = 'en') {
+  const cacheKey = `${normalizeWordLanguage(language)}:${Number(surah)}:${Number(ayah)}`;
+  return wordCache.get(cacheKey) || null;
+}
+
+export function prefetchWordByWordTranslation(surah, ayah, options = {}) {
+  if (!Number(surah) || !Number(ayah)) return Promise.resolve(null);
+  return getWordByWordTranslation(surah, ayah, {
+    language: options.language,
+    signal: undefined,
+  }).catch(() => null);
 }
 
 export function getWordLanguage(language) {
@@ -106,6 +127,25 @@ export function normalizeWordLanguage(language) {
 
 export function clearWordTranslationCache() {
   wordCache.clear();
+  wordPromiseCache.clear();
+}
+
+function waitForWordRequest(request, signal) {
+  if (!signal) return request;
+  if (signal.aborted) {
+    return Promise.reject(new DOMException('The request was aborted.', 'AbortError'));
+  }
+
+  return Promise.race([
+    request,
+    new Promise((_, reject) => {
+      signal.addEventListener(
+        'abort',
+        () => reject(new DOMException('The request was aborted.', 'AbortError')),
+        { once: true },
+      );
+    }),
+  ]);
 }
 
 async function getLocalEnglishWords(surah, ayah, signal) {
