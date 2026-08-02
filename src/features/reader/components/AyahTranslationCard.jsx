@@ -116,7 +116,17 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
   if (!activeTarget) return null;
 
   function moveTo(nextTarget) {
-    if (nextTarget) setActiveTarget(nextTarget);
+    if (!nextTarget) return;
+
+    // Reset immediately before changing the ayah. The keyed body below then
+    // mounts a fresh scroll container at scrollTop 0, so a long tafsir from
+    // the previous ayah can never leave the next ayah visually blank.
+    if (bodyRef.current) {
+      bodyRef.current.scrollTop = 0;
+      bodyRef.current.scrollLeft = 0;
+    }
+    setFootnotesOpen(false);
+    setActiveTarget(nextTarget);
   }
 
   return (
@@ -136,7 +146,12 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
           {reference}
         </header>
 
-        <div ref={bodyRef} className="ayah-translation-body" data-translation-language={translationOption.language || 'En'}>
+        <div
+          key={`${activeTarget.surahNumber}:${activeTarget.ayahNumber}`}
+          ref={bodyRef}
+          className="ayah-translation-body"
+          data-translation-language={translationOption.language || 'En'}
+        >
           <p className="ayah-translation-arabic" dir="rtl">
             {ayah?.text || ''}
           </p>
