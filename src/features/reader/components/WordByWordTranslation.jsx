@@ -116,7 +116,7 @@ export function WordByWordTranslation({
                   lang="en"
                   dangerouslySetInnerHTML={{ __html: word.meaningHtml }}
                 />
-              ) : (
+              ) : toRenderableText(word.meaning) ? (
                 <span
                   className="ayah-word-by-word-meaning"
                   dir={languageOption.direction}
@@ -124,7 +124,7 @@ export function WordByWordTranslation({
                 >
                   {toRenderableText(word.meaning)}
                 </span>
-              )}
+              ) : null}
             </div>
           ))}
         </div>
