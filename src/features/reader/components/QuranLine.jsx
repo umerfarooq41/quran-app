@@ -349,8 +349,17 @@ export function QuranLine({
     const wordElement = Number.isInteger(wordIndex)
       ? textRef.current?.querySelector(`[data-quran-word-index="${wordIndex}"]`)
       : null;
-    const metadataVerseKey = wordElement?.dataset?.verseKey || '';
-    const metadataAyahNumber = Number(metadataVerseKey.split(':')[1]);
+    // Use the authoritative Quran word object that was already aligned for
+    // rendering. Reading the verse back from a DOM data attribute was fragile
+    // on split-page RTL ayahs such as 54:48, where a continuation line also
+    // contains the following ayah.
+    const wordMetadata = Number.isInteger(wordIndex)
+      ? wordMetadataByTokenIndex.get(wordIndex) || null
+      : null;
+    const metadataVerseKey = String(wordMetadata?.verseKey || '');
+    const [metadataSurahNumber, metadataAyahNumber] = metadataVerseKey
+      .split(':')
+      .map(Number);
     const ayahNumber = Number.isInteger(metadataAyahNumber) && metadataAyahNumber > 0
       ? metadataAyahNumber
       : getAyahAtRenderedPoint(
@@ -359,6 +368,9 @@ export function QuranLine({
         event.clientX,
         event.clientY,
       );
+    const surahNumber = Number.isInteger(metadataSurahNumber) && metadataSurahNumber > 0
+      ? metadataSurahNumber
+      : Number(line.surahNumber);
     const wordToken = renderedTokens.find((token) => (
       token.isWord && token.wordIndex === wordIndex
     ));
@@ -369,12 +381,16 @@ export function QuranLine({
     );
 
     return {
+      surahNumber,
       ayahNumber,
+      verseKey: metadataVerseKey || `${surahNumber}:${ayahNumber}`,
       wordIndex,
       selectedWord: wordToken?.text || '',
-      selectedWordId: Number.isInteger(wordIndex)
-        ? `line:${line.line}:word:${wordIndex}`
-        : '',
+      selectedWordId: Number.isInteger(wordMetadata?.id)
+        ? `quran-word:${wordMetadata.id}`
+        : Number.isInteger(wordIndex)
+          ? `line:${line.line}:word:${wordIndex}`
+          : '',
       selectedWordRect: normalizeRect(wordElement?.getBoundingClientRect()),
       ayahRect: normalizeRect(ayahRect),
       pointer: {
