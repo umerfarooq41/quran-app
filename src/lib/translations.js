@@ -1,11 +1,13 @@
 import { qfGet } from '../services/quranFoundation/client';
 
 const translationCache = new Map();
+const translationChapterPromiseCache = new Map();
 const translationResourceCache = new Map();
 const translationCatalogCache = new Map();
 const tafsirResourceCache = new Map();
 const tafsirCatalogCache = new Map();
 const tafsirChapterCache = new Map();
+const tafsirChapterPromiseCache = new Map();
 
 export const DEFAULT_TRANSLATION_ID = 'ur-al-maududi';
 
@@ -166,6 +168,7 @@ export async function loadTranslation(translationId = DEFAULT_TRANSLATION_ID) {
 
 export async function loadTranslationEntry(translationId, surahNumber, ayahNumber, options = {}) {
   const option = getTranslationOption(translationId);
+  const includeTafsir = options.includeTafsir !== false;
   let rawEntry;
 
   if (option.file) {
@@ -177,11 +180,14 @@ export async function loadTranslationEntry(translationId, surahNumber, ayahNumbe
 
   let entry = normalizeTranslationEntry(rawEntry);
 
-  // A few translation resources also have a matching tafsir resource. Load it
-  // only for those explicitly configured sources, and never let a tafsir
-  // failure hide an otherwise valid translation. Existing translator
-  // footnotes stay first; the tafsir is appended as one additional note.
-  if (Array.isArray(option.tafsirAliases) && option.tafsirAliases.length) {
+  // Translation text should not wait for optional tafsir. Callers can request
+  // the translation first with includeTafsir:false, while the matching tafsir
+  // chapter is prefetched in parallel and merged when ready.
+  if (
+    includeTafsir
+    && Array.isArray(option.tafsirAliases)
+    && option.tafsirAliases.length
+  ) {
     try {
       const tafsir = await loadMatchingTafsirEntry(option, surahNumber, ayahNumber, options);
       if (tafsir) entry = appendTafsirFootnote(entry, tafsir, option.shortName || option.label);
@@ -197,6 +203,22 @@ export async function loadTranslationEntry(translationId, surahNumber, ayahNumbe
     language: option.language,
     source: option,
   };
+}
+
+export function prefetchTranslationEntry(
+  translationId,
+  surahNumber,
+  ayahNumber,
+  options = {},
+) {
+  if (!Number(surahNumber) || !Number(ayahNumber)) return Promise.resolve(null);
+
+  return loadTranslationEntry(translationId, surahNumber, ayahNumber, {
+    ...options,
+    // Prefetch requests are shared by the cache. Do not attach a component
+    // AbortSignal that could cancel work needed by the next ayah.
+    signal: undefined,
+  }).catch(() => null);
 }
 
 export async function getTranslation(translationId, surahNumber, ayahNumber) {
@@ -221,7 +243,7 @@ async function loadRawTranslation(option) {
   return data;
 }
 
-async function loadRemoteTranslationEntry(option, surahNumber, ayahNumber, { signal } = {}) {
+async function loadRemoteTranslationEntry(option, surahNumber, ayahNumber) {
   const chapterNumber = Number(surahNumber);
   const verseKey = `${chapterNumber}:${Number(ayahNumber)}`;
   const chapterCacheKey = `${option.id}:chapter:${chapterNumber}`;
@@ -229,32 +251,49 @@ async function loadRemoteTranslationEntry(option, surahNumber, ayahNumber, { sig
   let chapterEntries = translationCache.get(chapterCacheKey);
 
   if (!chapterEntries) {
-    const resourceId = await resolveTranslationResourceId(option, signal);
-    const requestParams = {
-      chapter_number: chapterNumber,
-      foot_notes: true,
-      fields: 'resource_name,language_name,verse_key',
-    };
+    let chapterRequest = translationChapterPromiseCache.get(chapterCacheKey);
 
-    const rows = await loadAllPaginatedRows({
-      primaryPath: `quran/translations/${resourceId}`,
-      fallbackPath: `translations/${resourceId}`,
-      params: requestParams,
-      rowKeys: ['translations'],
-      signal,
-    });
+    if (!chapterRequest) {
+      chapterRequest = (async () => {
+        const resourceId = await resolveTranslationResourceId(option);
+        const requestParams = {
+          chapter_number: chapterNumber,
+          foot_notes: true,
+          fields: 'resource_name,language_name,verse_key',
+        };
 
-    chapterEntries = new Map();
-    rows.forEach((row) => {
-      const key = String(row?.verse_key || '');
-      if (!key) return;
-      chapterEntries.set(key, {
-        t: String(row?.text || ''),
-        f: normalizeRemoteFootnotes(row),
-      });
-    });
+        const rows = await loadAllPaginatedRows({
+          primaryPath: `quran/translations/${resourceId}`,
+          fallbackPath: `translations/${resourceId}`,
+          params: requestParams,
+          rowKeys: ['translations'],
+        });
 
-    translationCache.set(chapterCacheKey, chapterEntries);
+        const entries = new Map();
+        rows.forEach((row) => {
+          const key = String(row?.verse_key || '');
+          if (!key) return;
+          entries.set(key, {
+            t: String(row?.text || ''),
+            f: normalizeRemoteFootnotes(row),
+          });
+        });
+
+        translationCache.set(chapterCacheKey, entries);
+        return entries;
+      })()
+        .catch((error) => {
+          translationCache.delete(chapterCacheKey);
+          throw error;
+        })
+        .finally(() => {
+          translationChapterPromiseCache.delete(chapterCacheKey);
+        });
+
+      translationChapterPromiseCache.set(chapterCacheKey, chapterRequest);
+    }
+
+    chapterEntries = await chapterRequest;
   }
 
   return chapterEntries.get(verseKey) || null;
@@ -368,33 +407,49 @@ function extractRows(payload, rowKeys) {
   return [];
 }
 
-async function loadMatchingTafsirEntry(option, surahNumber, ayahNumber, { signal } = {}) {
+async function loadMatchingTafsirEntry(option, surahNumber, ayahNumber) {
   const chapterNumber = Number(surahNumber);
   const verseKey = `${chapterNumber}:${Number(ayahNumber)}`;
-  const resourceId = await resolveTafsirResourceId(option, signal);
+  const resourceId = await resolveTafsirResourceId(option);
   if (!resourceId) return null;
 
   const cacheKey = `${resourceId}:chapter:${chapterNumber}`;
   let chapterEntries = tafsirChapterCache.get(cacheKey);
 
   if (!chapterEntries) {
-    const rows = await loadAllPaginatedRows({
-      primaryPath: `tafsirs/${resourceId}`,
-      params: {
-        chapter_number: chapterNumber,
-        fields: 'verse_key,resource_name,language_name',
-      },
-      rowKeys: ['tafsirs'],
-      signal,
-    });
+    let chapterRequest = tafsirChapterPromiseCache.get(cacheKey);
 
-    chapterEntries = new Map();
-    rows.forEach((row) => {
-      const key = String(row?.verse_key || '');
-      const text = cleanInlineText(row?.text || row?.tafsir || row?.body || '');
-      if (key && text) chapterEntries.set(key, text);
-    });
-    tafsirChapterCache.set(cacheKey, chapterEntries);
+    if (!chapterRequest) {
+      chapterRequest = loadAllPaginatedRows({
+        primaryPath: `tafsirs/${resourceId}`,
+        params: {
+          chapter_number: chapterNumber,
+          fields: 'verse_key,resource_name,language_name',
+        },
+        rowKeys: ['tafsirs'],
+      })
+        .then((rows) => {
+          const entries = new Map();
+          rows.forEach((row) => {
+            const key = String(row?.verse_key || '');
+            const text = cleanInlineText(row?.text || row?.tafsir || row?.body || '');
+            if (key && text) entries.set(key, text);
+          });
+          tafsirChapterCache.set(cacheKey, entries);
+          return entries;
+        })
+        .catch((error) => {
+          tafsirChapterCache.delete(cacheKey);
+          throw error;
+        })
+        .finally(() => {
+          tafsirChapterPromiseCache.delete(cacheKey);
+        });
+
+      tafsirChapterPromiseCache.set(cacheKey, chapterRequest);
+    }
+
+    chapterEntries = await chapterRequest;
   }
 
   return chapterEntries.get(verseKey) || null;
