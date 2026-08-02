@@ -341,17 +341,24 @@ export function QuranLine({
   }
 
   function getSelectionFromEvent(event) {
-    const ayahNumber = getAyahAtRenderedPoint(
-      line,
-      textRef.current,
-      event.clientX,
-      event.clientY,
-    );
     const wordIndex = getWordAtRenderedPoint(
       textRef.current,
       event.clientX,
       event.clientY,
     );
+    const tappedWordMetadata = Number.isInteger(wordIndex)
+      ? wordMetadataByTokenIndex.get(wordIndex) || null
+      : null;
+    const metadataVerse = parseVerseKey(tappedWordMetadata?.verseKey);
+    const rangeAyahNumber = getAyahAtRenderedPoint(
+      line,
+      textRef.current,
+      event.clientX,
+      event.clientY,
+    );
+    const ayahNumber = metadataVerse?.surahNumber === Number(line.surahNumber)
+      ? metadataVerse.ayahNumber
+      : rangeAyahNumber;
     const wordElement = Number.isInteger(wordIndex)
       ? textRef.current?.querySelector(`[data-quran-word-index="${wordIndex}"]`)
       : null;
@@ -572,6 +579,12 @@ function chooseAnchorRect(rects, clientX, clientY) {
   });
 
   return closestRect;
+}
+
+function parseVerseKey(value) {
+  const [surahNumber, ayahNumber] = String(value || '').split(':').map(Number);
+  if (!surahNumber || !ayahNumber) return null;
+  return { surahNumber, ayahNumber };
 }
 
 function normalizeRect(rect) {
