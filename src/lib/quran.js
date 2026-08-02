@@ -1,6 +1,7 @@
 import rawPages from '../data/quranPages16.json';
 import rawAyahs from '../data/quranAyahs.json';
-import surahInfo from '../data/surahInfo.json';
+import surahInfoUrdu from '../data/surahInfo.json';
+import surahInfoEnglish from '../data/surahInfoEn.json';
 import { getJuzForReference, getPageJuz, getRevelationType } from '../data/quranMeta';
 import { quranJuz } from '../data/quranJuz';
 import { quranRub } from '../data/quranRub';
@@ -36,7 +37,7 @@ function firstLineForPage(page) {
 }
 
 
-export const surahs = Object.values(surahInfo).map((info) => {
+export const surahs = Object.values(surahInfoUrdu).map((info) => {
   const surahNumber = Number(info.surah_number);
   return {
     number: surahNumber,
@@ -59,6 +60,22 @@ export function getPageMeta(pageNumber) {
   const surah = surahs.find((item) => item.number === firstLine?.surahNumber) ?? surahs[0];
   const juz = firstLine ? getJuzForReference(firstLine.surahNumber, firstLine.ayahStart) : getPageJuz(pageNumber, totalPages);
   return { surah, juz };
+}
+
+
+export function getSurahInfo(number, language = 'ur') {
+  const safeNumber = String(Number(number) || 1);
+  const source = String(language).toLowerCase().startsWith('en')
+    ? surahInfoEnglish
+    : surahInfoUrdu;
+  const info = source[safeNumber] || source['1'];
+
+  return {
+    number: Number(info?.surah_number) || Number(safeNumber),
+    name: info?.surah_name || getSurah(safeNumber)?.name || '',
+    text: info?.text || '',
+    shortText: info?.short_text || '',
+  };
 }
 
 export function getSurah(number) {
