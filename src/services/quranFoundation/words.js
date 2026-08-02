@@ -228,14 +228,50 @@ function normalizeApiWord(word, index, requestedLanguage) {
   );
 
   return {
-    id: word.location || word.id || `word-${index + 1}`,
-    position: Number(word.position) || index + 1,
-    arabic: word.text_indopak || word.text_uthmani || word.text || '',
-    meaning: translation?.text || translation || '',
+    id: String(word?.location || word?.id || `word-${index + 1}`),
+    position: Number(word?.position) || index + 1,
+    arabic: extractRenderableText(
+      word?.text_indopak || word?.text_uthmani || word?.text || '',
+    ),
+    // Some Quran Foundation word responses contain a translation object whose
+    // visible value is nested or absent. Never pass that object into JSX: React
+    // throws and unmounts the Reader (observed on 54:48 in Urdu WBW mode).
+    meaning: extractRenderableText(translation),
     meaningHtml: '',
-    transliteration: word.transliteration?.text || word.transliteration || '',
+    transliteration: extractRenderableText(word?.transliteration),
     language: translationLanguage,
   };
+}
+
+function extractRenderableText(value, depth = 0) {
+  if (value == null || depth > 3) return '';
+  if (typeof value === 'string' || typeof value === 'number') {
+    return String(value).trim();
+  }
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => extractRenderableText(item, depth + 1))
+      .filter(Boolean)
+      .join(' ')
+      .trim();
+  }
+  if (typeof value !== 'object') return '';
+
+  const preferredKeys = [
+    'text',
+    'translation',
+    'translated_text',
+    'meaning',
+    'value',
+    'name',
+  ];
+
+  for (const key of preferredKeys) {
+    const text = extractRenderableText(value?.[key], depth + 1);
+    if (text) return text;
+  }
+
+  return '';
 }
 
 function sanitizeEnglishMeaningHtml(value) {
