@@ -2275,12 +2275,15 @@ body {
 }
 
 .ayah-translation-footnotes p {
-  display: flex;
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: start;
   gap: 7px;
+  width: 100%;
   margin: 0;
 }
 
-.ayah-translation-footnotes span {
+.ayah-translation-note-number {
   display: inline-grid;
   width: 18px;
   height: 18px;
@@ -2569,8 +2572,18 @@ body {
 }
 
 .ayah-translation-note-content {
-  display: grid;
-  gap: 0.25rem;
+  display: block;
+  min-width: 0;
+  width: 100%;
+  height: auto;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
 }
 
 .ayah-translation-note-content strong {
