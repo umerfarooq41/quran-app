@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { BookOpen } from 'lucide-react';
 import { useAppStore } from '../store/useAppStore';
-import { findPageForReference, getSurah } from '../lib/quran';
+import { findPageForReference, getSurah, getSurahInfo } from '../lib/quran';
 import { parseQuranInternalHref, sanitizeSurahHtml } from '../lib/sanitizeHtml';
 import { BackButton } from '../components/common/AppChrome';
 
@@ -9,8 +9,11 @@ export default function SurahInfoScreen() {
   const selectedSurah = useAppStore((state) => state.selectedSurah);
   const closeSurahInfo = useAppStore((state) => state.closeSurahInfo);
   const goAyah = useAppStore((state) => state.goAyah);
+  const translationId = useAppStore((state) => state.settings.translation);
+  const translationLanguage = String(translationId || '').startsWith('en-') ? 'en' : 'ur';
   const surah = getSurah(selectedSurah);
-  const cleanHtml = useMemo(() => sanitizeSurahHtml(surah?.text || ''), [surah?.text]);
+  const localizedInfo = getSurahInfo(selectedSurah, translationLanguage);
+  const cleanHtml = useMemo(() => sanitizeSurahHtml(localizedInfo?.text || ''), [localizedInfo?.text]);
 
   function handleContentClick(event) {
     const link = event.target.closest('a[data-quran-link]');
