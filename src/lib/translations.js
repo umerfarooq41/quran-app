@@ -262,12 +262,21 @@ async function loadRemoteTranslationEntry(option, surahNumber, ayahNumber) {
           fields: 'resource_name,language_name,verse_key',
         };
 
-        const rows = await loadAllPaginatedRows({
-          primaryPath: `quran/translations/${resourceId}`,
-          fallbackPath: `translations/${resourceId}`,
-          params: requestParams,
+        const rows = await loadPaginatedRowsFromPaths({
+          paths: [
+            { path: `quran/translations/${resourceId}`, params: requestParams },
+            {
+              path: `translations/${resourceId}/by_chapter/${chapterNumber}`,
+              params: { foot_notes: true, fields: requestParams.fields },
+            },
+            { path: `translations/${resourceId}`, params: requestParams },
+          ],
           rowKeys: ['translations'],
         });
+
+        if (!rows.length) {
+          throw new Error(`${option.shortName || option.label} returned no translation data for Surah ${chapterNumber}.`);
+        }
 
         const entries = new Map();
         rows.forEach((row) => {
@@ -306,18 +315,18 @@ async function resolveTranslationResourceId(option, signal) {
   const language = option.apiLanguage || getTranslationLanguageId(option.id);
   const resources = await loadTranslationCatalog(language, signal);
   const aliases = (option.resourceAliases || []).map(normalizeResourceName).filter(Boolean);
+  const expectedLanguage = language === 'ur' ? 'urdu' : 'english';
 
-  const match = resources.find((resource) => {
-    const searchable = normalizeResourceName([
-      resource?.name,
-      resource?.translated_name?.name,
-      resource?.author_name,
-      resource?.slug,
-      resource?.language_name,
-    ].filter(Boolean).join(' '));
+  const candidates = resources
+    .filter((resource) => {
+      const resourceLanguage = normalizeResourceName(resource?.language_name);
+      return !resourceLanguage || resourceLanguage === expectedLanguage;
+    })
+    .map((resource) => ({ resource, score: scoreResourceMatch(resource, aliases) }))
+    .filter((candidate) => candidate.score > 0)
+    .sort((left, right) => right.score - left.score);
 
-    return aliases.some((alias) => searchable.includes(alias));
-  });
+  const match = candidates[0]?.resource || null;
 
   const resourceId = Number(match?.id);
   if (!resourceId) {
@@ -343,6 +352,27 @@ async function loadTranslationCatalog(language, signal) {
 }
 
 
+
+async function loadPaginatedRowsFromPaths({ paths, rowKeys, signal }) {
+  let lastError = null;
+
+  for (const candidate of paths) {
+    try {
+      const rows = await loadAllPaginatedRows({
+        primaryPath: candidate.path,
+        params: candidate.params || {},
+        rowKeys,
+        signal,
+      });
+      if (rows.length) return rows;
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  if (lastError) throw lastError;
+  return [];
+}
 
 async function loadAllPaginatedRows({
   primaryPath,
@@ -420,12 +450,20 @@ async function loadMatchingTafsirEntry(option, surahNumber, ayahNumber) {
     let chapterRequest = tafsirChapterPromiseCache.get(cacheKey);
 
     if (!chapterRequest) {
-      chapterRequest = loadAllPaginatedRows({
-        primaryPath: `tafsirs/${resourceId}`,
-        params: {
-          chapter_number: chapterNumber,
-          fields: 'verse_key,resource_name,language_name',
-        },
+      chapterRequest = loadPaginatedRowsFromPaths({
+        paths: [
+          {
+            path: `tafsirs/${resourceId}/by_chapter/${chapterNumber}`,
+            params: { fields: 'verse_key,resource_name,language_name' },
+          },
+          {
+            path: `tafsirs/${resourceId}`,
+            params: {
+              chapter_number: chapterNumber,
+              fields: 'verse_key,resource_name,language_name',
+            },
+          },
+        ],
         rowKeys: ['tafsirs'],
       })
         .then((rows) => {
@@ -613,6 +651,26 @@ function partsToPlainText(parts) {
     .join(' ')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+function scoreResourceMatch(resource, aliases) {
+  const fields = [
+    resource?.name,
+    resource?.translated_name?.name,
+    resource?.author_name,
+    resource?.slug,
+  ].map(normalizeResourceName).filter(Boolean);
+
+  let best = 0;
+  aliases.forEach((alias) => {
+    fields.forEach((field) => {
+      if (field === alias) best = Math.max(best, 100);
+      else if (field.startsWith(`${alias} `) || field.endsWith(` ${alias}`)) best = Math.max(best, 80);
+      else if (field.includes(alias)) best = Math.max(best, 60);
+      else if (alias.includes(field) && field.length >= 5) best = Math.max(best, 40);
+    });
+  });
+  return best;
 }
 
 function normalizeResourceName(value) {
