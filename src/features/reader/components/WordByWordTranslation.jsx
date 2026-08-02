@@ -106,7 +106,7 @@ export function WordByWordTranslation({
                 />
               ) : (
                 <span className="ayah-word-by-word-arabic" lang="ar" dir="rtl">
-                  {word.arabic}
+                  {toRenderableText(word.arabic)}
                 </span>
               )}
               {languageOption.id === 'en' && word.meaningHtml ? (
@@ -122,7 +122,7 @@ export function WordByWordTranslation({
                   dir={languageOption.direction}
                   lang={languageOption.id}
                 >
-                  {word.meaning}
+                  {toRenderableText(word.meaning)}
                 </span>
               )}
             </div>
@@ -131,4 +131,21 @@ export function WordByWordTranslation({
       )}
     </section>
   );
+}
+
+function toRenderableText(value) {
+  if (value == null) return '';
+  if (typeof value === 'string' || typeof value === 'number') return String(value);
+  if (Array.isArray(value)) return value.map(toRenderableText).filter(Boolean).join(' ');
+  if (typeof value === 'object') {
+    return toRenderableText(
+      value.text
+      ?? value.translation
+      ?? value.translated_text
+      ?? value.meaning
+      ?? value.value
+      ?? '',
+    );
+  }
+  return '';
 }
