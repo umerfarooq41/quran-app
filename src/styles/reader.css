@@ -2567,3 +2567,13 @@ body {
   border: 0;
   cursor: pointer;
 }
+
+.ayah-translation-note-content {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.ayah-translation-note-content strong {
+  font: inherit;
+  font-weight: 700;
+}
