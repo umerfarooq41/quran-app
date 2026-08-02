@@ -1,6 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { getSurahAyahs } from '../../../lib/quran';
 import {
   getWordByWordTranslation,
+  getCachedWordByWordTranslation,
+  prefetchWordByWordTranslation,
   getWordLanguage,
 } from '../../../services/quranFoundation';
 
@@ -19,21 +22,47 @@ export function WordByWordTranslation({
       return undefined;
     }
 
-    const controller = new AbortController();
-    setState({ status: 'loading', words: [] });
+    let mounted = true;
+    const cached = getCachedWordByWordTranslation(
+      surahNumber,
+      ayahNumber,
+      languageOption.id,
+    );
+
+    if (cached) {
+      setState({ status: 'ready', words: cached.words || [] });
+    } else {
+      setState({ status: 'loading', words: [] });
+    }
 
     getWordByWordTranslation(surahNumber, ayahNumber, {
       language: languageOption.id,
-      signal: controller.signal,
     })
-      .then((result) => setState({ status: 'ready', words: result.words }))
-      .catch((error) => {
-        if (error?.name !== 'AbortError') {
-          setState({ status: 'error', words: [] });
-        }
+      .then((result) => {
+        if (mounted) setState({ status: 'ready', words: result.words || [] });
+      })
+      .catch(() => {
+        if (mounted) setState({ status: 'error', words: [] });
       });
 
-    return () => controller.abort();
+    const ayahCount = getSurahAyahs(Number(surahNumber))?.length || 0;
+    [
+      Number(ayahNumber) - 2,
+      Number(ayahNumber) - 1,
+      Number(ayahNumber) + 1,
+      Number(ayahNumber) + 2,
+      Number(ayahNumber) + 3,
+    ]
+      .filter((number) => number >= 1 && number <= ayahCount)
+      .forEach((number) => {
+        prefetchWordByWordTranslation(surahNumber, number, {
+          language: languageOption.id,
+        });
+      });
+
+    return () => {
+      mounted = false;
+    };
   }, [enabled, surahNumber, ayahNumber, languageOption.id]);
 
   if (!enabled) return null;
