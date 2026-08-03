@@ -11,7 +11,8 @@ export default function SurahInfoScreen() {
   const closeSurahInfo = useAppStore((state) => state.closeSurahInfo);
   const goAyah = useAppStore((state) => state.goAyah);
   const translationId = useAppStore((state) => state.settings.translation);
-  const translationLanguage = getTranslationLanguageId(translationId);
+  const storedTranslationLanguage = useAppStore((state) => state.settings.translationLanguage);
+  const translationLanguage = storedTranslationLanguage || getTranslationLanguageId(translationId);
   const surah = getSurah(selectedSurah);
   const localizedInfo = getSurahInfo(selectedSurah, translationLanguage);
   const cleanHtml = useMemo(() => sanitizeSurahHtml(localizedInfo?.text || ''), [localizedInfo?.text]);

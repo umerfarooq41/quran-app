@@ -35,7 +35,7 @@ export default function SettingsScreen() {
   })));
   const [confirmReset, setConfirmReset] = useState(false);
   const reciters = normalizeLocalReciters();
-  const translationLanguage = getTranslationLanguageId(settings.translation);
+  const translationLanguage = settings.translationLanguage || getTranslationLanguageId(settings.translation);
   const translationOptions = getTranslationOptionsForLanguage(translationLanguage);
   const wordByWordLanguage = settings.wordByWordLanguage || 'en';
 
@@ -93,7 +93,7 @@ export default function SettingsScreen() {
           getLabel={(language) => language.label}
           onChange={(value) => {
             const nextTranslation = getDefaultTranslationForLanguage(value);
-            updateSettings({ translation: nextTranslation.id });
+            updateSettings({ translation: nextTranslation.id, translationLanguage: value });
           }}
         />
 
