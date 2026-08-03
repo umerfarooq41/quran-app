@@ -52,6 +52,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
   fontScale: 1,
   theme: getInitialTheme(),
   translation: DEFAULT_TRANSLATION_ID,
+  translationLanguage: 'ur',
   reciter: null,
   playbackRate: 1,
   autoplay: false,
@@ -437,7 +438,12 @@ export const useAppStore = create((set, get) => ({
   clearPendingAyah: () => set({ pendingAyah: null }),
   clearPendingQuarterFlash: () => set({ pendingQuarterFlash: null }),
   updateSettings: (patch) => set((state) => {
-    const settings = sanitizeSettings({ ...state.settings, ...patch });
+    const merged = { ...state.settings, ...patch };
+    if (Object.prototype.hasOwnProperty.call(patch, 'translation')) {
+      const selected = TRANSLATION_OPTIONS.find((option) => option.id === patch.translation);
+      if (selected) merged.translationLanguage = String(selected.language || 'Ur').toLowerCase();
+    }
+    const settings = sanitizeSettings(merged);
     return {
       settings,
       followRecitation: settings.followRecitation,
@@ -581,6 +587,10 @@ export function sanitizeSettings(value = {}) {
   const translation = TRANSLATION_OPTIONS.some((option) => option.id === value.translation)
     ? value.translation
     : DEFAULT_SETTINGS.translation;
+  const selectedTranslation = TRANSLATION_OPTIONS.find((option) => option.id === translation);
+  const translationLanguage = String(
+    selectedTranslation?.language || value.translationLanguage || DEFAULT_SETTINGS.translationLanguage,
+  ).toLowerCase() === 'en' ? 'en' : 'ur';
 
   return {
     fontScale: 1,
@@ -588,6 +598,7 @@ export function sanitizeSettings(value = {}) {
       ? value.theme
       : DEFAULT_SETTINGS.theme,
     translation,
+    translationLanguage,
     reciter: typeof value.reciter === 'string' && value.reciter
       ? value.reciter
       : null,
