@@ -3090,3 +3090,58 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
     border-radius: 21px;
   }
 }
+
+
+/* Surah Info: fixed shared header and compact Reader-like content gutters. */
+.surah-info-screen.app-page-shell {
+  --app-page-inline-left: max(12px, env(safe-area-inset-left, 0px));
+  --app-page-inline-right: max(12px, env(safe-area-inset-right, 0px));
+}
+
+.surah-info-topbar.app-fixed-header {
+  display: grid !important;
+  grid-template-columns: var(--chrome-button-size) minmax(0, 1fr) var(--chrome-button-size);
+  align-items: center !important;
+}
+
+.surah-info-topbar.app-fixed-header h1 {
+  margin: 0 !important;
+  text-align: center;
+  font-size: inherit;
+}
+
+.surah-info-scroll-content {
+  gap: 0 !important;
+  padding-top: 8px !important;
+}
+
+.surah-info-content {
+  width: 100%;
+  padding: 0 2px calc(var(--safe-bottom, env(safe-area-inset-bottom, 0px)) + 24px) !important;
+}
+
+.surah-info-title-row {
+  margin: 10px 0 0 !important;
+}
+
+.surah-info-html {
+  margin-top: 22px !important;
+  padding: 18px 14px 22px !important;
+  border-radius: 22px;
+}
+
+@media (max-width: 380px) {
+  .surah-info-screen.app-page-shell {
+    --app-page-inline-left: max(10px, env(safe-area-inset-left, 0px));
+    --app-page-inline-right: max(10px, env(safe-area-inset-right, 0px));
+  }
+
+  .surah-info-content {
+    padding-inline: 0 !important;
+  }
+
+  .surah-info-html {
+    padding: 16px 12px 20px !important;
+    border-radius: 20px;
+  }
+}
