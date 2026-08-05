@@ -27,6 +27,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      injectRegister: false,
       manifest: false,
       includeAssets: [
         'fonts/nastaleeq-font.woff2',
@@ -39,6 +40,8 @@ export default defineConfig({
         'icons/maskable-icon-512.png',
       ],
       workbox: {
+        skipWaiting: true,
+        clientsClaim: true,
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,json}'],
         globIgnores: [
           'data/audio/*.json',
