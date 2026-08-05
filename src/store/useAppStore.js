@@ -588,9 +588,11 @@ export function sanitizeSettings(value = {}) {
     ? value.translation
     : DEFAULT_SETTINGS.translation;
   const selectedTranslation = TRANSLATION_OPTIONS.find((option) => option.id === translation);
-  const translationLanguage = String(
-    selectedTranslation?.language || value.translationLanguage || DEFAULT_SETTINGS.translationLanguage,
-  ).toLowerCase() === 'en' ? 'en' : 'ur';
+  const selectedLanguage = String(selectedTranslation?.language || '').toLowerCase();
+  const storedLanguage = String(value.translationLanguage || '').toLowerCase();
+  const translationLanguage = selectedLanguage === 'en' || selectedLanguage === 'ur'
+    ? selectedLanguage
+    : (storedLanguage === 'en' ? 'en' : 'ur');
 
   return {
     fontScale: 1,
