@@ -36,36 +36,34 @@ export default function SurahInfoScreen() {
   }
 
   return (
-    <main className="surah-info-screen app-page-shell">
-      <header className="surah-info-topbar app-fixed-header">
+    <main className="surah-info-screen">
+      <header className="surah-info-topbar">
         <BackButton onClick={closeSurahInfo} label="Back from Surah info" />
         <h1>Surah Info</h1>
         <span className="surah-info-header-spacer" aria-hidden="true" />
       </header>
 
-      <div className="surah-info-scroll app-scroll-content">
-        <section className="surah-info-content">
-          <div className="surah-info-title-row">
-            <div>
-              <p className="surah-info-kicker">Surah {surah?.number}</p>
-              <h2>{surah?.name}</h2>
-              <p className="surah-info-meta">{surah?.verses} ayahs · {surah?.revelation} · Juz {surah?.juz}</p>
-            </div>
+      <section className="surah-info-content">
+        <div className="surah-info-title-row">
+          <div>
+            <p className="surah-info-kicker">Surah {surah?.number}</p>
+            <h2>{surah?.name}</h2>
+            <p className="surah-info-meta">{surah?.verses} ayahs · {surah?.revelation} · Juz {surah?.juz}</p>
           </div>
+        </div>
 
-          {cleanHtml ? (
-            <div
-              className={`surah-info-html is-${translationLanguage}`}
-              lang={translationLanguage}
-              dir={translationLanguage === 'ur' ? 'rtl' : 'ltr'}
-              onClick={handleContentClick}
-              dangerouslySetInnerHTML={{ __html: cleanHtml }}
-            />
-          ) : (
-            <p className="surah-info-empty">Surah information will be expanded in the next design pass.</p>
-          )}
-        </section>
-      </div>
+        {cleanHtml ? (
+          <div
+            className={`surah-info-html is-${translationLanguage}`}
+            lang={translationLanguage}
+            dir={translationLanguage === 'ur' ? 'rtl' : 'ltr'}
+            onClick={handleContentClick}
+            dangerouslySetInnerHTML={{ __html: cleanHtml }}
+          />
+        ) : (
+          <p className="surah-info-empty">Surah information will be expanded in the next design pass.</p>
+        )}
+      </section>
     </main>
   );
 }
