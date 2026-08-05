@@ -57,11 +57,16 @@ export function BackButton({
 
 export function Header({ title, back = 'home', onBack }) {
   const goBack = useAppStore((state) => state.goBack);
+
+  function handleBack() {
+    if (typeof onBack === 'function') return onBack();
+    goBack(back);
+  }
   const handleBack = onBack || (() => goBack(back));
   return (
     <div className="app-header">
       <BackButton onClick={handleBack} />
-      <h1 className="app-header-title text-2xl font-semibold tracking-tight sm:text-3xl">{title}</h1>
+      <h1 className="app-header-title">{title}</h1>
       <span className="app-header-spacer" aria-hidden="true" />
     </div>
   );
