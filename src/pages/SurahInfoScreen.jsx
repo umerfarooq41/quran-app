@@ -3,7 +3,7 @@ import { useAppStore } from '../store/useAppStore';
 import { findPageForReference, getSurah, getSurahInfo } from '../lib/quran';
 import { getTranslationLanguageId } from '../lib/translations';
 import { parseQuranInternalHref, sanitizeSurahHtml } from '../lib/sanitizeHtml';
-import { BackButton } from '../components/common/AppChrome';
+import { Header } from '../components/common/AppChrome';
 
 export default function SurahInfoScreen() {
   const selectedSurah = useAppStore((state) => state.selectedSurah);
@@ -37,11 +37,9 @@ export default function SurahInfoScreen() {
 
   return (
     <main className="surah-info-screen app-page-shell bg-fluent">
-      <header className="app-header app-fixed-header">
-        <BackButton onClick={closeSurahInfo} label="Back from Surah info" />
-        <h1 className="app-header-title text-2xl font-semibold tracking-tight sm:text-3xl">Surah Info</h1>
-        <span className="app-header-spacer" aria-hidden="true" />
-      </header>
+      <div className="app-fixed-header">
+        <Header title="Surah Info" onBack={closeSurahInfo} />
+      </div>
 
       <div className="app-scroll-content surah-info-scroll-content">
       <section className="surah-info-content">
