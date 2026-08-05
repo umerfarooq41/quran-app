@@ -37,10 +37,10 @@ export default function SurahInfoScreen() {
 
   return (
     <main className="surah-info-screen app-page-shell bg-fluent">
-      <header className="surah-info-topbar app-fixed-header">
+      <header className="app-header app-fixed-header">
         <BackButton onClick={closeSurahInfo} label="Back from Surah info" />
-        <h1>Surah Info</h1>
-        <span className="surah-info-header-spacer" aria-hidden="true" />
+        <h1 className="app-header-title text-2xl font-semibold tracking-tight sm:text-3xl">Surah Info</h1>
+        <span className="app-header-spacer" aria-hidden="true" />
       </header>
 
       <div className="app-scroll-content surah-info-scroll-content">
