@@ -335,17 +335,7 @@
   color: var(--theme-text);
 }
 
-[data-theme='dark'] .surah-info-topbar,
-[data-theme='dark'] .surah-info-topbar button,
-[data-theme='dark'] .surah-info-topbar h1,
-[data-theme='dark'] .surah-info-title-row h2,
-[data-theme='dark'] .surah-info-html,
-[data-theme='dark'] .surah-info-html h2,
-[data-theme='dark'] .surah-info-html h3 {
-  color: var(--theme-text);
-}
-
-[data-theme='dark'] .surah-info-meta,
+[data-theme='dark'] [data-theme='dark'] .surah-info-meta,
 [data-theme='dark'] .surah-info-empty {
   color: var(--theme-muted);
 }
@@ -758,17 +748,7 @@ body,
 [data-theme='dark'] .tafsir-card-head h2,
 [data-theme='dark'] .tafsir-section h3,
 [data-theme='dark'] .tafsir-arabic,
-[data-theme='dark'] .surah-info-topbar,
-[data-theme='dark'] .surah-info-topbar button,
-[data-theme='dark'] .surah-info-topbar h1,
-[data-theme='dark'] .surah-info-title-row h2,
-[data-theme='dark'] .surah-info-html,
-[data-theme='dark'] .surah-info-html h2,
-[data-theme='dark'] .surah-info-html h3 {
-  color: var(--theme-text) !important;
-}
-
-[data-theme='dark'] .search-result-preview,
+[data-theme='dark'] [data-theme='dark'] .search-result-preview,
 [data-theme='dark'] .search-result-reference small,
 [data-theme='dark'] .search-result-meta,
 [data-theme='dark'] .search-empty,
@@ -1578,11 +1558,6 @@ html[data-theme='dark'] {
 
 .app-header-spacer,
 .index-header-spacer,
-.surah-info-header-spacer,
-.share-header-spacer {
-  width: var(--chrome-button-size) !important;
-}
-
 .reader-topbar {
   display: flex !important;
   justify-content: center !important;
@@ -1618,24 +1593,6 @@ html[data-theme='dark'] {
 
 .shared-back-button,
 .tabs-back-pill.shared-back-button,
-.surah-info-topbar .shared-back-button,
-.share-sheet-header .shared-back-button,
-.reader-back-pill,
-.reader-top-icon,
-.index-close-pill,
-.settings-dialog-close {
-  display: grid !important;
-  width: var(--chrome-button-size) !important;
-  min-width: var(--chrome-button-size) !important;
-  height: var(--chrome-button-size) !important;
-  min-height: var(--chrome-button-size) !important;
-  place-items: center !important;
-  border: 1px solid rgba(20, 24, 22, .08) !important;
-  border-radius: var(--chrome-button-radius) !important;
-  padding: 0 !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5) !important;
-}
-
 .reader-control-row,
 .reader-top-actions {
   gap: var(--chrome-button-gap) !important;
@@ -1673,14 +1630,6 @@ html[data-theme='dark'] {
 .reader-back-pill svg,
 .shared-back-button svg,
 .tabs-back-pill.shared-back-button svg,
-.surah-info-topbar .shared-back-button svg,
-.share-sheet-header .shared-back-button svg,
-.index-close-pill svg,
-.settings-dialog-close svg {
-  width: 20px !important;
-  height: 20px !important;
-}
-
 .settings-dialog-close {
   top: 12px !important;
   right: 12px !important;
@@ -1688,17 +1637,7 @@ html[data-theme='dark'] {
 
 [data-theme='dark'] .shared-back-button,
 [data-theme='dark'] .tabs-back-pill.shared-back-button,
-[data-theme='dark'] .surah-info-topbar .shared-back-button,
-[data-theme='dark'] .share-sheet-header .shared-back-button,
-[data-theme='dark'] .reader-back-pill,
-[data-theme='dark'] .reader-top-icon,
-[data-theme='dark'] .index-close-pill,
-[data-theme='dark'] .settings-dialog-close {
-  border-color: rgba(255, 255, 255, .1) !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08) !important;
-}
-
-[data-theme='dark'] .reader-topbar {
+[data-theme='dark'] [data-theme='dark'] .reader-topbar {
   background: transparent !important;
 }
 
@@ -2683,49 +2622,13 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
 /* Match secondary-screen back buttons to the Reader back arrow style: icon only, no box. */
 .shared-back-button,
 .tabs-back-pill.shared-back-button,
-.surah-info-topbar .shared-back-button,
-.share-sheet-header .shared-back-button {
-  width: 44px !important;
-  min-width: 44px !important;
-  height: 44px !important;
-  min-height: 44px !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  color: inherit !important;
-}
-
 .shared-back-button:active,
 .tabs-back-pill.shared-back-button:active,
-.surah-info-topbar .shared-back-button:active,
-.share-sheet-header .shared-back-button:active {
-  background: transparent !important;
-  transform: scale(.96);
-}
-
 .shared-back-button svg,
 .tabs-back-pill.shared-back-button svg,
-.surah-info-topbar .shared-back-button svg,
-.share-sheet-header .shared-back-button svg {
-  width: 22px !important;
-  height: 22px !important;
-  stroke-width: 2.35 !important;
-}
-
 [data-theme='dark'] .shared-back-button,
 [data-theme='dark'] .tabs-back-pill.shared-back-button,
-[data-theme='dark'] .surah-info-topbar .shared-back-button,
-[data-theme='dark'] .share-sheet-header .shared-back-button {
-  border: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  color: inherit !important;
-}
-
-/* Word-by-word grammatical colors.
+[data-theme='dark'] /* Word-by-word grammatical colors.
    This theme-layer override is intentionally last and uses !important because
    theme.css is the final color authority and may otherwise flatten nested spans. */
 .ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.n {
@@ -3096,18 +2999,6 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
 .surah-info-screen.app-page-shell {
   --app-page-inline-left: max(12px, env(safe-area-inset-left, 0px));
   --app-page-inline-right: max(12px, env(safe-area-inset-right, 0px));
-}
-
-.surah-info-topbar.app-fixed-header {
-  display: grid !important;
-  grid-template-columns: var(--chrome-button-size) minmax(0, 1fr) var(--chrome-button-size);
-  align-items: center !important;
-}
-
-.surah-info-topbar.app-fixed-header h1 {
-  margin: 0 !important;
-  text-align: center;
-  font-size: inherit;
 }
 
 .surah-info-scroll-content {
