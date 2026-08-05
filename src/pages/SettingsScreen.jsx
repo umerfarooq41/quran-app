@@ -35,7 +35,11 @@ export default function SettingsScreen() {
   })));
   const [confirmReset, setConfirmReset] = useState(false);
   const reciters = normalizeLocalReciters();
-  const translationLanguage = settings.translationLanguage || getTranslationLanguageId(settings.translation);
+  // Derive the visible language from the active translator so legacy or stale
+  // persisted language values cannot disagree with the selected translation.
+  const translationLanguage = getTranslationLanguageId(settings.translation)
+    || settings.translationLanguage
+    || 'ur';
   const translationOptions = getTranslationOptionsForLanguage(translationLanguage);
   const wordByWordLanguage = settings.wordByWordLanguage || 'en';
 

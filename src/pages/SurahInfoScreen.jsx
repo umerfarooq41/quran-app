@@ -12,7 +12,11 @@ export default function SurahInfoScreen() {
   const goAyah = useAppStore((state) => state.goAyah);
   const translationId = useAppStore((state) => state.settings.translation);
   const storedTranslationLanguage = useAppStore((state) => state.settings.translationLanguage);
-  const translationLanguage = storedTranslationLanguage || getTranslationLanguageId(translationId);
+  // The selected translator is the source of truth. A stale persisted
+  // translationLanguage value must never force the wrong Surah Info dataset.
+  const translationLanguage = getTranslationLanguageId(translationId)
+    || storedTranslationLanguage
+    || 'ur';
   const surah = getSurah(selectedSurah);
   const localizedInfo = getSurahInfo(selectedSurah, translationLanguage);
   const cleanHtml = useMemo(() => sanitizeSurahHtml(localizedInfo?.text || ''), [localizedInfo?.text]);
