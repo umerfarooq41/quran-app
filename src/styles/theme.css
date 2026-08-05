@@ -2987,142 +2987,106 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
   }
 }
 
-/* Surah Info: open page layout and compact language-aware typography. */
+/* Surah Info reading card: shared visual treatment for Urdu and English. */
 .surah-info-content {
+  padding: 0 18px 28px !important;
   background: transparent !important;
   border: 0 !important;
   border-radius: 0 !important;
   box-shadow: none !important;
-  padding: 14px 16px 34px !important;
-}
-
-.surah-info-html[dir="ltr"] {
-  direction: ltr;
-  text-align: left;
-  font-family: var(--ui-font) !important;
-  font-size: .94rem !important;
-  font-weight: 400;
-  line-height: 1.72 !important;
-  letter-spacing: 0 !important;
-}
-
-.surah-info-html[dir="ltr"] h2,
-.surah-info-html[dir="ltr"] h3 {
-  direction: ltr;
-  text-align: left;
-  font-family: var(--ui-font) !important;
-  color: inherit;
-  font-weight: 700 !important;
-  letter-spacing: -.025em !important;
-}
-
-.surah-info-html[dir="ltr"] h2 {
-  margin: 22px 0 9px !important;
-  font-size: 1.18rem !important;
-  line-height: 1.3 !important;
-}
-
-.surah-info-html[dir="ltr"] h2:first-child {
-  margin-top: 0 !important;
-}
-
-.surah-info-html[dir="ltr"] h3 {
-  margin: 17px 0 7px !important;
-  font-size: 1.05rem !important;
-  line-height: 1.32 !important;
-}
-
-.surah-info-html[dir="ltr"] p,
-.surah-info-html[dir="ltr"] li,
-.surah-info-html[dir="ltr"] a {
-  direction: ltr;
-  text-align: left;
-  font-family: var(--ui-font) !important;
-  font-size: inherit !important;
-  line-height: inherit !important;
-}
-
-.surah-info-html[dir="ltr"] p {
-  margin-bottom: 14px !important;
-}
-
-.surah-info-html[dir="rtl"] {
-  direction: rtl;
-  text-align: right;
-}
-
-.surah-info-html[dir="rtl"] h2,
-.surah-info-html[dir="rtl"] h3,
-.surah-info-html[dir="rtl"] p,
-.surah-info-html[dir="rtl"] li {
-  direction: rtl;
-  text-align: right;
-}
-
-[data-theme='dark'] .surah-info-content {
-  background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
-}
-
-/* Surah Info uses the same fixed header geometry and page gutters as the other app pages. */
-.surah-info-screen.app-page-shell {
-  --app-page-max-width: var(--ui-screen-width);
-}
-
-.surah-info-topbar.app-fixed-header {
-  display: grid !important;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center !important;
-  gap: var(--ui-space-3);
-  padding-inline: var(--ui-space-1) !important;
-}
-
-.surah-info-topbar.app-fixed-header h1 {
-  margin: 0;
-  overflow: hidden;
-  font-family: var(--ui-font);
-  font-size: var(--ui-title-md) !important;
-  font-weight: 560 !important;
-  line-height: 1.1 !important;
-  letter-spacing: -.02em !important;
-  text-align: center;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.surah-info-header-spacer {
-  width: 36px;
-  height: 36px;
-}
-
-.surah-info-scroll.app-scroll-content {
-  display: block;
-  padding-top: var(--ui-space-2);
-}
-
-.surah-info-content {
-  width: 100% !important;
-  max-width: none !important;
-  margin: 0 !important;
-  padding: var(--ui-space-4) 0 calc(var(--safe-bottom, env(safe-area-inset-bottom, 0px)) + var(--ui-space-8)) !important;
 }
 
 .surah-info-title-row {
-  display: block;
+  display: block !important;
+  margin: 18px 0 0 !important;
 }
 
 .surah-info-icon {
   display: none !important;
 }
 
-@media (max-width: 639px) {
-  .surah-info-topbar.app-fixed-header {
-    gap: var(--ui-space-3) !important;
-    padding-inline: var(--ui-space-1) !important;
+.surah-info-html {
+  box-sizing: border-box;
+  width: 100%;
+  margin-top: 28px !important;
+  padding: 20px 18px 24px !important;
+  border: 1px solid rgba(174, 142, 74, .13);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, .46);
+  box-shadow: 0 10px 34px rgba(72, 55, 22, .055);
+  -webkit-backdrop-filter: blur(9px);
+  backdrop-filter: blur(9px);
+}
+
+.surah-info-html.is-ur {
+  direction: rtl;
+  text-align: right;
+  font-family: var(--translation-urdu-font) !important;
+  font-size: clamp(1.06rem, 4.35vw, 1.22rem) !important;
+  line-height: 2.05 !important;
+}
+
+.surah-info-html.is-ur h2,
+.surah-info-html.is-ur h3 {
+  font-family: var(--translation-urdu-font) !important;
+  font-weight: 700 !important;
+  text-align: right;
+}
+
+.surah-info-html.is-en {
+  direction: ltr;
+  text-align: left;
+  font-family: var(--translation-english-font) !important;
+  font-size: clamp(.96rem, 3.9vw, 1.05rem) !important;
+  line-height: 1.78 !important;
+}
+
+.surah-info-html.is-en h2,
+.surah-info-html.is-en h3 {
+  font-family: var(--ui-font) !important;
+  font-weight: 750 !important;
+  letter-spacing: -.02em !important;
+  text-align: left;
+}
+
+.surah-info-html h2 {
+  margin: 0 0 12px !important;
+  font-size: clamp(1.22rem, 4.8vw, 1.42rem) !important;
+  line-height: 1.4 !important;
+}
+
+.surah-info-html h2:not(:first-child) {
+  margin-top: 26px !important;
+}
+
+.surah-info-html h3 {
+  margin: 22px 0 10px !important;
+  font-size: clamp(1.1rem, 4.35vw, 1.28rem) !important;
+  line-height: 1.45 !important;
+}
+
+.surah-info-html p,
+.surah-info-html li {
+  margin: 0 0 16px !important;
+}
+
+.surah-info-html > :last-child {
+  margin-bottom: 0 !important;
+}
+
+[data-theme='dark'] .surah-info-html {
+  border-color: rgba(255, 255, 255, .075);
+  background: rgba(32, 37, 33, .68);
+  box-shadow: 0 12px 34px rgba(0, 0, 0, .2);
+}
+
+@media (max-width: 380px) {
+  .surah-info-content {
+    padding-inline: 14px !important;
   }
 
-  .surah-info-content {
-    padding-inline: 0 !important;
+  .surah-info-html {
+    padding: 18px 16px 22px !important;
+    border-radius: 21px;
   }
 }
