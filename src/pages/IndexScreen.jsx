@@ -1,15 +1,15 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ChevronDown, Play, Star } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../store/useAppStore';
 import { BackButton } from '../components/common/AppChrome';
 import {
   findPageForReference,
-  getSurahAyahs,
   surahs,
 } from '../lib/quran';
 import { getIndoPakParaQuarterTargets } from '../data/indoPakParaQuarters';
 import { getJuzLabel } from '../utils/quranLabels';
+import { getJuzForReference } from '../data/quranMeta';
 
 function formatJuzName(juz) {
   return `${getJuzLabel(juz)}'`;
@@ -155,6 +155,93 @@ function getQuarterPillLabel(id) {
   return '1st Quarter';
 }
 
+
+function AyahJumpControl({ surah, ayahCount, goAyah }) {
+  const [ayahNumber, setAyahNumber] = useState(1);
+  const [showLimitHint, setShowLimitHint] = useState(false);
+
+  useEffect(() => {
+    setAyahNumber(1);
+    setShowLimitHint(false);
+  }, [surah.number]);
+
+  const pageNumber = findPageForReference(surah.number, ayahNumber);
+  const juzNumber = getJuzForReference(surah.number, ayahNumber);
+  const progress = ayahCount > 1 ? ((ayahNumber - 1) / (ayahCount - 1)) * 100 : 0;
+
+  function updateAyah(value, { typed = false } = {}) {
+    const parsed = Number.parseInt(String(value).replace(/\D/g, ''), 10);
+    if (!Number.isFinite(parsed)) {
+      setAyahNumber(1);
+      setShowLimitHint(false);
+      return;
+    }
+
+    const capped = Math.min(ayahCount, Math.max(1, parsed));
+    setAyahNumber(capped);
+    setShowLimitHint(typed && parsed > ayahCount);
+  }
+
+  function openAyah() {
+    goAyah(surah.number, ayahNumber, pageNumber);
+  }
+
+  return (
+    <div className="index-ayah-jump" aria-label={`Jump to an ayah in ${surah.name}`}>
+      <div className="index-ayah-jump-heading">
+        <span>Jump to Ayah</span>
+        <small>Page {pageNumber} · {getJuzLabel(juzNumber)}</small>
+      </div>
+
+      <div className="index-ayah-jump-row">
+        <label className="index-ayah-input-wrap">
+          <span>Ayah</span>
+          <input
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            value={ayahNumber}
+            aria-label={`Ayah number, maximum ${ayahCount}`}
+            onFocus={(event) => event.currentTarget.select()}
+            onChange={(event) => updateAyah(event.target.value, { typed: true })}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') openAyah();
+            }}
+          />
+          <strong>/ {ayahCount}</strong>
+        </label>
+
+        <button type="button" className="index-ayah-go" onClick={openAyah}>
+          Go
+        </button>
+      </div>
+
+      <div className="index-ayah-slider-wrap">
+        <input
+          className="index-ayah-slider"
+          type="range"
+          min="1"
+          max={ayahCount}
+          step="1"
+          value={ayahNumber}
+          aria-label={`Select ayah from 1 to ${ayahCount}`}
+          style={{ '--ayah-progress': `${progress}%` }}
+          onChange={(event) => updateAyah(event.target.value)}
+        />
+        <div className="index-ayah-slider-labels" aria-hidden="true">
+          <span>1</span>
+          <span>{getJuzLabel(juzNumber)}</span>
+          <span>{ayahCount}</span>
+        </div>
+      </div>
+
+      {showLimitHint && (
+        <p className="index-ayah-limit-hint">{surah.name} has {ayahCount} Ayahs. Set to {ayahCount}.</p>
+      )}
+    </div>
+  );
+}
+
 function SurahIndex() {
   const {
     expandedSurah,
@@ -199,7 +286,7 @@ function SurahIndex() {
           <div className="index-surah-stack">
             {list.map((surah) => {
               const isOpen = expandedSurah === surah.number;
-              const ayahs = isOpen ? getSurahAyahs(surah.number) : [];
+              const ayahCount = surah.verses;
 
               return (
                 <article key={surah.number} data-index-surah-card={surah.number} className={`index-card-wrap ${isOpen ? 'is-open' : ''}`}>
@@ -266,17 +353,11 @@ function SurahIndex() {
                         </div>
                       </div>
 
-                      <div className="index-ayah-grid" aria-label={`${surah.name} ayahs`}>
-                        {ayahs.map((ayah) => (
-                          <button
-                            key={ayah.ayahNumber}
-                            onClick={() => goAyah(surah.number, ayah.ayahNumber, findPageForReference(surah.number, ayah.ayahNumber))}
-                            type="button"
-                          >
-                            {ayah.ayahNumber}
-                          </button>
-                        ))}
-                      </div>
+                      <AyahJumpControl
+                        surah={surah}
+                        ayahCount={ayahCount}
+                        goAyah={goAyah}
+                      />
                     </div>
                   )}
                 </article>
