@@ -3036,3 +3036,91 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
     border-radius: 20px;
   }
 }
+
+
+/* Unified secondary-page header.
+   Index is the visual source of truth; every standard page uses Header from AppChrome. */
+.app-fixed-header > .app-header,
+.app-header {
+  display: grid !important;
+  grid-template-columns: 40px minmax(0, 1fr) 40px !important;
+  align-items: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  gap: 12px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.app-header-title,
+.app-fixed-header .app-header-title {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  color: var(--theme-text) !important;
+  font-family: var(--ui-font) !important;
+  font-size: 2rem !important;
+  font-weight: 560 !important;
+  line-height: 1 !important;
+  letter-spacing: -.045em !important;
+  text-align: center !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.shared-back-button,
+.tabs-back-pill.shared-back-button,
+.index-replica-header .shared-back-button {
+  position: static !important;
+  display: grid !important;
+  width: 40px !important;
+  min-width: 40px !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  place-items: center !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  color: var(--theme-text) !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.shared-back-button:hover,
+.shared-back-button:focus-visible,
+.shared-back-button:active,
+.tabs-back-pill.shared-back-button:hover,
+.tabs-back-pill.shared-back-button:focus-visible,
+.tabs-back-pill.shared-back-button:active {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.shared-back-button svg,
+.tabs-back-pill.shared-back-button svg {
+  position: static !important;
+  width: 20px !important;
+  height: 20px !important;
+  stroke-width: 2.2 !important;
+  transform: none !important;
+}
+
+.app-header-spacer {
+  display: block !important;
+  width: 40px !important;
+  height: 40px !important;
+}
+
+@media (max-width: 380px) {
+  .app-header-title,
+  .app-fixed-header .app-header-title {
+    font-size: 1.85rem !important;
+  }
+}
