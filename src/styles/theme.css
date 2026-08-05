@@ -3064,3 +3064,65 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
   border: 0 !important;
   box-shadow: none !important;
 }
+
+/* Surah Info uses the same fixed header geometry and page gutters as the other app pages. */
+.surah-info-screen.app-page-shell {
+  --app-page-max-width: var(--ui-screen-width);
+}
+
+.surah-info-topbar.app-fixed-header {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center !important;
+  gap: var(--ui-space-3);
+  padding-inline: var(--ui-space-1) !important;
+}
+
+.surah-info-topbar.app-fixed-header h1 {
+  margin: 0;
+  overflow: hidden;
+  font-family: var(--ui-font);
+  font-size: var(--ui-title-md) !important;
+  font-weight: 560 !important;
+  line-height: 1.1 !important;
+  letter-spacing: -.02em !important;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.surah-info-header-spacer {
+  width: 36px;
+  height: 36px;
+}
+
+.surah-info-scroll.app-scroll-content {
+  display: block;
+  padding-top: var(--ui-space-2);
+}
+
+.surah-info-content {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: var(--ui-space-4) 0 calc(var(--safe-bottom, env(safe-area-inset-bottom, 0px)) + var(--ui-space-8)) !important;
+}
+
+.surah-info-title-row {
+  display: block;
+}
+
+.surah-info-icon {
+  display: none !important;
+}
+
+@media (max-width: 639px) {
+  .surah-info-topbar.app-fixed-header {
+    gap: var(--ui-space-3) !important;
+    padding-inline: var(--ui-space-1) !important;
+  }
+
+  .surah-info-content {
+    padding-inline: 0 !important;
+  }
+}
