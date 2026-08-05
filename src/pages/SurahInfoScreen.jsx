@@ -36,13 +36,14 @@ export default function SurahInfoScreen() {
   }
 
   return (
-    <main className="surah-info-screen">
-      <header className="surah-info-topbar">
+    <main className="surah-info-screen app-page-shell bg-fluent">
+      <header className="surah-info-topbar app-fixed-header">
         <BackButton onClick={closeSurahInfo} label="Back from Surah info" />
         <h1>Surah Info</h1>
         <span className="surah-info-header-spacer" aria-hidden="true" />
       </header>
 
+      <div className="app-scroll-content surah-info-scroll-content">
       <section className="surah-info-content">
         <div className="surah-info-title-row">
           <div>
@@ -64,6 +65,7 @@ export default function SurahInfoScreen() {
           <p className="surah-info-empty">Surah information will be expanded in the next design pass.</p>
         )}
       </section>
+      </div>
     </main>
   );
 }
