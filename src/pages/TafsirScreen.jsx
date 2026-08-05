@@ -5,7 +5,7 @@ import { findPageForReference, getSurah } from '../lib/quran';
 import { getTranslationOption, loadTranslationEntry } from '../lib/translations';
 import { parseQuranInternalHref, sanitizeSurahHtml } from '../lib/sanitizeHtml';
 import { useAppStore } from '../store/useAppStore';
-import { BackButton, Empty, Header, Screen } from '../components/common/AppChrome';
+import { Empty, Header, Screen } from '../components/common/AppChrome';
 
 export default function TafsirScreen() {
   const { tafsirTarget, goBack, goAyah, openSurahInfo, settings } = useAppStore(useShallow((state) => ({
@@ -62,15 +62,24 @@ export default function TafsirScreen() {
   }, [tafsirTarget?.surahNumber, tafsirTarget?.ayahNumber, settings.translation]);
 
   if (!tafsirTarget) {
-    return <Screen className="space-y-4"><Header title="Translation" back="reader" /><Empty text="Select an ayah before opening the full Translation mode." /></Screen>;
+    return (
+      <Screen className="tafsir-screen app-page-shell bg-fluent">
+        <div className="app-fixed-header">
+          <Header title="Translation" back="reader" />
+        </div>
+        <div className="app-scroll-content">
+          <Empty text="Select an ayah before opening the full Translation mode." />
+        </div>
+      </Screen>
+    );
   }
 
   return (
-    <Screen className="tafsir-screen space-y-4">
-      <div className="tabs-header compact">
-        <BackButton className="tabs-back-pill" onClick={() => goBack('reader')} />
-        <h1>Translation</h1>
+    <Screen className="tafsir-screen app-page-shell bg-fluent">
+      <div className="app-fixed-header">
+        <Header title="Translation" onBack={() => goBack('reader')} backLabel="Back to reader" />
       </div>
+      <div className="app-scroll-content">
       <article className="tafsir-card">
         <div className="tafsir-card-head">
           <div>
@@ -132,6 +141,7 @@ export default function TafsirScreen() {
           </section>
         )}
       </article>
+      </div>
     </Screen>
   );
 }

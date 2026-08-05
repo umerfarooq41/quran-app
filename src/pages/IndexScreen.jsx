@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { ChevronDown, Play, Star } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../store/useAppStore';
-import { BackButton } from '../components/common/AppChrome';
+import { Header } from '../components/common/AppChrome';
 import {
   findPageForReference,
   surahs,
@@ -48,11 +48,9 @@ export default function IndexScreen() {
   return (
     <main className="index-replica-shell app-page-shell bg-fluent">
       <div className="index-replica-inner">
-        <header className="index-replica-header app-fixed-header">
-          <BackButton onClick={() => goBack()} label="Back from index" />
-          <h1>Index</h1>
-          <span className="index-header-spacer" aria-hidden="true" />
-        </header>
+        <div className="app-fixed-header">
+          <Header title="Index" onBack={() => goBack()} backLabel="Back from index" />
+        </div>
 
         <div className="app-scroll-content">
           <div className="index-segment" role="tablist" aria-label="Index tabs">

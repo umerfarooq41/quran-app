@@ -9,7 +9,7 @@ import {
 } from '../lib/db';
 import { findPageForReference, getSurah, getSurahAyahs } from '../lib/quran';
 import { useAppStore } from '../store/useAppStore';
-import { BackButton, Empty, Screen } from '../components/common/AppChrome';
+import { Empty, Header, Screen } from '../components/common/AppChrome';
 
 const BOOKMARK_TYPES = [
   { category: 'Reading', label: 'Recitation', tone: 'emerald' },
@@ -181,9 +181,8 @@ export default function BookmarksScreen() {
 
   return (
     <Screen className="tabs-screen app-page-shell bg-fluent">
-      <div className="tabs-header compact app-fixed-header">
-        <BackButton className="tabs-back-pill" onClick={() => goBack()} />
-        <h1>Library</h1>
+      <div className="app-fixed-header">
+        <Header title="Library" onBack={() => goBack()} backLabel="Back from library" />
       </div>
 
       <div className="app-scroll-content">

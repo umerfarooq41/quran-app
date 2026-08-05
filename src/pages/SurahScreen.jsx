@@ -23,9 +23,11 @@ export default function SurahScreen() {
   );
 
   return (
-    <Screen className="space-y-5">
-      <Header title={surah?.name || 'Surah'} back={VIEWS.INDEX} />
-
+    <Screen className="surah-screen app-page-shell bg-fluent">
+      <div className="app-fixed-header">
+        <Header title={surah?.name || 'Surah'} back={VIEWS.INDEX} />
+      </div>
+      <div className="app-scroll-content">
       <section className={`${panel} overflow-hidden p-6`}>
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -79,6 +81,7 @@ export default function SurahScreen() {
           ))}
         </div>
       </section>
+      </div>
     </Screen>
   );
 }
