@@ -226,3 +226,36 @@
   font-size: 1rem;
   line-height: 1.7;
 }
+
+/* Surah Info language-aware reading direction and typography. */
+.surah-info-html[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+  font-family: var(--translation-urdu-font);
+}
+
+.surah-info-html[dir="ltr"] {
+  direction: ltr;
+  text-align: left;
+  font-family: var(--ui-font);
+  letter-spacing: normal;
+}
+
+.surah-info-html[dir="rtl"] h2,
+.surah-info-html[dir="rtl"] h3,
+.surah-info-html[dir="rtl"] p,
+.surah-info-html[dir="rtl"] li {
+  direction: rtl;
+  text-align: right;
+  font-family: var(--translation-urdu-font);
+}
+
+.surah-info-html[dir="ltr"] h2,
+.surah-info-html[dir="ltr"] h3,
+.surah-info-html[dir="ltr"] p,
+.surah-info-html[dir="ltr"] li,
+.surah-info-html[dir="ltr"] a {
+  direction: ltr;
+  text-align: left;
+  font-family: var(--ui-font);
+}
