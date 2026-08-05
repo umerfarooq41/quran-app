@@ -62,7 +62,6 @@ export function Header({ title, back = 'home', onBack }) {
     if (typeof onBack === 'function') return onBack();
     goBack(back);
   }
-  const handleBack = onBack || (() => goBack(back));
   return (
     <div className="app-header">
       <BackButton onClick={handleBack} />
