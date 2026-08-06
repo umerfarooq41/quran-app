@@ -1,0 +1,35 @@
+export const surahNames = [
+  ['الفاتحة', 'The Opener'], ['البقرة', 'The Cow'], ['آل عمران', 'Family of Imran'], ['النساء', 'The Women'],
+  ['المائدة', 'The Table Spread'], ['الأنعام', 'The Cattle'], ['الأعراف', 'The Heights'], ['الأنفال', 'The Spoils of War'],
+  ['التوبة', 'The Repentance'], ['يونس', 'Jonah'], ['هود', 'Hud'], ['يوسف', 'Joseph'],
+  ['الرعد', 'The Thunder'], ['إبراهيم', 'Abraham'], ['الحجر', 'The Rocky Tract'], ['النحل', 'The Bee'],
+  ['الإسراء', 'The Night Journey'], ['الكهف', 'The Cave'], ['مريم', 'Mary'], ['طه', 'Ta-Ha'],
+  ['الأنبياء', 'The Prophets'], ['الحج', 'The Pilgrimage'], ['المؤمنون', 'The Believers'], ['النور', 'The Light'],
+  ['الفرقان', 'The Criterion'], ['الشعراء', 'The Poets'], ['النمل', 'The Ant'], ['القصص', 'The Stories'],
+  ['العنكبوت', 'The Spider'], ['الروم', 'The Romans'], ['لقمان', 'Luqman'], ['السجدة', 'The Prostration'],
+  ['الأحزاب', 'The Combined Forces'], ['سبأ', 'Sheba'], ['فاطر', 'The Originator'], ['يس', 'Ya-Sin'],
+  ['الصافات', 'Those Who Set the Ranks'], ['ص', 'Sad'], ['الزمر', 'The Groups'], ['غافر', 'The Forgiver'],
+  ['فصلت', 'Explained in Detail'], ['الشورى', 'The Consultation'], ['الزخرف', 'The Ornaments of Gold'], ['الدخان', 'The Smoke'],
+  ['الجاثية', 'The Crouching'], ['الأحقاف', 'The Wind-Curved Sandhills'], ['محمد', 'Muhammad'], ['الفتح', 'The Victory'],
+  ['الحجرات', 'The Rooms'], ['ق', 'Qaf'], ['الذاريات', 'The Winnowing Winds'], ['الطور', 'The Mount'],
+  ['النجم', 'The Star'], ['القمر', 'The Moon'], ['الرحمن', 'The Most Merciful'], ['الواقعة', 'The Inevitable'],
+  ['الحديد', 'The Iron'], ['المجادلة', 'The Pleading Woman'], ['الحشر', 'The Exile'], ['الممتحنة', 'She That Is to Be Examined'],
+  ['الصف', 'The Ranks'], ['الجمعة', 'Friday'], ['المنافقون', 'The Hypocrites'], ['التغابن', 'The Mutual Disillusion'],
+  ['الطلاق', 'The Divorce'], ['التحريم', 'The Prohibition'], ['الملك', 'The Sovereignty'], ['القلم', 'The Pen'],
+  ['الحاقة', 'The Reality'], ['المعارج', 'The Ascending Stairways'], ['نوح', 'Noah'], ['الجن', 'The Jinn'],
+  ['المزمل', 'The Enshrouded One'], ['المدثر', 'The Cloaked One'], ['القيامة', 'The Resurrection'], ['الإنسان', 'Man'],
+  ['المرسلات', 'Those Sent Forth'], ['النبأ', 'The Tidings'], ['النازعات', 'Those Who Drag Forth'], ['عبس', 'He Frowned'],
+  ['التكوير', 'The Overthrowing'], ['الانفطار', 'The Cleaving'], ['المطففين', 'Defrauding'], ['الانشقاق', 'The Splitting Open'],
+  ['البروج', 'The Constellations'], ['الطارق', 'The Nightcomer'], ['الأعلى', 'The Most High'], ['الغاشية', 'The Overwhelming'],
+  ['الفجر', 'The Dawn'], ['البلد', 'The City'], ['الشمس', 'The Sun'], ['الليل', 'The Night'],
+  ['الضحى', 'The Morning Hours'], ['الشرح', 'The Relief'], ['التين', 'The Fig'], ['العلق', 'The Clot'],
+  ['القدر', 'The Power'], ['البينة', 'The Clear Proof'], ['الزلزلة', 'The Earthquake'], ['العاديات', 'The Courser'],
+  ['القارعة', 'The Calamity'], ['التكاثر', 'The Rivalry in World Increase'], ['العصر', 'The Declining Day'], ['الهمزة', 'The Traducer'],
+  ['الفيل', 'The Elephant'], ['قريش', 'Quraysh'], ['الماعون', 'Small Kindnesses'], ['الكوثر', 'Abundance'],
+  ['الكافرون', 'The Disbelievers'], ['النصر', 'The Divine Support'], ['المسد', 'The Palm Fiber'], ['الإخلاص', 'Sincerity'],
+  ['الفلق', 'The Daybreak'], ['الناس', 'Mankind'],
+].map(([arabicName, meaning], index) => ({ number: index + 1, arabicName, meaning }));
+
+export function getSurahNameMeta(number) {
+  return surahNames[Number(number) - 1] || surahNames[0];
+}
