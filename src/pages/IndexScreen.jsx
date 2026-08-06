@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ChevronDown, Play, Star } from 'lucide-react';
+import { ChevronDown, Play, Search, Star, X } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../store/useAppStore';
 import { Header } from '../components/common/AppChrome';
@@ -12,6 +12,7 @@ import { getIndoPakParaQuarterTargets } from '../data/indoPakParaQuarters';
 import { getJuzLabel } from '../utils/quranLabels';
 import { getJuzForReference } from '../data/quranMeta';
 import { getTranslationLanguageId } from '../lib/translations';
+import { getSurahNameMeta } from '../data/surahNames';
 
 function formatJuzName(juz) {
   return `${getJuzLabel(juz)}'`;
@@ -275,6 +276,7 @@ function AyahJumpControl({ surah, ayahCount, goAyah }) {
 }
 
 function SurahIndex() {
+  const [searchQuery, setSearchQuery] = useState('');
   const {
     expandedSurah,
     setExpandedSurah,
@@ -299,12 +301,27 @@ function SurahIndex() {
     || storedTranslationLanguage
     || 'ur';
 
-  const grouped = useMemo(() => surahs.reduce((groups, surah) => {
+  const filteredSurahs = useMemo(() => {
+    const query = searchQuery.trim().toLocaleLowerCase();
+    if (!query) return surahs;
+
+    return surahs.filter((surah) => {
+      const meta = getSurahNameMeta(surah.number);
+      return [
+        String(surah.number),
+        surah.name,
+        meta.arabicName,
+        meta.meaning,
+      ].some((value) => String(value).toLocaleLowerCase().includes(query));
+    });
+  }, [searchQuery]);
+
+  const grouped = useMemo(() => filteredSurahs.reduce((groups, surah) => {
     const key = surah.juz;
     groups[key] = groups[key] || [];
     groups[key].push(surah);
     return groups;
-  }, {}), []);
+  }, {}), [filteredSurahs]);
 
   useEffect(() => {
     if (!expandedSurah) return;
@@ -319,7 +336,24 @@ function SurahIndex() {
   }, [expandedSurah]);
 
   return (
-    <section className="index-list index-surah-list">
+    <>
+      <div className="index-surah-search" role="search">
+        <Search size={18} strokeWidth={2.1} aria-hidden="true" />
+        <input
+          type="search"
+          value={searchQuery}
+          onChange={(event) => setSearchQuery(event.target.value)}
+          placeholder="Search Surah by name, meaning or number"
+          aria-label="Search Surahs"
+        />
+        {searchQuery && (
+          <button type="button" onClick={() => setSearchQuery('')} aria-label="Clear Surah search">
+            <X size={17} aria-hidden="true" />
+          </button>
+        )}
+      </div>
+
+      <section className="index-list index-surah-list">
       {Object.entries(grouped).map(([juz, list]) => (
         <div key={juz} className="index-surah-group">
           <h2 className="index-section-title">{formatJuzHeading(Number(juz))}</h2>
@@ -328,6 +362,7 @@ function SurahIndex() {
               const isOpen = expandedSurah === surah.number;
               const ayahCount = surah.verses;
               const localizedInfo = getSurahInfo(surah.number, translationLanguage);
+              const nameMeta = getSurahNameMeta(surah.number);
 
               return (
                 <article key={surah.number} data-index-surah-card={surah.number} className={`index-card-wrap ${isOpen ? 'is-open' : ''}`}>
@@ -340,8 +375,8 @@ function SurahIndex() {
                     <NumberBadge>{surah.number}</NumberBadge>
                     <span className="index-surah-title-block">
                       <span className="index-card-title">{surah.name}</span>
-                      <small>{ayahCount} Ayahs · {surah.revelation}</small>
                     </span>
+                    <span className="index-surah-arabic-name" lang="ar" dir="rtl">{nameMeta.arabicName}</span>
                     <ChevronDown
                       className="index-chevron"
                       size={20}
@@ -367,6 +402,9 @@ function SurahIndex() {
                     <div className="index-collapse-panel index-surah-collapse" aria-label={`${surah.name} details`}>
                       <div className="index-surah-info-preview">
                         <span className="index-surah-info-label">Surah Info</span>
+                        <p className="index-surah-info-meta">
+                          {nameMeta.meaning} <span aria-hidden="true">•</span> {ayahCount} Ayahs <span aria-hidden="true">•</span> {surah.revelation}
+                        </p>
                         <p
                           className={`index-surah-info-copy is-${translationLanguage}`}
                           lang={translationLanguage}
@@ -417,5 +455,6 @@ function SurahIndex() {
         </div>
       ))}
     </section>
+    </>
   );
 }
