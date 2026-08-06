@@ -1,72 +1,63 @@
-/* Index screen: authoritative layout and interaction styles.
-   Loaded after theme.css to prevent legacy Index overrides from regressing the UI. */
+/* Authoritative Index screen styles. Keep this file loaded after theme.css. */
 
 .index-replica-shell .app-scroll-content {
   overflow-x: clip;
 }
 
+/* Tabs */
 .index-replica-shell .index-segment {
-  position: relative;
   display: grid !important;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 4px;
   width: min(100%, 420px);
-  min-height: 52px;
-  margin: 10px auto 14px;
+  min-height: 50px;
+  gap: 4px;
+  margin: 8px auto 14px !important;
   padding: 4px !important;
-  border: 1px solid color-mix(in srgb, var(--theme-border) 72%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--theme-border) 78%, transparent) !important;
   border-radius: 999px !important;
-  background: color-mix(in srgb, var(--theme-surface) 78%, transparent) !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.54), 0 8px 18px rgba(79,62,25,.06) !important;
+  background: color-mix(in srgb, var(--theme-surface) 84%, transparent) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 7px 18px rgba(70,52,23,.045) !important;
 }
-
 .index-replica-shell .index-segment button {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  place-items: center;
   min-width: 0;
-  min-height: 42px;
-  padding: 0 14px;
+  min-height: 40px;
   border: 0;
   border-radius: 999px;
   background: transparent;
   color: var(--theme-text);
-  font: inherit;
-  font-size: 1rem;
-  font-weight: 650;
-  cursor: pointer;
-  transition: color .2s ease, background .2s ease, box-shadow .2s ease, transform .15s ease;
-}
-
-.index-replica-shell .index-segment button:active { transform: scale(.985); }
-.index-replica-shell .index-segment button:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--brand-gold, #b68a35) 76%, white);
-  outline-offset: 2px;
+  font: 650 .96rem/1 var(--ui-font);
+  transition: transform .15s ease, background-color .2s ease, color .2s ease, box-shadow .2s ease;
 }
 .index-replica-shell .index-segment button.is-active {
-  color: #fff;
-  background: linear-gradient(135deg, var(--brand-green, #2f7a68), #175b4d);
-  box-shadow: 0 8px 18px rgba(24,91,77,.18);
+  background: linear-gradient(135deg, var(--brand-green, #2f7a68), #185b4d) !important;
+  color: #fff !important;
+  box-shadow: 0 7px 16px rgba(24,91,77,.17) !important;
+}
+.index-replica-shell .index-segment button:active { transform: scale(.985); }
+.index-replica-shell .index-segment button:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--brand-gold, #b68a35) 72%, white);
+  outline-offset: 2px;
 }
 
+/* Search */
 .index-replica-shell .index-surah-search {
-  display: grid;
+  display: grid !important;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 10px;
   width: 100%;
   min-height: 48px;
-  margin: 0 0 16px;
-  padding: 0 14px;
-  border: 1px solid color-mix(in srgb, var(--theme-border) 82%, transparent);
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--theme-surface) 88%, transparent);
-  box-shadow: 0 7px 18px rgba(74,57,25,.045);
+  gap: 10px;
+  margin: 0 0 15px !important;
+  padding: 0 14px !important;
+  border: 1px solid color-mix(in srgb, var(--theme-border) 80%, transparent) !important;
+  border-radius: 16px !important;
+  background: color-mix(in srgb, var(--theme-surface) 90%, transparent) !important;
+  box-shadow: 0 6px 16px rgba(72,55,22,.04) !important;
+  color: var(--theme-muted);
 }
 .index-replica-shell .index-surah-search:focus-within {
-  border-color: color-mix(in srgb, var(--brand-gold, #b68a35) 65%, var(--theme-border));
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-gold, #b68a35) 13%, transparent);
+  border-color: color-mix(in srgb, var(--brand-gold, #b68a35) 68%, var(--theme-border)) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-gold, #b68a35) 12%, transparent) !important;
 }
 .index-replica-shell .index-surah-search input {
   min-width: 0;
@@ -75,15 +66,15 @@
   outline: 0;
   background: transparent;
   color: var(--theme-text);
-  font: inherit;
-  font-size: .96rem;
+  font: 500 .93rem/1.3 var(--ui-font);
 }
-.index-replica-shell .index-surah-search input::placeholder { color: var(--theme-muted); opacity: .86; }
+.index-replica-shell .index-surah-search input::placeholder { color: var(--theme-muted); opacity: .82; }
+.index-replica-shell .index-surah-search input::-webkit-search-cancel-button { display: none; }
 .index-replica-shell .index-surah-search button {
   display: grid;
-  place-items: center;
   width: 34px;
   height: 34px;
+  place-items: center;
   padding: 0;
   border: 0;
   border-radius: 50%;
@@ -91,99 +82,94 @@
   color: var(--theme-muted);
 }
 
+/* Lists and headings */
 .index-replica-shell .index-list,
 .index-replica-shell .index-surah-stack {
   display: grid;
-  gap: 10px;
   min-width: 0;
+  gap: 10px !important;
 }
 .index-replica-shell .index-surah-group { min-width: 0; }
 .index-replica-shell .index-section-title {
-  margin: 18px 4px 8px;
-  color: var(--theme-text);
-  font-size: .9rem;
-  font-weight: 750;
-  letter-spacing: .02em;
+  margin: 17px 4px 8px !important;
+  color: var(--theme-text) !important;
+  font: 750 .88rem/1.2 var(--ui-font) !important;
+  letter-spacing: .01em !important;
 }
-.index-replica-shell .index-surah-group:first-child .index-section-title { margin-top: 2px; }
+.index-replica-shell .index-surah-group:first-child .index-section-title { margin-top: 2px !important; }
 
+/* Collapsed rows */
 .index-replica-shell .index-card-wrap {
   min-width: 0;
-  overflow: visible;
+  overflow: visible !important;
   border-radius: 22px;
 }
 .index-replica-shell .index-card {
   display: flex !important;
-  align-items: stretch;
   width: 100%;
   min-width: 0;
-  min-height: 66px;
+  min-height: 66px !important;
+  align-items: stretch;
+  overflow: hidden !important;
   padding: 0 !important;
-  overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--theme-border) 72%, transparent) !important;
   border-radius: 22px !important;
   background: color-mix(in srgb, var(--theme-surface) 94%, transparent) !important;
-  box-shadow: 0 9px 22px rgba(71,54,23,.055) !important;
+  box-shadow: 0 8px 20px rgba(71,54,23,.05) !important;
 }
 .index-replica-shell .index-card-wrap.is-open > .index-card {
-  border-color: color-mix(in srgb, var(--brand-gold, #b68a35) 22%, var(--theme-border)) !important;
-  box-shadow: 0 10px 24px rgba(71,54,23,.075) !important;
+  border-color: color-mix(in srgb, var(--brand-gold, #b68a35) 25%, var(--theme-border)) !important;
+  box-shadow: 0 9px 22px rgba(71,54,23,.065) !important;
 }
 .index-replica-shell .index-card-main {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) minmax(72px, auto);
-  align-items: center;
-  gap: 12px;
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) minmax(72px, 34%);
   flex: 1 1 auto;
   min-width: 0;
   min-height: 66px;
-  padding: 8px 4px 8px 12px;
+  align-items: center;
+  gap: 11px;
+  padding: 8px 5px 8px 12px !important;
   border: 0;
   background: transparent;
   color: inherit;
-  text-align: left;
   font: inherit;
-  cursor: pointer;
+  text-align: left;
 }
-.index-replica-shell .index-juz-card .index-card-main {
-  grid-template-columns: auto minmax(0, 1fr);
-}
+.index-replica-shell .index-juz-card .index-card-main { grid-template-columns: auto minmax(0, 1fr); }
 .index-replica-shell .index-card-main:focus-visible,
 .index-replica-shell .index-expand-button:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--brand-gold, #b68a35) 78%, white);
+  outline: 2px solid color-mix(in srgb, var(--brand-gold, #b68a35) 72%, white);
   outline-offset: -3px;
 }
 .index-replica-shell .index-number-badge {
   display: grid;
+  width: 44px !important;
+  height: 44px !important;
   place-items: center;
-  width: 44px;
-  height: 44px;
   flex: 0 0 44px;
-  border: 1px solid color-mix(in srgb, var(--brand-gold, #b68a35) 55%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand-gold, #b68a35) 52%, transparent) !important;
   border-radius: 50%;
-  color: var(--theme-text);
-  font-size: .95rem;
-  line-height: 1;
+  color: var(--theme-text) !important;
+  font: 600 .94rem/1 var(--ui-font) !important;
 }
 .index-replica-shell .index-surah-title-block,
-.index-replica-shell .index-card-title {
-  min-width: 0;
-}
+.index-replica-shell .index-card-title { min-width: 0; }
 .index-replica-shell .index-card-title {
   display: block;
   overflow: hidden;
-  color: var(--theme-text);
-  font-size: 1rem;
-  font-weight: 680;
+  color: var(--theme-text) !important;
+  font: 680 1rem/1.2 var(--ui-font) !important;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .index-replica-shell .index-surah-arabic-name {
   min-width: 0;
+  max-width: none !important;
   overflow: hidden;
-  color: var(--theme-text);
-  font-family: var(--arabic-ui-font, var(--arabic-font, sans-serif));
-  font-size: clamp(1.02rem, 4.4vw, 1.2rem);
+  color: var(--theme-text) !important;
+  font-family: var(--arabic-font, "Noto Naskh Arabic", sans-serif) !important;
+  font-size: clamp(1.02rem, 4.4vw, 1.2rem) !important;
   font-weight: 500;
   line-height: 1.15;
   text-align: right;
@@ -192,48 +178,56 @@
 }
 .index-replica-shell .index-expand-button {
   display: grid;
-  place-items: center;
-  flex: 0 0 48px;
   width: 48px;
   min-height: 66px;
+  flex: 0 0 48px;
+  place-items: center;
   padding: 0;
   border: 0;
   border-left: 1px solid color-mix(in srgb, var(--theme-border) 48%, transparent);
   background: transparent;
   color: var(--theme-text);
-  cursor: pointer;
 }
 .index-replica-shell .index-chevron {
-  transition: transform .22s ease;
+  margin: 0 !important;
+  transform: none !important;
+  transition: transform .22s ease !important;
 }
-.index-replica-shell .index-expand-button[aria-expanded='true'] .index-chevron {
-  transform: rotate(180deg);
-}
+.index-replica-shell .index-expand-button[aria-expanded='true'] .index-chevron { transform: rotate(180deg) !important; }
 
+/* One attached expanded panel */
 .index-replica-shell .index-surah-collapse,
 .index-replica-shell .index-collapse-panel {
+  display: block !important;
   box-sizing: border-box;
-  width: calc(100% - 12px);
+  width: calc(100% - 12px) !important;
   min-width: 0;
   margin: 6px 6px 0 !important;
   padding: 0 !important;
   overflow: hidden !important;
-  border: 1px solid color-mix(in srgb, var(--theme-border) 62%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--theme-border) 64%, transparent) !important;
   border-radius: 20px !important;
-  background: color-mix(in srgb, var(--theme-surface) 91%, transparent) !important;
-  box-shadow: 0 9px 22px rgba(72,55,22,.055) !important;
-  animation: indexRefinedPanelIn .22s ease both;
+  background: color-mix(in srgb, var(--theme-surface) 92%, transparent) !important;
+  box-shadow: 0 9px 22px rgba(72,55,22,.05) !important;
+  animation: indexPanelIn .2s ease both;
 }
-@keyframes indexRefinedPanelIn {
-  from { opacity: 0; transform: translateY(-5px); }
+@keyframes indexPanelIn {
+  from { opacity: 0; transform: translateY(-4px); }
   to { opacity: 1; transform: translateY(0); }
 }
+.index-replica-shell .index-quarter-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  padding: 12px !important;
+}
 
+/* Surah information */
 .index-replica-shell .index-surah-info-preview {
   width: 100%;
   min-width: 0;
   margin: 0 !important;
-  padding: 20px 18px 16px !important;
+  padding: 18px 18px 15px !important;
   border: 0 !important;
   border-radius: 0 !important;
   background: transparent !important;
@@ -241,101 +235,105 @@
 }
 .index-replica-shell .index-surah-info-label {
   display: block;
-  margin: 0 0 5px !important;
-  color: var(--theme-text);
-  font-size: 1.05rem !important;
-  font-weight: 760;
-  letter-spacing: .08em;
+  margin: 0 0 4px !important;
+  color: color-mix(in srgb, var(--theme-text) 78%, var(--theme-muted)) !important;
+  font: 760 1rem/1.2 var(--ui-font) !important;
+  letter-spacing: .1em !important;
   text-transform: uppercase;
 }
 .index-replica-shell .index-surah-info-meta {
-  display: flex;
+  display: flex !important;
   flex-wrap: wrap;
   align-items: center;
-  gap: 4px 7px;
-  margin: 0 0 12px !important;
-  color: var(--theme-muted);
-  font: inherit !important;
-  font-size: .9rem !important;
-  font-weight: 610;
-  line-height: 1.45 !important;
-  text-align: left !important;
+  gap: 3px 7px !important;
+  margin: 0 0 10px !important;
+  color: var(--theme-muted) !important;
   direction: ltr !important;
+  font: 610 .86rem/1.4 var(--ui-font) !important;
+  letter-spacing: 0 !important;
+  text-align: left !important;
 }
-.index-replica-shell .index-surah-info-meta span { color: var(--brand-gold, #b68a35); }
+.index-replica-shell .index-surah-info-meta span {
+  margin: 0 !important;
+  color: var(--brand-gold, #b68a35) !important;
+  font: inherit !important;
+}
 .index-replica-shell .index-surah-info-copy {
-  display: -webkit-box;
+  display: -webkit-box !important;
   margin: 0 !important;
   overflow: hidden;
-  color: var(--theme-muted);
+  color: var(--theme-muted) !important;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 5;
 }
 .index-replica-shell .index-surah-info-copy.is-en {
-  font-family: inherit !important;
-  font-size: 1rem !important;
-  font-weight: 460;
-  line-height: 1.64 !important;
-  text-align: left !important;
   direction: ltr !important;
+  font-family: var(--ui-font) !important;
+  font-size: .98rem !important;
+  font-weight: 480 !important;
+  line-height: 1.56 !important;
+  letter-spacing: 0 !important;
+  text-align: left !important;
 }
 .index-replica-shell .index-surah-info-copy.is-ur {
-  font-family: var(--urdu-font, serif) !important;
-  font-size: 1.08rem !important;
-  line-height: 2.05 !important;
-  text-align: right !important;
   direction: rtl !important;
+  font-family: var(--translation-urdu-font) !important;
+  font-size: 1.06rem !important;
+  line-height: 1.9 !important;
+  text-align: right !important;
 }
-.index-replica-shell .index-surah-read-more {
-  display: inline-flex;
-  margin: 11px 0 0 !important;
-  padding: 0 0 2px;
-  border: 0;
-  border-bottom: 1px solid currentColor;
-  background: transparent;
-  color: var(--brand-gold, #b68a35);
-  font: inherit;
-  font-size: .92rem;
-  font-weight: 700;
+.index-replica-shell .index-surah-info-preview .index-surah-read-more {
+  display: inline-flex !important;
+  margin: 9px 0 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-bottom: 1px solid currentColor !important;
+  background: transparent !important;
+  color: var(--brand-gold, #b68a35) !important;
+  font: 700 .89rem/1.4 var(--ui-font) !important;
+  text-decoration: none !important;
 }
 .index-replica-shell .index-surah-quick-actions {
-  display: grid;
+  display: grid !important;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  margin: 16px 0 0 !important;
-  padding: 14px 0 0 !important;
-  border-top: 1px solid color-mix(in srgb, var(--theme-border) 62%, transparent);
+  gap: 10px !important;
+  margin: 14px 0 0 !important;
+  padding: 13px 0 0 !important;
+  border-top: 1px solid color-mix(in srgb, var(--theme-border) 62%, transparent) !important;
 }
-.index-replica-shell .index-surah-text-action {
-  display: flex;
+.index-replica-shell .index-surah-info-preview .index-surah-text-action {
+  display: flex !important;
+  min-width: 0;
+  min-height: 44px;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-width: 0;
-  min-height: 46px;
-  padding: 8px 10px;
-  border: 1px solid color-mix(in srgb, var(--brand-gold, #b68a35) 34%, var(--theme-border));
-  border-radius: 14px;
-  background: transparent;
-  color: var(--brand-gold, #b68a35);
-  font: inherit;
-  font-size: .88rem;
-  font-weight: 670;
+  padding: 8px 9px !important;
+  border: 1px solid color-mix(in srgb, var(--brand-gold, #b68a35) 32%, var(--theme-border)) !important;
+  border-radius: 14px !important;
+  background: transparent !important;
+  color: var(--brand-gold, #b68a35) !important;
+  font: 670 .84rem/1.25 var(--ui-font) !important;
+  text-decoration: none !important;
 }
 .index-replica-shell .index-surah-text-action span {
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .index-replica-shell .index-surah-text-action.is-favorite {
-  background: color-mix(in srgb, var(--brand-gold, #b68a35) 10%, transparent);
+  background: color-mix(in srgb, var(--brand-gold, #b68a35) 9%, transparent) !important;
 }
 
+/* Jump to Ayah is a section, not a nested card */
 .index-replica-shell .index-ayah-jump {
-  width: 100%;
+  box-sizing: border-box;
+  width: 100% !important;
   min-width: 0;
   margin: 0 !important;
-  padding: 16px 18px 18px !important;
+  padding: 15px 18px 17px !important;
+  overflow: visible !important;
   border: 0 !important;
   border-top: 1px solid color-mix(in srgb, var(--theme-border) 62%, transparent) !important;
   border-radius: 0 !important;
@@ -343,127 +341,117 @@
   box-shadow: none !important;
 }
 .index-replica-shell .index-ayah-jump-heading {
-  display: flex;
+  display: flex !important;
+  min-width: 0;
   align-items: baseline;
   justify-content: space-between;
   gap: 10px;
-  min-width: 0;
-  margin: 0 0 10px !important;
+  margin: 0 0 9px !important;
 }
 .index-replica-shell .index-ayah-jump-heading > span {
-  color: var(--theme-text);
-  font-size: 1rem;
-  font-weight: 720;
+  color: var(--theme-text) !important;
+  font: 720 .98rem/1.25 var(--ui-font) !important;
   white-space: nowrap;
 }
 .index-replica-shell .index-ayah-jump-heading small {
   min-width: 0;
   overflow: hidden;
-  color: var(--theme-muted);
-  font-size: .78rem;
-  line-height: 1.3;
+  color: var(--theme-muted) !important;
+  font: 550 .76rem/1.3 var(--ui-font) !important;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .index-replica-shell .index-ayah-jump-row {
   display: grid !important;
-  grid-template-columns: minmax(0, 1fr) 76px;
-  gap: 10px;
-  width: 100%;
+  grid-template-columns: minmax(0, 1fr) 72px !important;
+  width: 100% !important;
   min-width: 0;
+  align-items: stretch;
+  gap: 9px !important;
   margin: 0 !important;
 }
 .index-replica-shell .index-ayah-input-wrap {
-  display: grid;
-  grid-template-columns: auto minmax(42px, 1fr) auto;
-  align-items: center;
-  gap: 8px;
+  display: grid !important;
+  grid-template-columns: auto minmax(44px, 1fr) auto;
+  width: 100%;
   min-width: 0;
   min-height: 48px;
-  padding: 0 13px;
-  border: 1px solid color-mix(in srgb, var(--brand-gold, #b68a35) 38%, var(--theme-border));
-  border-radius: 15px;
-  background: color-mix(in srgb, var(--theme-muted) 6%, var(--theme-surface));
-  transition: border-color .18s ease, box-shadow .18s ease;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px !important;
+  border: 1px solid color-mix(in srgb, var(--brand-gold, #b68a35) 38%, var(--theme-border)) !important;
+  border-radius: 15px !important;
+  background: color-mix(in srgb, var(--theme-muted) 6%, var(--theme-surface)) !important;
+  box-shadow: none !important;
 }
 .index-replica-shell .index-ayah-input-wrap:focus-within {
-  border-color: var(--brand-gold, #b68a35);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-gold, #b68a35) 12%, transparent);
+  border-color: var(--brand-gold, #b68a35) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-gold, #b68a35) 12%, transparent) !important;
 }
-.index-replica-shell .index-ayah-input-wrap.is-invalid {
-  border-color: #b94b4b;
-}
+.index-replica-shell .index-ayah-input-wrap.is-invalid { border-color: #b94b4b !important; }
 .index-replica-shell .index-ayah-input-wrap > span,
 .index-replica-shell .index-ayah-input-wrap > strong {
-  color: var(--theme-muted);
-  font-size: .78rem;
-  font-weight: 610;
+  color: var(--theme-muted) !important;
+  font: 610 .76rem/1 var(--ui-font) !important;
   white-space: nowrap;
 }
 .index-replica-shell .index-ayah-input-wrap input {
-  width: 100%;
-  min-width: 0;
-  padding: 0;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: var(--theme-text);
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 46px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  color: var(--theme-text) !important;
   caret-color: var(--brand-gold, #b68a35);
-  font: inherit;
-  font-size: 1.22rem;
-  font-weight: 760;
+  font: 760 1.2rem/1 var(--ui-font) !important;
   text-align: center;
-  user-select: none;
   -webkit-user-select: none;
+  user-select: none;
   -webkit-touch-callout: none;
 }
 .index-replica-shell .index-ayah-input-wrap input::placeholder {
   color: var(--theme-muted);
-  font-size: .9rem;
+  font-size: .86rem;
   font-weight: 560;
-  opacity: .75;
+  opacity: .72;
 }
 .index-replica-shell .index-ayah-input-wrap input::selection { background: transparent; }
 .index-replica-shell .index-ayah-go {
-  display: grid;
+  display: grid !important;
+  width: 72px !important;
+  min-width: 0 !important;
+  min-height: 48px !important;
   place-items: center;
-  width: 76px;
-  min-height: 48px;
-  padding: 0;
-  border: 0;
-  border-radius: 15px;
-  background: linear-gradient(135deg, var(--brand-green, #2f7a68), #175b4d);
-  color: white;
-  font: inherit;
-  font-size: .95rem;
-  font-weight: 720;
-  box-shadow: 0 8px 17px rgba(24,91,77,.16);
-  transition: opacity .18s ease, transform .15s ease;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 15px !important;
+  background: linear-gradient(135deg, var(--brand-green, #2f7a68), #185b4d) !important;
+  color: #fff !important;
+  font: 720 .93rem/1 var(--ui-font) !important;
+  box-shadow: 0 7px 16px rgba(24,91,77,.15) !important;
 }
-.index-replica-shell .index-ayah-go:active:not(:disabled) { transform: scale(.97); }
-.index-replica-shell .index-ayah-go:disabled {
-  opacity: .42;
-  box-shadow: none;
-}
+.index-replica-shell .index-ayah-go:disabled { opacity: .4; box-shadow: none !important; }
 
+/* Custom, browser-consistent slider */
 .index-replica-shell .index-ayah-slider-wrap {
   position: relative;
   width: 100%;
   min-width: 0;
-  margin: 15px 0 0 !important;
-  padding: 18px 9px 0 !important;
+  margin: 12px 0 0 !important;
+  padding: 17px 9px 0 !important;
 }
 .index-replica-shell .index-ayah-slider-value {
   position: absolute;
-  top: -3px;
+  top: -2px;
   left: 50%;
   z-index: 3;
   padding: 2px 8px;
   border-radius: 999px;
   background: var(--theme-surface);
   color: var(--theme-muted);
-  font-size: .72rem;
-  font-weight: 650;
+  font: 650 .7rem/1.2 var(--ui-font);
   opacity: 0;
   pointer-events: none;
   transform: translate(-50%, 4px);
@@ -475,6 +463,7 @@
 }
 .index-replica-shell .index-ayah-slider-visual {
   position: relative;
+  width: 100%;
   height: 28px;
 }
 .index-replica-shell .index-ayah-slider-track {
@@ -484,9 +473,9 @@
   left: 0;
   height: 6px;
   overflow: hidden;
-  border: 1px solid rgba(74,78,86,.14);
+  border: 1px solid rgba(74,78,86,.16);
   border-radius: 999px;
-  background: rgba(113,118,126,.28);
+  background: rgba(105,110,118,.3);
   box-shadow: inset 0 1px 2px rgba(40,40,40,.11);
   transform: translateY(-50%);
 }
@@ -498,34 +487,29 @@
   background: var(--brand-gold, #b68a35);
 }
 .index-replica-shell .index-ayah-slider {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 28px;
-  margin: 0;
-  opacity: 1;
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 28px !important;
+  margin: 0 !important;
+  padding: 0 !important;
   appearance: none;
   -webkit-appearance: none;
-  background: transparent !important;
-  cursor: pointer;
-}
-.index-replica-shell .index-ayah-slider::-webkit-slider-runnable-track {
-  height: 6px;
+  border: 0 !important;
+  outline: 0;
   background: transparent !important;
 }
-.index-replica-shell .index-ayah-slider::-moz-range-track {
-  height: 6px;
-  background: transparent !important;
-}
+.index-replica-shell .index-ayah-slider::-webkit-slider-runnable-track { height: 6px; background: transparent !important; }
+.index-replica-shell .index-ayah-slider::-moz-range-track { height: 6px; background: transparent !important; }
 .index-replica-shell .index-ayah-slider::-moz-range-progress { background: transparent !important; }
 .index-replica-shell .index-ayah-slider::-webkit-slider-thumb {
   width: 18px;
   height: 18px;
   margin-top: -6px;
-  border: 2px solid var(--theme-surface);
-  border-radius: 50%;
   appearance: none;
   -webkit-appearance: none;
+  border: 2px solid var(--theme-surface);
+  border-radius: 50%;
   background: var(--brand-gold, #b68a35);
   box-shadow: 0 2px 7px rgba(63,45,12,.28);
 }
@@ -537,7 +521,6 @@
   background: var(--brand-gold, #b68a35);
   box-shadow: 0 2px 7px rgba(63,45,12,.28);
 }
-.index-replica-shell .index-ayah-slider:focus-visible { outline: none; }
 .index-replica-shell .index-ayah-slider:focus-visible::-webkit-slider-thumb {
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand-gold, #b68a35) 22%, transparent), 0 2px 7px rgba(63,45,12,.28);
 }
@@ -545,28 +528,27 @@
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand-gold, #b68a35) 22%, transparent), 0 2px 7px rgba(63,45,12,.28);
 }
 .index-replica-shell .index-ayah-slider-labels {
-  display: grid;
+  display: grid !important;
   grid-template-columns: 1fr minmax(80px, auto) 1fr;
-  align-items: center;
   width: 100%;
-  padding-top: 2px;
-  color: var(--theme-muted);
-  font-size: .74rem;
+  align-items: center;
+  padding-top: 1px;
+  color: var(--theme-muted) !important;
+  font: 560 .72rem/1.2 var(--ui-font) !important;
 }
 .index-replica-shell .index-ayah-slider-labels span:nth-child(2) { text-align: center; }
 .index-replica-shell .index-ayah-slider-labels span:last-child { text-align: right; }
 .index-replica-shell .index-ayah-limit-hint {
-  margin: 7px 0 0;
-  color: #a64444;
-  font-size: .75rem;
-  line-height: 1.35;
+  margin: 7px 0 0 !important;
+  color: #a64444 !important;
+  font: 550 .74rem/1.35 var(--ui-font) !important;
 }
 
 .index-replica-shell .index-empty-state {
   display: grid;
+  min-height: 180px;
   place-items: center;
   gap: 10px;
-  min-height: 180px;
   padding: 24px;
   color: var(--theme-muted);
   text-align: center;
@@ -579,19 +561,18 @@
   border-radius: 999px;
   background: transparent;
   color: var(--brand-gold, #b68a35);
-  font: inherit;
-  font-weight: 680;
+  font: 680 .88rem/1 var(--ui-font);
 }
 
 @media (max-width: 420px) {
   .index-replica-shell .index-card-main {
     grid-template-columns: auto minmax(0, 1fr) minmax(62px, 31%);
     gap: 9px;
-    padding-left: 10px;
+    padding-left: 10px !important;
   }
   .index-replica-shell .index-number-badge {
-    width: 42px;
-    height: 42px;
+    width: 42px !important;
+    height: 42px !important;
     flex-basis: 42px;
   }
   .index-replica-shell .index-surah-info-preview,
@@ -599,9 +580,7 @@
     padding-right: 14px !important;
     padding-left: 14px !important;
   }
-  .index-replica-shell .index-surah-text-action {
-    font-size: .82rem;
-  }
+  .index-replica-shell .index-surah-info-preview .index-surah-text-action { font-size: .8rem !important; }
 }
 
 @media (max-width: 350px) {
@@ -612,30 +591,10 @@
   }
   .index-replica-shell .index-ayah-jump-heading small { white-space: normal; }
   .index-replica-shell .index-surah-quick-actions { grid-template-columns: 1fr; }
-  .index-replica-shell .index-surah-arabic-name { font-size: .98rem; }
+  .index-replica-shell .index-surah-arabic-name { font-size: .98rem !important; }
 }
 
 [data-theme='dark'] .index-replica-shell .index-ayah-slider-track {
   border-color: rgba(255,255,255,.08);
   background: rgba(220,224,228,.25);
-}
-
-/* Juz expansion retains its own compact quarter grid. */
-.index-replica-shell .index-quarter-grid {
-  display: grid !important;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 9px;
-  width: calc(100% - 12px);
-  margin: 6px 6px 0 !important;
-  padding: 12px !important;
-}
-.index-replica-shell .index-quarter-btn {
-  min-height: 44px;
-  padding: 8px 10px;
-  border: 1px solid color-mix(in srgb, var(--theme-border) 68%, transparent);
-  border-radius: 13px;
-  background: color-mix(in srgb, var(--theme-surface) 92%, transparent);
-  color: var(--theme-text);
-  font: inherit;
-  font-size: .86rem;
 }
