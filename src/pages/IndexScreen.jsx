@@ -315,7 +315,6 @@ function SurahIndex() {
                     <NumberBadge>{surah.number}</NumberBadge>
                     <span className="index-surah-title-block">
                       <span className="index-card-title">{surah.name}</span>
-                      <small>{ayahCount} Ayahs · {surah.revelation}</small>
                     </span>
                     <ChevronDown
                       className="index-chevron"
@@ -341,7 +340,10 @@ function SurahIndex() {
                   {isOpen && (
                     <div className="index-collapse-panel index-surah-collapse" aria-label={`${surah.name} details`}>
                       <div className="index-surah-info-preview">
-                        <span className="index-surah-info-label">Surah Info</span>
+                        <div className="index-surah-info-heading">
+                          <span className="index-surah-info-label">Surah Info</span>
+                          <small>{ayahCount} Ayahs · {surah.revelation}</small>
+                        </div>
                         <p
                           className={`index-surah-info-copy is-${translationLanguage}`}
                           lang={translationLanguage}
