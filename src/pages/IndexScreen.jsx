@@ -5,11 +5,13 @@ import { useAppStore } from '../store/useAppStore';
 import { Header } from '../components/common/AppChrome';
 import {
   findPageForReference,
+  getSurahInfo,
   surahs,
 } from '../lib/quran';
 import { getIndoPakParaQuarterTargets } from '../data/indoPakParaQuarters';
 import { getJuzLabel } from '../utils/quranLabels';
 import { getJuzForReference } from '../data/quranMeta';
+import { getTranslationLanguageId } from '../lib/translations';
 
 function formatJuzName(juz) {
   return `${getJuzLabel(juz)}'`;
@@ -32,8 +34,8 @@ function stripHtml(value = '') {
     .trim();
 }
 
-function previewText(surah) {
-  const source = stripHtml(surah?.text || surah?.shortText || '');
+function previewText(surahInfo) {
+  const source = stripHtml(surahInfo?.shortText || surahInfo?.text || '');
   if (!source) return 'Surah information will be expanded soon.';
   return source.length > 520 ? `${source.slice(0, 520).trim()}…` : source;
 }
@@ -197,16 +199,23 @@ function AyahJumpControl({ surah, ayahCount, goAyah }) {
           <input
             type="text"
             inputMode="numeric"
+            enterKeyHint="go"
+            autoComplete="off"
+            spellCheck="false"
             pattern="[0-9]*"
             value={ayahNumber}
             aria-label={`Ayah number, maximum ${ayahCount}`}
-            onFocus={(event) => event.currentTarget.select()}
+            onFocus={(event) => {
+              const input = event.currentTarget;
+              window.requestAnimationFrame(() => input.setSelectionRange(input.value.length, input.value.length));
+            }}
+            onContextMenu={(event) => event.preventDefault()}
             onChange={(event) => updateAyah(event.target.value, { typed: true })}
             onKeyDown={(event) => {
               if (event.key === 'Enter') openAyah();
             }}
           />
-          <strong>/ {ayahCount}</strong>
+          <strong>of {ayahCount}</strong>
         </label>
 
         <button type="button" className="index-ayah-go" onClick={openAyah}>
@@ -248,6 +257,8 @@ function SurahIndex() {
     openSurahInfo,
     favoriteSurahs,
     toggleFavoriteSurah,
+    translationId,
+    storedTranslationLanguage,
   } = useAppStore(useShallow((state) => ({
     expandedSurah: state.expandedIndexSurah,
     setExpandedSurah: state.setExpandedIndexSurah,
@@ -255,7 +266,13 @@ function SurahIndex() {
     openSurahInfo: state.openSurahInfo,
     favoriteSurahs: state.favoriteSurahs,
     toggleFavoriteSurah: state.toggleFavoriteSurah,
+    translationId: state.settings.translation,
+    storedTranslationLanguage: state.settings.translationLanguage,
   })));
+
+  const translationLanguage = getTranslationLanguageId(translationId)
+    || storedTranslationLanguage
+    || 'ur';
 
   const grouped = useMemo(() => surahs.reduce((groups, surah) => {
     const key = surah.juz;
@@ -285,6 +302,7 @@ function SurahIndex() {
             {list.map((surah) => {
               const isOpen = expandedSurah === surah.number;
               const ayahCount = surah.verses;
+              const localizedInfo = getSurahInfo(surah.number, translationLanguage);
 
               return (
                 <article key={surah.number} data-index-surah-card={surah.number} className={`index-card-wrap ${isOpen ? 'is-open' : ''}`}>
@@ -295,7 +313,10 @@ function SurahIndex() {
                     aria-expanded={isOpen}
                   >
                     <NumberBadge>{surah.number}</NumberBadge>
-                    <span className="index-card-title">{surah.name}</span>
+                    <span className="index-surah-title-block">
+                      <span className="index-card-title">{surah.name}</span>
+                      <small>{ayahCount} Ayahs · {surah.revelation}</small>
+                    </span>
                     <ChevronDown
                       className="index-chevron"
                       size={20}
@@ -321,13 +342,19 @@ function SurahIndex() {
                     <div className="index-collapse-panel index-surah-collapse" aria-label={`${surah.name} details`}>
                       <div className="index-surah-info-preview">
                         <span className="index-surah-info-label">Surah Info</span>
-                        <p className="index-surah-info-copy">{previewText(surah)}</p>
+                        <p
+                          className={`index-surah-info-copy is-${translationLanguage}`}
+                          lang={translationLanguage}
+                          dir={translationLanguage === 'ur' ? 'rtl' : 'ltr'}
+                        >
+                          {previewText(localizedInfo)}
+                        </p>
                         <button
                           type="button"
                           className="inline-read-more index-surah-read-more"
                           onClick={() => openSurahInfo(surah.number)}
                         >
-                          Read more
+                          Read Full Introduction →
                         </button>
 
                         <div className="index-surah-quick-actions" aria-label={`${surah.name} quick actions`}>
