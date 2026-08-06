@@ -16,6 +16,7 @@ import './styles/mobile-first.css';
 import './styles/settings.css';
 import './styles/ui-polish.css';
 import './styles/theme.css';
+import './styles/index-refined.css';
 
 
 const updateSW = registerSW({
