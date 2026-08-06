@@ -265,6 +265,7 @@ function AyahJumpControl({ surah, ayahCount, goAyah }) {
             onPointerDown={() => setIsDragging(true)}
             onPointerUp={() => setIsDragging(false)}
             onPointerCancel={() => setIsDragging(false)}
+            onBlur={() => setIsDragging(false)}
             onChange={(event) => updateFromSlider(event.target.value)}
           />
         </div>
@@ -354,7 +355,7 @@ function SurahIndex() {
           type="search"
           value={searchQuery}
           onChange={(event) => setSearchQuery(event.target.value)}
-          placeholder="Search Surah by name, meaning or number"
+          placeholder="Search by name, meaning or number"
           aria-label="Search Surahs"
         />
         {searchQuery && (
