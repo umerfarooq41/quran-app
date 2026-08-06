@@ -157,33 +157,57 @@ function getQuarterPillLabel(id) {
 
 
 function AyahJumpControl({ surah, ayahCount, goAyah }) {
-  const [ayahNumber, setAyahNumber] = useState(1);
+  const [ayahInput, setAyahInput] = useState('1');
   const [showLimitHint, setShowLimitHint] = useState(false);
 
   useEffect(() => {
-    setAyahNumber(1);
+    setAyahInput('1');
     setShowLimitHint(false);
   }, [surah.number]);
 
+  const parsedAyah = Number.parseInt(ayahInput, 10);
+  const ayahNumber = Number.isFinite(parsedAyah) ? Math.min(ayahCount, Math.max(1, parsedAyah)) : 1;
   const pageNumber = findPageForReference(surah.number, ayahNumber);
   const juzNumber = getJuzForReference(surah.number, ayahNumber);
   const progress = ayahCount > 1 ? ((ayahNumber - 1) / (ayahCount - 1)) * 100 : 0;
 
   function updateAyah(value, { typed = false } = {}) {
-    const parsed = Number.parseInt(String(value).replace(/\D/g, ''), 10);
-    if (!Number.isFinite(parsed)) {
-      setAyahNumber(1);
+    const digits = String(value).replace(/\D/g, '');
+
+    if (typed && digits === '') {
+      setAyahInput('');
       setShowLimitHint(false);
       return;
     }
 
+    const parsed = Number.parseInt(digits, 10);
+    if (!Number.isFinite(parsed)) return;
+
+    if (typed) {
+      setAyahInput(digits);
+      setShowLimitHint(parsed > ayahCount);
+      return;
+    }
+
     const capped = Math.min(ayahCount, Math.max(1, parsed));
-    setAyahNumber(capped);
-    setShowLimitHint(typed && parsed > ayahCount);
+    setAyahInput(String(capped));
+    setShowLimitHint(false);
+  }
+
+  function commitAyahInput() {
+    const parsed = Number.parseInt(ayahInput, 10);
+    const capped = Number.isFinite(parsed)
+      ? Math.min(ayahCount, Math.max(1, parsed))
+      : 1;
+    setAyahInput(String(capped));
+    setShowLimitHint(Number.isFinite(parsed) && parsed > ayahCount);
+    return capped;
   }
 
   function openAyah() {
-    goAyah(surah.number, ayahNumber, pageNumber);
+    const committedAyah = commitAyahInput();
+    const committedPage = findPageForReference(surah.number, committedAyah);
+    goAyah(surah.number, committedAyah, committedPage);
   }
 
   return (
@@ -203,12 +227,13 @@ function AyahJumpControl({ surah, ayahCount, goAyah }) {
             autoComplete="off"
             spellCheck="false"
             pattern="[0-9]*"
-            value={ayahNumber}
-            aria-label={`Ayah number, maximum ${ayahCount}`}
-            onFocus={(event) => {
-              const input = event.currentTarget;
-              window.requestAnimationFrame(() => input.setSelectionRange(input.value.length, input.value.length));
+            value={ayahInput}
+            placeholder={`1–${ayahCount}`}
+            aria-label={`Ayah number from 1 to ${ayahCount}`}
+            onFocus={() => {
+              if (ayahInput === '1') setAyahInput('');
             }}
+            onBlur={commitAyahInput}
             onContextMenu={(event) => event.preventDefault()}
             onChange={(event) => updateAyah(event.target.value, { typed: true })}
             onKeyDown={(event) => {
@@ -315,6 +340,7 @@ function SurahIndex() {
                     <NumberBadge>{surah.number}</NumberBadge>
                     <span className="index-surah-title-block">
                       <span className="index-card-title">{surah.name}</span>
+                      <small>{ayahCount} Ayahs · {surah.revelation}</small>
                     </span>
                     <ChevronDown
                       className="index-chevron"
@@ -340,10 +366,7 @@ function SurahIndex() {
                   {isOpen && (
                     <div className="index-collapse-panel index-surah-collapse" aria-label={`${surah.name} details`}>
                       <div className="index-surah-info-preview">
-                        <div className="index-surah-info-heading">
-                          <span className="index-surah-info-label">Surah Info</span>
-                          <small>{ayahCount} Ayahs · {surah.revelation}</small>
-                        </div>
+                        <span className="index-surah-info-label">Surah Info</span>
                         <p
                           className={`index-surah-info-copy is-${translationLanguage}`}
                           lang={translationLanguage}
