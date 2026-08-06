@@ -3466,3 +3466,141 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
     margin-top: 10px;
   }
 }
+
+/* Final Surah Index layout corrections: keep metadata compact, English copy native,
+   and prevent Jump to Ayah controls from escaping the viewport. */
+.index-replica-shell.app-page-shell .index-surah-info-preview {
+  min-width: 0;
+  padding: 17px 17px 14px !important;
+}
+
+.index-replica-shell.app-page-shell .index-surah-info-label {
+  display: block;
+  margin: 0 0 6px;
+  color: color-mix(in srgb, var(--theme-muted) 86%, var(--theme-text));
+  font-family: inherit !important;
+  font-size: .84rem !important;
+  font-weight: 760;
+  line-height: 1.2 !important;
+  letter-spacing: .14em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.index-replica-shell.app-page-shell .index-surah-info-meta {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 3px 5px;
+  margin: 0 0 11px !important;
+  color: var(--theme-muted) !important;
+  font-family: inherit !important;
+  font-size: .78rem !important;
+  font-weight: 650;
+  line-height: 1.35 !important;
+  letter-spacing: 0 !important;
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+.index-replica-shell.app-page-shell .index-surah-info-meta span {
+  margin: 0;
+  color: color-mix(in srgb, var(--gold) 65%, var(--theme-muted));
+  font: inherit !important;
+  line-height: inherit !important;
+}
+
+.index-replica-shell.app-page-shell .index-surah-info-copy.is-en {
+  margin: 0;
+  color: var(--theme-muted);
+  font-family: inherit !important;
+  font-size: clamp(.94rem, 3.8vw, 1.04rem) !important;
+  font-weight: 500;
+  line-height: 1.62 !important;
+  letter-spacing: 0 !important;
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+.index-replica-shell.app-page-shell .index-surah-info-copy.is-ur {
+  font-family: var(--translation-urdu-font) !important;
+  font-size: clamp(1rem, 4.2vw, 1.12rem) !important;
+  line-height: 1.78 !important;
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+.index-replica-shell.app-page-shell .index-surah-collapse,
+.index-replica-shell.app-page-shell .index-ayah-jump,
+.index-replica-shell.app-page-shell .index-ayah-jump-heading,
+.index-replica-shell.app-page-shell .index-ayah-jump-row,
+.index-replica-shell.app-page-shell .index-ayah-slider-wrap {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.index-replica-shell.app-page-shell .index-ayah-jump {
+  overflow: hidden;
+  padding: 15px;
+}
+
+.index-replica-shell.app-page-shell .index-ayah-jump-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.index-replica-shell.app-page-shell .index-ayah-jump-heading small {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.index-replica-shell.app-page-shell .index-ayah-jump-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(68px, 20vw, 82px);
+  align-items: stretch;
+  gap: 10px;
+}
+
+.index-replica-shell.app-page-shell .index-ayah-input-wrap {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.index-replica-shell.app-page-shell .index-ayah-input-wrap input {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.index-replica-shell.app-page-shell .index-ayah-go {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.index-replica-shell.app-page-shell .index-ayah-slider {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+@media (max-width: 390px) {
+  .index-replica-shell.app-page-shell .index-ayah-jump {
+    padding: 13px;
+  }
+
+  .index-replica-shell.app-page-shell .index-ayah-jump-row {
+    grid-template-columns: minmax(0, 1fr) 68px;
+    gap: 8px;
+  }
+}
