@@ -3604,3 +3604,85 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
     gap: 8px;
   }
 }
+
+/* Surah Index polish: preserve the expanded shell, tighten metadata spacing,
+   flatten Jump to Ayah, and keep the scrub track clearly visible. */
+.index-replica-shell.app-page-shell .index-card-wrap.is-open {
+  overflow: visible;
+}
+
+.index-replica-shell.app-page-shell .index-surah-collapse {
+  overflow: visible;
+  border-radius: 24px;
+  padding: 12px;
+  background: color-mix(in srgb, var(--theme-surface) 86%, transparent);
+  box-shadow: 0 14px 34px rgba(70, 52, 25, .055);
+}
+
+.index-replica-shell.app-page-shell .index-surah-info-preview {
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.index-replica-shell.app-page-shell .index-surah-info-label {
+  margin-bottom: 4px;
+}
+
+.index-replica-shell.app-page-shell .index-surah-info-meta {
+  margin: 0 0 8px !important;
+  gap: 2px 5px;
+}
+
+.index-replica-shell.app-page-shell .index-surah-info-copy {
+  margin-top: 0 !important;
+}
+
+.index-replica-shell.app-page-shell .index-ayah-jump {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 14px 4px 4px;
+  box-shadow: none;
+  backdrop-filter: none;
+  overflow: visible;
+}
+
+.index-replica-shell.app-page-shell .index-ayah-slider {
+  height: 30px;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+}
+
+.index-replica-shell.app-page-shell .index-ayah-slider::-webkit-slider-runnable-track {
+  height: 6px;
+  border: 1px solid color-mix(in srgb, var(--theme-muted) 20%, var(--theme-border));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--theme-muted) 28%, var(--theme-soft));
+  box-shadow: inset 0 1px 2px rgba(45, 42, 36, .12);
+}
+
+.index-replica-shell.app-page-shell .index-ayah-slider::-moz-range-track {
+  height: 6px;
+  border: 1px solid color-mix(in srgb, var(--theme-muted) 20%, var(--theme-border));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--theme-muted) 28%, var(--theme-soft));
+  box-shadow: inset 0 1px 2px rgba(45, 42, 36, .12);
+}
+
+.index-replica-shell.app-page-shell .index-ayah-slider::-moz-range-progress {
+  height: 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--gold) 84%, #a8792d);
+}
+
+@media (max-width: 390px) {
+  .index-replica-shell.app-page-shell .index-surah-collapse {
+    padding: 10px;
+    border-radius: 22px;
+  }
+
+  .index-replica-shell.app-page-shell .index-ayah-jump {
+    padding: 12px 2px 2px;
+  }
+}
