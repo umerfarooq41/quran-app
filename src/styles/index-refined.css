@@ -247,6 +247,7 @@
   align-items: center;
   gap: 3px 7px !important;
   margin: 0 0 10px !important;
+  min-height: 0 !important;
   color: var(--theme-muted) !important;
   direction: ltr !important;
   font: 610 .86rem/1.4 var(--ui-font) !important;
