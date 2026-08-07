@@ -413,10 +413,12 @@ function SurahIndex() {
                   {isOpen && (
                     <div id={`index-surah-panel-${surah.number}`} className="index-collapse-panel index-surah-collapse" aria-label={`${surah.name} details`}>
                       <div className="index-surah-info-preview">
-                        <span className="index-surah-info-label">Surah Info</span>
-                        <p className="index-surah-info-meta">
-                          {nameMeta.meaning} <span aria-hidden="true">•</span> {ayahCount} Ayahs <span aria-hidden="true">•</span> {surah.revelation}
-                        </p>
+                        <div className="index-surah-info-heading">
+                          <span className="index-surah-info-label">Surah Info</span>
+                          <p className="index-surah-info-meta">
+                            {nameMeta.meaning} <span aria-hidden="true">•</span> {ayahCount} Ayahs <span aria-hidden="true">•</span> {surah.revelation}
+                          </p>
+                        </div>
                         <p
                           className={`index-surah-info-copy is-${translationLanguage}`}
                           lang={translationLanguage}
