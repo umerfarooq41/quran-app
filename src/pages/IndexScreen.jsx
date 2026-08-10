@@ -160,12 +160,10 @@ function getQuarterPillLabel(id) {
 function AyahJumpControl({ surah, ayahCount, goAyah }) {
   const [ayahInput, setAyahInput] = useState('1');
   const [committedAyah, setCommittedAyah] = useState(1);
-  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     setAyahInput('1');
     setCommittedAyah(1);
-    setIsDragging(false);
   }, [surah.number]);
 
   const parsedAyah = Number.parseInt(ayahInput, 10);
@@ -173,7 +171,6 @@ function AyahJumpControl({ surah, ayahCount, goAyah }) {
   const displayAyah = inputIsValid ? parsedAyah : committedAyah;
   const pageNumber = findPageForReference(surah.number, displayAyah);
   const juzNumber = getJuzForReference(surah.number, displayAyah);
-  const progress = ayahCount > 1 ? ((displayAyah - 1) / (ayahCount - 1)) * 100 : 0;
   const maxDigits = String(ayahCount).length;
 
   function updateTypedAyah(value) {
@@ -200,12 +197,6 @@ function AyahJumpControl({ surah, ayahCount, goAyah }) {
     if (!inputIsValid) return;
     const ayah = commitAyahInput();
     goAyah(surah.number, ayah, findPageForReference(surah.number, ayah));
-  }
-
-  function updateFromSlider(value) {
-    const nextAyah = Math.min(ayahCount, Math.max(1, Number(value)));
-    setCommittedAyah(nextAyah);
-    setAyahInput(String(nextAyah));
   }
 
   return (
@@ -246,34 +237,6 @@ function AyahJumpControl({ surah, ayahCount, goAyah }) {
         <button type="button" className="index-ayah-go" onClick={openAyah} disabled={!inputIsValid}>
           Go
         </button>
-      </div>
-
-      <div className={`index-ayah-slider-wrap ${isDragging ? 'is-dragging' : ''}`}>
-        <div className="index-ayah-slider-value" aria-live="polite">Ayah {displayAyah}</div>
-        <div className="index-ayah-slider-visual" style={{ '--ayah-progress': `${progress}%` }}>
-          <div className="index-ayah-slider-track" aria-hidden="true">
-            <span className="index-ayah-slider-progress" />
-          </div>
-          <input
-            className="index-ayah-slider"
-            type="range"
-            min="1"
-            max={ayahCount}
-            step="1"
-            value={displayAyah}
-            aria-label={`Select ayah from 1 to ${ayahCount}`}
-            onPointerDown={() => setIsDragging(true)}
-            onPointerUp={() => setIsDragging(false)}
-            onPointerCancel={() => setIsDragging(false)}
-            onBlur={() => setIsDragging(false)}
-            onChange={(event) => updateFromSlider(event.target.value)}
-          />
-        </div>
-        <div className="index-ayah-slider-labels" aria-hidden="true">
-          <span>1</span>
-          <span>{getJuzLabel(juzNumber)}</span>
-          <span>{ayahCount}</span>
-        </div>
       </div>
 
       {ayahInput && !inputIsValid && (
