@@ -121,6 +121,10 @@
   border-color: color-mix(in srgb, var(--brand-gold, #b68a35) 25%, var(--theme-border)) !important;
   box-shadow: 0 9px 22px rgba(71,54,23,.065) !important;
 }
+.index-replica-shell .index-card,
+.index-replica-shell .index-card:active {
+  transform: none !important;
+}
 .index-replica-shell .index-card-main {
   display: grid !important;
   grid-template-columns: auto minmax(0, 1fr) minmax(72px, 34%);
@@ -209,7 +213,8 @@
   border-radius: 20px !important;
   background: color-mix(in srgb, var(--theme-surface) 92%, transparent) !important;
   box-shadow: 0 9px 22px rgba(72,55,22,.05) !important;
-  animation: indexPanelIn .2s ease both;
+  animation: indexPanelIn .18s ease;
+  will-change: auto;
 }
 
 /* Keep the expanded Surah panel on the same themed card surface as other collapse cards. */
@@ -231,8 +236,8 @@
 }
 
 @keyframes indexPanelIn {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 .index-replica-shell .index-quarter-grid {
   display: grid !important;
