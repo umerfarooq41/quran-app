@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ChevronDown, Play, Search, Star, X } from 'lucide-react';
+import { ChevronDown, Minus, Play, Plus, Search, Star, X } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../store/useAppStore';
 import { Header } from '../components/common/AppChrome';
 import {
   findPageForReference,
+  getSurahAyahs,
   getSurahInfo,
   surahs,
 } from '../lib/quran';
@@ -172,6 +173,9 @@ function AyahJumpControl({ surah, ayahCount, goAyah }) {
   const pageNumber = findPageForReference(surah.number, displayAyah);
   const juzNumber = getJuzForReference(surah.number, displayAyah);
   const maxDigits = String(ayahCount).length;
+  const ayahPreview = useMemo(() => (
+    getSurahAyahs(surah.number).find((ayah) => ayah.ayahNumber === displayAyah)?.text || ''
+  ), [surah.number, displayAyah]);
 
   function updateTypedAyah(value) {
     const digits = String(value).replace(/\D/g, '').slice(0, maxDigits);
@@ -181,6 +185,16 @@ function AyahJumpControl({ surah, ayahCount, goAyah }) {
     }
     const normalized = String(Number.parseInt(digits, 10));
     setAyahInput(normalized === 'NaN' ? '' : normalized);
+  }
+
+  function setAyah(ayah) {
+    const nextAyah = Math.min(ayahCount, Math.max(1, Number(ayah) || 1));
+    setCommittedAyah(nextAyah);
+    setAyahInput(String(nextAyah));
+  }
+
+  function nudgeAyah(amount) {
+    setAyah(displayAyah + amount);
   }
 
   function commitAyahInput() {
@@ -207,37 +221,63 @@ function AyahJumpControl({ surah, ayahCount, goAyah }) {
       </div>
 
       <div className="index-ayah-jump-row">
-        <label className={`index-ayah-input-wrap ${ayahInput && !inputIsValid ? 'is-invalid' : ''}`}>
-          <span>Ayah</span>
-          <input
-            type="text"
-            inputMode="numeric"
-            enterKeyHint="go"
-            autoComplete="off"
-            spellCheck="false"
-            pattern="[0-9]*"
-            maxLength={maxDigits}
-            value={ayahInput}
-            placeholder={`1–${ayahCount}`}
-            aria-invalid={Boolean(ayahInput && !inputIsValid)}
-            aria-label={`Ayah number from 1 to ${ayahCount}`}
-            onFocus={() => {
-              if (ayahInput === String(committedAyah)) setAyahInput('');
-            }}
-            onBlur={commitAyahInput}
-            onContextMenu={(event) => event.preventDefault()}
-            onChange={(event) => updateTypedAyah(event.target.value)}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter' && inputIsValid) openAyah();
-            }}
-          />
-          <strong>of {ayahCount}</strong>
-        </label>
+        <div className={`index-ayah-stepper ${ayahInput && !inputIsValid ? 'is-invalid' : ''}`}>
+          <button
+            type="button"
+            className="index-ayah-stepper-button"
+            onClick={() => nudgeAyah(-1)}
+            disabled={displayAyah <= 1}
+            aria-label="Previous Ayah"
+          >
+            <Minus size={20} strokeWidth={2.2} />
+          </button>
+
+          <label className="index-ayah-input-wrap">
+            <span>Ayah</span>
+            <input
+              type="text"
+              inputMode="numeric"
+              enterKeyHint="go"
+              autoComplete="off"
+              spellCheck="false"
+              pattern="[0-9]*"
+              maxLength={maxDigits}
+              value={ayahInput}
+              placeholder="1"
+              aria-invalid={Boolean(ayahInput && !inputIsValid)}
+              aria-label={`Ayah number from 1 to ${ayahCount}`}
+              onFocus={() => {
+                if (ayahInput === String(committedAyah)) setAyahInput('');
+              }}
+              onBlur={commitAyahInput}
+              onContextMenu={(event) => event.preventDefault()}
+              onChange={(event) => updateTypedAyah(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' && inputIsValid) openAyah();
+              }}
+            />
+            <strong>/ {ayahCount}</strong>
+          </label>
+
+          <button
+            type="button"
+            className="index-ayah-stepper-button"
+            onClick={() => nudgeAyah(1)}
+            disabled={displayAyah >= ayahCount}
+            aria-label="Next Ayah"
+          >
+            <Plus size={20} strokeWidth={2.2} />
+          </button>
+        </div>
 
         <button type="button" className="index-ayah-go" onClick={openAyah} disabled={!inputIsValid}>
           Go
         </button>
       </div>
+
+      {ayahPreview && (
+        <p dir="rtl" className="index-ayah-preview" title={ayahPreview}>{ayahPreview}</p>
+      )}
 
       {ayahInput && !inputIsValid && (
         <p className="index-ayah-limit-hint">Enter an Ayah from 1 to {ayahCount}.</p>
