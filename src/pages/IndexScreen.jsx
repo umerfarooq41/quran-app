@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ChevronDown, Minus, Play, Plus, Search, Star, X } from 'lucide-react';
+import { ChevronDown, Minus, Plus, Search, Star, X } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../store/useAppStore';
 import { Header } from '../components/common/AppChrome';
@@ -390,10 +390,9 @@ function SurahIndex() {
                   <div className="index-card index-surah-card">
                     <button
                       className="index-card-main index-surah-main"
-                      onClick={() => setExpandedSurah(isOpen ? null : surah.number)}
+                      onClick={() => goAyah(surah.number, 1, findPageForReference(surah.number, 1))}
                       type="button"
-                      aria-expanded={isOpen}
-                      aria-controls={`index-surah-panel-${surah.number}`}
+                      aria-label={`Read ${surah.name} from the beginning`}
                     >
                       <NumberBadge>{surah.number}</NumberBadge>
                       <span className="index-surah-title-block">
@@ -427,15 +426,15 @@ function SurahIndex() {
                           lang={translationLanguage}
                           dir={translationLanguage === 'ur' ? 'rtl' : 'ltr'}
                         >
-                          {previewText(localizedInfo)}
+                          <span>{previewText(localizedInfo)} </span>
+                          <button
+                            type="button"
+                            className="inline-read-more index-surah-read-more"
+                            onClick={() => openSurahInfo(surah.number)}
+                          >
+                            Read more
+                          </button>
                         </p>
-                        <button
-                          type="button"
-                          className="inline-read-more index-surah-read-more"
-                          onClick={() => openSurahInfo(surah.number)}
-                        >
-                          Read Full Introduction →
-                        </button>
 
                         <div className="index-surah-quick-actions" aria-label={`${surah.name} quick actions`}>
                           <button
@@ -446,14 +445,6 @@ function SurahIndex() {
                           >
                             <Star size={17} fill={favoriteSurahs.includes(surah.number) ? 'currentColor' : 'none'} />
                             <span>{favoriteSurahs.includes(surah.number) ? 'Remove from Favorites' : 'Add to Favorites'}</span>
-                          </button>
-                          <button
-                            type="button"
-                            className="index-surah-text-action"
-                            onClick={() => goAyah(surah.number, 1, findPageForReference(surah.number, 1))}
-                          >
-                            <Play size={17} fill="currentColor" />
-                            <span>Read from Start</span>
                           </button>
                         </div>
                       </div>
