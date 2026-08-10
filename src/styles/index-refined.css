@@ -279,12 +279,9 @@
   font: inherit !important;
 }
 .index-replica-shell .index-surah-info-copy {
-  display: -webkit-box !important;
+  display: block !important;
   margin: 0 !important;
-  overflow: hidden;
   color: var(--theme-muted) !important;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 5;
 }
 .index-replica-shell .index-surah-info-copy.is-en {
   direction: ltr !important;
@@ -303,19 +300,20 @@
   text-align: right !important;
 }
 .index-replica-shell .index-surah-info-preview .index-surah-read-more {
-  display: inline-flex !important;
-  margin: 9px 0 0 !important;
+  display: inline !important;
+  margin: 0 !important;
   padding: 0 !important;
   border: 0 !important;
-  border-bottom: 1px solid currentColor !important;
   background: transparent !important;
   color: var(--brand-gold, #b68a35) !important;
   font: 700 .89rem/1.4 var(--ui-font) !important;
-  text-decoration: none !important;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  white-space: nowrap;
 }
 .index-replica-shell .index-surah-quick-actions {
   display: grid !important;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 10px !important;
   margin: 14px 0 0 !important;
   padding: 13px 0 0 !important;
