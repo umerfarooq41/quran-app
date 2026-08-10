@@ -216,6 +216,20 @@
 .index-replica-shell .index-surah-collapse {
   background: color-mix(in srgb, var(--theme-surface) 94%, transparent) !important;
 }
+
+/* Treat the expanded Surah content as one continuous card surface. */
+.index-replica-shell.app-page-shell .index-surah-collapse,
+.index-replica-shell.app-page-shell .index-surah-info-preview,
+.index-replica-shell.app-page-shell .index-ayah-jump {
+  background: color-mix(in srgb, var(--theme-surface) 94%, transparent) !important;
+  backdrop-filter: none !important;
+}
+.index-replica-shell.app-page-shell .index-surah-info-preview,
+.index-replica-shell.app-page-shell .index-ayah-jump {
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
 @keyframes indexPanelIn {
   from { opacity: 0; transform: translateY(-4px); }
   to { opacity: 1; transform: translateY(0); }
