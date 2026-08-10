@@ -246,8 +246,8 @@ function AyahJumpControl({ surah, ayahCount, goAyah }) {
               placeholder="1"
               aria-invalid={Boolean(ayahInput && !inputIsValid)}
               aria-label={`Ayah number from 1 to ${ayahCount}`}
-              onFocus={() => {
-                if (ayahInput === String(committedAyah)) setAyahInput('');
+              onFocus={(event) => {
+                event.currentTarget.select();
               }}
               onBlur={commitAyahInput}
               onContextMenu={(event) => event.preventDefault()}
