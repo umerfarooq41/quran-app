@@ -212,9 +212,9 @@
   animation: indexPanelIn .2s ease both;
 }
 
-/* Surah details sit directly on the app background; avoid a light backing strip above Jump to Ayah. */
+/* Keep the expanded Surah panel on the same themed card surface as other collapse cards. */
 .index-replica-shell .index-surah-collapse {
-  background: transparent !important;
+  background: color-mix(in srgb, var(--theme-surface) 94%, transparent) !important;
 }
 @keyframes indexPanelIn {
   from { opacity: 0; transform: translateY(-4px); }
@@ -305,7 +305,7 @@
   gap: 10px !important;
   margin: 14px 0 0 !important;
   padding: 13px 0 0 !important;
-  border-top: 1px solid color-mix(in srgb, var(--theme-border) 62%, transparent) !important;
+  border-top: 0 !important;
 }
 .index-replica-shell .index-surah-info-preview .index-surah-text-action {
   display: flex !important;
@@ -341,7 +341,7 @@
   padding: 15px 18px 17px !important;
   overflow: visible !important;
   border: 0 !important;
-  border-top: 1px solid color-mix(in srgb, var(--theme-border) 62%, transparent) !important;
+  border-top: 0 !important;
   border-radius: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
