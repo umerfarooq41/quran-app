@@ -211,6 +211,11 @@
   box-shadow: 0 9px 22px rgba(72,55,22,.05) !important;
   animation: indexPanelIn .2s ease both;
 }
+
+/* Surah details sit directly on the app background; avoid a light backing strip above Jump to Ayah. */
+.index-replica-shell .index-surah-collapse {
+  background: transparent !important;
+}
 @keyframes indexPanelIn {
   from { opacity: 0; transform: translateY(-4px); }
   to { opacity: 1; transform: translateY(0); }
