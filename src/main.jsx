@@ -18,6 +18,10 @@ import './styles/ui-polish.css';
 import './styles/theme.css';
 import './styles/index-refined.css';
 
+// Keep native browser/Android long-press menus from competing with app gestures.
+document.addEventListener('contextmenu', (event) => {
+  event.preventDefault();
+});
 
 const updateSW = registerSW({
   immediate: true,
