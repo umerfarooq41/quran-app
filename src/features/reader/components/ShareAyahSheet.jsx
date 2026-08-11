@@ -45,7 +45,7 @@ export function ShareAyahSheet({ ayah, onClose }) {
       : range.length >= 3
         ? '1rem'
         : '1.25rem';
-  const arabicSurahName = `سُورَةُ ${surahArabicNames[ayah.surahNumber] || surah?.name || ''}`;
+  const arabicSurahName = surahArabicNames[ayah.surahNumber] || surah?.name || '';
 
   useEffect(() => {
     let cancelled = false;
@@ -55,6 +55,7 @@ export function ShareAyahSheet({ ayah, onClose }) {
     setImageBlob(null);
     generateQuranShareImage({
       surahName: arabicSurahName,
+      surahNumber: ayah.surahNumber,
       ayahs: range,
       background,
     })
@@ -71,7 +72,7 @@ export function ShareAyahSheet({ ayah, onClose }) {
     return () => {
       cancelled = true;
     };
-  }, [arabicSurahName, range, background]);
+  }, [arabicSurahName, ayah.surahNumber, range, background]);
 
   function changeFrom(nextValue) {
     const nextFrom = Number(nextValue);
@@ -194,17 +195,32 @@ export function ShareAyahSheet({ ayah, onClose }) {
           }}
         >
           <div className="quran-share-frame">
-            <h3 dir="rtl">{arabicSurahName}</h3>
-            <div className="quran-share-divider"><span /></div>
-            <div className="quran-share-ayahs" dir="rtl">
-              {range.map((item) => (
-                <p key={item.ayahNumber}>
-                  {cleanAyahText(item.text)}
-                  <span> ۝ {toArabicNumber(item.ayahNumber)}</span>
-                </p>
-              ))}
+            <div className="quran-share-surah-header">
+              <img src="/border/Border Quran-01.svg" alt="" aria-hidden="true" />
+              <h3 dir="rtl">{arabicSurahName}</h3>
             </div>
-            <footer>Quran App</footer>
+
+            {ayah.surahNumber !== 9 && (
+              <p className="quran-share-bismillah" dir="rtl">
+                بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+              </p>
+            )}
+
+            <div className="quran-share-ayahs" dir="rtl">
+              <p>
+                {range.map((item) => (
+                  <React.Fragment key={item.ayahNumber}>
+                    {cleanAyahText(item.text)}
+                    <span> ۝ {toArabicNumber(item.ayahNumber)} </span>
+                  </React.Fragment>
+                ))}
+              </p>
+            </div>
+
+            <footer>
+              <img src="/icons/icon-192.png" alt="" aria-hidden="true" />
+              <span>Al Quran</span>
+            </footer>
           </div>
         </div>
 
