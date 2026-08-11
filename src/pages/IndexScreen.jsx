@@ -94,6 +94,7 @@ function NumberBadge({ children }) {
 }
 
 function JuzIndex() {
+  const [pressedQuarter, setPressedQuarter] = useState(null);
   const { expandedJuz, setExpandedJuz, goQuarterTarget } = useAppStore(useShallow((state) => ({
     expandedJuz: state.expandedIndexJuz,
     setExpandedJuz: state.setExpandedIndexJuz,
@@ -103,6 +104,16 @@ function JuzIndex() {
   function openJuzStart(juz) {
     const startTarget = getIndoPakParaQuarterTargets(juz).find((target) => target.id === 'start');
     goQuarterTarget(startTarget);
+  }
+
+  function selectQuarter(juz, target) {
+    const pressedKey = `${juz}-${target.id}`;
+    setPressedQuarter(pressedKey);
+
+    window.setTimeout(() => {
+      goQuarterTarget(target);
+      setPressedQuarter(null);
+    }, 120);
   }
 
   return (
@@ -131,16 +142,20 @@ function JuzIndex() {
 
             {isOpen && (
               <div className="index-collapse-panel index-quarter-grid">
-                {targets.map((target) => (
-                  <button
-                    key={target.label}
-                    className="index-quarter-btn"
-                    onClick={() => goQuarterTarget(target)}
-                    type="button"
-                  >
-                    <strong>{getQuarterPillLabel(target.id)}</strong>
-                  </button>
-                ))}
+                <div className="index-quarter-heading">Select a quarter</div>
+                {targets.map((target) => {
+                  const pressedKey = `${juz}-${target.id}`;
+                  return (
+                    <button
+                      key={target.label}
+                      className={`index-quarter-btn ${pressedQuarter === pressedKey ? 'is-pressed' : ''}`}
+                      onClick={() => selectQuarter(juz, target)}
+                      type="button"
+                    >
+                      <strong>{getQuarterPillLabel(target.id)}</strong>
+                    </button>
+                  );
+                })}
               </div>
             )}
           </article>
