@@ -2684,27 +2684,17 @@ body {
   border-radius: 5px;
 }
 
-/* Share controls aligned with the Quran app's warm/gold/green visual language. */
-.share-range-card {
-  border: 1px solid rgba(201, 162, 75, .20);
-  background: rgba(253, 248, 237, .78);
-  box-shadow: none;
-}
-
-.share-range-selectors select {
-  border-color: rgba(201, 162, 75, .28);
-  background: rgba(255,255,255,.56);
-}
-
+/* Share color picker: compact app-green selected state without the broken double ring. */
 .share-background-picker > div {
-  gap: 10px;
+  gap: 12px;
+  padding: 4px;
 }
 
 .share-background-picker button {
-  width: 34px;
-  height: 34px;
-  border: 1px solid rgba(38, 34, 30, .12);
-  box-shadow: none;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  box-shadow: inset 0 0 0 1px rgba(31, 27, 23, .10);
   transition: transform 120ms ease, box-shadow 120ms ease;
 }
 
@@ -2713,5 +2703,24 @@ body {
 }
 
 .share-background-picker button.is-active {
-  box-shadow: 0 0 0 2px #fdf8ed, 0 0 0 4px rgba(31, 111, 95, .82);
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.78), 0 0 0 3px #2d6e5e;
+}
+
+.quran-share-reference {
+  margin: 10px 0 0;
+  color: rgba(48, 39, 30, .56);
+  font-size: .72rem;
+  font-weight: 650;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.quran-share-frame footer {
+  margin-top: 7px;
+}
+
+.quran-share-frame footer img {
+  background: transparent !important;
+  border-radius: 0 !important;
+  mix-blend-mode: multiply;
 }
