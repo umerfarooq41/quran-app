@@ -335,7 +335,7 @@
   color: var(--theme-text);
 }
 
-[data-theme='dark'] .surah-info-meta,
+[data-theme='dark'] [data-theme='dark'] .surah-info-meta,
 [data-theme='dark'] .surah-info-empty {
   color: var(--theme-muted);
 }
@@ -748,7 +748,7 @@ body,
 [data-theme='dark'] .tafsir-card-head h2,
 [data-theme='dark'] .tafsir-section h3,
 [data-theme='dark'] .tafsir-arabic,
-[data-theme='dark'] .search-result-preview,
+[data-theme='dark'] [data-theme='dark'] .search-result-preview,
 [data-theme='dark'] .search-result-reference small,
 [data-theme='dark'] .search-result-meta,
 [data-theme='dark'] .search-empty,
@@ -1637,7 +1637,7 @@ html[data-theme='dark'] {
 
 [data-theme='dark'] .shared-back-button,
 [data-theme='dark'] .tabs-back-pill.shared-back-button,
-[data-theme='dark'] .reader-topbar {
+[data-theme='dark'] [data-theme='dark'] .reader-topbar {
   background: transparent !important;
 }
 
@@ -3738,205 +3738,57 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
   box-shadow: none !important;
 }
 
-/* ========================================================================== */
-/* Dark mode audit — final page/card authority (2026-08-11)                  */
-/* ========================================================================== */
 
-/* Home: favorites and section copy were still pinned to light surfaces. */
-[data-theme='dark'] .home-section-heading h2,
-[data-theme='dark'] .home-favorite-title,
-[data-theme='dark'] .home-favorite-copy strong,
-[data-theme='dark'] .home-favorite-number {
+/* Settings redesign: final dark-mode authority. Keep section cards continuous; rows stay transparent. */
+[data-theme='dark'] .settings-section-heading strong {
   color: var(--theme-text) !important;
 }
-[data-theme='dark'] .home-favorite-meta,
-[data-theme='dark'] .home-favorite-copy small {
-  color: var(--theme-muted) !important;
-}
-[data-theme='dark'] .home-favorite-row,
-[data-theme='dark'] .home-favorite-row:active {
-  border-color: var(--theme-border) !important;
-  background: var(--theme-surface-solid) !important;
-  color: var(--theme-text) !important;
-  box-shadow: 0 9px 28px var(--theme-shadow) !important;
-}
-[data-theme='dark'] .home-favorite-number {
-  border-color: color-mix(in srgb, var(--brand-gold) 48%, var(--theme-border)) !important;
-  background: transparent !important;
-}
 
-/* Search: action and counters should retain dark-theme contrast. */
-[data-theme='dark'] .search-form button:not(:disabled) {
-  background: var(--theme-accent) !important;
-  color: #fff !important;
-}
-[data-theme='dark'] .search-results-heading span {
-  border-color: var(--theme-border) !important;
-  background: var(--theme-soft) !important;
+[data-theme='dark'] .settings-section-heading small,
+[data-theme='dark'] .settings-row-copy small {
   color: var(--theme-muted) !important;
 }
 
-/* Library / Bookmarks: menus, editors, tabs and saved cards. */
-[data-theme='dark'] .tabs-screen .library-tabs {
-  border: 1px solid var(--theme-border) !important;
-  background: var(--theme-soft) !important;
-}
-[data-theme='dark'] .tabs-screen .library-tabs button:not(.is-active) {
-  background: transparent !important;
-  color: var(--theme-muted) !important;
-}
-[data-theme='dark'] .tabs-screen .tab-card-surface,
-[data-theme='dark'] .tabs-screen .tab-menu,
-[data-theme='dark'] .tabs-screen .tab-inline-editor {
+[data-theme='dark'] .settings-card {
   border-color: var(--theme-border) !important;
   background: var(--theme-surface-solid) !important;
   color: var(--theme-text) !important;
 }
-[data-theme='dark'] .tabs-screen .tab-menu button,
-[data-theme='dark'] .tabs-screen .tab-inline-editor textarea,
-[data-theme='dark'] .tabs-screen .tab-inline-editor .secondary,
-[data-theme='dark'] .tabs-screen .tab-editor-cancel {
-  border-color: var(--theme-border) !important;
-  background: var(--theme-soft) !important;
-  color: var(--theme-text) !important;
+
+[data-theme='dark'] .settings-toggle-row,
+[data-theme='dark'] .settings-picker-row {
+  background: transparent !important;
 }
 
-/* Settings: custom pickers previously kept a white floating panel. */
-[data-theme='dark'] .settings-picker-row,
+[data-theme='dark'] .settings-card > .settings-toggle-row + .settings-toggle-row,
+[data-theme='dark'] .settings-card > .settings-toggle-row + .settings-picker-row,
+[data-theme='dark'] .settings-card > .settings-picker-row + .settings-toggle-row,
+[data-theme='dark'] .settings-card > .settings-picker-row + .settings-picker-row {
+  border-top-color: var(--theme-border) !important;
+}
+
+[data-theme='dark'] .settings-row-icon {
+  background: rgba(52, 112, 94, .22) !important;
+  color: #8bc7b4 !important;
+}
+
 [data-theme='dark'] .settings-picker-pill,
+[data-theme='dark'] .settings-theme-picker {
+  background: var(--theme-soft) !important;
+  color: var(--theme-text) !important;
+}
+
 [data-theme='dark'] .settings-picker-panel {
   border-color: var(--theme-border) !important;
   background: var(--theme-surface-solid) !important;
   color: var(--theme-text) !important;
 }
-[data-theme='dark'] .settings-picker-row {
-  background: var(--theme-soft) !important;
-}
+
 [data-theme='dark'] .settings-picker-item {
   color: var(--theme-text) !important;
 }
-[data-theme='dark'] .settings-picker-item:not(.selected):active {
-  background: var(--theme-soft) !important;
-}
+
 [data-theme='dark'] .settings-picker-item.selected {
-  background: color-mix(in srgb, var(--theme-accent) 24%, var(--theme-surface-solid)) !important;
-  color: #bde8da !important;
-}
-[data-theme='dark'] .settings-picker-avatar {
-  background: color-mix(in srgb, var(--theme-accent) 20%, var(--theme-soft)) !important;
-}
-[data-theme='dark'] .settings-picker-chevron,
-[data-theme='dark'] .settings-picker-item small {
-  color: var(--theme-muted) !important;
-}
-
-/* Tafsir and Surah Info: all nested article headings/copy inherit dark colors. */
-[data-theme='dark'] .tafsir-card,
-[data-theme='dark'] .surah-info-content,
-[data-theme='dark'] .surah-info-html {
-  border-color: var(--theme-border) !important;
-  background: var(--theme-surface-solid) !important;
-  color: var(--theme-text) !important;
-}
-[data-theme='dark'] .surah-info-kicker,
-[data-theme='dark'] .surah-info-meta,
-[data-theme='dark'] .surah-info-empty {
-  color: var(--theme-muted) !important;
-}
-[data-theme='dark'] .surah-info-title-row h2,
-[data-theme='dark'] .surah-info-html h2,
-[data-theme='dark'] .surah-info-html h3,
-[data-theme='dark'] .surah-info-html p,
-[data-theme='dark'] .surah-info-html li,
-[data-theme='dark'] .surah-info-html strong,
-[data-theme='dark'] .surah-info-html b {
-  color: var(--theme-text) !important;
-}
-[data-theme='dark'] .surah-info-html a {
-  color: #8bc7b4 !important;
-}
-
-/* Generic page panels (notably SurahScreen) using Tailwind light glass classes. */
-[data-theme='dark'] .surah-screen [class~='bg-white/65'],
-[data-theme='dark'] .surah-screen [class~='bg-white/70'],
-[data-theme='dark'] .surah-screen [class~='bg-white/75'],
-[data-theme='dark'] .surah-screen [class~='bg-white/80'] {
-  border-color: var(--theme-border) !important;
-  background: var(--theme-surface-solid) !important;
-  color: var(--theme-text) !important;
-}
-
-/* Reader overlays: use reader tokens consistently. Mushaf paper remains separate. */
-[data-theme='dark'] .ayah-action-sheet,
-[data-theme='dark'] .ayah-action-sheet-v2,
-[data-theme='dark'] .reader-audio-panel,
-[data-theme='dark'] .reader-bottom-sheet,
-[data-theme='dark'] .share-sheet {
-  border-color: var(--reader-border) !important;
-  background: var(--reader-surface-raised) !important;
-  color: var(--reader-text) !important;
-}
-
-/* Share page: newer custom range controls were not covered by the old select rules. */
-[data-theme='dark'] .share-range-card,
-[data-theme='dark'] .share-range-trigger,
-[data-theme='dark'] .share-range-menu {
-  border-color: var(--reader-border) !important;
-  background: var(--reader-surface) !important;
-  color: var(--reader-text) !important;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, .24) !important;
-}
-[data-theme='dark'] .share-range-trigger {
-  background: var(--reader-control-bg) !important;
-}
-[data-theme='dark'] .share-range-trigger[aria-expanded='true'] {
-  border-color: color-mix(in srgb, var(--brand-gold) 55%, var(--reader-border)) !important;
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-gold) 12%, transparent) !important;
-}
-[data-theme='dark'] .share-range-menu button {
-  color: var(--reader-text) !important;
-}
-[data-theme='dark'] .share-range-menu button:not(.is-selected):active {
-  background: var(--reader-control-bg) !important;
-}
-[data-theme='dark'] .share-range-menu button.is-selected {
-  background: var(--theme-accent) !important;
-  color: #fff !important;
-}
-[data-theme='dark'] .share-range-field > span,
-[data-theme='dark'] .share-range-card > p,
-[data-theme='dark'] .share-sheet-status {
-  color: var(--reader-muted) !important;
-}
-[data-theme='dark'] .share-sheet-header h2,
-[data-theme='dark'] .share-range-card h3 {
-  color: var(--reader-text) !important;
-}
-[data-theme='dark'] .share-image-button {
-  background: var(--theme-accent) !important;
-  color: #fff !important;
-}
-
-/* Shared back buttons remain cardless in both themes. */
-[data-theme='dark'] .shared-back-button,
-[data-theme='dark'] .shared-back-button:hover,
-[data-theme='dark'] .shared-back-button:active {
-  border: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  color: var(--theme-text) !important;
-}
-
-
-/* Surah Info dark mode: keep the outer content wrapper transparent.
-   The rounded .surah-info-html reading surface is the only content card,
-   matching the light-mode hierarchy. */
-[data-theme='dark'] .surah-info-content {
-  background: transparent !important;
-  border-color: transparent !important;
-  box-shadow: none !important;
-}
-
-[data-theme='dark'] .surah-info-html {
-  color: var(--theme-text) !important;
+  background: rgba(73, 143, 125, .18) !important;
+  color: #aef1dc !important;
 }
