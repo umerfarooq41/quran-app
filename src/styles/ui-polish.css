@@ -1117,3 +1117,15 @@
   font-size: .62rem;
   font-weight: 800;
 }
+
+/* Share preview follows content height; no forced poster aspect ratio. */
+.quran-share-preview {
+  aspect-ratio: auto !important;
+  padding: var(--ui-space-4) !important;
+}
+
+.quran-share-frame {
+  height: auto !important;
+  min-height: 0 !important;
+  padding: var(--ui-space-5) !important;
+}

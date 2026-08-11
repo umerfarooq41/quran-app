@@ -2590,3 +2590,128 @@ body {
   cursor: pointer;
 }
 
+
+/* Share Quran image — app-aligned adaptive composition */
+.quran-share-preview {
+  aspect-ratio: auto;
+  width: min(100%, 430px);
+  padding: 14px;
+  border-radius: 24px;
+}
+
+.quran-share-frame {
+  height: auto;
+  min-height: 0;
+  padding: 18px 18px 14px;
+  border-radius: 20px;
+}
+
+.quran-share-surah-header {
+  position: relative;
+  width: 100%;
+  margin: 0 auto 4px;
+  aspect-ratio: 10 / 1;
+}
+
+.quran-share-surah-header img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+
+.quran-share-surah-header h3 {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 0 24%;
+  overflow: hidden;
+  color: #211c17;
+  font-family: IndopakNastaleeq, serif;
+  font-size: clamp(1.05rem, 4.4vw, 1.45rem);
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.quran-share-bismillah {
+  margin: 8px 0 10px;
+  color: #2a241e;
+  font-family: IndopakNastaleeq, serif;
+  font-size: clamp(1rem, 4.4vw, 1.35rem);
+  line-height: 1.7;
+  text-align: center;
+}
+
+.quran-share-ayahs {
+  display: block;
+  min-height: 0;
+  overflow: visible;
+}
+
+.quran-share-ayahs p {
+  margin: 0;
+  color: #17130f;
+  font-family: IndopakNastaleeq, serif;
+  font-size: var(--share-preview-font, 1.2rem);
+  line-height: 2;
+  text-align: center;
+}
+
+.quran-share-ayahs span {
+  color: inherit;
+  white-space: nowrap;
+}
+
+.quran-share-frame footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 14px;
+  color: rgba(48, 39, 30, .62);
+  font-size: .72rem;
+  font-weight: 650;
+  text-align: center;
+}
+
+.quran-share-frame footer img {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+}
+
+/* Share controls aligned with the Quran app's warm/gold/green visual language. */
+.share-range-card {
+  border: 1px solid rgba(201, 162, 75, .20);
+  background: rgba(253, 248, 237, .78);
+  box-shadow: none;
+}
+
+.share-range-selectors select {
+  border-color: rgba(201, 162, 75, .28);
+  background: rgba(255,255,255,.56);
+}
+
+.share-background-picker > div {
+  gap: 10px;
+}
+
+.share-background-picker button {
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(38, 34, 30, .12);
+  box-shadow: none;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.share-background-picker button:active {
+  transform: scale(.94);
+}
+
+.share-background-picker button.is-active {
+  box-shadow: 0 0 0 2px #fdf8ed, 0 0 0 4px rgba(31, 111, 95, .82);
+}
