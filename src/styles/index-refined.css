@@ -698,3 +698,52 @@
   border-color: rgba(255,255,255,.08);
   background: rgba(220,224,228,.25);
 }
+
+/* Dark-mode authority for the refined Index stylesheet (loaded after theme.css). */
+[data-theme='dark'] .index-replica-shell .index-segment,
+[data-theme='dark'] .index-replica-shell .index-surah-search,
+[data-theme='dark'] .index-replica-shell .index-card,
+[data-theme='dark'] .index-replica-shell .index-collapse-panel,
+[data-theme='dark'] .index-replica-shell .index-surah-info-preview,
+[data-theme='dark'] .index-replica-shell .index-ayah-jump,
+[data-theme='dark'] .index-replica-shell .index-quarter-grid {
+  border-color: var(--theme-border) !important;
+  background: var(--theme-surface-solid) !important;
+  color: var(--theme-text) !important;
+  box-shadow: 0 9px 24px var(--theme-shadow) !important;
+}
+[data-theme='dark'] .index-replica-shell .index-collapse-panel,
+[data-theme='dark'] .index-replica-shell .index-surah-info-preview,
+[data-theme='dark'] .index-replica-shell .index-ayah-jump {
+  box-shadow: none !important;
+}
+[data-theme='dark'] .index-replica-shell .index-quarter-btn,
+[data-theme='dark'] .index-replica-shell .index-ayah-stepper {
+  border-color: color-mix(in srgb, var(--brand-gold) 35%, var(--theme-border)) !important;
+  background: var(--theme-soft) !important;
+  color: var(--theme-text) !important;
+}
+[data-theme='dark'] .index-replica-shell .index-quarter-btn:not(.is-pressed),
+[data-theme='dark'] .index-replica-shell .index-ayah-stepper-button,
+[data-theme='dark'] .index-replica-shell .index-ayah-input-wrap,
+[data-theme='dark'] .index-replica-shell .index-ayah-preview,
+[data-theme='dark'] .index-replica-shell .index-ayah-jump-heading,
+[data-theme='dark'] .index-replica-shell .index-surah-info-preview p {
+  color: var(--theme-text) !important;
+}
+[data-theme='dark'] .index-replica-shell .index-ayah-jump-heading small,
+[data-theme='dark'] .index-replica-shell .index-ayah-input-wrap span,
+[data-theme='dark'] .index-replica-shell .index-surah-info-meta,
+[data-theme='dark'] .index-replica-shell .index-quarter-heading {
+  color: var(--theme-muted) !important;
+}
+[data-theme='dark'] .index-replica-shell .index-quarter-btn.is-pressed,
+[data-theme='dark'] .index-replica-shell .index-ayah-go,
+[data-theme='dark'] .index-replica-shell .index-segment button.is-active {
+  background: var(--theme-accent) !important;
+  color: #fff !important;
+}
+[data-theme='dark'] .index-replica-shell .index-number-badge {
+  border-color: color-mix(in srgb, var(--brand-gold) 48%, var(--theme-border)) !important;
+  color: var(--theme-text) !important;
+}
