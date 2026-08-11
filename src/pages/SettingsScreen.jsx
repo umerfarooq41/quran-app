@@ -100,6 +100,7 @@ export default function SettingsScreen() {
           options={translationOptions}
           getLabel={(translation) => translation.shortName || translation.label}
           onChange={(value) => updateSettings({ translation: value })}
+          fullWidth
         />
       </SettingsSection>
 
@@ -110,7 +111,7 @@ export default function SettingsScreen() {
         <SettingSwitch
           icon={ListTree}
           label="Word-by-word translation"
-          description="Show individual meanings inside the translation card"
+          description="Show a meaning for each word"
           checked={settings.wordByWordTranslation}
           onChange={(checked) => updateSettings({ wordByWordTranslation: checked })}
         />
@@ -141,6 +142,7 @@ export default function SettingsScreen() {
           getLabel={getReciterDisplayName}
           getAvatarSrc={getReciterImageSrc}
           onChange={(value) => updateSettings({ reciter: value })}
+          fullWidth
         />
 
       </SettingsSection>
@@ -224,6 +226,7 @@ function SettingPicker({
   getLabel,
   getAvatarSrc,
   onChange,
+  fullWidth = false,
 }) {
   const [open, setOpen] = useState(false);
   const [openDirection, setOpenDirection] = useState('down');
@@ -301,6 +304,7 @@ function SettingPicker({
   return (
     <div className={[
       'settings-picker-row',
+      fullWidth ? 'is-full-width' : '',
       open ? 'is-open' : '',
       openDirection === 'up' ? 'opens-up' : 'opens-down',
     ].filter(Boolean).join(' ')} ref={pickerRef} style={{ '--settings-picker-max-height': `${panelMaxHeight}px` }}>
