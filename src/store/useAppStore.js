@@ -363,12 +363,11 @@ export const useAppStore = create((set, get) => ({
     const nextTimeline = Array.isArray(surahTimeline) ? surahTimeline : [];
     return state.surahTimeline === nextTimeline ? state : { surahTimeline: nextTimeline };
   }),
-  setFollowRecitation: (followRecitation) => set((state) => {
-    const nextValue = Boolean(followRecitation);
-    if (state.followRecitation === nextValue && state.settings.followRecitation === nextValue) return state;
+  setFollowRecitation: () => set((state) => {
+    if (state.followRecitation === true && state.settings.followRecitation === true) return state;
     return {
-      followRecitation: nextValue,
-      settings: { ...state.settings, followRecitation: nextValue },
+      followRecitation: true,
+      settings: { ...state.settings, followRecitation: true },
     };
   }),
   setAudioPlaying: (audioPlaying) => set((state) => {
@@ -606,10 +605,10 @@ export function sanitizeSettings(value = {}) {
       : null,
     playbackRate: clampPlaybackRate(value.playbackRate),
     autoplay: Boolean(value.autoplay),
-    haptics: value.haptics !== false,
+    haptics: true,
     wordByWordTranslation: Boolean(value.wordByWordTranslation),
     wordByWordLanguage: value.wordByWordLanguage === 'ur' ? 'ur' : 'en',
-    followRecitation: value.followRecitation !== false,
+    followRecitation: true,
   };
 }
 
