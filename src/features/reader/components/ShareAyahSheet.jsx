@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ChevronDown, Share2 } from 'lucide-react';
+import { Check, ChevronDown, Share2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { getSurah, getSurahAyahs } from '../../../lib/quran';
 import { generateQuranShareImage } from '../../../lib/shareCanvas';
@@ -34,12 +34,12 @@ export function ShareAyahSheet({ ayah, onClose }) {
     [surahAyahs, fromAyah, toAyah],
   );
   const previewFont = range.length >= 8
-    ? '1.02rem'
+    ? '1.28rem'
     : range.length >= 5
-      ? '1.16rem'
+      ? '1.36rem'
       : range.length >= 3
-        ? '1.32rem'
-        : '1.55rem';
+        ? '1.46rem'
+        : '1.62rem';
   const arabicSurahName = surahArabicNames[ayah.surahNumber] || surah?.name || '';
   const selectedReference = fromAyah === toAyah
     ? `${ayah.surahNumber}:${fromAyah}`
@@ -164,7 +164,8 @@ export function ShareAyahSheet({ ayah, onClose }) {
                       className={item.ayahNumber === fromAyah ? 'is-selected' : ''}
                       onClick={() => { changeFrom(item.ayahNumber); setOpenRangePicker(null); }}
                     >
-                      Ayah {item.ayahNumber}
+                      <span>Ayah {item.ayahNumber}</span>
+                      {item.ayahNumber === fromAyah && <Check size={17} aria-hidden="true" />}
                     </button>
                   ))}
                 </div>
@@ -191,7 +192,8 @@ export function ShareAyahSheet({ ayah, onClose }) {
                       className={item.ayahNumber === toAyah ? 'is-selected' : ''}
                       onClick={() => { setToAyah(item.ayahNumber); setOpenRangePicker(null); }}
                     >
-                      Ayah {item.ayahNumber}
+                      <span>Ayah {item.ayahNumber}</span>
+                      {item.ayahNumber === toAyah && <Check size={17} aria-hidden="true" />}
                     </button>
                   ))}
                 </div>
