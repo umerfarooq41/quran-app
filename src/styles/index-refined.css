@@ -242,8 +242,39 @@
 .index-replica-shell .index-quarter-grid {
   display: grid !important;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  padding: 12px !important;
+  gap: 12px;
+  padding: 18px !important;
+}
+.index-replica-shell .index-quarter-heading {
+  grid-column: 1 / -1;
+  margin: 0 0 2px;
+  color: var(--theme-muted);
+  font: 500 .72rem/1.2 var(--ui-font);
+  letter-spacing: .08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+.index-replica-shell.app-page-shell .index-quarter-btn {
+  min-height: 54px !important;
+  padding: 12px 10px !important;
+  border: 1.3px solid color-mix(in srgb, var(--brand-gold, #b68a35) 55%, transparent) !important;
+  border-radius: 999px !important;
+  background: color-mix(in srgb, var(--theme-surface) 90%, var(--brand-gold, #b68a35) 10%) !important;
+  box-shadow: 0 1px 3px rgba(31,61,43,.05) !important;
+  color: var(--theme-text) !important;
+  text-align: center !important;
+  transition: background-color 120ms ease, color 120ms ease, transform 120ms ease !important;
+}
+.index-replica-shell.app-page-shell .index-quarter-btn strong {
+  color: inherit !important;
+  font: 500 .92rem/1.25 var(--ui-font) !important;
+  letter-spacing: 0 !important;
+}
+.index-replica-shell.app-page-shell .index-quarter-btn:active,
+.index-replica-shell.app-page-shell .index-quarter-btn.is-pressed {
+  background: var(--brand-green) !important;
+  color: #fff !important;
+  transform: scale(.96);
 }
 
 /* Surah information */
