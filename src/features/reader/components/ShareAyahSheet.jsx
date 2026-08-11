@@ -39,13 +39,16 @@ export function ShareAyahSheet({ ayah, onClose }) {
     [surahAyahs, fromAyah, toAyah],
   );
   const previewFont = range.length >= 8
-    ? '.68rem'
+    ? '1.02rem'
     : range.length >= 5
-      ? '.82rem'
+      ? '1.16rem'
       : range.length >= 3
-        ? '1rem'
-        : '1.25rem';
+        ? '1.32rem'
+        : '1.55rem';
   const arabicSurahName = surahArabicNames[ayah.surahNumber] || surah?.name || '';
+  const selectedReference = fromAyah === toAyah
+    ? `${ayah.surahNumber}:${fromAyah}`
+    : `${ayah.surahNumber}:${fromAyah}-${toAyah}`;
 
   useEffect(() => {
     let cancelled = false;
@@ -216,6 +219,8 @@ export function ShareAyahSheet({ ayah, onClose }) {
                 ))}
               </p>
             </div>
+
+            <p className="quran-share-reference">{selectedReference}</p>
 
             <footer>
               <img src="/icons/icon-192.png" alt="" aria-hidden="true" />
