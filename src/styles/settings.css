@@ -518,3 +518,120 @@
     font-size: .72rem;
   }
 }
+
+
+/* Settings alignment authority
+   - fixed icon column
+   - identical picker heights
+   - left-aligned values
+   - full-width Translator/Reciter controls + menus */
+.settings-toggle-row,
+.settings-picker-row {
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  column-gap: 11px;
+}
+
+.settings-row-icon {
+  width: 38px;
+  height: 38px;
+  justify-self: start;
+  align-self: center;
+}
+
+/* All dropdown triggers share one visual height and left-aligned value text. */
+.settings-picker-pill,
+.settings-picker-row.is-full-width .settings-picker-pill {
+  height: 44px;
+  min-height: 44px;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+.settings-picker-selected,
+.settings-picker-row.is-full-width .settings-picker-selected {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: left;
+  line-height: 1.25;
+}
+
+.settings-picker-chevron,
+.settings-picker-row.is-full-width .settings-picker-chevron {
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+
+/* Short language controls remain trailing controls, but their text starts
+   from the left edge of the pill instead of floating against the chevron. */
+.settings-picker-row:not(.is-full-width) .settings-picker-pill {
+  min-width: 104px;
+  padding: 8px 10px;
+}
+
+/* Translator + Reciter:
+   the trigger begins on the same left edge as the icon chip and spans the
+   full available row/card width. */
+.settings-picker-row.is-full-width {
+  grid-template-columns: 38px minmax(0, 1fr);
+}
+
+.settings-picker-row.is-full-width .settings-row-icon {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.settings-picker-row.is-full-width .settings-row-copy {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.settings-picker-row.is-full-width .settings-picker-pill {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  width: 100%;
+  max-width: none;
+  padding: 8px 10px;
+  text-align: left;
+}
+
+/* Their expanded menus exactly follow the same full-width left/right edges. */
+.settings-picker-row.is-full-width .settings-picker-panel,
+.settings-picker-row.is-full-width.opens-up .settings-picker-panel {
+  left: 0;
+  right: 0;
+  width: 100%;
+}
+
+/* Reciter avatar stays centered inside the same 44px control height. */
+.settings-picker-pill.has-avatar {
+  padding: 7px 10px;
+}
+.settings-picker-pill.has-avatar .settings-picker-avatar {
+  width: 28px;
+  height: 28px;
+  align-self: center;
+}
+
+/* All option labels align to the left, including English/Urdu,
+   translator names and reciter names. */
+.settings-picker-item,
+.settings-picker-item-label {
+  text-align: left;
+}
+
+@media (max-width: 380px) {
+  .settings-picker-pill,
+  .settings-picker-row.is-full-width .settings-picker-pill {
+    height: 44px;
+    min-height: 44px;
+  }
+
+  .settings-picker-row.is-full-width .settings-picker-panel,
+  .settings-picker-row.is-full-width.opens-up .settings-picker-panel {
+    left: 0;
+    right: 0;
+    width: 100%;
+  }
+}
