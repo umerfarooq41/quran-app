@@ -240,7 +240,10 @@ function SettingPicker({
   onChange,
 }) {
   const [open, setOpen] = useState(false);
+  const [openDirection, setOpenDirection] = useState('down');
+  const [panelMaxHeight, setPanelMaxHeight] = useState(280);
   const pickerRef = useRef(null);
+  const triggerRef = useRef(null);
   const selectedOption = options.find((option) => option.id === value) || options[0];
   const selectedLabel = selectedOption ? getLabel(selectedOption) : 'Select';
   const selectedAvatar = selectedOption && getAvatarSrc ? getAvatarSrc(selectedOption) : '';
@@ -253,9 +256,56 @@ function SettingPicker({
       if (!pickerRef.current?.contains(event.target)) setOpen(false);
     }
 
+    function updateDirection() {
+      const trigger = triggerRef.current;
+      if (!trigger) return;
+      const rect = trigger.getBoundingClientRect();
+      const viewportHeight = window.visualViewport?.height || window.innerHeight;
+      const spaceBelow = viewportHeight - rect.bottom - 12;
+      const spaceAbove = rect.top - 12;
+      const preferredPanelHeight = 280;
+      const direction = spaceBelow >= preferredPanelHeight || spaceBelow >= spaceAbove ? 'down' : 'up';
+      const available = direction === 'down' ? spaceBelow : spaceAbove;
+      setOpenDirection(direction);
+      setPanelMaxHeight(Math.max(120, Math.min(preferredPanelHeight, available)));
+    }
+
+    updateDirection();
     document.addEventListener('pointerdown', handlePointerDown);
-    return () => document.removeEventListener('pointerdown', handlePointerDown);
+    window.addEventListener('resize', updateDirection);
+    window.addEventListener('scroll', updateDirection, true);
+    window.visualViewport?.addEventListener('resize', updateDirection);
+    window.visualViewport?.addEventListener('scroll', updateDirection);
+
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown);
+      window.removeEventListener('resize', updateDirection);
+      window.removeEventListener('scroll', updateDirection, true);
+      window.visualViewport?.removeEventListener('resize', updateDirection);
+      window.visualViewport?.removeEventListener('scroll', updateDirection);
+    };
   }, [open]);
+
+  function togglePicker() {
+    if (open) {
+      setOpen(false);
+      return;
+    }
+
+    const trigger = triggerRef.current;
+    if (trigger) {
+      const rect = trigger.getBoundingClientRect();
+      const viewportHeight = window.visualViewport?.height || window.innerHeight;
+      const spaceBelow = viewportHeight - rect.bottom - 12;
+      const spaceAbove = rect.top - 12;
+      const preferredPanelHeight = 280;
+      const direction = spaceBelow >= preferredPanelHeight || spaceBelow >= spaceAbove ? 'down' : 'up';
+      const available = direction === 'down' ? spaceBelow : spaceAbove;
+      setOpenDirection(direction);
+      setPanelMaxHeight(Math.max(120, Math.min(preferredPanelHeight, available)));
+    }
+    setOpen(true);
+  }
 
   function selectOption(option) {
     onChange(option.id);
@@ -263,7 +313,11 @@ function SettingPicker({
   }
 
   return (
-    <div className={open ? 'settings-picker-row is-open' : 'settings-picker-row'} ref={pickerRef}>
+    <div className={[
+      'settings-picker-row',
+      open ? 'is-open' : '',
+      openDirection === 'up' ? 'opens-up' : 'opens-down',
+    ].filter(Boolean).join(' ')} ref={pickerRef} style={{ '--settings-picker-max-height': `${panelMaxHeight}px` }}>
       <span className="settings-row-icon"><Icon size={17} /></span>
       <span className="settings-row-copy">
         <strong>{label}</strong>
@@ -271,8 +325,9 @@ function SettingPicker({
       </span>
       <button
         type="button"
+        ref={triggerRef}
         className={hasAvatars ? 'settings-picker-pill has-avatar' : 'settings-picker-pill'}
-        onClick={() => setOpen((current) => !current)}
+        onClick={togglePicker}
         aria-haspopup="listbox"
         aria-expanded={open}
       >
