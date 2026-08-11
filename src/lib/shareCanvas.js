@@ -21,10 +21,10 @@ export async function generateQuranShareImage({
   await document.fonts?.load('58px IndopakNastaleeq');
   await document.fonts?.load('30px Inter');
 
-  let fontSize = ayahs.length >= 8 ? 48 : ayahs.length >= 5 ? 54 : ayahs.length >= 3 ? 60 : 68;
+  let fontSize = ayahs.length >= 8 ? 54 : ayahs.length >= 5 ? 58 : ayahs.length >= 3 ? 62 : 68;
   let layout = getAyahLayout(measureCtx, ayahs, fontSize, maxTextWidth);
 
-  while (layout.height > 1050 && fontSize > 40) {
+  while (layout.height > 1280 && fontSize > 46) {
     fontSize -= 2;
     layout = getAyahLayout(measureCtx, ayahs, fontSize, maxTextWidth);
   }
@@ -75,8 +75,8 @@ export async function generateQuranShareImage({
 
   if (Number(surahNumber) !== 9) {
     ctx.fillStyle = '#2a241e';
-    ctx.font = '48px IndopakNastaleeq, serif';
-    ctx.fillText('بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ', width / 2, contentY + 32);
+    ctx.font = `${fontSize}px IndopakNastaleeq, serif`;
+    ctx.fillText('بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ', width / 2, contentY + 36);
     contentY += bismillahHeight;
   }
 
