@@ -2872,3 +2872,87 @@ body {
 .quran-share-frame footer img {
   mix-blend-mode: multiply;
 }
+
+/* Share Quran image — match Index screen theme surfaces */
+.share-sheet {
+  background: var(--theme-background, var(--theme-bg, #f8f1df)) !important;
+  color: var(--theme-text, #252522) !important;
+}
+
+.share-sheet-header p {
+  color: var(--theme-muted, rgba(37, 37, 34, .55)) !important;
+}
+
+.share-sheet-header h2 {
+  color: var(--theme-text, #252522) !important;
+}
+
+.share-sheet-header button,
+.share-sheet-header button:hover,
+.share-sheet-header button:active {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--theme-text, #252522) !important;
+}
+
+.share-range-card {
+  border: 1px solid color-mix(in srgb, var(--theme-border, #dfd3b5) 64%, transparent) !important;
+  border-radius: 20px !important;
+  background: color-mix(in srgb, var(--theme-surface, #fffdf8) 92%, transparent) !important;
+  box-shadow: 0 9px 22px rgba(72, 55, 22, .05) !important;
+}
+
+.share-range-card h3 {
+  color: var(--theme-text, #252522) !important;
+}
+
+.share-range-field > span,
+.share-range-card > p {
+  color: var(--theme-muted, rgba(37, 37, 34, .55)) !important;
+}
+
+.share-range-trigger {
+  border: 1px solid color-mix(in srgb, var(--theme-border, #dfd3b5) 72%, transparent) !important;
+  border-radius: 16px !important;
+  background: color-mix(in srgb, var(--theme-surface, #fffdf8) 94%, transparent) !important;
+  color: var(--theme-text, #252522) !important;
+  box-shadow: 0 6px 16px rgba(72, 55, 22, .04) !important;
+}
+
+.share-range-trigger[aria-expanded='true'] {
+  border-color: color-mix(in srgb, var(--brand-gold, #b68a35) 52%, var(--theme-border, #dfd3b5)) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-gold, #b68a35) 10%, transparent),
+              0 6px 16px rgba(72, 55, 22, .04) !important;
+}
+
+.share-range-menu {
+  border: 1px solid color-mix(in srgb, var(--theme-border, #dfd3b5) 72%, transparent) !important;
+  border-radius: 16px !important;
+  background: var(--theme-surface, #fffdf8) !important;
+  box-shadow: 0 14px 34px rgba(71, 54, 23, .12) !important;
+}
+
+.share-range-menu button {
+  color: var(--theme-text, #252522) !important;
+}
+
+.share-range-menu button.is-selected {
+  background: linear-gradient(135deg, var(--brand-green, #2f7a68), #185b4d) !important;
+  color: #fff !important;
+}
+
+.share-range-menu button:active:not(.is-selected) {
+  background: color-mix(in srgb, var(--brand-gold, #b68a35) 10%, transparent) !important;
+}
+
+.share-image-button {
+  border-radius: 16px !important;
+  background: linear-gradient(135deg, var(--brand-green, #2f7a68), #185b4d) !important;
+  color: #fff !important;
+  box-shadow: 0 8px 20px rgba(24, 91, 77, .14) !important;
+}
+
+.share-sheet-status {
+  color: var(--theme-muted, rgba(37, 37, 34, .55)) !important;
+}
