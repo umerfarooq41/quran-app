@@ -53,7 +53,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
   theme: getInitialTheme(),
   translation: DEFAULT_TRANSLATION_ID,
   translationLanguage: 'ur',
-  reciter: 'abdur-rahman-as-sudais',
+  reciter: null,
   playbackRate: 1,
   autoplay: false,
   haptics: true,
@@ -602,7 +602,7 @@ export function sanitizeSettings(value = {}) {
     translationLanguage,
     reciter: typeof value.reciter === 'string' && value.reciter
       ? value.reciter
-      : DEFAULT_SETTINGS.reciter,
+      : null,
     playbackRate: clampPlaybackRate(value.playbackRate),
     autoplay: Boolean(value.autoplay),
     haptics: true,
