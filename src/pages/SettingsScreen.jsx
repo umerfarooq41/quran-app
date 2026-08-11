@@ -5,15 +5,12 @@ import {
   ChevronDown,
   Languages,
   ListTree,
-  LocateFixed,
   Mic2,
   Moon,
   RotateCcw,
   Sun,
-  Vibrate,
   X,
 } from 'lucide-react';
-import { triggerHaptic } from '../lib/haptics';
 import { getReciterImageUrl, normalizeLocalReciters } from '../lib/localAudio';
 import {
   TRANSLATION_LANGUAGES,
@@ -26,10 +23,8 @@ import { useAppStore } from '../store/useAppStore';
 import { Header, Screen } from '../components/common/AppChrome';
 
 export default function SettingsScreen() {
-  const { settings, followRecitation, setFollowRecitation, updateSettings, resetSettings } = useAppStore(useShallow((state) => ({
+  const { settings, updateSettings, resetSettings } = useAppStore(useShallow((state) => ({
     settings: state.settings,
-    followRecitation: state.followRecitation,
-    setFollowRecitation: state.setFollowRecitation,
     updateSettings: state.updateSettings,
     resetSettings: state.resetSettings,
   })));
@@ -135,16 +130,8 @@ export default function SettingsScreen() {
 
       <SettingsSection
         title="Recitation"
-        description="Control recitation behavior, reciter and touch feedback"
+        description="Choose the reciter used by the persistent Quran audio player"
       >
-        <SettingSwitch
-          icon={LocateFixed}
-          label="Follow Recitation"
-          description="Move to the page containing the ayah being recited"
-          checked={followRecitation}
-          onChange={setFollowRecitation}
-        />
-
         <SettingPicker
           icon={Mic2}
           label="Audio reciter"
@@ -156,17 +143,6 @@ export default function SettingsScreen() {
           onChange={(value) => updateSettings({ reciter: value })}
         />
 
-        <SettingSwitch
-          icon={Vibrate}
-          label="Haptic feedback"
-          description="Vibrate briefly on supported long-press actions"
-          checked={settings.haptics}
-          onChange={(checked) => {
-            updateSettings({ haptics: checked });
-            document.documentElement.dataset.haptics = checked ? 'on' : 'off';
-            if (checked) triggerHaptic('confirmation', { ignorePreference: true });
-          }}
-        />
       </SettingsSection>
 
       <button type="button" className="settings-reset-button" onClick={() => setConfirmReset(true)}>
@@ -193,7 +169,7 @@ export default function SettingsScreen() {
               <X size={17} />
             </button>
             <h2 id="reset-settings-title">Reset settings?</h2>
-            <p>This restores Light Mode, Follow Recitation, the default reciter, translation, word-by-word display, playback settings, and haptic feedback.</p>
+            <p>This restores Light Mode, the default reciter, translation, word-by-word display, and playback settings.</p>
             <div>
               <button type="button" className="secondary" onClick={() => setConfirmReset(false)}>Cancel</button>
               <button type="button" className="danger" onClick={resetAllSettings}>Reset</button>
