@@ -23,6 +23,7 @@ export function ShareAyahSheet({ ayah, onClose }) {
   const [status, setStatus] = useState('');
   const [sharing, setSharing] = useState(false);
   const [imageBlob, setImageBlob] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState('');
   const [preparingImage, setPreparingImage] = useState(true);
 
   const fromIndex = Math.max(0, surahAyahs.findIndex((item) => item.ayahNumber === fromAyah));
@@ -33,13 +34,6 @@ export function ShareAyahSheet({ ayah, onClose }) {
     ),
     [surahAyahs, fromAyah, toAyah],
   );
-  const previewFont = range.length >= 8
-    ? '1.28rem'
-    : range.length >= 5
-      ? '1.36rem'
-      : range.length >= 3
-        ? '1.46rem'
-        : '1.62rem';
   const arabicSurahName = surahArabicNames[ayah.surahNumber] || surah?.name || '';
   const selectedReference = fromAyah === toAyah
     ? `${ayah.surahNumber}:${fromAyah}`
@@ -71,6 +65,17 @@ export function ShareAyahSheet({ ayah, onClose }) {
       cancelled = true;
     };
   }, [arabicSurahName, ayah.surahNumber, range, background]);
+
+  useEffect(() => {
+    if (!imageBlob) {
+      setPreviewUrl('');
+      return undefined;
+    }
+
+    const url = URL.createObjectURL(imageBlob);
+    setPreviewUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [imageBlob]);
 
   function changeFrom(nextValue) {
     const nextFrom = Number(nextValue);
@@ -134,10 +139,7 @@ export function ShareAyahSheet({ ayah, onClose }) {
       >
         <header className="share-sheet-header">
           <BackButton onClick={onClose} label="Back from share" />
-          <div>
-            <p>Share Quran image</p>
-            <h2>{surah?.name}</h2>
-          </div>
+          <h2>Share Quran Image</h2>
           <span className="share-header-spacer" aria-hidden="true" />
         </header>
 
@@ -203,41 +205,18 @@ export function ShareAyahSheet({ ayah, onClose }) {
           <p>Maximum range: 10 ayahs</p>
         </section>
 
-        <div
-          className="quran-share-preview"
-          style={{
-            '--share-background': background,
-            '--share-preview-font': previewFont,
-          }}
-        >
-          <div className="quran-share-frame">
-            <h3 className="quran-share-surah-title" dir="rtl">سُورَةُ {arabicSurahName}</h3>
-            <div className="quran-share-divider" aria-hidden="true"><span /></div>
-
-            {ayah.surahNumber !== 9 && (
-              <p className="quran-share-bismillah" dir="rtl">
-                بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
-              </p>
-            )}
-
-            <div className="quran-share-ayahs" dir="rtl">
-              <p>
-                {range.map((item) => (
-                  <React.Fragment key={item.ayahNumber}>
-                    {cleanAyahText(item.text)}
-                    <span> ۝ {toArabicNumber(item.ayahNumber)} </span>
-                  </React.Fragment>
-                ))}
-              </p>
+        <div className="quran-share-preview quran-share-generated-preview">
+          {previewUrl ? (
+            <img
+              src={previewUrl}
+              alt={`${surah?.name || 'Quran'} ${selectedReference}`}
+              className="quran-share-generated-image"
+            />
+          ) : (
+            <div className="quran-share-preview-loading" aria-live="polite">
+              Preparing preview…
             </div>
-
-            <p className="quran-share-reference">{selectedReference}</p>
-
-            <footer>
-              <img src="/icons/icon-192.png" alt="" aria-hidden="true" />
-              <span>Al Quran</span>
-            </footer>
-          </div>
+          )}
         </div>
 
         <button
