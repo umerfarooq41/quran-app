@@ -47,20 +47,31 @@ export async function generateQuranShareImage({
   ctx.lineWidth = 2;
   ctx.stroke();
 
-  const borderImage = await loadImage('/border/Border Quran-01.svg');
-  const borderWidth = 930;
-  const borderHeight = borderWidth * (120 / 1200);
-  const borderX = (width - borderWidth) / 2;
-  ctx.drawImage(borderImage, borderX, headerTop, borderWidth, borderHeight);
-
   ctx.direction = 'rtl';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillStyle = '#211c17';
-  ctx.font = '600 50px IndopakNastaleeq, serif';
-  ctx.fillText(surahName, width / 2, headerTop + borderHeight / 2 + 2);
+  ctx.font = '600 54px IndopakNastaleeq, serif';
+  ctx.fillText(`سُورَةُ ${surahName}`, width / 2, headerTop + 32);
 
-  let contentY = headerTop + borderHeight + 24;
+  const dividerY = headerTop + 78;
+  const dividerGap = 64;
+  ctx.strokeStyle = 'rgba(64, 50, 35, .24)';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(150, dividerY);
+  ctx.lineTo(width / 2 - dividerGap, dividerY);
+  ctx.moveTo(width / 2 + dividerGap, dividerY);
+  ctx.lineTo(width - 150, dividerY);
+  ctx.stroke();
+  ctx.save();
+  ctx.translate(width / 2, dividerY);
+  ctx.rotate(Math.PI / 4);
+  ctx.fillStyle = 'rgba(64, 50, 35, .50)';
+  ctx.fillRect(-13, -13, 26, 26);
+  ctx.restore();
+
+  let contentY = dividerY + 24;
 
   if (Number(surahNumber) !== 9) {
     ctx.fillStyle = '#2a241e';
