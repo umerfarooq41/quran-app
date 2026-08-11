@@ -259,7 +259,7 @@ export default function App() {
   useEffect(() => {
     const theme = settings.theme === 'dark' ? 'dark' : 'light';
     document.documentElement.dataset.theme = theme;
-    document.documentElement.dataset.haptics = settings.haptics ? 'on' : 'off';
+    document.documentElement.dataset.haptics = 'on';
     document.documentElement.style.colorScheme = theme;
     document.getElementById('app-theme-color')?.setAttribute(
       'content',
