@@ -49,3 +49,25 @@ button {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* Prevent native Android/iOS text-selection callouts across the app.
+   The Qur'an reader uses its own long-press actions, so system Copy/Search
+   selection UI should never compete with app interactions. */
+html,
+body,
+#root,
+#root * {
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none !important;
+}
+
+#root *::selection {
+  background: transparent !important;
+  color: inherit !important;
+}
+
+#root *::-moz-selection {
+  background: transparent !important;
+  color: inherit !important;
+}
