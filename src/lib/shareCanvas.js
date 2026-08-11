@@ -10,7 +10,7 @@ export async function generateQuranShareImage({
   const headerHeight = 94;
   const bismillahHeight = Number(surahNumber) === 9 ? 0 : 92;
   const textTopGap = 34;
-  const footerHeight = 118;
+  const footerHeight = 142;
   const bottomPadding = 72;
 
   let measureCanvas = document.createElement('canvas');
@@ -21,10 +21,10 @@ export async function generateQuranShareImage({
   await document.fonts?.load('58px IndopakNastaleeq');
   await document.fonts?.load('30px Inter');
 
-  let fontSize = ayahs.length >= 8 ? 42 : ayahs.length >= 5 ? 48 : ayahs.length >= 3 ? 54 : 60;
+  let fontSize = ayahs.length >= 8 ? 48 : ayahs.length >= 5 ? 54 : ayahs.length >= 3 ? 60 : 68;
   let layout = getAyahLayout(measureCtx, ayahs, fontSize, maxTextWidth);
 
-  while (layout.height > 1050 && fontSize > 34) {
+  while (layout.height > 1050 && fontSize > 40) {
     fontSize -= 2;
     layout = getAyahLayout(measureCtx, ayahs, fontSize, maxTextWidth);
   }
@@ -81,7 +81,22 @@ export async function generateQuranShareImage({
     contentY += line.height;
   });
 
-  const footerY = height - 82;
+  const reference = ayahs.length
+    ? (ayahs[0].ayahNumber === ayahs[ayahs.length - 1].ayahNumber
+      ? `${surahNumber}:${ayahs[0].ayahNumber}`
+      : `${surahNumber}:${ayahs[0].ayahNumber}-${ayahs[ayahs.length - 1].ayahNumber}`)
+    : '';
+
+  const footerY = height - 72;
+  if (reference) {
+    ctx.direction = 'ltr';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = '600 26px Inter, ui-sans-serif, system-ui';
+    ctx.fillStyle = 'rgba(45, 38, 30, .54)';
+    ctx.fillText(reference, width / 2, footerY - 54);
+  }
+
   const icon = await loadImage('/icons/icon-192.png');
   const iconSize = 42;
   const label = 'Al Quran';
@@ -92,7 +107,7 @@ export async function generateQuranShareImage({
   const labelWidth = ctx.measureText(label).width;
   const footerWidth = iconSize + 14 + labelWidth;
   const footerX = (width - footerWidth) / 2;
-  ctx.drawImage(icon, footerX, footerY - iconSize / 2, iconSize, iconSize);
+  drawImageWithoutWhite(ctx, icon, footerX, footerY - iconSize / 2, iconSize, iconSize);
   ctx.fillStyle = 'rgba(45, 38, 30, .68)';
   ctx.fillText(label, footerX + iconSize + 14, footerY + 1);
 
@@ -159,6 +174,27 @@ function cleanAyahText(text = '') {
 
 function toArabicNumber(value) {
   return String(value).replace(/\d/g, (digit) => '٠١٢٣٤٥٦٧٨٩'[Number(digit)]);
+}
+
+function drawImageWithoutWhite(ctx, image, x, y, width, height) {
+  const offscreen = document.createElement('canvas');
+  offscreen.width = Math.max(1, Math.round(width));
+  offscreen.height = Math.max(1, Math.round(height));
+  const offCtx = offscreen.getContext('2d');
+  offCtx.drawImage(image, 0, 0, offscreen.width, offscreen.height);
+
+  const imageData = offCtx.getImageData(0, 0, offscreen.width, offscreen.height);
+  const pixels = imageData.data;
+  for (let i = 0; i < pixels.length; i += 4) {
+    const r = pixels[i];
+    const g = pixels[i + 1];
+    const b = pixels[i + 2];
+    if (r > 242 && g > 242 && b > 242) {
+      pixels[i + 3] = 0;
+    }
+  }
+  offCtx.putImageData(imageData, 0, 0);
+  ctx.drawImage(offscreen, x, y, width, height);
 }
 
 function drawRoundedRect(ctx, x, y, width, height, radius) {
