@@ -3792,3 +3792,15 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
   background: rgba(73, 143, 125, .18) !important;
   color: #aef1dc !important;
 }
+
+
+/* Reader top chrome sizing polish:
+   slightly taller top sheet and action icons matched to footer action icons. */
+.reader-top-sheet {
+  padding: calc(env(safe-area-inset-top, 0px) + 9px) 24px 14px !important;
+}
+
+.reader-top-sheet .reader-top-icon svg {
+  width: 23px !important;
+  height: 23px !important;
+}
