@@ -405,3 +405,116 @@
 [data-theme='dark'] .settings-section-heading small {
   color: var(--theme-muted) !important;
 }
+
+/* Final settings picker affordance: premium hairline control, aligned with row grid. */
+.settings-picker-pill {
+  min-width: 92px;
+  max-width: min(48vw, 220px);
+  min-height: 38px;
+  border: 1px solid rgba(201, 162, 75, .32) !important;
+  border-radius: 12px;
+  background: rgba(201, 162, 75, .045) !important;
+  padding: 7px 10px;
+  color: #1f3d2b;
+  box-shadow: none !important;
+  transition: background-color .16s ease, border-color .16s ease, transform .14s ease;
+}
+.settings-picker-pill:active {
+  background: rgba(201, 162, 75, .10) !important;
+  transform: scale(.985);
+}
+.settings-picker-pill:focus-visible {
+  background: rgba(201, 162, 75, .06) !important;
+  outline: 2px solid rgba(45, 110, 94, .18);
+  outline-offset: 2px;
+}
+.settings-picker-selected {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  overflow-wrap: normal;
+  word-break: normal;
+  text-align: right;
+  font-weight: 760;
+  line-height: 1.28;
+}
+.settings-picker-chevron {
+  color: rgba(31, 61, 43, .62);
+}
+
+/* Translator and reciter controls occupy the content column at full width. */
+.settings-picker-row.is-full-width {
+  grid-template-columns: 38px minmax(0, 1fr);
+}
+.settings-picker-row.is-full-width .settings-picker-pill {
+  grid-column: 2;
+  grid-row: 2;
+  width: 100%;
+  max-width: none;
+  min-height: 42px;
+  justify-content: flex-start;
+  padding: 8px 10px;
+  text-align: left;
+}
+.settings-picker-row.is-full-width .settings-picker-selected {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: left;
+}
+.settings-picker-row.is-full-width .settings-picker-chevron {
+  margin-left: auto;
+}
+.settings-picker-row.is-full-width .settings-picker-panel {
+  left: 49px;
+  right: 0;
+  width: auto;
+}
+.settings-picker-row.is-full-width.opens-up .settings-picker-panel {
+  left: 49px;
+  right: 0;
+  width: auto;
+}
+
+/* Avatar stays optically centered without increasing the row height. */
+.settings-picker-pill.has-avatar {
+  align-items: center;
+  gap: 8px;
+  padding-inline-start: 7px;
+}
+.settings-picker-pill.has-avatar .settings-picker-avatar {
+  width: 28px;
+  height: 28px;
+}
+
+/* Dropdown option labels may wrap instead of truncating names mid-word. */
+.settings-picker-item-label {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  overflow-wrap: normal;
+  word-break: normal;
+  line-height: 1.3;
+}
+
+[data-theme='dark'] .settings-picker-pill {
+  border-color: rgba(201, 162, 75, .30) !important;
+  background: rgba(201, 162, 75, .07) !important;
+  color: var(--theme-text) !important;
+}
+[data-theme='dark'] .settings-picker-pill:active {
+  background: rgba(201, 162, 75, .13) !important;
+}
+[data-theme='dark'] .settings-picker-chevron {
+  color: var(--theme-muted) !important;
+}
+
+@media (max-width: 380px) {
+  .settings-picker-pill {
+    max-width: 145px;
+    font-size: .70rem;
+  }
+  .settings-picker-row.is-full-width .settings-picker-pill {
+    max-width: none;
+    font-size: .72rem;
+  }
+}
