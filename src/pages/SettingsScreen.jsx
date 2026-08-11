@@ -56,12 +56,10 @@ export default function SettingsScreen() {
 
       <div className="app-scroll-content">
 
-      <section className="settings-card">
-        <div className="settings-section-heading">
-          <span>Appearance</span>
-          <small>Applies to app controls, not the Mushaf page</small>
-        </div>
-
+      <SettingsSection
+        title="Appearance"
+        description="Applies to app controls, not the Mushaf page"
+      >
         <div className="settings-theme-picker" role="group" aria-label="Theme">
           <button
             type="button"
@@ -80,14 +78,12 @@ export default function SettingsScreen() {
             Dark
           </button>
         </div>
-      </section>
+      </SettingsSection>
 
-      <section className="settings-card">
-        <div className="settings-group-heading">
-          <strong>Translation</strong>
-          <small>Choose a language and translator used across the app</small>
-        </div>
-
+      <SettingsSection
+        title="Translation"
+        description="Choose the language and translation source used across the app"
+      >
         <SettingPicker
           icon={Languages}
           label="Translation language"
@@ -110,39 +106,41 @@ export default function SettingsScreen() {
           getLabel={(translation) => translation.shortName || translation.label}
           onChange={(value) => updateSettings({ translation: value })}
         />
+      </SettingsSection>
 
-        <div className="settings-group-heading settings-group-heading-spaced">
-          <strong>Word-by-word</strong>
-          <small>Choose English or Urdu individual word meanings</small>
-        </div>
-
+      <SettingsSection
+        title="Word-by-word"
+        description="Choose English or Urdu individual word meanings"
+      >
         <SettingSwitch
           icon={ListTree}
           label="Word-by-word translation"
-          description="Show individual English or Urdu meanings inside the translation card"
+          description="Show individual meanings inside the translation card"
           checked={settings.wordByWordTranslation}
           onChange={(checked) => updateSettings({ wordByWordTranslation: checked })}
         />
 
         {settings.wordByWordTranslation && (
-          <>
-            <SettingPicker
-              icon={Languages}
-              label="Word-by-word language"
-              description="Choose English or Urdu individual word meanings"
-              value={wordByWordLanguage}
-              options={WORD_BY_WORD_LANGUAGES}
-              getLabel={(language) => language.label}
-              onChange={(value) => updateSettings({ wordByWordLanguage: value })}
-            />
-          </>
+          <SettingPicker
+            icon={Languages}
+            label="Word-by-word language"
+            description="Choose English or Urdu meanings"
+            value={wordByWordLanguage}
+            options={WORD_BY_WORD_LANGUAGES}
+            getLabel={(language) => language.label}
+            onChange={(value) => updateSettings({ wordByWordLanguage: value })}
+          />
         )}
+      </SettingsSection>
 
-
+      <SettingsSection
+        title="Recitation"
+        description="Control recitation behavior, reciter and touch feedback"
+      >
         <SettingSwitch
           icon={LocateFixed}
           label="Follow Recitation"
-          description="Automatically move to the page containing the ayah currently being recited"
+          description="Move to the page containing the ayah being recited"
           checked={followRecitation}
           onChange={setFollowRecitation}
         />
@@ -169,7 +167,7 @@ export default function SettingsScreen() {
             if (checked) triggerHaptic('confirmation', { ignorePreference: true });
           }}
         />
-      </section>
+      </SettingsSection>
 
       <button type="button" className="settings-reset-button" onClick={() => setConfirmReset(true)}>
         <RotateCcw size={17} />
@@ -204,6 +202,18 @@ export default function SettingsScreen() {
         </div>
       )}
     </Screen>
+  );
+}
+
+function SettingsSection({ title, description, children }) {
+  return (
+    <section className="settings-section">
+      <div className="settings-section-heading">
+        <strong>{title}</strong>
+        <small>{description}</small>
+      </div>
+      <div className="settings-card">{children}</div>
+    </section>
   );
 }
 
