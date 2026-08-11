@@ -635,3 +635,92 @@
     width: 100%;
   }
 }
+
+
+/* Final Settings alignment polish
+   Short language values are centered; identity values remain left aligned. */
+
+/* Prevent any older responsive/grid rule from nudging the Word-by-word icon. */
+.settings-toggle-row,
+.settings-picker-row {
+  width: 100%;
+  margin: 0 !important;
+  grid-template-columns: 38px minmax(0, 1fr) auto !important;
+  column-gap: 11px !important;
+  justify-self: stretch;
+}
+
+.settings-row-icon {
+  grid-column: 1 !important;
+  justify-self: start !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  transform: none !important;
+}
+
+/* Center English / Urdu visually inside the compact language pills.
+   Chevron is positioned independently so it does not push the word off-center. */
+.settings-picker-row:not(.is-full-width) .settings-picker-pill {
+  position: relative;
+  justify-content: center;
+  padding: 8px 30px 8px 12px;
+}
+
+.settings-picker-row:not(.is-full-width) .settings-picker-selected {
+  width: 100%;
+  flex: 1 1 100%;
+  text-align: center !important;
+}
+
+.settings-picker-row:not(.is-full-width) .settings-picker-chevron {
+  position: absolute;
+  right: 9px;
+  top: 50%;
+  margin: 0 !important;
+  transform: translateY(-50%);
+}
+
+.settings-picker-row:not(.is-full-width).is-open .settings-picker-chevron {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+/* Translator + Reciter stay full-width and left aligned, with more breathing room. */
+.settings-picker-row.is-full-width {
+  grid-template-columns: 38px minmax(0, 1fr) !important;
+}
+
+.settings-picker-row.is-full-width .settings-picker-pill {
+  padding: 8px 14px !important;
+}
+
+.settings-picker-row.is-full-width .settings-picker-selected {
+  padding-left: 2px;
+  padding-right: 6px;
+  text-align: left !important;
+}
+
+.settings-picker-row.is-full-width .settings-picker-pill.has-avatar {
+  padding: 7px 14px 7px 10px !important;
+}
+
+.settings-picker-row.is-full-width .settings-picker-pill.has-avatar .settings-picker-selected {
+  padding-left: 2px;
+}
+
+/* Keep menu labels left aligned even though compact trigger values are centered. */
+.settings-picker-item,
+.settings-picker-item-label {
+  text-align: left !important;
+}
+
+@media (max-width: 380px) {
+  .settings-toggle-row,
+  .settings-picker-row {
+    grid-template-columns: 38px minmax(0, 1fr) auto !important;
+    column-gap: 9px !important;
+  }
+
+  .settings-picker-row.is-full-width {
+    grid-template-columns: 38px minmax(0, 1fr) !important;
+  }
+}
