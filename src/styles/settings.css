@@ -311,3 +311,97 @@
   .settings-picker-chevron,
   .settings-theme-picker button { transition: none; }
 }
+
+/* Settings polish: quieter inline values and full-width identity pickers. */
+.settings-section-heading small {
+  color: var(--theme-text-secondary, #666c69);
+  font-weight: 580;
+}
+.settings-row-copy small {
+  color: var(--text-muted, #8a9096);
+  font-weight: 450;
+}
+
+/* Dropdown values read as settings values, not input fields. */
+.settings-picker-pill {
+  min-width: 0;
+  max-width: min(46vw, 210px);
+  min-height: 34px;
+  border: 0 !important;
+  border-radius: 0;
+  background: transparent !important;
+  padding: 5px 0 5px 8px;
+  box-shadow: none !important;
+}
+.settings-picker-pill:active,
+.settings-picker-pill:focus-visible {
+  background: transparent !important;
+}
+.settings-picker-selected {
+  font-weight: 760;
+}
+
+/* Translator and reciter get their own full-width value row. */
+.settings-picker-row.is-full-width {
+  grid-template-columns: 38px minmax(0, 1fr);
+  align-items: center;
+  padding-bottom: 13px;
+}
+.settings-picker-row.is-full-width .settings-row-icon {
+  grid-column: 1;
+  grid-row: 1;
+}
+.settings-picker-row.is-full-width .settings-row-copy {
+  grid-column: 2;
+  grid-row: 1;
+}
+.settings-picker-row.is-full-width .settings-picker-pill {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  width: 100%;
+  max-width: none;
+  min-height: 38px;
+  justify-content: flex-start;
+  padding: 6px 2px 2px 49px;
+  text-align: left;
+}
+.settings-picker-row.is-full-width .settings-picker-selected {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  text-align: left;
+  line-height: 1.3;
+}
+.settings-picker-row.is-full-width .settings-picker-chevron {
+  margin-left: auto;
+}
+.settings-picker-row.is-full-width .settings-picker-panel {
+  right: 0;
+  left: 0;
+  width: 100%;
+}
+.settings-picker-row.is-full-width.opens-up .settings-picker-panel {
+  right: 0;
+  left: 0;
+}
+
+/* Keep every icon chip on the exact same left edge inside a card. */
+.settings-toggle-row,
+.settings-picker-row {
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+}
+.settings-row-icon {
+  justify-self: start;
+}
+
+[data-theme='dark'] .settings-picker-pill {
+  background: transparent !important;
+}
+
+@media (max-width: 380px) {
+  .settings-picker-pill { max-width: 150px; }
+  .settings-picker-row.is-full-width .settings-picker-pill { max-width: none; }
+}
+[data-theme='dark'] .settings-section-heading small {
+  color: var(--theme-muted) !important;
+}
