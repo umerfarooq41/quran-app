@@ -282,7 +282,7 @@
   width: 100%;
   min-width: 0;
   margin: 0 !important;
-  padding: 18px 18px 15px !important;
+  padding: 18px 18px 8px !important;
   border: 0 !important;
   border-radius: 0 !important;
   background: transparent !important;
@@ -351,8 +351,8 @@
   display: grid !important;
   grid-template-columns: minmax(0, 1fr);
   gap: 10px !important;
-  margin: 14px 0 0 !important;
-  padding: 13px 0 0 !important;
+  margin: 8px 0 0 !important;
+  padding: 6px 0 0 !important;
   border-top: 0 !important;
 }
 .index-replica-shell .index-surah-info-preview .index-surah-text-action {
