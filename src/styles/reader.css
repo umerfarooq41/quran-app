@@ -3091,3 +3091,140 @@ body {
   max-height: none !important;
   overflow: visible !important;
 }
+
+/* Share Quran Image — final synchronized UI/export pass.
+   The preview now displays the generated PNG itself, so preview and share output
+   are always identical. */
+.share-sheet-header {
+  display: grid !important;
+  grid-template-columns: 44px minmax(0, 1fr) 44px !important;
+  align-items: center !important;
+  gap: 10px !important;
+  margin-bottom: 18px !important;
+}
+
+.share-sheet-header h2 {
+  margin: 0 !important;
+  overflow: visible !important;
+  color: var(--theme-text, #252522) !important;
+  font-size: 1.45rem !important;
+  font-weight: 650 !important;
+  line-height: 1.2 !important;
+  text-align: center !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+}
+
+.share-sheet-header .shared-back-button {
+  justify-self: start !important;
+}
+
+.share-header-spacer {
+  width: 44px;
+  height: 44px;
+}
+
+/* Same solid card language as Index: clear surface separation, subtle gold edge. */
+.share-range-card {
+  margin: 0 !important;
+  padding: 16px !important;
+  border: 1px solid color-mix(in srgb, var(--brand-gold, #b68a35) 22%, var(--theme-border, #dfd3b5)) !important;
+  border-radius: 24px !important;
+  background: var(--theme-surface-solid, #fffdf8) !important;
+  box-shadow: 0 8px 22px rgba(71, 54, 23, .07) !important;
+}
+
+.share-range-card h3 {
+  margin: 0 0 14px !important;
+  color: var(--theme-text, #252522) !important;
+  font-size: 1rem !important;
+  font-weight: 680 !important;
+}
+
+.share-range-selectors {
+  gap: 12px !important;
+}
+
+.share-range-field > span {
+  margin: 0 0 7px !important;
+  color: color-mix(in srgb, var(--theme-text, #252522) 58%, transparent) !important;
+  font-size: .78rem !important;
+  font-weight: 600 !important;
+}
+
+/* Branded but quiet range controls — no generic white input appearance. */
+.share-range-trigger {
+  min-height: 54px !important;
+  padding: 0 14px !important;
+  border: 1px solid rgba(182, 138, 53, .34) !important;
+  border-radius: 16px !important;
+  background: color-mix(in srgb, var(--brand-gold, #b68a35) 4.5%, var(--theme-surface-solid, #fffdf8)) !important;
+  color: var(--theme-text, #252522) !important;
+  box-shadow: 0 2px 6px rgba(71, 54, 23, .045) !important;
+  font-weight: 600 !important;
+}
+
+.share-range-trigger:active,
+.share-range-trigger[aria-expanded='true'] {
+  border-color: rgba(182, 138, 53, .58) !important;
+  background: color-mix(in srgb, var(--brand-gold, #b68a35) 8%, var(--theme-surface-solid, #fffdf8)) !important;
+  box-shadow: 0 0 0 3px rgba(182, 138, 53, .08) !important;
+}
+
+.share-range-card > p {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 11px 0 0 !important;
+  color: color-mix(in srgb, var(--theme-text, #252522) 55%, transparent) !important;
+  font-size: .74rem !important;
+  font-weight: 560 !important;
+}
+
+.share-range-card > p::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--brand-gold, #b68a35) 74%, transparent);
+}
+
+/* Generated PNG is the preview. No second CSS recreation means no drift in
+   line wrapping, font sizing, radii, footer spacing, or branding. */
+.quran-share-generated-preview {
+  width: min(100%, 430px) !important;
+  height: auto !important;
+  margin: 16px auto 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.quran-share-generated-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 0;
+  background: transparent;
+  box-shadow: 0 14px 34px rgba(55, 43, 25, .10);
+}
+
+.quran-share-preview-loading {
+  display: grid;
+  min-height: 280px;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--theme-border, #dfd3b5) 72%, transparent);
+  border-radius: 22px;
+  background: var(--theme-surface-solid, #fffdf8);
+  color: var(--theme-muted, #756f65);
+  font-size: .85rem;
+  font-weight: 600;
+}
+
+[data-theme='dark'] .share-range-trigger {
+  background: color-mix(in srgb, var(--brand-gold, #b68a35) 6%, var(--theme-surface-solid, #202723)) !important;
+}
