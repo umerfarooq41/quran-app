@@ -1,18 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Share2 } from 'lucide-react';
+import { ChevronDown, Share2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { getSurah, getSurahAyahs } from '../../../lib/quran';
 import { generateQuranShareImage } from '../../../lib/shareCanvas';
 import { surahArabicNames } from '../../../utils/quranLabels';
 import { BackButton } from '../../../components/common/AppChrome';
 
-const BACKGROUNDS = [
-  { id: 'sand', color: '#ead8b8', label: 'Sand' },
-  { id: 'sage', color: '#cddccf', label: 'Sage' },
-  { id: 'sky', color: '#cbddea', label: 'Sky' },
-  { id: 'rose', color: '#ead0d0', label: 'Rose' },
-  { id: 'slate', color: '#ccd0d8', label: 'Slate' },
-];
+const SHARE_BACKGROUND = '#ead8b8';
 
 export function ShareAyahSheet({ ayah, onClose }) {
   const surah = getSurah(ayah.surahNumber);
@@ -24,7 +18,8 @@ export function ShareAyahSheet({ ayah, onClose }) {
   );
   const [fromAyah, setFromAyah] = useState(ayah.ayahNumber);
   const [toAyah, setToAyah] = useState(ayah.ayahNumber);
-  const [background, setBackground] = useState(BACKGROUNDS[0].color);
+  const background = SHARE_BACKGROUND;
+  const [openRangePicker, setOpenRangePicker] = useState(null);
   const [status, setStatus] = useState('');
   const [sharing, setSharing] = useState(false);
   const [imageBlob, setImageBlob] = useState(null);
@@ -149,45 +144,61 @@ export function ShareAyahSheet({ ayah, onClose }) {
         <section className="share-range-card">
           <h3>Verse range</h3>
           <div className="share-range-selectors">
-            <label>
+            <div className="share-range-field">
               <span>From</span>
-              <select value={fromAyah} onChange={(event) => changeFrom(event.target.value)}>
-                {fromOptions.map((item) => (
-                  <option key={item.ayahNumber} value={item.ayahNumber}>
-                    Ayah {item.ayahNumber}
-                  </option>
-                ))}
-              </select>
-            </label>
+              <button
+                type="button"
+                className="share-range-trigger"
+                aria-expanded={openRangePicker === 'from'}
+                onClick={() => setOpenRangePicker((current) => current === 'from' ? null : 'from')}
+              >
+                <span>Ayah {fromAyah}</span>
+                <ChevronDown size={18} aria-hidden="true" />
+              </button>
+              {openRangePicker === 'from' && (
+                <div className="share-range-menu">
+                  {fromOptions.map((item) => (
+                    <button
+                      key={item.ayahNumber}
+                      type="button"
+                      className={item.ayahNumber === fromAyah ? 'is-selected' : ''}
+                      onClick={() => { changeFrom(item.ayahNumber); setOpenRangePicker(null); }}
+                    >
+                      Ayah {item.ayahNumber}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
 
-            <label>
+            <div className="share-range-field">
               <span>To</span>
-              <select value={toAyah} onChange={(event) => setToAyah(Number(event.target.value))}>
-                {toOptions.map((item) => (
-                  <option key={item.ayahNumber} value={item.ayahNumber}>
-                    Ayah {item.ayahNumber}
-                  </option>
-                ))}
-              </select>
-            </label>
+              <button
+                type="button"
+                className="share-range-trigger"
+                aria-expanded={openRangePicker === 'to'}
+                onClick={() => setOpenRangePicker((current) => current === 'to' ? null : 'to')}
+              >
+                <span>Ayah {toAyah}</span>
+                <ChevronDown size={18} aria-hidden="true" />
+              </button>
+              {openRangePicker === 'to' && (
+                <div className="share-range-menu">
+                  {toOptions.map((item) => (
+                    <button
+                      key={item.ayahNumber}
+                      type="button"
+                      className={item.ayahNumber === toAyah ? 'is-selected' : ''}
+                      onClick={() => { setToAyah(item.ayahNumber); setOpenRangePicker(null); }}
+                    >
+                      Ayah {item.ayahNumber}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
           <p>Maximum range: 10 ayahs</p>
-        </section>
-
-        <section className="share-background-picker">
-          <h3>Background</h3>
-          <div>
-            {BACKGROUNDS.map((option) => (
-              <button
-                key={option.id}
-                type="button"
-                className={background === option.color ? 'is-active' : ''}
-                style={{ '--share-color': option.color }}
-                onClick={() => setBackground(option.color)}
-                aria-label={option.label}
-              />
-            ))}
-          </div>
         </section>
 
         <div
@@ -198,10 +209,8 @@ export function ShareAyahSheet({ ayah, onClose }) {
           }}
         >
           <div className="quran-share-frame">
-            <div className="quran-share-surah-header">
-              <img src="/border/Border Quran-01.svg" alt="" aria-hidden="true" />
-              <h3 dir="rtl">{arabicSurahName}</h3>
-            </div>
+            <h3 className="quran-share-surah-title" dir="rtl">سُورَةُ {arabicSurahName}</h3>
+            <div className="quran-share-divider" aria-hidden="true"><span /></div>
 
             {ayah.surahNumber !== 9 && (
               <p className="quran-share-bismillah" dir="rtl">
