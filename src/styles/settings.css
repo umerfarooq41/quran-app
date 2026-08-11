@@ -206,8 +206,20 @@
   transition: max-height .22s ease, opacity .18s ease, transform .18s ease;
   backdrop-filter: blur(18px);
 }
-.settings-picker-row.is-open .settings-picker-panel { max-height: 280px; opacity: 1; transform: none; pointer-events: auto; }
-.settings-picker-list { display: grid; gap: 5px; max-height: 272px; overflow: auto; padding: 7px; }
+.settings-picker-row.is-open .settings-picker-panel { max-height: var(--settings-picker-max-height, 280px); opacity: 1; transform: none; pointer-events: auto; }
+
+.settings-picker-row.opens-up .settings-picker-panel {
+  top: auto;
+  bottom: calc(100% + 7px);
+  transform: translateY(6px) scale(.985);
+  transform-origin: bottom right;
+}
+
+.settings-picker-row.opens-up.is-open .settings-picker-panel {
+  transform: none;
+}
+
+.settings-picker-list { display: grid; gap: 5px; max-height: calc(var(--settings-picker-max-height, 280px) - 8px); overflow: auto; padding: 7px; }
 .settings-picker-item {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
