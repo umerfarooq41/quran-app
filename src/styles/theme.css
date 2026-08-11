@@ -3926,3 +3926,17 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
   box-shadow: none !important;
   color: var(--theme-text) !important;
 }
+
+
+/* Surah Info dark mode: keep the outer content wrapper transparent.
+   The rounded .surah-info-html reading surface is the only content card,
+   matching the light-mode hierarchy. */
+[data-theme='dark'] .surah-info-content {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+[data-theme='dark'] .surah-info-html {
+  color: var(--theme-text) !important;
+}
