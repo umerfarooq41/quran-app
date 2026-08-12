@@ -3687,3 +3687,128 @@ body {
     padding: 15px;
   }
 }
+
+
+/* Share Quran refinement: solid Ayah card, full-frame preview, Settings-style reciter picker. */
+.share-media-range-card {
+  background: var(--theme-surface-solid, #fffdf8) !important;
+  border-color: rgba(201, 162, 75, .18) !important;
+  box-shadow: 0 4px 16px rgba(31, 61, 43, .05) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.share-media-live-preview {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: rgba(201, 162, 75, .10);
+}
+
+.share-media-live-preview.is-image.is-portrait,
+.share-media-live-preview.is-video.is-portrait {
+  aspect-ratio: 3 / 4;
+}
+
+.share-media-live-preview.is-image.is-landscape,
+.share-media-live-preview.is-video.is-landscape {
+  aspect-ratio: 16 / 9;
+}
+
+.share-media-live-preview .quran-share-generated-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+.share-video-preview-stage {
+  min-height: 0 !important;
+}
+
+.share-reciter-picker {
+  position: relative;
+  display: grid;
+  gap: 10px;
+}
+
+.share-reciter-trigger {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) 20px;
+  width: 100%;
+  min-height: 52px;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(201, 162, 75, .28);
+  border-radius: 16px;
+  background: rgba(201, 162, 75, .045);
+  padding: 7px 12px;
+  color: var(--theme-text, #1f2421);
+  text-align: left;
+  font-weight: 600;
+}
+
+.share-reciter-trigger > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.share-reciter-trigger > svg {
+  justify-self: end;
+  color: var(--theme-text-muted, #777);
+}
+
+.share-reciter-avatar {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.share-reciter-menu {
+  position: absolute;
+  z-index: 40;
+  top: calc(100% + 6px);
+  right: 0;
+  left: 0;
+  max-height: 280px;
+  overflow-y: auto;
+  border: 1px solid rgba(201, 162, 75, .22);
+  border-radius: 18px;
+  background: var(--theme-surface-solid, #fffdf8);
+  padding: 6px;
+  box-shadow: 0 14px 34px rgba(31, 61, 43, .16);
+}
+
+.share-reciter-menu button {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) 20px;
+  width: 100%;
+  min-height: 50px;
+  align-items: center;
+  gap: 10px;
+  border-radius: 13px;
+  padding: 6px 9px;
+  color: var(--theme-text, #1f2421);
+  text-align: left;
+}
+
+.share-reciter-menu button.is-selected {
+  background: rgba(47, 125, 104, .10);
+  color: var(--theme-accent, #2f7d68);
+}
+
+.share-reciter-menu button > svg {
+  justify-self: end;
+}
+
+/* The old still-frame control is intentionally removed from the UI. */
+.share-media-toggle-row {
+  display: none !important;
+}
+
+[data-theme='dark'] .share-media-range-card,
+[data-theme='dark'] .share-reciter-menu {
+  background: var(--theme-surface-solid) !important;
+}
