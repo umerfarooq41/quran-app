@@ -12,7 +12,7 @@ import {
 import { getSurah, getSurahAyahs } from '../../../lib/quran';
 import { getSurahNameMeta } from '../../../data/surahNames';
 import { generateQuranShareImage } from '../../../lib/shareCanvas';
-import { normalizeLocalReciters } from '../../../lib/localAudio';
+import { getReciterImageUrl, normalizeLocalReciters } from '../../../lib/localAudio';
 import {
   SHARE_BACKGROUND_ASSETS,
   SHARE_MEDIA_MODES,
@@ -43,7 +43,6 @@ export function ShareQuranScreen({ ayah, onClose }) {
   const [selectedBackgroundId, setSelectedBackgroundId] = useState(
     SHARE_BACKGROUND_ASSETS[0]?.id || '',
   );
-  const [useStillFrame, setUseStillFrame] = useState(true);
   const [orientation, setOrientation] = useState('portrait');
   const [status, setStatus] = useState('');
 
@@ -82,7 +81,6 @@ export function ShareQuranScreen({ ayah, onClose }) {
     fromAyah,
     toAyah,
     backgroundAsset: selectedBackground,
-    useStillFrame,
     orientation,
     reciterId: selectedReciter,
     showTranslation: false,
@@ -98,7 +96,6 @@ export function ShareQuranScreen({ ayah, onClose }) {
     fromAyah,
     toAyah,
     selectedBackground,
-    useStillFrame,
     orientation,
     selectedReciter,
   ]);
@@ -124,6 +121,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
       ayahs: range,
       background: SHARE_BACKGROUND,
       surahMeaning: surahMeta?.meaning || '',
+      orientation,
     })
       .then((blob) => {
         if (!cancelled) setImageBlob(blob);
@@ -138,7 +136,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
     return () => {
       cancelled = true;
     };
-  }, [arabicSurahName, ayah.surahNumber, range, surahMeta?.meaning]);
+  }, [arabicSurahName, ayah.surahNumber, range, surahMeta?.meaning, orientation]);
 
   useEffect(() => {
     if (!imageBlob) {
@@ -329,9 +327,6 @@ export function ShareQuranScreen({ ayah, onClose }) {
               assets={SHARE_BACKGROUND_ASSETS}
               selectedId={selectedBackgroundId}
               onSelect={setSelectedBackgroundId}
-              useStillFrame={useStillFrame}
-              onStillFrameChange={setUseStillFrame}
-              mode={mode}
             />
           )}
 
@@ -487,6 +482,9 @@ function VideoPreview({
 }
 
 function AudioSettings({ mode, reciters, selectedReciter, onReciterChange }) {
+  const [open, setOpen] = useState(false);
+  const selected = reciters.find((reciter) => reciter.id === selectedReciter) || reciters[0] || null;
+
   if (mode === SHARE_MEDIA_MODES.IMAGE) {
     return (
       <div className="share-media-simple-message">
@@ -500,29 +498,60 @@ function AudioSettings({ mode, reciters, selectedReciter, onReciterChange }) {
   }
 
   return (
-    <div className="share-media-control-group">
-      <label htmlFor="share-reciter">Reciter</label>
-      <select
-        id="share-reciter"
-        value={selectedReciter}
-        onChange={(event) => onReciterChange(event.target.value)}
+    <div className="share-reciter-picker">
+      <div className="share-media-section-heading">
+        <strong>Reciter</strong>
+        <span>Choose from the same reciters available in Settings.</span>
+      </div>
+
+      <button
+        type="button"
+        className="share-reciter-trigger"
+        aria-expanded={open}
+        onClick={() => setOpen((value) => !value)}
       >
-        {reciters.map((reciter) => (
-          <option key={reciter.id} value={reciter.id}>{reciter.name}</option>
-        ))}
-      </select>
+        {selected && (
+          <img
+            className="share-reciter-avatar"
+            src={getReciterImageUrl(selected)}
+            alt=""
+          />
+        )}
+        <span>{selected?.name || 'Select reciter'}</span>
+        <ChevronDown size={18} aria-hidden="true" />
+      </button>
+
+      {open && (
+        <div className="share-reciter-menu">
+          {reciters.map((reciter) => {
+            const isSelected = reciter.id === selectedReciter;
+            return (
+              <button
+                key={reciter.id}
+                type="button"
+                className={isSelected ? 'is-selected' : ''}
+                onClick={() => {
+                  onReciterChange(reciter.id);
+                  setOpen(false);
+                }}
+              >
+                <img
+                  className="share-reciter-avatar"
+                  src={getReciterImageUrl(reciter)}
+                  alt=""
+                />
+                <span>{reciter.name}</span>
+                {isSelected && <Check size={17} aria-hidden="true" />}
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
 
-function BackgroundSettings({
-  assets,
-  selectedId,
-  onSelect,
-  useStillFrame,
-  onStillFrameChange,
-  mode,
-}) {
+function BackgroundSettings({ assets, selectedId, onSelect }) {
   return (
     <>
       <div className="share-media-section-heading">
@@ -552,21 +581,6 @@ function BackgroundSettings({
           <span>Add your licensed/AI-generated clips to the share background manifest.</span>
         </div>
       )}
-
-      <label className="share-media-toggle-row">
-        <div>
-          <strong>Use still frame</strong>
-          <span>{mode === SHARE_MEDIA_MODES.IMAGE
-            ? 'Use a frame from the selected video for the image.'
-            : 'Keep the background moving in video mode.'}</span>
-        </div>
-        <input
-          type="checkbox"
-          checked={useStillFrame}
-          onChange={(event) => onStillFrameChange(event.target.checked)}
-          disabled={!assets.length}
-        />
-      </label>
     </>
   );
 }
