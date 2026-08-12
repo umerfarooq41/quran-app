@@ -3943,3 +3943,112 @@ body {
   object-fit: contain;
   border-radius: 24px;
 }
+
+
+/* Share Quran overlap + unified media-style authority */
+.share-media-live-preview {
+  position: relative;
+  display: block;
+  height: auto !important;
+  max-height: none !important;
+  overflow: hidden !important;
+  border-radius: 26px;
+  background: #103a34;
+  box-shadow: 0 6px 22px rgba(31,61,43,.08);
+}
+
+.share-media-live-preview.is-video.is-portrait,
+.share-media-live-preview.is-image.is-portrait {
+  aspect-ratio: 3 / 4 !important;
+}
+
+.share-media-live-preview.is-video.is-landscape,
+.share-media-live-preview.is-image.is-landscape {
+  aspect-ratio: 16 / 9 !important;
+}
+
+.share-video-preview-stage,
+.share-image-preview-stage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100% !important;
+  min-height: 0 !important;
+  overflow: hidden;
+}
+
+.share-image-preview-stage {
+  display: grid;
+  place-items: center;
+  background: #103a34;
+}
+
+.share-image-preview-stage .quran-share-generated-image {
+  width: 100% !important;
+  height: 100% !important;
+  max-height: none !important;
+  object-fit: contain !important;
+  border-radius: 0 !important;
+}
+
+.share-media-tabs,
+.share-media-settings-card,
+.share-media-range-card,
+.share-selected-reciter,
+.share-media-final-action,
+.share-media-export-note {
+  position: relative;
+  z-index: 1;
+}
+
+/* Ayahs card follows the same solid card language as Settings. */
+.share-media-range-card {
+  border: 1px solid rgba(201,162,75,.18) !important;
+  background: var(--theme-surface-solid, #fffdf8) !important;
+  box-shadow: 0 4px 16px rgba(31,61,43,.05) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* From/To use the Settings-style field treatment. */
+.share-range-trigger {
+  min-height: 46px !important;
+  border: 1px solid rgba(201,162,75,.30) !important;
+  border-radius: 14px !important;
+  background: rgba(201,162,75,.045) !important;
+  padding: 0 12px !important;
+  box-shadow: 0 1px 3px rgba(31,61,43,.04) !important;
+}
+
+.share-range-trigger > span {
+  font-weight: 600;
+}
+
+.share-range-trigger:active {
+  background: rgba(201,162,75,.10) !important;
+  transform: scale(.985);
+}
+
+.share-range-menu {
+  border: 1px solid rgba(201,162,75,.18) !important;
+  background: var(--theme-surface-solid, #fffdf8) !important;
+  box-shadow: 0 12px 30px rgba(31,61,43,.16) !important;
+}
+
+.share-range-menu button {
+  min-height: 44px;
+}
+
+.share-range-menu button.is-selected {
+  background: rgba(47,125,104,.10) !important;
+  color: var(--theme-accent, #2f7d68) !important;
+}
+
+[data-theme='dark'] .share-media-range-card,
+[data-theme='dark'] .share-range-menu {
+  background: var(--theme-surface-solid) !important;
+}
+
+[data-theme='dark'] .share-range-trigger {
+  background: rgba(201,162,75,.055) !important;
+}
