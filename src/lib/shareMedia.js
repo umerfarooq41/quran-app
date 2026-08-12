@@ -15,14 +15,12 @@ export const SHARE_MEDIA_TABS = Object.freeze([
 // Add user-owned/AI-generated clips here. The UI intentionally tolerates an
 // empty library so no copyrighted sample media needs to ship with the app.
 export const SHARE_BACKGROUND_ASSETS = Object.freeze([
-  // Example:
-  // {
-  //   id: 'ocean-01',
-  //   label: 'Ocean',
-  //   videoSrc: '/media/share-backgrounds/ocean-01.mp4',
-  //   posterSrc: '/media/share-backgrounds/ocean-01.jpg',
-  //   stillFrameMs: 4200,
-  // },
+  { id: 'desert', label: 'Desert', imageSrc: '/share/backgrounds/desert.png', videoSrc: '/share/videos/desert.mp4' },
+  { id: 'forest', label: 'Forest', imageSrc: '/share/backgrounds/forest.png', videoSrc: '/share/videos/forest.mp4' },
+  { id: 'ice', label: 'Ice', imageSrc: '/share/backgrounds/ice.png', videoSrc: '/share/videos/ice.mp4' },
+  { id: 'mountains', label: 'Mountains', imageSrc: '/share/backgrounds/mountains.png', videoSrc: '/share/videos/mountains.mp4' },
+  { id: 'space', label: 'Space', imageSrc: '/share/backgrounds/space.png', videoSrc: '/share/videos/space.mp4' },
+  { id: 'undersea', label: 'Undersea', imageSrc: '/share/backgrounds/undersea.png', videoSrc: '/share/videos/undersea.mp4' },
 ]);
 
 export function buildShareComposition({
@@ -44,18 +42,18 @@ export function buildShareComposition({
     toAyah: Number(toAyah) || Number(fromAyah) || 1,
     background: backgroundAsset
       ? {
-          type: 'video',
+          type: 'media',
           assetId: backgroundAsset.id,
-          videoSrc: backgroundAsset.videoSrc,
-          posterSrc: backgroundAsset.posterSrc || '',
-          stillFrameMs: Number(backgroundAsset.stillFrameMs) || 0,
+          label: backgroundAsset.label || '',
+          imageSrc: backgroundAsset.imageSrc || '',
+          videoSrc: backgroundAsset.videoSrc || '',
         }
       : {
           type: 'solid',
           assetId: null,
+          label: '',
+          imageSrc: '',
           videoSrc: '',
-          posterSrc: '',
-          stillFrameMs: 0,
         },
     orientation: orientation === 'landscape' ? 'landscape' : 'portrait',
     reciterId,
