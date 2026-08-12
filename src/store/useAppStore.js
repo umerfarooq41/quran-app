@@ -7,7 +7,6 @@ export const OVERLAY_TYPES = Object.freeze({
   READER: 'reader',
   INDEX: 'index',
   AYAH: 'ayah-sheet',
-  SHARE: 'share-sheet',
   SETTINGS: 'settings',
 });
 
@@ -19,7 +18,6 @@ const SCREEN_OVERLAY_BY_VIEW = {
 
 const LOCAL_OVERLAY_TYPES = new Set([
   OVERLAY_TYPES.AYAH,
-  OVERLAY_TYPES.SHARE,
 ]);
 
 
@@ -134,6 +132,14 @@ export const useAppStore = create((set, get) => ({
   openSearch: () => get().navigateTo(VIEWS.SEARCH),
   openBookmarks: () => get().navigateTo(VIEWS.TABS),
   openSettings: () => get().navigateTo(VIEWS.SETTINGS, { direction: 'modal' }),
+  openSharePage: (shareTarget) => set((state) => ({
+    ...transitionToView(state, VIEWS.SHARE_QURAN),
+    shareTarget,
+  })),
+  closeSharePage: () => set((state) => ({
+    ...navigateBack(state, VIEWS.READER),
+    shareTarget: null,
+  })),
   goPage: (page, pendingAyah = null, options = {}) => set((state) => {
     const nextPage = clampPage(page);
     const nextState = state.view === VIEWS.READER
@@ -226,14 +232,6 @@ export const useAppStore = create((set, get) => ({
     overlayStack: removeOverlay(state.overlayStack, OVERLAY_TYPES.AYAH),
   })),
   clearSelectedAyah: () => get().closeAyahSheet(),
-  openShareSheet: (shareTarget) => set((state) => ({
-    shareTarget,
-    overlayStack: pushOverlay(state.overlayStack, OVERLAY_TYPES.SHARE),
-  })),
-  closeShareSheet: () => set((state) => ({
-    shareTarget: null,
-    overlayStack: removeOverlay(state.overlayStack, OVERLAY_TYPES.SHARE),
-  })),
   openAudioPlayer: (audioTarget) => set((state) => {
     const target = normalizeAudioTarget(audioTarget);
     if (!target) return state;
@@ -510,20 +508,13 @@ function navigateBack(state, fallbackView) {
     overlayStack,
     navDirection: 'back',
     controlsVisible: targetView === VIEWS.READER,
+    shareTarget: state.view === VIEWS.SHARE_QURAN ? null : nextState.shareTarget,
   };
 }
 
 function closeTopOverlay(state) {
   const topOverlay = state.overlayStack.at(-1);
   if (!topOverlay) return state;
-
-  if (topOverlay.type === OVERLAY_TYPES.SHARE) {
-    return {
-      ...state,
-      shareTarget: null,
-      overlayStack: state.overlayStack.slice(0, -1),
-    };
-  }
 
   if (topOverlay.type === OVERLAY_TYPES.AYAH) {
     return {
