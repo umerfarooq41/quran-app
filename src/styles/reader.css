@@ -3812,3 +3812,134 @@ body {
 [data-theme='dark'] .share-reciter-menu {
   background: var(--theme-surface-solid) !important;
 }
+
+
+/* Share Quran text + centered ayah-card refinement */
+.share-video-preview-header {
+  top: 8%;
+}
+
+.share-video-preview-header strong {
+  font-size: clamp(1.35rem, 5vw, 2rem);
+  font-weight: 700;
+}
+
+.share-video-preview-header span {
+  margin-top: 2px;
+  font-size: .9rem;
+  opacity: .92;
+}
+
+/* Only the active ayah gets the transparent card.
+   It stays centered vertically and horizontally in the media frame. */
+.share-video-preview-ayah-card {
+  --share-text-scale: 1;
+  position: absolute;
+  top: 50%;
+  right: 5%;
+  left: 5%;
+  display: grid;
+  min-height: 22%;
+  place-items: center;
+  transform: translateY(-50%);
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 22px;
+  background: rgba(8, 24, 22, .44);
+  padding: clamp(18px, 5vw, 34px) clamp(16px, 6vw, 38px);
+  box-shadow: 0 12px 30px rgba(0,0,0,.14);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.share-video-preview-ayah {
+  position: static;
+  width: 100%;
+  transform: none;
+  font-size: calc(clamp(1.6rem, 7vw, 2.7rem) * var(--share-text-scale));
+  line-height: 1.8;
+  text-align: center;
+  animation: shareAyahTextFadeIn .22s ease both;
+}
+
+@keyframes shareAyahTextFadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.share-media-live-preview.is-landscape .share-video-preview-ayah-card {
+  right: 12%;
+  left: 12%;
+  min-height: 30%;
+  padding: 14px 24px;
+}
+
+.share-media-live-preview.is-landscape .share-video-preview-ayah {
+  font-size: calc(clamp(1.2rem, 4vw, 2rem) * var(--share-text-scale));
+  line-height: 1.65;
+}
+
+.share-text-settings {
+  display: grid;
+  gap: 14px;
+}
+
+.share-text-size-control {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 48px;
+  align-items: center;
+  gap: 12px;
+}
+
+.share-text-size-control > button {
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(201,162,75,.30);
+  border-radius: 15px;
+  background: rgba(201,162,75,.045);
+  color: var(--theme-accent, #2f7d68);
+  font-size: 1.55rem;
+  font-weight: 600;
+}
+
+.share-text-size-control > button:active {
+  background: rgba(201,162,75,.12);
+  transform: scale(.96);
+}
+
+.share-text-size-control > button:disabled {
+  opacity: .35;
+}
+
+.share-text-size-control > div {
+  display: grid;
+  min-height: 48px;
+  place-items: center;
+  align-content: center;
+  border: 1px solid rgba(201,162,75,.16);
+  border-radius: 15px;
+  background: rgba(201,162,75,.025);
+}
+
+.share-text-size-control > div strong {
+  font-size: .95rem;
+}
+
+.share-text-size-control > div span {
+  color: var(--theme-text-muted, #777);
+  font-size: .75rem;
+}
+
+/* Keep the image preview entirely visible for both orientations. */
+.share-media-live-preview.is-image {
+  display: grid;
+  place-items: center;
+  background: transparent;
+  box-shadow: none;
+}
+
+.share-media-live-preview.is-image .quran-share-generated-image {
+  width: 100%;
+  max-height: 68vh;
+  object-fit: contain;
+  border-radius: 24px;
+}
