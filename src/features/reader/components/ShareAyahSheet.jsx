@@ -353,8 +353,21 @@ export function ShareQuranScreen({ ayah, onClose }) {
           {activeTab === 'text' && (
             <TextSettings
               mode={mode}
+              surahName={surah?.name || `Surah ${ayah.surahNumber}`}
               fromAyah={fromAyah}
               toAyah={toAyah}
+              fromOptions={fromOptions}
+              toOptions={toOptions}
+              openRangePicker={openRangePicker}
+              onToggleRange={setOpenRangePicker}
+              onChangeFrom={(nextValue) => {
+                changeFrom(nextValue);
+                setOpenRangePicker(null);
+              }}
+              onChangeTo={(nextValue) => {
+                setToAyah(Number(nextValue));
+                setOpenRangePicker(null);
+              }}
               textScale={textScale}
               onTextScaleChange={setTextScale}
             />
@@ -365,40 +378,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
           )}
         </section>
 
-        <section className="share-range-card share-media-range-card">
-          <div className="share-media-range-title">
-            <div>
-              <h3>Ayahs</h3>
-              <p>Maximum 10 ayahs</p>
-            </div>
-            <span>{surah?.name || `Surah ${ayah.surahNumber}`}</span>
-          </div>
 
-          <div className="share-range-selectors">
-            <RangeField
-              label="From"
-              value={fromAyah}
-              options={fromOptions}
-              open={openRangePicker === 'from'}
-              onToggle={() => setOpenRangePicker((current) => current === 'from' ? null : 'from')}
-              onSelect={(nextValue) => {
-                changeFrom(nextValue);
-                setOpenRangePicker(null);
-              }}
-            />
-            <RangeField
-              label="To"
-              value={toAyah}
-              options={toOptions}
-              open={openRangePicker === 'to'}
-              onToggle={() => setOpenRangePicker((current) => current === 'to' ? null : 'to')}
-              onSelect={(nextValue) => {
-                setToAyah(Number(nextValue));
-                setOpenRangePicker(null);
-              }}
-            />
-          </div>
-        </section>
 
         {mode === SHARE_MEDIA_MODES.VIDEO && (
           <div className="share-selected-reciter">
@@ -657,8 +637,15 @@ function BackgroundSettings({ assets, selectedId, onSelect }) {
 
 function TextSettings({
   mode,
+  surahName,
   fromAyah,
   toAyah,
+  fromOptions,
+  toOptions,
+  openRangePicker,
+  onToggleRange,
+  onChangeFrom,
+  onChangeTo,
   textScale,
   onTextScaleChange,
 }) {
@@ -666,38 +653,69 @@ function TextSettings({
 
   return (
     <div className="share-text-settings">
-      <div className="share-media-section-heading">
-        <strong>Quran text size</strong>
-        <span>
-          {mode === SHARE_MEDIA_MODES.VIDEO
-            ? 'One ayah is shown at a time in the center.'
-            : `Ayahs ${fromAyah}–${toAyah} are composed together.`}
-        </span>
-      </div>
-
-      <div className="share-text-size-control">
-        <button
-          type="button"
-          aria-label="Decrease Quran text size"
-          onClick={() => onTextScaleChange((value) => Math.max(0.75, Number((value - 0.05).toFixed(2))))}
-          disabled={textScale <= 0.75}
-        >
-          −
-        </button>
-
-        <div>
-          <strong>{percent}%</strong>
-          <span>Arabic text</span>
+      <div className="share-text-size-section">
+        <div className="share-media-section-heading">
+          <strong>Quran text size</strong>
+          <span>
+            {mode === SHARE_MEDIA_MODES.VIDEO
+              ? 'One ayah is shown at a time in the center.'
+              : `Ayahs ${fromAyah}–${toAyah} are composed together.`}
+          </span>
         </div>
 
-        <button
-          type="button"
-          aria-label="Increase Quran text size"
-          onClick={() => onTextScaleChange((value) => Math.min(1.35, Number((value + 0.05).toFixed(2))))}
-          disabled={textScale >= 1.35}
-        >
-          +
-        </button>
+        <div className="share-text-size-control">
+          <button
+            type="button"
+            aria-label="Decrease Quran text size"
+            onClick={() => onTextScaleChange((value) => Math.max(0.75, Number((value - 0.05).toFixed(2))))}
+            disabled={textScale <= 0.75}
+          >
+            −
+          </button>
+
+          <div>
+            <strong>{percent}%</strong>
+            <span>Arabic text</span>
+          </div>
+
+          <button
+            type="button"
+            aria-label="Increase Quran text size"
+            onClick={() => onTextScaleChange((value) => Math.min(1.35, Number((value + 0.05).toFixed(2))))}
+            disabled={textScale >= 1.35}
+          >
+            +
+          </button>
+        </div>
+      </div>
+
+      <div className="share-text-ayahs-card">
+        <div className="share-media-range-title">
+          <div>
+            <h3>Ayahs</h3>
+            <p>Maximum 10 ayahs</p>
+          </div>
+          <span>{surahName}</span>
+        </div>
+
+        <div className="share-range-selectors">
+          <RangeField
+            label="From"
+            value={fromAyah}
+            options={fromOptions}
+            open={openRangePicker === 'from'}
+            onToggle={() => onToggleRange((current) => current === 'from' ? null : 'from')}
+            onSelect={onChangeFrom}
+          />
+          <RangeField
+            label="To"
+            value={toAyah}
+            options={toOptions}
+            open={openRangePicker === 'to'}
+            onToggle={() => onToggleRange((current) => current === 'to' ? null : 'to')}
+            onSelect={onChangeTo}
+          />
+        </div>
       </div>
     </div>
   );
@@ -731,8 +749,40 @@ function StyleSettings({ orientation, onOrientationChange }) {
 }
 
 function RangeField({ label, value, options, open, onToggle, onSelect }) {
+  const fieldRef = useRef(null);
+  const [opensUp, setOpensUp] = useState(false);
+
+  useEffect(() => {
+    if (!open || !fieldRef.current) return undefined;
+
+    const updateDirection = () => {
+      const rect = fieldRef.current.getBoundingClientRect();
+      const viewportHeight = window.visualViewport?.height || window.innerHeight;
+      const estimatedMenuHeight = Math.min(280, Math.max(48, options.length * 48));
+      const roomBelow = viewportHeight - rect.bottom;
+      const roomAbove = rect.top;
+
+      setOpensUp(
+        roomBelow < estimatedMenuHeight + 12 &&
+        roomAbove > roomBelow
+      );
+    };
+
+    updateDirection();
+    window.visualViewport?.addEventListener('resize', updateDirection);
+    window.addEventListener('resize', updateDirection);
+
+    return () => {
+      window.visualViewport?.removeEventListener('resize', updateDirection);
+      window.removeEventListener('resize', updateDirection);
+    };
+  }, [open, options.length]);
+
   return (
-    <div className="share-range-field">
+    <div
+      ref={fieldRef}
+      className={`share-range-field${opensUp ? ' opens-up' : ''}`}
+    >
       <span>{label}</span>
       <button
         type="button"
@@ -743,6 +793,7 @@ function RangeField({ label, value, options, open, onToggle, onSelect }) {
         <span>Ayah {value}</span>
         <ChevronDown size={18} aria-hidden="true" />
       </button>
+
       {open && (
         <div className="share-range-menu">
           {options.map((item) => (
