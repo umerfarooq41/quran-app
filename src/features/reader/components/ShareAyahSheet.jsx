@@ -6,6 +6,8 @@ import {
   Headphones,
   Image as ImageIcon,
   Palette,
+  Pause,
+  Play,
   Type,
   Volume2,
 } from 'lucide-react';
@@ -197,6 +199,16 @@ export function ShareQuranScreen({ ayah, onClose }) {
     setVideoPlaying(false);
   }
 
+  function seekVideoPreview(nextElapsedMs) {
+    const durationMs = Number(videoTimeline?.durationMs) || 0;
+    const nextMs = Math.max(0, Math.min(durationMs, Number(nextElapsedMs) || 0));
+    setVideoElapsedMs(nextMs);
+
+    if (audioRef.current && videoTimeline?.sourceStartMs != null) {
+      audioRef.current.currentTime = (videoTimeline.sourceStartMs + nextMs) / 1000;
+    }
+  }
+
   async function toggleVideoPreview() {
     if (!videoTimeline?.audioUrl || !videoTimeline.timeline?.length) {
       setStatus('Video preview needs a reciter with full-Surah timing data.');
@@ -292,6 +304,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
               elapsedMs={videoElapsedMs}
               durationMs={videoTimeline?.durationMs || 0}
               onTogglePlay={toggleVideoPreview}
+              onSeek={seekVideoPreview}
               textScale={textScale}
             />
           )}
@@ -455,16 +468,30 @@ function VideoPreview({
   elapsedMs,
   durationMs,
   onTogglePlay,
+  onSeek,
   textScale,
 }) {
+  const backgroundVideoRef = useRef(null);
+
+  useEffect(() => {
+    const video = backgroundVideoRef.current;
+    if (!video) return;
+
+    if (playing) {
+      video.play().catch(() => {});
+    } else {
+      video.pause();
+    }
+  }, [playing, background?.videoSrc]);
+
   return (
     <div className="share-video-preview-stage">
       {background?.videoSrc ? (
         <video
+          ref={backgroundVideoRef}
           className="share-video-preview-background"
           src={background.videoSrc}
           poster={background.imageSrc || undefined}
-          autoPlay
           muted
           loop
           playsInline
@@ -489,12 +516,32 @@ function VideoPreview({
         </div>
       </div>
 
-      <button type="button" className="share-video-preview-play" onClick={onTogglePlay}>
-        {playing ? 'Pause' : 'Preview'}
-      </button>
+      <div className="share-video-preview-controls">
+        <button
+          type="button"
+          className="share-video-preview-play"
+          onClick={onTogglePlay}
+          aria-label={playing ? 'Pause video preview' : 'Play video preview'}
+        >
+          {playing ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}
+        </button>
 
-      <div className="share-video-preview-progress">
-        <span style={{ width: `${durationMs ? Math.min(100, (elapsedMs / durationMs) * 100) : 0}%` }} />
+        <div className="share-video-preview-seek-wrap">
+          <input
+            className="share-video-preview-seek"
+            type="range"
+            min="0"
+            max={Math.max(1, durationMs || 1)}
+            step="50"
+            value={Math.min(elapsedMs, Math.max(1, durationMs || 1))}
+            onChange={(event) => onSeek(Number(event.target.value))}
+            aria-label="Seek video preview"
+          />
+          <div className="share-video-preview-time">
+            <span>{formatMediaTime(elapsedMs)}</span>
+            <span>{formatMediaTime(durationMs)}</span>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -709,6 +756,13 @@ function RangeField({ label, value, options, open, onToggle, onSelect }) {
       )}
     </div>
   );
+}
+
+function formatMediaTime(milliseconds) {
+  const totalSeconds = Math.max(0, Math.floor((Number(milliseconds) || 0) / 1000));
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${minutes}:${String(seconds).padStart(2, '0')}`;
 }
 
 function getTabIcon(id) {
