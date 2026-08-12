@@ -8,6 +8,7 @@ export const VIEWS = {
   TABS: 'tabs',
   TAFSIR: 'tafsir',
   SETTINGS: 'settings',
+  SHARE_QURAN: 'shareQuran',
 };
 
 export const VALID_VIEWS = new Set(Object.values(VIEWS));
