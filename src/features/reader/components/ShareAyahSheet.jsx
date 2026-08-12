@@ -279,7 +279,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
         }} />
 
         <section
-          className={`share-media-live-preview is-${mode} is-${orientation}`}
+          className={`share-media-live-preview is-${mode} is-${orientation} tab-${activeTab}`}
           aria-label={`${mode} preview`}
         >
           {mode === SHARE_MEDIA_MODES.IMAGE ? (
@@ -306,6 +306,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
               onTogglePlay={toggleVideoPreview}
               onSeek={seekVideoPreview}
               textScale={textScale}
+              showAyahCard={activeTab === 'text'}
             />
           )}
         </section>
@@ -470,6 +471,7 @@ function VideoPreview({
   onTogglePlay,
   onSeek,
   textScale,
+  showAyahCard,
 }) {
   const backgroundVideoRef = useRef(null);
 
@@ -506,15 +508,17 @@ function VideoPreview({
         {surahMeaning && <span>{surahMeaning}</span>}
       </div>
 
-      <div
-        className="share-video-preview-ayah-card"
-        key={ayah?.ayahNumber}
-        style={{ '--share-text-scale': textScale }}
-      >
-        <div className="share-video-preview-ayah">
-          {ayah?.text || ''}
+      {showAyahCard && (
+        <div
+          className="share-video-preview-ayah-card"
+          key={ayah?.ayahNumber}
+          style={{ '--share-text-scale': textScale }}
+        >
+          <div className="share-video-preview-ayah">
+            {ayah?.text || ''}
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="share-video-preview-controls">
         <button
@@ -675,7 +679,7 @@ function TextSettings({
         <button
           type="button"
           aria-label="Decrease Quran text size"
-          onClick={() => onTextScaleChange((value) => Math.max(0.75, Number((value - 0.1).toFixed(2))))}
+          onClick={() => onTextScaleChange((value) => Math.max(0.75, Number((value - 0.05).toFixed(2))))}
           disabled={textScale <= 0.75}
         >
           −
@@ -689,7 +693,7 @@ function TextSettings({
         <button
           type="button"
           aria-label="Increase Quran text size"
-          onClick={() => onTextScaleChange((value) => Math.min(1.35, Number((value + 0.1).toFixed(2))))}
+          onClick={() => onTextScaleChange((value) => Math.min(1.35, Number((value + 0.05).toFixed(2))))}
           disabled={textScale >= 1.35}
         >
           +
