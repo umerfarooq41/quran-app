@@ -4507,3 +4507,139 @@ body {
     padding: 14px;
   }
 }
+
+
+/* Share Quran playback / translation / picker final fixes */
+.share-media-export-note,
+.share-selected-reciter {
+  display: none !important;
+}
+
+.share-reciter-picker {
+  isolation: isolate;
+  z-index: 30;
+}
+
+.share-reciter-menu {
+  top: calc(100% + 8px) !important;
+  bottom: auto !important;
+  max-height: min(300px, 46vh) !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  opacity: 1 !important;
+  background: #fffdf8 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  z-index: 120 !important;
+}
+
+.share-reciter-picker.opens-up .share-reciter-menu {
+  top: auto !important;
+  bottom: calc(100% + 8px) !important;
+}
+
+.share-reciter-picker.opens-up .share-reciter-trigger > svg {
+  transform: rotate(180deg);
+}
+
+.share-reciter-trigger > svg {
+  transition: transform .16s ease;
+}
+
+.share-media-live-preview.is-video.is-landscape.tab-text .share-video-preview-ayah-card {
+  display: grid !important;
+  top: 47% !important;
+  right: 9% !important;
+  left: 9% !important;
+  max-height: 48% !important;
+  overflow: hidden;
+}
+
+.share-media-live-preview.is-video.is-landscape.tab-text .share-video-preview-ayah {
+  font-size: calc(clamp(1rem, 3.6vw, 1.75rem) * var(--share-text-scale)) !important;
+  line-height: 1.5 !important;
+}
+
+.share-video-preview-translation {
+  width: 100%;
+  margin-top: 10px;
+  color: rgba(255,255,255,.92);
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: .84rem;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.share-media-live-preview.is-video.is-landscape .share-video-preview-translation {
+  margin-top: 6px;
+  font-size: .72rem;
+  line-height: 1.35;
+}
+
+.share-translation-setting {
+  display: flex;
+  min-height: 66px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  border: 1px solid rgba(201,162,75,.16);
+  border-radius: 18px;
+  background: rgba(201,162,75,.025);
+  padding: 12px 14px;
+}
+
+.share-translation-setting-copy {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.share-translation-setting-copy > strong {
+  font-size: .95rem;
+  font-weight: 650;
+}
+
+.share-translation-setting-copy > span {
+  color: var(--theme-text-muted, #777);
+  font-size: .78rem;
+  line-height: 1.4;
+}
+
+.share-translation-setting-copy > small {
+  color: var(--theme-accent, #2f7d68);
+  font-size: .7rem;
+}
+
+.share-translation-toggle {
+  position: relative;
+  width: 48px;
+  height: 28px;
+  flex: 0 0 48px;
+  border-radius: 999px;
+  background: rgba(110,110,110,.22);
+  padding: 3px;
+  transition: background .16s ease;
+}
+
+.share-translation-toggle > span {
+  display: block;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,.18);
+  transition: transform .16s ease;
+}
+
+.share-translation-toggle.is-on {
+  background: var(--theme-accent, #2f7d68);
+}
+
+.share-translation-toggle.is-on > span {
+  transform: translateX(20px);
+}
+
+[data-theme='dark'] .share-reciter-menu,
+[data-theme='dark'] .share-translation-setting {
+  background: var(--theme-surface-solid) !important;
+}
