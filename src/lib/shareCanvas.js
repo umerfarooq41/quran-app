@@ -9,6 +9,9 @@ export async function generateQuranShareImage({
   orientation = 'portrait',
   textScale = 1,
   backgroundAsset = null,
+  showTranslation = false,
+  translationsByAyah = {},
+  translationDirection = 'ltr',
 }) {
   const isLandscape = orientation === 'landscape';
   const { width, height } = isLandscape ? LANDSCAPE_SIZE : PORTRAIT_SIZE;
@@ -50,6 +53,9 @@ export async function generateQuranShareImage({
     isLandscape,
     ayahs,
     textScale: clamp(Number(textScale) || 1, 0.75, 1.35),
+    showTranslation,
+    translationsByAyah,
+    translationDirection,
   });
 
   drawReference(ctx, {
@@ -107,7 +113,16 @@ function drawSurahHeader(ctx, { width, height, isLandscape, surahName, surahMean
   }
 }
 
-function drawAyahCard(ctx, { width, height, isLandscape, ayahs, textScale }) {
+function drawAyahCard(ctx, {
+  width,
+  height,
+  isLandscape,
+  ayahs,
+  textScale,
+  showTranslation,
+  translationsByAyah,
+  translationDirection,
+}) {
   const cardWidth = width * (isLandscape ? 0.76 : 0.89);
   const maxCardHeight = height * (isLandscape ? 0.56 : 0.60);
   const cardX = (width - cardWidth) / 2;
@@ -136,10 +151,33 @@ function drawAyahCard(ctx, { width, height, isLandscape, ayahs, textScale }) {
   }
 
   const textHeight = Math.max(lineHeight, lines.length * lineHeight);
+  const translationText = showTranslation
+    ? (ayahs || [])
+        .map((item) => translationsByAyah?.[item.ayahNumber] || '')
+        .filter(Boolean)
+        .join(' ')
+    : '';
+  const translationFontSize = isLandscape ? 28 : 30;
+  let translationLines = [];
+
+  if (translationText) {
+    ctx.direction = translationDirection === 'rtl' ? 'rtl' : 'ltr';
+    ctx.font = `500 ${translationFontSize}px Inter, ui-sans-serif, system-ui`;
+    translationLines = wrapPlainText(ctx, translationText, maxTextWidth);
+  }
+
+  const translationLineHeight = translationFontSize * 1.5;
+  const translationHeight = translationLines.length
+    ? (translationLines.length * translationLineHeight) + 28
+    : 0;
+
   const minimumCardHeight = height * (isLandscape ? 0.30 : 0.24);
   const cardHeight = Math.min(
     maxCardHeight,
-    Math.max(minimumCardHeight, textHeight + (isLandscape ? 88 : 110)),
+    Math.max(
+      minimumCardHeight,
+      textHeight + translationHeight + (isLandscape ? 88 : 110),
+    ),
   );
   const cardY = cardCenterY - (cardHeight / 2);
 
@@ -150,16 +188,31 @@ function drawAyahCard(ctx, { width, height, isLandscape, ayahs, textScale }) {
   ctx.lineWidth = 2;
   ctx.stroke();
 
+  const combinedContentHeight = textHeight + translationHeight;
+  let cursorY = cardCenterY - (combinedContentHeight / 2) + (lineHeight / 2);
+
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.direction = 'rtl';
   ctx.fillStyle = '#ffffff';
   ctx.font = `${Math.round(fontSize)}px IndopakNastaleeq, serif`;
 
-  const firstLineY = cardCenterY - (((lines.length - 1) * lineHeight) / 2);
-  lines.forEach((line, index) => {
-    ctx.fillText(line, width / 2, firstLineY + (index * lineHeight));
+  lines.forEach((line) => {
+    ctx.fillText(line, width / 2, cursorY);
+    cursorY += lineHeight;
   });
+
+  if (translationLines.length) {
+    cursorY += 14;
+    ctx.direction = translationDirection === 'rtl' ? 'rtl' : 'ltr';
+    ctx.fillStyle = 'rgba(255,255,255,.92)';
+    ctx.font = `500 ${translationFontSize}px Inter, ui-sans-serif, system-ui`;
+
+    translationLines.forEach((line) => {
+      ctx.fillText(line, width / 2, cursorY);
+      cursorY += translationLineHeight;
+    });
+  }
 }
 
 function drawReference(ctx, { width, height, isLandscape, surahNumber, ayahs }) {
@@ -196,6 +249,25 @@ function wrapArabicText(ctx, text, maxWidth) {
     }
   });
 
+  if (currentLine) lines.push(currentLine);
+  return lines;
+}
+
+function wrapPlainText(ctx, text, maxWidth) {
+  const words = String(text || '').trim().split(/\s+/).filter(Boolean);
+  if (!words.length) return [];
+
+  const lines = [];
+  let currentLine = '';
+  words.forEach((word) => {
+    const candidate = currentLine ? `${currentLine} ${word}` : word;
+    if (!currentLine || ctx.measureText(candidate).width <= maxWidth) {
+      currentLine = candidate;
+    } else {
+      lines.push(currentLine);
+      currentLine = word;
+    }
+  });
   if (currentLine) lines.push(currentLine);
   return lines;
 }
