@@ -4433,3 +4433,77 @@ body {
     gap: 7px !important;
   }
 }
+
+
+/* Text-tab Ayahs + adaptive range menus */
+.share-text-settings {
+  display: grid;
+  gap: 16px;
+}
+
+.share-text-size-section {
+  display: grid;
+  gap: 14px;
+}
+
+.share-text-ayahs-card {
+  position: relative;
+  z-index: 2;
+  overflow: visible;
+  border: 1px solid rgba(201, 162, 75, .18);
+  border-radius: 22px;
+  background: var(--theme-surface-solid, #fffdf8);
+  padding: 16px;
+  box-shadow: 0 3px 12px rgba(31, 61, 43, .045);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.share-text-ayahs-card .share-media-range-title {
+  margin-bottom: 14px;
+}
+
+.share-range-field {
+  position: relative;
+}
+
+.share-range-field:has(.share-range-menu) {
+  z-index: 80;
+}
+
+.share-range-menu {
+  position: absolute !important;
+  top: calc(100% + 8px) !important;
+  bottom: auto !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  max-height: 280px !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  z-index: 100 !important;
+}
+
+.share-range-field.opens-up .share-range-menu {
+  top: auto !important;
+  bottom: calc(100% + 8px) !important;
+}
+
+.share-range-trigger svg {
+  transition: transform .16s ease;
+}
+
+.share-range-field.opens-up .share-range-trigger svg {
+  transform: rotate(180deg);
+}
+
+[data-theme='dark'] .share-text-ayahs-card {
+  background: var(--theme-surface-solid);
+  border-color: rgba(201, 162, 75, .16);
+}
+
+@media (max-width: 380px) {
+  .share-text-ayahs-card {
+    padding: 14px;
+  }
+}
