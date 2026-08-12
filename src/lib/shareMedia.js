@@ -67,6 +67,7 @@ export function buildShareComposition({
         ? Number(style.overlayOpacity)
         : 0.42,
       alignment: style.alignment || 'center',
+      textScale: Number.isFinite(Number(style.textScale)) ? Number(style.textScale) : 1,
     },
   };
 }
