@@ -125,6 +125,8 @@ export function ShareQuranScreen({ ayah, onClose }) {
       background: SHARE_BACKGROUND,
       surahMeaning: surahMeta?.meaning || '',
       orientation,
+    ,
+      unifiedMediaStyle: true,
     })
       .then((blob) => {
         if (!cancelled) setImageBlob(blob);
@@ -271,15 +273,17 @@ export function ShareQuranScreen({ ayah, onClose }) {
           aria-label={`${mode} preview`}
         >
           {mode === SHARE_MEDIA_MODES.IMAGE ? (
-            previewUrl ? (
-              <img
-                src={previewUrl}
-                alt={`${surah?.name || 'Quran'} ${fromAyah}-${toAyah}`}
-                className="quran-share-generated-image"
-              />
-            ) : (
-              <div className="quran-share-preview-loading">Preparing preview…</div>
-            )
+            <div className="share-image-preview-stage">
+              {previewUrl ? (
+                <img
+                  src={previewUrl}
+                  alt={`${surah?.name || 'Quran'} ${fromAyah}-${toAyah}`}
+                  className="quran-share-generated-image"
+                />
+              ) : (
+                <div className="quran-share-preview-loading">Preparing preview…</div>
+              )}
+            </div>
           ) : (
             <VideoPreview
               background={selectedBackground}
