@@ -1,7 +1,26 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Check, ChevronDown, Share2 } from 'lucide-react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import {
+  Check,
+  ChevronDown,
+  Download,
+  Headphones,
+  Image as ImageIcon,
+  Palette,
+  Type,
+  Volume2,
+} from 'lucide-react';
 import { getSurah, getSurahAyahs } from '../../../lib/quran';
+import { getSurahNameMeta } from '../../../data/surahNames';
 import { generateQuranShareImage } from '../../../lib/shareCanvas';
+import { normalizeLocalReciters } from '../../../lib/localAudio';
+import {
+  SHARE_BACKGROUND_ASSETS,
+  SHARE_MEDIA_MODES,
+  SHARE_MEDIA_TABS,
+  buildShareComposition,
+  findShareAyahAtTime,
+  loadShareVideoTimeline,
+} from '../../../lib/shareMedia';
 import { surahArabicNames } from '../../../utils/quranLabels';
 import { Header, Screen } from '../../../components/common/AppChrome';
 
@@ -9,46 +28,102 @@ const SHARE_BACKGROUND = '#ead8b8';
 
 export function ShareQuranScreen({ ayah, onClose }) {
   const surah = getSurah(ayah.surahNumber);
+  const surahMeta = getSurahNameMeta(ayah.surahNumber);
   const surahAyahs = useMemo(() => getSurahAyahs(ayah.surahNumber), [ayah.surahNumber]);
   const selectedIndex = Math.max(0, surahAyahs.findIndex((item) => item.ayahNumber === ayah.ayahNumber));
-  const fromOptions = useMemo(
-    () => getFromOptions(surahAyahs, selectedIndex),
-    [surahAyahs, selectedIndex],
-  );
+  const fromOptions = useMemo(() => getFromOptions(surahAyahs, selectedIndex), [surahAyahs, selectedIndex]);
+  const reciters = useMemo(() => normalizeLocalReciters(), []);
+
+  const [mode, setMode] = useState(SHARE_MEDIA_MODES.IMAGE);
+  const [activeTab, setActiveTab] = useState('background');
   const [fromAyah, setFromAyah] = useState(ayah.ayahNumber);
   const [toAyah, setToAyah] = useState(ayah.ayahNumber);
-  const background = SHARE_BACKGROUND;
   const [openRangePicker, setOpenRangePicker] = useState(null);
+  const [selectedReciter, setSelectedReciter] = useState(reciters[0]?.id || '');
+  const [selectedBackgroundId, setSelectedBackgroundId] = useState(
+    SHARE_BACKGROUND_ASSETS[0]?.id || '',
+  );
+  const [useStillFrame, setUseStillFrame] = useState(true);
+  const [orientation, setOrientation] = useState('portrait');
   const [status, setStatus] = useState('');
-  const [sharing, setSharing] = useState(false);
+
   const [imageBlob, setImageBlob] = useState(null);
   const [previewUrl, setPreviewUrl] = useState('');
   const [preparingImage, setPreparingImage] = useState(true);
 
+  const [videoTimeline, setVideoTimeline] = useState(null);
+  const [videoTimelineStatus, setVideoTimelineStatus] = useState('');
+  const [videoPlaying, setVideoPlaying] = useState(false);
+  const [videoElapsedMs, setVideoElapsedMs] = useState(0);
+
+  const audioRef = useRef(null);
+  const rafRef = useRef(0);
+
   const fromIndex = Math.max(0, surahAyahs.findIndex((item) => item.ayahNumber === fromAyah));
   const toOptions = surahAyahs.slice(fromIndex, fromIndex + 10);
   const range = useMemo(
-    () => surahAyahs.filter(
-      (item) => item.ayahNumber >= fromAyah && item.ayahNumber <= toAyah,
-    ),
+    () => surahAyahs.filter((item) => item.ayahNumber >= fromAyah && item.ayahNumber <= toAyah),
     [surahAyahs, fromAyah, toAyah],
   );
+
   const arabicSurahName = surahArabicNames[ayah.surahNumber] || surah?.name || '';
-  const selectedReference = fromAyah === toAyah
-    ? `${ayah.surahNumber}:${fromAyah}`
-    : `${ayah.surahNumber}:${fromAyah}-${toAyah}`;
+  const selectedBackground = useMemo(
+    () => SHARE_BACKGROUND_ASSETS.find((item) => item.id === selectedBackgroundId) || null,
+    [selectedBackgroundId],
+  );
+  const selectedReciterMeta = useMemo(
+    () => reciters.find((item) => item.id === selectedReciter) || reciters[0] || null,
+    [reciters, selectedReciter],
+  );
+
+  const composition = useMemo(() => buildShareComposition({
+    mode,
+    surahNumber: ayah.surahNumber,
+    fromAyah,
+    toAyah,
+    backgroundAsset: selectedBackground,
+    useStillFrame,
+    orientation,
+    reciterId: selectedReciter,
+    showTranslation: false,
+    translationId: null,
+    style: {
+      textColor: '#ffffff',
+      overlayOpacity: 0.42,
+      alignment: 'center',
+    },
+  }), [
+    mode,
+    ayah.surahNumber,
+    fromAyah,
+    toAyah,
+    selectedBackground,
+    useStillFrame,
+    orientation,
+    selectedReciter,
+  ]);
+
+  const activeVideoEntry = useMemo(
+    () => findShareAyahAtTime(videoTimeline?.timeline, videoElapsedMs),
+    [videoTimeline, videoElapsedMs],
+  );
+  const activeVideoAyah = useMemo(() => {
+    const ayahNumber = Number(activeVideoEntry?.ayahNumber) || fromAyah;
+    return surahAyahs.find((item) => item.ayahNumber === ayahNumber) || range[0] || ayah;
+  }, [activeVideoEntry, fromAyah, surahAyahs, range, ayah]);
 
   useEffect(() => {
     let cancelled = false;
-
     setStatus('');
     setPreparingImage(true);
     setImageBlob(null);
+
     generateQuranShareImage({
       surahName: arabicSurahName,
       surahNumber: ayah.surahNumber,
       ayahs: range,
-      background,
+      background: SHARE_BACKGROUND,
+      surahMeaning: surahMeta?.meaning || '',
     })
       .then((blob) => {
         if (!cancelled) setImageBlob(blob);
@@ -63,67 +138,118 @@ export function ShareQuranScreen({ ayah, onClose }) {
     return () => {
       cancelled = true;
     };
-  }, [arabicSurahName, ayah.surahNumber, range, background]);
+  }, [arabicSurahName, ayah.surahNumber, range, surahMeta?.meaning]);
 
   useEffect(() => {
     if (!imageBlob) {
       setPreviewUrl('');
       return undefined;
     }
-
     const url = URL.createObjectURL(imageBlob);
     setPreviewUrl(url);
     return () => URL.revokeObjectURL(url);
   }, [imageBlob]);
 
+  useEffect(() => {
+    let cancelled = false;
+    setVideoTimeline(null);
+    setVideoElapsedMs(0);
+    setVideoTimelineStatus(mode === SHARE_MEDIA_MODES.VIDEO ? 'Preparing audio timeline…' : '');
+
+    if (mode !== SHARE_MEDIA_MODES.VIDEO) return undefined;
+
+    loadShareVideoTimeline(composition)
+      .then((timeline) => {
+        if (cancelled) return;
+        setVideoTimeline(timeline);
+        setVideoTimelineStatus(timeline ? '' : 'This reciter has no full-Surah timing data.');
+      })
+      .catch((error) => {
+        if (!cancelled) setVideoTimelineStatus(error?.message || 'Audio timeline unavailable.');
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [composition, mode]);
+
+  useEffect(() => () => {
+    cancelAnimationFrame(rafRef.current);
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.src = '';
+    }
+  }, []);
+
   function changeFrom(nextValue) {
     const nextFrom = Number(nextValue);
     const nextIndex = Math.max(0, surahAyahs.findIndex((item) => item.ayahNumber === nextFrom));
     const maxTo = surahAyahs[Math.min(surahAyahs.length - 1, nextIndex + 9)]?.ayahNumber || nextFrom;
-
     setFromAyah(nextFrom);
     setToAyah((current) => Math.min(maxTo, Math.max(nextFrom, current)));
   }
 
-  async function shareImage() {
-    setStatus('');
+  function stopVideoPreview() {
+    cancelAnimationFrame(rafRef.current);
+    rafRef.current = 0;
+    if (audioRef.current) audioRef.current.pause();
+    setVideoPlaying(false);
+  }
 
-    try {
-      if (!imageBlob) {
-        setStatus('Share image is still being prepared.');
-        return;
-      }
-
-      const file = new File(
-        [imageBlob],
-        `quran-${ayah.surahNumber}-${fromAyah}-${toAyah}.png`,
-        { type: 'image/png' },
-      );
-      const shareData = {
-        title: `${surah?.name || 'Quran'} ${fromAyah}-${toAyah}`,
-        files: [file],
-      };
-
-      if (!navigator.share) {
-        setStatus('Image sharing is not available in this browser.');
-        return;
-      }
-
-      if (navigator.canShare && !navigator.canShare(shareData)) {
-        setStatus('This browser cannot share generated image files.');
-        return;
-      }
-
-      setSharing(true);
-      await navigator.share(shareData);
-      setStatus('Share sheet opened');
-    } catch (error) {
-      if (error?.name !== 'AbortError') {
-        setStatus(error?.message || 'Share image could not be generated.');
-      }
-    } finally {
-      setSharing(false);
+  async function toggleVideoPreview() {
+    if (!videoTimeline?.audioUrl || !videoTimeline.timeline?.length) {
+      setStatus('Video preview needs a reciter with full-Surah timing data.');
+      return;
     }
+
+    if (videoPlaying) {
+      stopVideoPreview();
+      return;
+    }
+
+    let audio = audioRef.current;
+    if (!audio) {
+      audio = new Audio();
+      audio.preload = 'auto';
+      audioRef.current = audio;
+    }
+    if (audio.src !== videoTimeline.audioUrl) {
+      audio.src = videoTimeline.audioUrl;
+      audio.crossOrigin = 'anonymous';
+    }
+
+    const sourceStartSeconds = videoTimeline.sourceStartMs / 1000;
+    audio.currentTime = sourceStartSeconds + (videoElapsedMs / 1000);
+    await audio.play();
+    setVideoPlaying(true);
+
+    const tick = () => {
+      const elapsed = Math.max(0, (audio.currentTime * 1000) - videoTimeline.sourceStartMs);
+      setVideoElapsedMs(elapsed);
+      if (elapsed >= videoTimeline.durationMs || audio.ended) {
+        audio.pause();
+        setVideoPlaying(false);
+        setVideoElapsedMs(0);
+        return;
+      }
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+  }
+
+  function downloadImage() {
+    if (!imageBlob) {
+      setStatus('Image is still being prepared.');
+      return;
+    }
+    const url = URL.createObjectURL(imageBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `quran-${ayah.surahNumber}-${fromAyah}-${toAyah}.png`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
   return (
@@ -133,8 +259,100 @@ export function ShareQuranScreen({ ayah, onClose }) {
       </div>
 
       <div className="app-scroll-content share-quran-page-content" data-reader-ui>
-        <section className="share-range-card">
-          <h3>Verse range</h3>
+        <ModeSwitch mode={mode} onChange={(nextMode) => {
+          stopVideoPreview();
+          setVideoElapsedMs(0);
+          setMode(nextMode);
+        }} />
+
+        <section
+          className={`share-media-live-preview is-${mode} is-${orientation}`}
+          aria-label={`${mode} preview`}
+        >
+          {mode === SHARE_MEDIA_MODES.IMAGE ? (
+            previewUrl ? (
+              <img
+                src={previewUrl}
+                alt={`${surah?.name || 'Quran'} ${fromAyah}-${toAyah}`}
+                className="quran-share-generated-image"
+              />
+            ) : (
+              <div className="quran-share-preview-loading">Preparing preview…</div>
+            )
+          ) : (
+            <VideoPreview
+              background={selectedBackground}
+              surahName={arabicSurahName}
+              surahMeaning={surahMeta?.meaning || ''}
+              ayah={activeVideoAyah}
+              playing={videoPlaying}
+              elapsedMs={videoElapsedMs}
+              durationMs={videoTimeline?.durationMs || 0}
+              onTogglePlay={toggleVideoPreview}
+            />
+          )}
+        </section>
+
+        <nav className="share-media-tabs" aria-label="Share Quran media settings">
+          {SHARE_MEDIA_TABS.map((tab) => {
+            const Icon = getTabIcon(tab.id);
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                className={activeTab === tab.id ? 'is-active' : ''}
+                onClick={() => setActiveTab(tab.id)}
+              >
+                <Icon size={18} />
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
+        </nav>
+
+        <section className="share-media-settings-card">
+          {activeTab === 'audio' && (
+            <AudioSettings
+              mode={mode}
+              reciters={reciters}
+              selectedReciter={selectedReciter}
+              onReciterChange={(value) => {
+                stopVideoPreview();
+                setVideoElapsedMs(0);
+                setSelectedReciter(value);
+              }}
+            />
+          )}
+
+          {activeTab === 'background' && (
+            <BackgroundSettings
+              assets={SHARE_BACKGROUND_ASSETS}
+              selectedId={selectedBackgroundId}
+              onSelect={setSelectedBackgroundId}
+              useStillFrame={useStillFrame}
+              onStillFrameChange={setUseStillFrame}
+              mode={mode}
+            />
+          )}
+
+          {activeTab === 'text' && (
+            <TextSettings mode={mode} fromAyah={fromAyah} toAyah={toAyah} />
+          )}
+
+          {activeTab === 'style' && (
+            <StyleSettings orientation={orientation} onOrientationChange={setOrientation} />
+          )}
+        </section>
+
+        <section className="share-range-card share-media-range-card">
+          <div className="share-media-range-title">
+            <div>
+              <h3>Ayahs</h3>
+              <p>Maximum 10 ayahs</p>
+            </div>
+            <span>{surah?.name || `Surah ${ayah.surahNumber}`}</span>
+          </div>
+
           <div className="share-range-selectors">
             <RangeField
               label="From"
@@ -147,7 +365,6 @@ export function ShareQuranScreen({ ayah, onClose }) {
                 setOpenRangePicker(null);
               }}
             />
-
             <RangeField
               label="To"
               value={toAyah}
@@ -160,36 +377,238 @@ export function ShareQuranScreen({ ayah, onClose }) {
               }}
             />
           </div>
-          <p>Maximum range: 10 ayahs</p>
         </section>
 
-        <div className="quran-share-preview quran-share-generated-preview">
-          {previewUrl ? (
-            <img
-              src={previewUrl}
-              alt={`${surah?.name || 'Quran'} ${selectedReference}`}
-              className="quran-share-generated-image"
-            />
-          ) : (
-            <div className="quran-share-preview-loading" aria-live="polite">
-              Preparing preview…
-            </div>
-          )}
-        </div>
+        {mode === SHARE_MEDIA_MODES.VIDEO && (
+          <div className="share-selected-reciter">
+            <Volume2 size={17} />
+            <span>{selectedReciterMeta?.name || 'Reciter'}</span>
+          </div>
+        )}
 
         <button
           type="button"
-          className="share-image-button"
-          onClick={shareImage}
-          disabled={sharing || preparingImage || !imageBlob || range.length === 0}
+          className="share-media-final-action"
+          onClick={mode === SHARE_MEDIA_MODES.IMAGE ? downloadImage : undefined}
+          disabled={
+            mode === SHARE_MEDIA_MODES.IMAGE
+              ? preparingImage || !imageBlob || range.length === 0
+              : true
+          }
         >
-          <Share2 size={19} />
-          {preparingImage ? 'Preparing image…' : sharing ? 'Sharing…' : 'Share'}
+          <Download size={19} />
+          {mode === SHARE_MEDIA_MODES.IMAGE
+            ? preparingImage ? 'Preparing Image…' : 'Download Image'
+            : 'Download Video'}
         </button>
 
-        {status && <p className="share-sheet-status">{status}</p>}
+        {mode === SHARE_MEDIA_MODES.VIDEO && (
+          <p className="share-media-export-note">
+            Video preview is timeline-driven now. Offline video export will activate after your local background clips are added and the encoder layer is enabled.
+          </p>
+        )}
+
+        {(status || videoTimelineStatus) && (
+          <p className="share-sheet-status">{status || videoTimelineStatus}</p>
+        )}
       </div>
     </Screen>
+  );
+}
+
+function ModeSwitch({ mode, onChange }) {
+  return (
+    <div className="share-media-mode-switch" role="group" aria-label="Share media type">
+      <button
+        type="button"
+        className={mode === SHARE_MEDIA_MODES.IMAGE ? 'is-active' : ''}
+        onClick={() => onChange(SHARE_MEDIA_MODES.IMAGE)}
+      >
+        <ImageIcon size={17} />
+        Image
+      </button>
+      <button
+        type="button"
+        className={mode === SHARE_MEDIA_MODES.VIDEO ? 'is-active' : ''}
+        onClick={() => onChange(SHARE_MEDIA_MODES.VIDEO)}
+      >
+        <Headphones size={17} />
+        Video
+      </button>
+    </div>
+  );
+}
+
+function VideoPreview({
+  background,
+  surahName,
+  surahMeaning,
+  ayah,
+  playing,
+  elapsedMs,
+  durationMs,
+  onTogglePlay,
+}) {
+  return (
+    <div className="share-video-preview-stage">
+      {background?.videoSrc ? (
+        <video
+          className="share-video-preview-background"
+          src={background.videoSrc}
+          poster={background.posterSrc || undefined}
+          autoPlay
+          muted
+          loop
+          playsInline
+        />
+      ) : (
+        <div className="share-video-preview-fallback" />
+      )}
+
+      <div className="share-video-preview-overlay" />
+      <div className="share-video-preview-header">
+        <strong>{`سُورَةُ ${surahName}`}</strong>
+        <span>{surahMeaning}</span>
+      </div>
+
+      <div className="share-video-preview-ayah" key={ayah?.ayahNumber}>
+        {ayah?.text || ''}
+      </div>
+
+      <button type="button" className="share-video-preview-play" onClick={onTogglePlay}>
+        {playing ? 'Pause' : 'Preview'}
+      </button>
+
+      <div className="share-video-preview-progress">
+        <span style={{ width: `${durationMs ? Math.min(100, (elapsedMs / durationMs) * 100) : 0}%` }} />
+      </div>
+    </div>
+  );
+}
+
+function AudioSettings({ mode, reciters, selectedReciter, onReciterChange }) {
+  if (mode === SHARE_MEDIA_MODES.IMAGE) {
+    return (
+      <div className="share-media-simple-message">
+        <Headphones size={21} />
+        <div>
+          <strong>Audio is for video only</strong>
+          <span>Image mode includes all selected ayahs without recitation.</span>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="share-media-control-group">
+      <label htmlFor="share-reciter">Reciter</label>
+      <select
+        id="share-reciter"
+        value={selectedReciter}
+        onChange={(event) => onReciterChange(event.target.value)}
+      >
+        {reciters.map((reciter) => (
+          <option key={reciter.id} value={reciter.id}>{reciter.name}</option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
+function BackgroundSettings({
+  assets,
+  selectedId,
+  onSelect,
+  useStillFrame,
+  onStillFrameChange,
+  mode,
+}) {
+  return (
+    <>
+      <div className="share-media-section-heading">
+        <strong>Background</strong>
+        <span>Your own short looping clips</span>
+      </div>
+
+      {assets.length ? (
+        <div className="share-background-grid">
+          {assets.map((asset) => (
+            <button
+              key={asset.id}
+              type="button"
+              className={selectedId === asset.id ? 'is-selected' : ''}
+              onClick={() => onSelect(asset.id)}
+            >
+              {asset.posterSrc
+                ? <img src={asset.posterSrc} alt="" />
+                : <span>{asset.label}</span>}
+            </button>
+          ))}
+        </div>
+      ) : (
+        <div className="share-background-empty">
+          <ImageIcon size={22} />
+          <strong>Background library ready</strong>
+          <span>Add your licensed/AI-generated clips to the share background manifest.</span>
+        </div>
+      )}
+
+      <label className="share-media-toggle-row">
+        <div>
+          <strong>Use still frame</strong>
+          <span>{mode === SHARE_MEDIA_MODES.IMAGE
+            ? 'Use a frame from the selected video for the image.'
+            : 'Keep the background moving in video mode.'}</span>
+        </div>
+        <input
+          type="checkbox"
+          checked={useStillFrame}
+          onChange={(event) => onStillFrameChange(event.target.checked)}
+          disabled={!assets.length}
+        />
+      </label>
+    </>
+  );
+}
+
+function TextSettings({ mode, fromAyah, toAyah }) {
+  return (
+    <div className="share-media-simple-message">
+      <Type size={21} />
+      <div>
+        <strong>{mode === SHARE_MEDIA_MODES.VIDEO ? 'One ayah at a time' : 'All selected ayahs'}</strong>
+        <span>{mode === SHARE_MEDIA_MODES.VIDEO
+          ? 'The active ayah follows the recitation timeline and fades to the next.'
+          : `Ayahs ${fromAyah}–${toAyah} are composed together in the exported image.`}</span>
+      </div>
+    </div>
+  );
+}
+
+function StyleSettings({ orientation, onOrientationChange }) {
+  return (
+    <div className="share-media-control-group">
+      <div className="share-media-section-heading">
+        <strong>Orientation</strong>
+        <span>Used by both preview and future export layouts.</span>
+      </div>
+      <div className="share-orientation-switch">
+        <button
+          type="button"
+          className={orientation === 'landscape' ? 'is-active' : ''}
+          onClick={() => onOrientationChange('landscape')}
+        >
+          Landscape
+        </button>
+        <button
+          type="button"
+          className={orientation === 'portrait' ? 'is-active' : ''}
+          onClick={() => onOrientationChange('portrait')}
+        >
+          Portrait
+        </button>
+      </div>
+    </div>
   );
 }
 
@@ -225,15 +644,17 @@ function RangeField({ label, value, options, open, onToggle, onSelect }) {
   );
 }
 
+function getTabIcon(id) {
+  if (id === 'audio') return Headphones;
+  if (id === 'background') return ImageIcon;
+  if (id === 'text') return Type;
+  return Palette;
+}
+
 function getFromOptions(ayahs, selectedIndex) {
-  if (selectedIndex < 4) {
-    return ayahs.slice(selectedIndex, selectedIndex + 10);
-  }
+  if (selectedIndex < 4) return ayahs.slice(selectedIndex, selectedIndex + 10);
 
   let start = selectedIndex - 4;
-  if (start + 10 > ayahs.length) {
-    start = Math.max(0, ayahs.length - 10);
-  }
-
+  if (start + 10 > ayahs.length) start = Math.max(0, ayahs.length - 10);
   return ayahs.slice(start, start + 10);
 }
