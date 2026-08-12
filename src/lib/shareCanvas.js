@@ -48,6 +48,19 @@ export async function generateQuranShareImage({
   surahMeaning = '',
   orientation = 'portrait',
 }) {
+
+  if (unifiedMediaStyle) {
+    return generateUnifiedShareImage({
+      surahName,
+      surahNumber,
+      ayahs,
+      surahMeaning,
+      textScale,
+      orientation,
+    });
+  }
+
+
   const SHARE_LAYOUT = getShareLayout(orientation);
   const { width, height } = SHARE_LAYOUT;
   const maxTextWidth = width - (SHARE_LAYOUT.contentSideInset * 2);
@@ -300,4 +313,147 @@ function drawRoundedRect(ctx, x, y, width, height, radius) {
   ctx.arcTo(x, y + height, x, y, r);
   ctx.arcTo(x, y, x + width, y, r);
   ctx.closePath();
+}
+
+
+async function generateUnifiedShareImage({
+  surahName,
+  surahNumber,
+  ayahs,
+  surahMeaning,
+  textScale,
+  orientation,
+}) {
+  const isLandscape = orientation === 'landscape';
+  const width = isLandscape ? 1600 : 1080;
+  const height = isLandscape ? 900 : 1440;
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+
+  const bg = ctx.createLinearGradient(0, 0, width, height);
+  bg.addColorStop(0, '#17473f');
+  bg.addColorStop(0.55, '#103a34');
+  bg.addColorStop(1, '#0b2d29');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, width, height);
+
+  const glow = ctx.createRadialGradient(
+    width * 0.72, height * 0.15, 0,
+    width * 0.72, height * 0.15, width * 0.65,
+  );
+  glow.addColorStop(0, 'rgba(234,216,184,.18)');
+  glow.addColorStop(1, 'rgba(234,216,184,0)');
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, width, height);
+
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  ctx.fillStyle = '#ffffff';
+  ctx.direction = 'rtl';
+  ctx.font = `${Math.round((isLandscape ? 58 : 64) * textScale)}px IndopakNastaleeq, serif`;
+  ctx.fillText(`سُورَةُ ${surahName}`, width / 2, height * (isLandscape ? 0.12 : 0.105));
+
+  if (surahMeaning) {
+    ctx.direction = 'ltr';
+    ctx.font = `500 ${isLandscape ? 28 : 30}px Inter, ui-sans-serif, system-ui`;
+    ctx.fillStyle = 'rgba(255,255,255,.90)';
+    ctx.fillText(surahMeaning, width / 2, height * (isLandscape ? 0.17 : 0.15));
+  }
+
+  const cardW = width * (isLandscape ? 0.74 : 0.88);
+  const maxCardH = height * (isLandscape ? 0.56 : 0.60);
+  const cardX = (width - cardW) / 2;
+  const cardCenterY = height * 0.52;
+
+  const arabicText = (ayahs || []).map((item) => item?.text || '').filter(Boolean).join('  ');
+  const baseFont = (isLandscape ? 56 : 62) * textScale;
+  const minFont = isLandscape ? 38 : 42;
+  const maxTextW = cardW * 0.88;
+
+  let fontSize = baseFont;
+  let lines = [];
+  while (fontSize >= minFont) {
+    ctx.direction = 'rtl';
+    ctx.font = `${Math.round(fontSize)}px IndopakNastaleeq, serif`;
+    lines = wrapArabicCanvasText(ctx, arabicText, maxTextW);
+    const lineHeight = fontSize * 1.72;
+    if ((lines.length * lineHeight) <= maxCardH * 0.76) break;
+    fontSize -= 2;
+  }
+
+  const lineHeight = fontSize * 1.72;
+  const textHeight = Math.max(lineHeight, lines.length * lineHeight);
+  const cardH = Math.min(
+    maxCardH,
+    Math.max(height * (isLandscape ? 0.30 : 0.24), textHeight + (isLandscape ? 88 : 110)),
+  );
+  const cardY = cardCenterY - cardH / 2;
+
+  roundedRectPathUnified(ctx, cardX, cardY, cardW, cardH, isLandscape ? 32 : 42);
+  ctx.fillStyle = 'rgba(5, 22, 20, .47)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,.10)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  ctx.fillStyle = '#ffffff';
+  ctx.direction = 'rtl';
+  ctx.font = `${Math.round(fontSize)}px IndopakNastaleeq, serif`;
+  const firstY = cardCenterY - ((lines.length - 1) * lineHeight) / 2;
+  lines.forEach((line, index) => {
+    ctx.fillText(line, width / 2, firstY + index * lineHeight);
+  });
+
+  const firstAyah = ayahs?.[0]?.ayahNumber;
+  const lastAyah = ayahs?.[ayahs.length - 1]?.ayahNumber;
+  const ref = firstAyah === lastAyah
+    ? `${surahNumber}:${firstAyah}`
+    : `${surahNumber}:${firstAyah}-${lastAyah}`;
+
+  ctx.direction = 'ltr';
+  ctx.font = `500 ${isLandscape ? 22 : 24}px Inter, ui-sans-serif, system-ui`;
+  ctx.fillStyle = 'rgba(255,255,255,.70)';
+  ctx.fillText(ref, width / 2, Math.min(height * 0.91, cardY + cardH + (isLandscape ? 42 : 54)));
+
+  return canvasToBlobUnified(canvas);
+}
+
+function wrapArabicCanvasText(ctx, text, maxWidth) {
+  const words = String(text || '').trim().split(/\s+/).filter(Boolean);
+  if (!words.length) return [''];
+  const lines = [];
+  let current = '';
+  words.forEach((word) => {
+    const candidate = current ? `${current} ${word}` : word;
+    if (!current || ctx.measureText(candidate).width <= maxWidth) current = candidate;
+    else {
+      lines.push(current);
+      current = word;
+    }
+  });
+  if (current) lines.push(current);
+  return lines;
+}
+
+function roundedRectPathUnified(ctx, x, y, width, height, radius) {
+  const r = Math.min(radius, width / 2, height / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + width, y, x + width, y + height, r);
+  ctx.arcTo(x + width, y + height, x, y + height, r);
+  ctx.arcTo(x, y + height, x, y, r);
+  ctx.arcTo(x, y, x + width, y, r);
+  ctx.closePath();
+}
+
+function canvasToBlobUnified(canvas) {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      if (blob) resolve(blob);
+      else reject(new Error('Image could not be generated.'));
+    }, 'image/png', 1);
+  });
 }
