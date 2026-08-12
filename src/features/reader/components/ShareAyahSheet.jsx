@@ -44,6 +44,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
     SHARE_BACKGROUND_ASSETS[0]?.id || '',
   );
   const [orientation, setOrientation] = useState('portrait');
+  const [textScale, setTextScale] = useState(1);
   const [status, setStatus] = useState('');
 
   const [imageBlob, setImageBlob] = useState(null);
@@ -89,6 +90,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
       textColor: '#ffffff',
       overlayOpacity: 0.42,
       alignment: 'center',
+      textScale,
     },
   }), [
     mode,
@@ -98,6 +100,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
     selectedBackground,
     orientation,
     selectedReciter,
+    textScale,
   ]);
 
   const activeVideoEntry = useMemo(
@@ -287,6 +290,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
               elapsedMs={videoElapsedMs}
               durationMs={videoTimeline?.durationMs || 0}
               onTogglePlay={toggleVideoPreview}
+              textScale={textScale}
             />
           )}
         </section>
@@ -331,7 +335,13 @@ export function ShareQuranScreen({ ayah, onClose }) {
           )}
 
           {activeTab === 'text' && (
-            <TextSettings mode={mode} fromAyah={fromAyah} toAyah={toAyah} />
+            <TextSettings
+              mode={mode}
+              fromAyah={fromAyah}
+              toAyah={toAyah}
+              textScale={textScale}
+              onTextScaleChange={setTextScale}
+            />
           )}
 
           {activeTab === 'style' && (
@@ -443,6 +453,7 @@ function VideoPreview({
   elapsedMs,
   durationMs,
   onTogglePlay,
+  textScale,
 }) {
   return (
     <div className="share-video-preview-stage">
@@ -463,11 +474,17 @@ function VideoPreview({
       <div className="share-video-preview-overlay" />
       <div className="share-video-preview-header">
         <strong>{`سُورَةُ ${surahName}`}</strong>
-        <span>{surahMeaning}</span>
+        {surahMeaning && <span>{surahMeaning}</span>}
       </div>
 
-      <div className="share-video-preview-ayah" key={ayah?.ayahNumber}>
-        {ayah?.text || ''}
+      <div
+        className="share-video-preview-ayah-card"
+        key={ayah?.ayahNumber}
+        style={{ '--share-text-scale': textScale }}
+      >
+        <div className="share-video-preview-ayah">
+          {ayah?.text || ''}
+        </div>
       </div>
 
       <button type="button" className="share-video-preview-play" onClick={onTogglePlay}>
@@ -585,15 +602,49 @@ function BackgroundSettings({ assets, selectedId, onSelect }) {
   );
 }
 
-function TextSettings({ mode, fromAyah, toAyah }) {
+function TextSettings({
+  mode,
+  fromAyah,
+  toAyah,
+  textScale,
+  onTextScaleChange,
+}) {
+  const percent = Math.round(textScale * 100);
+
   return (
-    <div className="share-media-simple-message">
-      <Type size={21} />
-      <div>
-        <strong>{mode === SHARE_MEDIA_MODES.VIDEO ? 'One ayah at a time' : 'All selected ayahs'}</strong>
-        <span>{mode === SHARE_MEDIA_MODES.VIDEO
-          ? 'The active ayah follows the recitation timeline and fades to the next.'
-          : `Ayahs ${fromAyah}–${toAyah} are composed together in the exported image.`}</span>
+    <div className="share-text-settings">
+      <div className="share-media-section-heading">
+        <strong>Quran text size</strong>
+        <span>
+          {mode === SHARE_MEDIA_MODES.VIDEO
+            ? 'One ayah is shown at a time in the center.'
+            : `Ayahs ${fromAyah}–${toAyah} are composed together.`}
+        </span>
+      </div>
+
+      <div className="share-text-size-control">
+        <button
+          type="button"
+          aria-label="Decrease Quran text size"
+          onClick={() => onTextScaleChange((value) => Math.max(0.75, Number((value - 0.1).toFixed(2))))}
+          disabled={textScale <= 0.75}
+        >
+          −
+        </button>
+
+        <div>
+          <strong>{percent}%</strong>
+          <span>Arabic text</span>
+        </div>
+
+        <button
+          type="button"
+          aria-label="Increase Quran text size"
+          onClick={() => onTextScaleChange((value) => Math.min(1.35, Number((value + 0.1).toFixed(2))))}
+          disabled={textScale >= 1.35}
+        >
+          +
+        </button>
       </div>
     </div>
   );
