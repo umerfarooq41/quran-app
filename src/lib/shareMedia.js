@@ -31,7 +31,6 @@ export function buildShareComposition({
   fromAyah,
   toAyah,
   backgroundAsset = null,
-  useStillFrame = true,
   orientation = 'portrait',
   reciterId = '',
   showTranslation = false,
@@ -50,7 +49,6 @@ export function buildShareComposition({
           videoSrc: backgroundAsset.videoSrc,
           posterSrc: backgroundAsset.posterSrc || '',
           stillFrameMs: Number(backgroundAsset.stillFrameMs) || 0,
-          useStillFrame: Boolean(useStillFrame),
         }
       : {
           type: 'solid',
@@ -58,7 +56,6 @@ export function buildShareComposition({
           videoSrc: '',
           posterSrc: '',
           stillFrameMs: 0,
-          useStillFrame: Boolean(useStillFrame),
         },
     orientation: orientation === 'landscape' ? 'landscape' : 'portrait',
     reciterId,

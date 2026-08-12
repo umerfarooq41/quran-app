@@ -1,19 +1,44 @@
-const SHARE_LAYOUT = {
-  width: 1200,
-  frameInset: 32,
-  frameRadius: 54,
-  contentSideInset: 88,
-  titleY: 104,
-  dividerY: 158,
-  dividerSideInset: 142,
-  dividerGap: 66,
-  bismillahY: 226,
-  bodyTopWithBismillah: 302,
-  bodyTopWithoutBismillah: 214,
-  footerReserve: 150,
-  bottomInset: 34,
-  maxBodyHeightBeforeShrink: 1450,
-};
+function getShareLayout(orientation = 'portrait') {
+  if (orientation === 'landscape') {
+    return {
+      width: 1600,
+      height: 900,
+      frameInset: 28,
+      frameRadius: 50,
+      contentSideInset: 105,
+      titleY: 82,
+      dividerY: 128,
+      dividerSideInset: 180,
+      dividerGap: 72,
+      bismillahY: 184,
+      bodyTopWithBismillah: 242,
+      bodyTopWithoutBismillah: 174,
+      footerReserve: 120,
+      bottomInset: 28,
+      minFontSize: 34,
+      maxBodyHeightBeforeShrink: 520,
+    };
+  }
+
+  return {
+    width: 1200,
+    height: 1600,
+    frameInset: 32,
+    frameRadius: 54,
+    contentSideInset: 88,
+    titleY: 104,
+    dividerY: 158,
+    dividerSideInset: 142,
+    dividerGap: 66,
+    bismillahY: 226,
+    bodyTopWithBismillah: 302,
+    bodyTopWithoutBismillah: 214,
+    footerReserve: 150,
+    bottomInset: 34,
+    minFontSize: 44,
+    maxBodyHeightBeforeShrink: 1120,
+  };
+}
 
 export async function generateQuranShareImage({
   surahName,
@@ -21,8 +46,10 @@ export async function generateQuranShareImage({
   ayahs,
   background,
   surahMeaning = '',
+  orientation = 'portrait',
 }) {
-  const { width } = SHARE_LAYOUT;
+  const SHARE_LAYOUT = getShareLayout(orientation);
+  const { width, height } = SHARE_LAYOUT;
   const maxTextWidth = width - (SHARE_LAYOUT.contentSideInset * 2);
 
   let measureCanvas = document.createElement('canvas');
@@ -36,7 +63,7 @@ export async function generateQuranShareImage({
   let fontSize = getStartingFontSize(ayahs.length);
   let layout = getAyahLayout(measureCtx, ayahs, fontSize, maxTextWidth);
 
-  while (layout.height > SHARE_LAYOUT.maxBodyHeightBeforeShrink && fontSize > 46) {
+  while (layout.height > SHARE_LAYOUT.maxBodyHeightBeforeShrink && fontSize > SHARE_LAYOUT.minFontSize) {
     fontSize -= 2;
     layout = getAyahLayout(measureCtx, ayahs, fontSize, maxTextWidth);
   }
@@ -44,11 +71,6 @@ export async function generateQuranShareImage({
   const bodyTop = Number(surahNumber) === 9
     ? SHARE_LAYOUT.bodyTopWithoutBismillah
     : SHARE_LAYOUT.bodyTopWithBismillah;
-  const contentBottom = bodyTop + layout.height;
-  const height = Math.max(
-    760,
-    Math.ceil(contentBottom + SHARE_LAYOUT.footerReserve + SHARE_LAYOUT.bottomInset),
-  );
 
   const canvas = document.createElement('canvas');
   canvas.width = width;
