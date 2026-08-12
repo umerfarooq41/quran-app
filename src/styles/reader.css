@@ -3228,3 +3228,38 @@ body {
 [data-theme='dark'] .share-range-trigger {
   background: color-mix(in srgb, var(--brand-gold, #b68a35) 6%, var(--theme-surface-solid, #202723)) !important;
 }
+
+/* Share Quran — standalone screen. The share experience is a full app page,
+   not a Reader overlay/sheet. */
+.share-quran-screen {
+  min-height: 100dvh;
+}
+
+.share-quran-page-content {
+  width: min(100%, 720px);
+  margin-inline: auto;
+  padding-inline: 10px;
+  padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+}
+
+.share-quran-page-content .share-range-card {
+  margin-top: 8px !important;
+}
+
+.share-quran-page-content .share-image-button {
+  width: min(100%, 430px);
+  min-height: 54px;
+  margin: 18px auto 0;
+}
+
+.share-quran-page-content .share-sheet-status {
+  width: min(100%, 430px);
+  margin: 10px auto 0;
+  text-align: center;
+}
+
+@media (min-width: 640px) {
+  .share-quran-page-content {
+    padding-inline: 18px;
+  }
+}
