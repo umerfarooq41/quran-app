@@ -11,7 +11,6 @@ import { MushafPage } from './components/MushafPage';
 import { ReaderBottomControls } from './components/ReaderBottomControls';
 import { ReaderFooterMeta, ReaderPassiveHeader } from './components/ReaderPassiveMeta';
 import { ReaderTopControls } from './components/ReaderTopControls';
-import { ShareAyahSheet } from './components/ShareAyahSheet';
 import { usePagePersistence } from './hooks/usePagePersistence';
 import { useReaderGestures } from './hooks/useReaderGestures';
 
@@ -42,9 +41,7 @@ export default function ReaderScreen() {
     selectedAyah,
     openAyahSheet,
     closeAyahSheet,
-    shareTarget,
-    openShareSheet: pushShareSheet,
-    closeShareSheet,
+    openSharePage,
     audioTarget,
     audioPlayerActive,
     audioPlayerVisible,
@@ -79,9 +76,7 @@ export default function ReaderScreen() {
     selectedAyah: state.selectedAyah,
     openAyahSheet: state.openAyahSheet,
     closeAyahSheet: state.closeAyahSheet,
-    shareTarget: state.shareTarget,
-    openShareSheet: state.openShareSheet,
-    closeShareSheet: state.closeShareSheet,
+    openSharePage: state.openSharePage,
     audioTarget: state.audioTarget,
     audioPlayerActive: state.audioPlayerActive,
     audioPlayerVisible: state.audioPlayerVisible,
@@ -158,13 +153,11 @@ export default function ReaderScreen() {
   });
   const topOverlay = overlayStack.at(-1)?.type;
   const ayahTooltipVisible = Boolean(selectedAyah && topOverlay === OVERLAY_TYPES.AYAH);
-  const shareSheetVisible = Boolean(shareTarget && topOverlay === OVERLAY_TYPES.SHARE);
   const readerInteractionsBlocked = Boolean(
     controlsVisible ||
       audioPlayerVisible ||
       translationTarget ||
-      ayahTooltipVisible ||
-      shareSheetVisible
+      ayahTooltipVisible
   );
   const activeSlideTargetPage = pageSlide.targetPage && pageSlide.targetPage !== page
     ? pageSlide.targetPage
@@ -217,7 +210,6 @@ export default function ReaderScreen() {
     page,
     translationTarget,
     ayahTooltipVisible,
-    shareSheetVisible,
     audioPlayerVisible,
   ]);
 
@@ -407,7 +399,7 @@ export default function ReaderScreen() {
   }
 
   function pageSlideBlocked() {
-    return Boolean(translationTarget || ayahTooltipVisible || shareSheetVisible || audioPlayerVisible);
+    return Boolean(translationTarget || ayahTooltipVisible || audioPlayerVisible);
   }
 
   function handlePageSlideMove(deltaX) {
@@ -509,8 +501,8 @@ export default function ReaderScreen() {
     setAnnotationVersion((version) => version + 1);
   }
 
-  function showShareSheet(targetAyah) {
-    pushShareSheet(targetAyah);
+  function showSharePage(targetAyah) {
+    openSharePage(targetAyah);
   }
 
   function showCopyToast() {
@@ -587,7 +579,6 @@ export default function ReaderScreen() {
     suppressAyahInteractions();
     if (translationTarget) setTranslationTarget(null);
     if (ayahTooltipVisible) closeAyahSheet();
-    if (shareSheetVisible) closeShareSheet();
     if (controlsVisible) setControlsVisible(false);
     if (audioPlayerVisible) hideAudioPlayer();
   }
@@ -792,7 +783,7 @@ export default function ReaderScreen() {
             ayah={selectedAyah}
             onClose={closeAyahSheet}
             onPlay={openAudioPanel}
-            onShare={showShareSheet}
+            onShare={showSharePage}
             onCopied={showCopyToast}
             onAnnotationsChanged={annotationsChanged}
           />
@@ -807,14 +798,6 @@ export default function ReaderScreen() {
         )}
       </AnimatePresence>
 
-      <AnimatePresence>
-        {shareTarget && topOverlay === OVERLAY_TYPES.SHARE && (
-          <ShareAyahSheet
-            ayah={shareTarget}
-            onClose={closeShareSheet}
-          />
-        )}
-      </AnimatePresence>
     </section>
   );
 }
