@@ -24,7 +24,6 @@ import {
 import { surahArabicNames } from '../../../utils/quranLabels';
 import { Header, Screen } from '../../../components/common/AppChrome';
 
-const SHARE_BACKGROUND = '#ead8b8';
 
 export function ShareQuranScreen({ ayah, onClose }) {
   const surah = getSurah(ayah.surahNumber);
@@ -122,11 +121,10 @@ export function ShareQuranScreen({ ayah, onClose }) {
       surahName: arabicSurahName,
       surahNumber: ayah.surahNumber,
       ayahs: range,
-      background: SHARE_BACKGROUND,
       surahMeaning: surahMeta?.meaning || '',
       orientation,
-    ,
-      unifiedMediaStyle: true,
+      textScale,
+      backgroundAsset: selectedBackground,
     })
       .then((blob) => {
         if (!cancelled) setImageBlob(blob);
@@ -141,7 +139,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
     return () => {
       cancelled = true;
     };
-  }, [arabicSurahName, ayah.surahNumber, range, surahMeta?.meaning, orientation]);
+  }, [arabicSurahName, ayah.surahNumber, range, surahMeta?.meaning, orientation, textScale, selectedBackground]);
 
   useEffect(() => {
     if (!imageBlob) {
@@ -465,7 +463,7 @@ function VideoPreview({
         <video
           className="share-video-preview-background"
           src={background.videoSrc}
-          poster={background.posterSrc || undefined}
+          poster={background.imageSrc || undefined}
           autoPlay
           muted
           loop
@@ -589,8 +587,8 @@ function BackgroundSettings({ assets, selectedId, onSelect }) {
               className={selectedId === asset.id ? 'is-selected' : ''}
               onClick={() => onSelect(asset.id)}
             >
-              {asset.posterSrc
-                ? <img src={asset.posterSrc} alt="" />
+              {asset.imageSrc
+                ? <img src={asset.imageSrc} alt={`${asset.label} background`} />
                 : <span>{asset.label}</span>}
             </button>
           ))}
