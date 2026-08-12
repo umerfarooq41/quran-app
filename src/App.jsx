@@ -15,6 +15,7 @@ import TafsirScreen from './pages/TafsirScreen';
 import SettingsScreen from './pages/SettingsScreen';
 import SurahScreen from './pages/SurahScreen';
 import SurahInfoScreen from './pages/SurahInfoScreen';
+import { ShareQuranScreen } from './features/reader/components/ShareAyahSheet';
 import { ReaderAudioPanel } from './features/reader/components/ReaderAudioPanel';
 
 function syncPortraitFallbackState() {
@@ -57,6 +58,8 @@ export default function App() {
     overlayStack,
     audioPlayerVisible,
     hideAudioPlayer,
+    shareTarget,
+    closeSharePage,
   } = useAppStore(useShallow((state) => ({
     view: state.view,
     hydrateLastRead: state.hydrateLastRead,
@@ -68,6 +71,8 @@ export default function App() {
     overlayStack: state.overlayStack,
     audioPlayerVisible: state.audioPlayerVisible,
     hideAudioPlayer: state.hideAudioPlayer,
+    shareTarget: state.shareTarget,
+    closeSharePage: state.closeSharePage,
   })));
   const activeView = normalizeView(view);
   const [booted, setBooted] = useState(false);
@@ -221,7 +226,6 @@ export default function App() {
       const topOverlay = currentOverlays.at(-1);
       const hasLocalOverlay = topOverlay && (
         topOverlay.type === OVERLAY_TYPES.AYAH
-        || topOverlay.type === OVERLAY_TYPES.SHARE
       );
 
       if (hasLocalOverlay) {
@@ -288,6 +292,9 @@ export default function App() {
         {activeView === VIEWS.TABS && <BookmarksScreen key="tabs" />}
         {activeView === VIEWS.TAFSIR && <TafsirScreen key="tafsir" />}
         {activeView === VIEWS.SETTINGS && <SettingsScreen key="settings" />}
+        {activeView === VIEWS.SHARE_QURAN && shareTarget && (
+          <ShareQuranScreen key="shareQuran" ayah={shareTarget} onClose={closeSharePage} />
+        )}
       </AnimatePresence>
       <ReaderAudioPanel />
    </Shell>
