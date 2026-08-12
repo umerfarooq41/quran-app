@@ -9,9 +9,10 @@ import {
   Pause,
   Play,
   Type,
-  Volume2,
 } from 'lucide-react';
 import { getSurah, getSurahAyahs } from '../../../lib/quran';
+import { getTranslationOption, loadTranslationEntry } from '../../../lib/translations';
+import { useAppStore } from '../../../store/useAppStore';
 import { getSurahNameMeta } from '../../../data/surahNames';
 import { generateQuranShareImage } from '../../../lib/shareCanvas';
 import { getReciterImageUrl, normalizeLocalReciters } from '../../../lib/localAudio';
@@ -28,6 +29,12 @@ import { Header, Screen } from '../../../components/common/AppChrome';
 
 
 export function ShareQuranScreen({ ayah, onClose }) {
+  const settingsTranslationId = useAppStore((state) => state.settings.translation);
+  const settingsReciterId = useAppStore((state) => state.settings.reciter);
+  const translationOption = useMemo(
+    () => getTranslationOption(settingsTranslationId),
+    [settingsTranslationId],
+  );
   const surah = getSurah(ayah.surahNumber);
   const surahMeta = getSurahNameMeta(ayah.surahNumber);
   const surahAyahs = useMemo(() => getSurahAyahs(ayah.surahNumber), [ayah.surahNumber]);
@@ -40,12 +47,19 @@ export function ShareQuranScreen({ ayah, onClose }) {
   const [fromAyah, setFromAyah] = useState(ayah.ayahNumber);
   const [toAyah, setToAyah] = useState(ayah.ayahNumber);
   const [openRangePicker, setOpenRangePicker] = useState(null);
-  const [selectedReciter, setSelectedReciter] = useState(reciters[0]?.id || '');
+  const [selectedReciter, setSelectedReciter] = useState(() => (
+    reciters.some((reciter) => reciter.id === settingsReciterId)
+      ? settingsReciterId
+      : reciters[0]?.id || ''
+  ));
   const [selectedBackgroundId, setSelectedBackgroundId] = useState(
     SHARE_BACKGROUND_ASSETS[0]?.id || '',
   );
   const [orientation, setOrientation] = useState('portrait');
   const [textScale, setTextScale] = useState(1);
+  const [showTranslation, setShowTranslation] = useState(false);
+  const [translationsByAyah, setTranslationsByAyah] = useState({});
+  const [translationLoading, setTranslationLoading] = useState(false);
   const [status, setStatus] = useState('');
 
   const [imageBlob, setImageBlob] = useState(null);
@@ -85,8 +99,8 @@ export function ShareQuranScreen({ ayah, onClose }) {
     backgroundAsset: selectedBackground,
     orientation,
     reciterId: selectedReciter,
-    showTranslation: false,
-    translationId: null,
+    showTranslation,
+    translationId: settingsTranslationId,
     style: {
       textColor: '#ffffff',
       overlayOpacity: 0.42,
@@ -102,6 +116,8 @@ export function ShareQuranScreen({ ayah, onClose }) {
     orientation,
     selectedReciter,
     textScale,
+    showTranslation,
+    settingsTranslationId,
   ]);
 
   const activeVideoEntry = useMemo(
@@ -112,6 +128,43 @@ export function ShareQuranScreen({ ayah, onClose }) {
     const ayahNumber = Number(activeVideoEntry?.ayahNumber) || fromAyah;
     return surahAyahs.find((item) => item.ayahNumber === ayahNumber) || range[0] || ayah;
   }, [activeVideoEntry, fromAyah, surahAyahs, range, ayah]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    if (!showTranslation || !range.length) {
+      setTranslationsByAyah({});
+      setTranslationLoading(false);
+      return undefined;
+    }
+
+    setTranslationLoading(true);
+    Promise.all(
+      range.map(async (rangeAyah) => {
+        try {
+          const entry = await loadTranslationEntry(
+            settingsTranslationId,
+            ayah.surahNumber,
+            rangeAyah.ayahNumber,
+            { includeTafsir: false },
+          );
+          return [rangeAyah.ayahNumber, entry?.plainText || ''];
+        } catch {
+          return [rangeAyah.ayahNumber, ''];
+        }
+      }),
+    )
+      .then((entries) => {
+        if (!cancelled) setTranslationsByAyah(Object.fromEntries(entries));
+      })
+      .finally(() => {
+        if (!cancelled) setTranslationLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [showTranslation, settingsTranslationId, ayah.surahNumber, range]);
 
   useEffect(() => {
     let cancelled = false;
@@ -127,6 +180,9 @@ export function ShareQuranScreen({ ayah, onClose }) {
       orientation,
       textScale,
       backgroundAsset: selectedBackground,
+      showTranslation,
+      translationsByAyah,
+      translationDirection: translationOption?.direction || 'ltr',
     })
       .then((blob) => {
         if (!cancelled) setImageBlob(blob);
@@ -141,7 +197,18 @@ export function ShareQuranScreen({ ayah, onClose }) {
     return () => {
       cancelled = true;
     };
-  }, [arabicSurahName, ayah.surahNumber, range, surahMeta?.meaning, orientation, textScale, selectedBackground]);
+  }, [
+    arabicSurahName,
+    ayah.surahNumber,
+    range,
+    surahMeta?.meaning,
+    orientation,
+    textScale,
+    selectedBackground,
+    showTranslation,
+    translationsByAyah,
+    translationOption?.direction,
+  ]);
 
   useEffect(() => {
     if (!imageBlob) {
@@ -226,15 +293,27 @@ export function ShareQuranScreen({ ayah, onClose }) {
       audio.preload = 'auto';
       audioRef.current = audio;
     }
-    if (audio.src !== videoTimeline.audioUrl) {
-      audio.src = videoTimeline.audioUrl;
-      audio.crossOrigin = 'anonymous';
-    }
+    try {
+      setStatus('');
 
-    const sourceStartSeconds = videoTimeline.sourceStartMs / 1000;
-    audio.currentTime = sourceStartSeconds + (videoElapsedMs / 1000);
-    await audio.play();
-    setVideoPlaying(true);
+      if (audio.src !== new URL(videoTimeline.audioUrl, window.location.href).href) {
+        audio.src = videoTimeline.audioUrl;
+        audio.load();
+      }
+
+      await waitForMediaReady(audio);
+
+      const sourceStartSeconds = videoTimeline.sourceStartMs / 1000;
+      const requestedTime = sourceStartSeconds + (videoElapsedMs / 1000);
+      if (Number.isFinite(requestedTime)) audio.currentTime = requestedTime;
+
+      await audio.play();
+      setVideoPlaying(true);
+    } catch (error) {
+      setVideoPlaying(false);
+      setStatus(error?.message || 'Recitation audio could not be played.');
+      return;
+    }
 
     const tick = () => {
       const elapsed = Math.max(0, (audio.currentTime * 1000) - videoTimeline.sourceStartMs);
@@ -307,6 +386,9 @@ export function ShareQuranScreen({ ayah, onClose }) {
               onSeek={seekVideoPreview}
               textScale={textScale}
               showAyahCard={activeTab === 'text'}
+              showTranslation={showTranslation}
+              translation={translationsByAyah[activeVideoAyah?.ayahNumber] || ''}
+              translationDirection={translationOption?.direction || 'ltr'}
             />
           )}
         </section>
@@ -370,6 +452,10 @@ export function ShareQuranScreen({ ayah, onClose }) {
               }}
               textScale={textScale}
               onTextScaleChange={setTextScale}
+              showTranslation={showTranslation}
+              onShowTranslationChange={setShowTranslation}
+              translationOption={translationOption}
+              translationLoading={translationLoading}
             />
           )}
 
@@ -377,17 +463,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
             <StyleSettings orientation={orientation} onOrientationChange={setOrientation} />
           )}
         </section>
-
-
-
-        {mode === SHARE_MEDIA_MODES.VIDEO && (
-          <div className="share-selected-reciter">
-            <Volume2 size={17} />
-            <span>{selectedReciterMeta?.name || 'Reciter'}</span>
-          </div>
-        )}
-
-        <button
+<button
           type="button"
           className="share-media-final-action"
           onClick={mode === SHARE_MEDIA_MODES.IMAGE ? downloadImage : undefined}
@@ -402,14 +478,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
             ? preparingImage ? 'Preparing Image…' : 'Download Image'
             : 'Download Video'}
         </button>
-
-        {mode === SHARE_MEDIA_MODES.VIDEO && (
-          <p className="share-media-export-note">
-            Video preview is timeline-driven now. Offline video export will activate after your local background clips are added and the encoder layer is enabled.
-          </p>
-        )}
-
-        {(status || videoTimelineStatus) && (
+{(status || videoTimelineStatus) && (
           <p className="share-sheet-status">{status || videoTimelineStatus}</p>
         )}
       </div>
@@ -452,6 +521,9 @@ function VideoPreview({
   onSeek,
   textScale,
   showAyahCard,
+  showTranslation,
+  translation,
+  translationDirection,
 }) {
   const backgroundVideoRef = useRef(null);
 
@@ -497,6 +569,14 @@ function VideoPreview({
           <div className="share-video-preview-ayah">
             {ayah?.text || ''}
           </div>
+          {showTranslation && translation && (
+            <div
+              className="share-video-preview-translation"
+              dir={translationDirection}
+            >
+              {translation}
+            </div>
+          )}
         </div>
       )}
 
@@ -533,7 +613,37 @@ function VideoPreview({
 
 function AudioSettings({ mode, reciters, selectedReciter, onReciterChange }) {
   const [open, setOpen] = useState(false);
+  const [opensUp, setOpensUp] = useState(false);
+  const pickerRef = useRef(null);
   const selected = reciters.find((reciter) => reciter.id === selectedReciter) || reciters[0] || null;
+
+  useEffect(() => {
+    if (!open || !pickerRef.current) return undefined;
+
+    const updateDirection = () => {
+      const rect = pickerRef.current.getBoundingClientRect();
+      const viewportHeight = window.visualViewport?.height || window.innerHeight;
+      const menuHeight = Math.min(300, Math.max(54, reciters.length * 54));
+      const roomBelow = viewportHeight - rect.bottom;
+      const roomAbove = rect.top;
+      setOpensUp(roomBelow < menuHeight + 12 && roomAbove > roomBelow);
+    };
+
+    const closeOnOutsidePress = (event) => {
+      if (!pickerRef.current?.contains(event.target)) setOpen(false);
+    };
+
+    updateDirection();
+    window.visualViewport?.addEventListener('resize', updateDirection);
+    window.addEventListener('resize', updateDirection);
+    document.addEventListener('pointerdown', closeOnOutsidePress);
+
+    return () => {
+      window.visualViewport?.removeEventListener('resize', updateDirection);
+      window.removeEventListener('resize', updateDirection);
+      document.removeEventListener('pointerdown', closeOnOutsidePress);
+    };
+  }, [open, reciters.length]);
 
   if (mode === SHARE_MEDIA_MODES.IMAGE) {
     return (
@@ -541,17 +651,20 @@ function AudioSettings({ mode, reciters, selectedReciter, onReciterChange }) {
         <Headphones size={21} />
         <div>
           <strong>Audio is for video only</strong>
-          <span>Image mode includes all selected ayahs without recitation.</span>
+          <span>Image mode includes the selected Quran text without recitation.</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="share-reciter-picker">
+    <div
+      ref={pickerRef}
+      className={`share-reciter-picker${opensUp ? ' opens-up' : ''}`}
+    >
       <div className="share-media-section-heading">
         <strong>Reciter</strong>
-        <span>Choose from the same reciters available in Settings.</span>
+        <span>Uses the same reciter library as Settings.</span>
       </div>
 
       <button
@@ -648,6 +761,10 @@ function TextSettings({
   onChangeTo,
   textScale,
   onTextScaleChange,
+  showTranslation,
+  onShowTranslationChange,
+  translationOption,
+  translationLoading,
 }) {
   const percent = Math.round(textScale * 100);
 
@@ -687,6 +804,32 @@ function TextSettings({
             +
           </button>
         </div>
+      </div>
+
+
+      <div className="share-translation-setting">
+        <div className="share-translation-setting-copy">
+          <strong>Translation</strong>
+          <span>
+            {translationOption
+              ? `${translationOption.language === 'Ur' ? 'Urdu' : 'English'} · ${translationOption.shortName || translationOption.label}`
+              : 'Uses the translation selected in Settings'}
+          </span>
+          {translationLoading && showTranslation && (
+            <small>Loading selected translation…</small>
+          )}
+        </div>
+
+        <button
+          type="button"
+          className={`share-translation-toggle${showTranslation ? ' is-on' : ''}`}
+          role="switch"
+          aria-checked={showTranslation}
+          aria-label="Include translation"
+          onClick={() => onShowTranslationChange((value) => !value)}
+        >
+          <span />
+        </button>
       </div>
 
       <div className="share-text-ayahs-card">
@@ -811,6 +954,37 @@ function RangeField({ label, value, options, open, onToggle, onSelect }) {
       )}
     </div>
   );
+}
+
+function waitForMediaReady(media) {
+  if (!media) return Promise.reject(new Error('Audio player is unavailable.'));
+  if (media.readyState >= 1) return Promise.resolve();
+
+  return new Promise((resolve, reject) => {
+    const timeoutId = window.setTimeout(() => {
+      cleanup();
+      reject(new Error('Recitation audio took too long to load.'));
+    }, 10000);
+
+    const cleanup = () => {
+      window.clearTimeout(timeoutId);
+      media.removeEventListener('loadedmetadata', handleReady);
+      media.removeEventListener('canplay', handleReady);
+      media.removeEventListener('error', handleError);
+    };
+    const handleReady = () => {
+      cleanup();
+      resolve();
+    };
+    const handleError = () => {
+      cleanup();
+      reject(new Error('Recitation audio could not be loaded.'));
+    };
+
+    media.addEventListener('loadedmetadata', handleReady, { once: true });
+    media.addEventListener('canplay', handleReady, { once: true });
+    media.addEventListener('error', handleError, { once: true });
+  });
 }
 
 function formatMediaTime(milliseconds) {
