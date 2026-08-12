@@ -20,6 +20,7 @@ export async function generateQuranShareImage({
   surahNumber,
   ayahs,
   background,
+  surahMeaning = '',
 }) {
   const { width } = SHARE_LAYOUT;
   const maxTextWidth = width - (SHARE_LAYOUT.contentSideInset * 2);
@@ -83,7 +84,15 @@ export async function generateQuranShareImage({
   ctx.textBaseline = 'middle';
   ctx.fillStyle = '#211c17';
   ctx.font = '600 52px IndopakNastaleeq, serif';
-  ctx.fillText(`سُورَةُ ${surahName}`, width / 2, SHARE_LAYOUT.titleY);
+  ctx.fillText(`سُورَةُ ${surahName}`, width / 2, SHARE_LAYOUT.titleY - 10);
+
+  if (surahMeaning) {
+    ctx.direction = 'ltr';
+    ctx.font = '500 24px Inter, ui-sans-serif, system-ui';
+    ctx.fillStyle = 'rgba(55, 46, 37, .66)';
+    ctx.fillText(surahMeaning, width / 2, SHARE_LAYOUT.titleY + 31);
+    ctx.direction = 'rtl';
+  }
 
   // Divider.
   const dividerY = SHARE_LAYOUT.dividerY;
