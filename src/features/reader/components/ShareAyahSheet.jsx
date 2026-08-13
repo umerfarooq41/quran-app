@@ -39,11 +39,18 @@ export function ShareQuranScreen({ ayah, onClose }) {
     () => getTranslationOption(settingsTranslationId),
     [settingsTranslationId],
   );
-  const surah = getSurah(ayah.surahNumber);
-  const surahMeta = getSurahNameMeta(ayah.surahNumber);
-  const surahAyahs = useMemo(() => getSurahAyahs(ayah.surahNumber), [ayah.surahNumber]);
-  const selectedIndex = Math.max(0, surahAyahs.findIndex((item) => item.ayahNumber === ayah.ayahNumber));
-  const fromOptions = useMemo(() => getFromOptions(surahAyahs, selectedIndex), [surahAyahs, selectedIndex]);
+  const [selectedSurahNumber, setSelectedSurahNumber] = useState(ayah.surahNumber);
+  const surah = getSurah(selectedSurahNumber);
+  const surahMeta = getSurahNameMeta(selectedSurahNumber);
+  const surahAyahs = useMemo(() => getSurahAyahs(selectedSurahNumber), [selectedSurahNumber]);
+  const fromOptions = surahAyahs;
+  const surahOptions = useMemo(() => (
+    Array.from({ length: 114 }, (_, index) => {
+      const number = index + 1;
+      const item = getSurah(number);
+      return item ? { value: number, label: `${item.name} (${number})` } : null;
+    }).filter(Boolean)
+  ), []);
   const reciters = useMemo(() => normalizeLocalReciters(), []);
 
   const [mode, setMode] = useState(SHARE_MEDIA_MODES.IMAGE);
@@ -61,6 +68,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
   );
   const [orientation, setOrientation] = useState('portrait');
   const [textScale, setTextScale] = useState(1);
+  const [translationScale, setTranslationScale] = useState(1);
   const [showTranslation, setShowTranslation] = useState(false);
   const [translationsByAyah, setTranslationsByAyah] = useState({});
   const [translationLoading, setTranslationLoading] = useState(false);
@@ -80,20 +88,16 @@ export function ShareQuranScreen({ ayah, onClose }) {
   const audioRef = useRef(null);
   const rafRef = useRef(0);
 
+  const maxRange = mode === SHARE_MEDIA_MODES.IMAGE ? 5 : 10;
   const fromIndex = Math.max(0, surahAyahs.findIndex((item) => item.ayahNumber === fromAyah));
-  const toOptions = surahAyahs.slice(fromIndex, fromIndex + 10);
+  const toOptions = surahAyahs.slice(fromIndex, fromIndex + maxRange);
   const range = useMemo(
     () => surahAyahs.filter((item) => item.ayahNumber >= fromAyah && item.ayahNumber <= toAyah),
     [surahAyahs, fromAyah, toAyah],
   );
 
-  useEffect(() => {
-    if (mode === SHARE_MEDIA_MODES.IMAGE && toAyah !== fromAyah) {
-      setToAyah(fromAyah);
-    }
-  }, [mode, fromAyah, toAyah]);
 
-  const arabicSurahName = surahArabicNames[ayah.surahNumber] || surah?.name || '';
+  const arabicSurahName = surahArabicNames[selectedSurahNumber] || surah?.name || '';
   const selectedBackground = useMemo(
     () => SHARE_BACKGROUND_ASSETS.find((item) => item.id === selectedBackgroundId) || null,
     [selectedBackgroundId],
@@ -105,7 +109,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
 
   const composition = useMemo(() => buildShareComposition({
     mode,
-    surahNumber: ayah.surahNumber,
+    surahNumber: selectedSurahNumber,
     fromAyah,
     toAyah,
     backgroundAsset: selectedBackground,
@@ -118,16 +122,18 @@ export function ShareQuranScreen({ ayah, onClose }) {
       overlayOpacity: 0.42,
       alignment: 'center',
       textScale,
+      translationScale,
     },
   }), [
     mode,
-    ayah.surahNumber,
+    selectedSurahNumber,
     fromAyah,
     toAyah,
     selectedBackground,
     orientation,
     selectedReciter,
     textScale,
+    translationScale,
     showTranslation,
     settingsTranslationId,
   ]);
@@ -146,8 +152,8 @@ export function ShareQuranScreen({ ayah, onClose }) {
     [activeVideoEntry, videoElapsedMs],
   );
   const activeVideoWords = useMemo(
-    () => getQuranWordsForAyah(ayah.surahNumber, activeVideoAyah?.ayahNumber),
-    [ayah.surahNumber, activeVideoAyah?.ayahNumber],
+    () => getQuranWordsForAyah(selectedSurahNumber, activeVideoAyah?.ayahNumber),
+    [selectedSurahNumber, activeVideoAyah?.ayahNumber],
   );
 
   useEffect(() => {
@@ -165,7 +171,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
         try {
           const entry = await loadTranslationEntry(
             settingsTranslationId,
-            ayah.surahNumber,
+            selectedSurahNumber,
             rangeAyah.ayahNumber,
             { includeTafsir: false },
           );
@@ -185,21 +191,21 @@ export function ShareQuranScreen({ ayah, onClose }) {
     return () => {
       cancelled = true;
     };
-  }, [showTranslation, settingsTranslationId, ayah.surahNumber, range]);
+  }, [showTranslation, settingsTranslationId, selectedSurahNumber, range]);
 
   useEffect(() => {
     let cancelled = false;
     setStatus('');
     setPreparingImage(true);
-    setImageBlob(null);
 
     generateQuranShareImage({
       surahName: arabicSurahName,
-      surahNumber: ayah.surahNumber,
+      surahNumber: selectedSurahNumber,
       ayahs: range,
       surahMeaning: surahMeta?.meaning || '',
       orientation,
       textScale,
+      translationScale,
       backgroundAsset: selectedBackground,
       showTranslation,
       translationsByAyah,
@@ -220,11 +226,12 @@ export function ShareQuranScreen({ ayah, onClose }) {
     };
   }, [
     arabicSurahName,
-    ayah.surahNumber,
+    selectedSurahNumber,
     range,
     surahMeta?.meaning,
     orientation,
     textScale,
+    translationScale,
     selectedBackground,
     showTranslation,
     translationsByAyah,
@@ -232,10 +239,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
   ]);
 
   useEffect(() => {
-    if (!imageBlob) {
-      setPreviewUrl('');
-      return undefined;
-    }
+    if (!imageBlob) return undefined;
     const url = URL.createObjectURL(imageBlob);
     setPreviewUrl(url);
     return () => URL.revokeObjectURL(url);
@@ -274,16 +278,21 @@ export function ShareQuranScreen({ ayah, onClose }) {
 
   function changeFrom(nextValue) {
     const nextFrom = Number(nextValue);
-    setFromAyah(nextFrom);
-
-    if (mode === SHARE_MEDIA_MODES.IMAGE) {
-      setToAyah(nextFrom);
-      return;
-    }
-
     const nextIndex = Math.max(0, surahAyahs.findIndex((item) => item.ayahNumber === nextFrom));
-    const maxTo = surahAyahs[Math.min(surahAyahs.length - 1, nextIndex + 9)]?.ayahNumber || nextFrom;
+    const maxTo = surahAyahs[Math.min(surahAyahs.length - 1, nextIndex + maxRange - 1)]?.ayahNumber || nextFrom;
+    setFromAyah(nextFrom);
     setToAyah((current) => Math.min(maxTo, Math.max(nextFrom, current)));
+  }
+
+  function changeSurah(nextSurahNumber) {
+    const next = Number(nextSurahNumber);
+    if (!Number.isInteger(next) || next < 1 || next > 114) return;
+    stopVideoPreview();
+    setOpenRangePicker(null);
+    setSelectedSurahNumber(next);
+    setFromAyah(1);
+    setToAyah(1);
+    setVideoElapsedMs(0);
   }
 
   function stopVideoPreview() {
@@ -364,7 +373,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
     const url = URL.createObjectURL(imageBlob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `quran-${ayah.surahNumber}-${fromAyah}-${toAyah}.png`;
+    link.download = `quran-${selectedSurahNumber}-${fromAyah}-${toAyah}.png`;
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -400,13 +409,14 @@ export function ShareQuranScreen({ ayah, onClose }) {
         surahName: arabicSurahName,
         surahMeaning: surahMeta?.meaning || '',
         highlightColor: selectedBackground?.accentColor || '#d8b36a',
+        translationScale,
         onProgress: setVideoExportProgress,
       });
 
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `quran-${ayah.surahNumber}-${fromAyah}-${toAyah}.webm`;
+      link.download = `quran-${selectedSurahNumber}-${fromAyah}-${toAyah}.webm`;
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -430,7 +440,11 @@ export function ShareQuranScreen({ ayah, onClose }) {
           stopVideoPreview();
           setVideoElapsedMs(0);
           setOpenRangePicker(null);
-          if (nextMode === SHARE_MEDIA_MODES.IMAGE) setToAyah(fromAyah);
+          if (nextMode === SHARE_MEDIA_MODES.IMAGE) {
+            const startIndex = Math.max(0, surahAyahs.findIndex((item) => item.ayahNumber === fromAyah));
+            const imageMaxTo = surahAyahs[Math.min(surahAyahs.length - 1, startIndex + 4)]?.ayahNumber || fromAyah;
+            setToAyah((current) => Math.min(imageMaxTo, Math.max(fromAyah, current)));
+          }
           setMode(nextMode);
         }} />
 
@@ -446,9 +460,13 @@ export function ShareQuranScreen({ ayah, onClose }) {
                   alt={`${surah?.name || 'Quran'} ${fromAyah}-${toAyah}`}
                   className="quran-share-generated-image"
                 />
-              ) : (
-                <div className="quran-share-preview-loading">Preparing preview…</div>
-              )}
+              ) : selectedBackground?.imageSrc ? (
+                <img
+                  src={selectedBackground.imageSrc}
+                  alt="Selected Quran share background"
+                  className="quran-share-generated-image is-background-placeholder"
+                />
+              ) : null}
             </div>
           ) : (
             <VideoPreview
@@ -462,11 +480,12 @@ export function ShareQuranScreen({ ayah, onClose }) {
               onTogglePlay={toggleVideoPreview}
               onSeek={seekVideoPreview}
               textScale={textScale}
+              translationScale={translationScale}
               showAyahCard
               showTranslation={showTranslation}
               translation={translationsByAyah[activeVideoAyah?.ayahNumber] || ''}
               translationDirection={translationOption?.direction || 'ltr'}
-              surahNumber={ayah.surahNumber}
+              surahNumber={selectedSurahNumber}
               wordItems={activeVideoWords}
               activeWordPosition={activeVideoWord?.position || null}
               highlightColor={selectedBackground?.accentColor || '#d8b36a'}
@@ -495,6 +514,25 @@ export function ShareQuranScreen({ ayah, onClose }) {
           {activeTab === 'audio' && (
             <AudioSettings
               mode={mode}
+              maxRange={maxRange}
+              surahOptions={surahOptions}
+              selectedSurahNumber={selectedSurahNumber}
+              selectedSurahName={surah?.name || `Surah ${selectedSurahNumber}`}
+              onSurahChange={changeSurah}
+              fromAyah={fromAyah}
+              toAyah={toAyah}
+              fromOptions={fromOptions}
+              toOptions={toOptions}
+              openRangePicker={openRangePicker}
+              onToggleRange={setOpenRangePicker}
+              onChangeFrom={(nextValue) => {
+                changeFrom(nextValue);
+                setOpenRangePicker(null);
+              }}
+              onChangeTo={(nextValue) => {
+                setToAyah(Number(nextValue));
+                setOpenRangePicker(null);
+              }}
               reciters={reciters}
               selectedReciter={selectedReciter}
               onReciterChange={(value) => {
@@ -515,25 +553,10 @@ export function ShareQuranScreen({ ayah, onClose }) {
 
           {activeTab === 'text' && (
             <TextSettings
-              mode={mode}
-              surahName={surah?.name || `Surah ${ayah.surahNumber}`}
-              fromAyah={fromAyah}
-              toAyah={toAyah}
-              ayahOptions={fromOptions}
-              fromOptions={fromOptions}
-              toOptions={toOptions}
-              openRangePicker={openRangePicker}
-              onToggleRange={setOpenRangePicker}
-              onChangeFrom={(nextValue) => {
-                changeFrom(nextValue);
-                setOpenRangePicker(null);
-              }}
-              onChangeTo={(nextValue) => {
-                setToAyah(Number(nextValue));
-                setOpenRangePicker(null);
-              }}
               textScale={textScale}
               onTextScaleChange={setTextScale}
+              translationScale={translationScale}
+              onTranslationScaleChange={setTranslationScale}
               showTranslation={showTranslation}
               onShowTranslationChange={setShowTranslation}
               translationOption={translationOption}
@@ -551,7 +574,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
           onClick={mode === SHARE_MEDIA_MODES.IMAGE ? downloadImage : downloadVideo}
           disabled={
             mode === SHARE_MEDIA_MODES.IMAGE
-              ? preparingImage || !imageBlob || range.length !== 1
+              ? preparingImage || !imageBlob || range.length < 1 || range.length > 5
               : exportingVideo
                 || !videoTimeline?.audioUrl
                 || !videoTimeline?.timeline?.length
@@ -608,6 +631,7 @@ function VideoPreview({
   onTogglePlay,
   onSeek,
   textScale,
+  translationScale,
   showAyahCard,
   showTranslation,
   translation,
@@ -652,7 +676,7 @@ function VideoPreview({
       </div>
 
       {showAyahCard && (
-        <div className="share-video-preview-ayah-card" key={ayah?.ayahNumber} style={{ '--share-text-scale': textScale }}>
+        <div className="share-video-preview-ayah-card" key={ayah?.ayahNumber} style={{ '--share-text-scale': textScale, '--share-translation-scale': translationScale }}>
           <div className="share-video-preview-ayah" dir="rtl">
             {wordItems?.length
               ? wordItems.map((word) => (
@@ -692,14 +716,32 @@ function VideoPreview({
   );
 }
 
-function AudioSettings({ mode, reciters, selectedReciter, onReciterChange }) {
-  const [open, setOpen] = useState(false);
-  const [opensUp, setOpensUp] = useState(false);
+function AudioSettings({
+  mode,
+  maxRange,
+  surahOptions,
+  selectedSurahNumber,
+  selectedSurahName,
+  onSurahChange,
+  fromAyah,
+  toAyah,
+  fromOptions,
+  toOptions,
+  openRangePicker,
+  onToggleRange,
+  onChangeFrom,
+  onChangeTo,
+  reciters,
+  selectedReciter,
+  onReciterChange,
+}) {
+  const [reciterOpen, setReciterOpen] = useState(false);
+  const [reciterOpensUp, setReciterOpensUp] = useState(false);
   const pickerRef = useRef(null);
   const selected = reciters.find((reciter) => reciter.id === selectedReciter) || reciters[0] || null;
 
   useEffect(() => {
-    if (!open || !pickerRef.current) return undefined;
+    if (!reciterOpen || !pickerRef.current) return undefined;
 
     const updateDirection = () => {
       const rect = pickerRef.current.getBoundingClientRect();
@@ -707,11 +749,11 @@ function AudioSettings({ mode, reciters, selectedReciter, onReciterChange }) {
       const menuHeight = Math.min(300, Math.max(54, reciters.length * 54));
       const roomBelow = viewportHeight - rect.bottom;
       const roomAbove = rect.top;
-      setOpensUp(roomBelow < menuHeight + 12 && roomAbove > roomBelow);
+      setReciterOpensUp(roomBelow < menuHeight + 12 && roomAbove > roomBelow);
     };
 
     const closeOnOutsidePress = (event) => {
-      if (!pickerRef.current?.contains(event.target)) setOpen(false);
+      if (!pickerRef.current?.contains(event.target)) setReciterOpen(false);
     };
 
     updateDirection();
@@ -724,71 +766,102 @@ function AudioSettings({ mode, reciters, selectedReciter, onReciterChange }) {
       window.removeEventListener('resize', updateDirection);
       document.removeEventListener('pointerdown', closeOnOutsidePress);
     };
-  }, [open, reciters.length]);
-
-  if (mode === SHARE_MEDIA_MODES.IMAGE) {
-    return (
-      <div className="share-media-simple-message">
-        <Headphones size={21} />
-        <div>
-          <strong>Audio is for video only</strong>
-          <span>Image mode includes the selected Quran text without recitation.</span>
-        </div>
-      </div>
-    );
-  }
+  }, [reciterOpen, reciters.length]);
 
   return (
-    <div
-      ref={pickerRef}
-      className={`share-reciter-picker${opensUp ? ' opens-up' : ''}`}
-    >
-      <div className="share-media-section-heading">
-        <strong>Reciter</strong>
-        <span>Uses the same reciter library as Settings.</span>
+    <div className="share-audio-settings-stack">
+      <div className="share-media-section-heading share-reference-heading">
+        <strong>Ayahs</strong>
+        <span>Max {maxRange} Ayahs</span>
       </div>
 
-      <button
-        type="button"
-        className="share-reciter-trigger"
-        aria-expanded={open}
-        onClick={() => setOpen((value) => !value)}
-      >
-        {selected && (
-          <img
-            className="share-reciter-avatar"
-            src={getReciterImageUrl(selected)}
-            alt=""
-          />
-        )}
-        <span>{selected?.name || 'Select reciter'}</span>
-        <ChevronDown size={18} aria-hidden="true" />
-      </button>
+      <SurahField
+        value={selectedSurahNumber}
+        label={selectedSurahName}
+        options={surahOptions}
+        open={openRangePicker === 'surah'}
+        onToggle={() => {
+          setReciterOpen(false);
+          onToggleRange((current) => current === 'surah' ? null : 'surah');
+        }}
+        onSelect={onSurahChange}
+      />
 
-      {open && (
-        <div className="share-reciter-menu">
-          {reciters.map((reciter) => {
-            const isSelected = reciter.id === selectedReciter;
-            return (
-              <button
-                key={reciter.id}
-                type="button"
-                className={isSelected ? 'is-selected' : ''}
-                onClick={() => {
-                  onReciterChange(reciter.id);
-                  setOpen(false);
-                }}
-              >
-                <img
-                  className="share-reciter-avatar"
-                  src={getReciterImageUrl(reciter)}
-                  alt=""
-                />
-                <span>{reciter.name}</span>
-                {isSelected && <Check size={17} aria-hidden="true" />}
-              </button>
-            );
-          })}
+      <div className="share-reference-range-row">
+        <RangeField
+          label="From"
+          value={fromAyah}
+          options={fromOptions}
+          open={openRangePicker === 'from'}
+          onToggle={() => {
+            setReciterOpen(false);
+            onToggleRange((current) => current === 'from' ? null : 'from');
+          }}
+          onSelect={onChangeFrom}
+          compact
+        />
+        <span className="share-range-to-label">to</span>
+        <RangeField
+          label="To"
+          value={toAyah}
+          options={toOptions}
+          open={openRangePicker === 'to'}
+          onToggle={() => {
+            setReciterOpen(false);
+            onToggleRange((current) => current === 'to' ? null : 'to');
+          }}
+          onSelect={onChangeTo}
+          compact
+        />
+      </div>
+
+      {mode === SHARE_MEDIA_MODES.VIDEO && (
+        <div
+          ref={pickerRef}
+          className={`share-reciter-picker${reciterOpensUp ? ' opens-up' : ''}`}
+        >
+          <div className="share-media-section-heading share-reference-reciter-heading">
+            <strong>Reciter</strong>
+          </div>
+
+          <button
+            type="button"
+            className="share-reciter-trigger"
+            aria-expanded={reciterOpen}
+            onClick={() => {
+              onToggleRange(null);
+              setReciterOpen((value) => !value);
+            }}
+          >
+            {selected && (
+              <img className="share-reciter-avatar" src={getReciterImageUrl(selected)} alt="" />
+            )}
+            <span>{selected?.name || 'Select reciter'}</span>
+            <ChevronDown size={18} aria-hidden="true" />
+          </button>
+
+          {reciterOpen && (
+            <div className="share-reciter-menu">
+              {reciters.map((reciter) => {
+                const isSelected = reciter.id === selectedReciter;
+                return (
+                  <button
+                    key={reciter.id}
+                    type="button"
+                    className={isSelected ? 'is-selected' : ''}
+                    onClick={() => {
+                      onReciterChange(reciter.id);
+                      setReciterOpen(false);
+                    }}
+                  >
+                    <img className="share-reciter-avatar" src={getReciterImageUrl(reciter)} alt="" />
+                    <span>{reciter.name}</span>
+                    {isSelected && <Check size={17} aria-hidden="true" />}
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -830,130 +903,84 @@ function BackgroundSettings({ assets, selectedId, onSelect }) {
 }
 
 function TextSettings({
-  mode,
-  surahName,
-  fromAyah,
-  toAyah,
-  ayahOptions,
-  fromOptions,
-  toOptions,
-  openRangePicker,
-  onToggleRange,
-  onChangeFrom,
-  onChangeTo,
   textScale,
   onTextScaleChange,
+  translationScale,
+  onTranslationScaleChange,
   showTranslation,
   onShowTranslationChange,
   translationOption,
   translationLoading,
 }) {
-  const percent = Math.round(textScale * 100);
+  const arabicPercent = Math.round(textScale * 100);
+  const translationPercent = Math.round(translationScale * 100);
 
   return (
-    <div className="share-text-settings">
-      <div className="share-text-size-section">
-        <div className="share-media-section-heading">
-          <strong>Quran text size</strong>
-          <span>
-            {mode === SHARE_MEDIA_MODES.VIDEO
-              ? 'Each selected ayah appears one at a time during recitation.'
-              : 'Image mode shares one ayah at a time.'}
-          </span>
-        </div>
+    <div className="share-text-reference-controls">
+      <FontSizeStepper
+        label="Quran font size"
+        value={`${arabicPercent}%`}
+        onDecrease={() => onTextScaleChange((value) => Math.max(0.75, Number((value - 0.05).toFixed(2))))}
+        onIncrease={() => onTextScaleChange((value) => Math.min(1.35, Number((value + 0.05).toFixed(2))))}
+        decreaseDisabled={textScale <= 0.75}
+        increaseDisabled={textScale >= 1.35}
+      />
 
-        <div className="share-text-size-control">
-          <button
-            type="button"
-            aria-label="Decrease Quran text size"
-            onClick={() => onTextScaleChange((value) => Math.max(0.75, Number((value - 0.05).toFixed(2))))}
-            disabled={textScale <= 0.75}
-          >
-            −
-          </button>
-
-          <div>
-            <strong>{percent}%</strong>
-            <span>Arabic text</span>
-          </div>
-
-          <button
-            type="button"
-            aria-label="Increase Quran text size"
-            onClick={() => onTextScaleChange((value) => Math.min(1.35, Number((value + 0.05).toFixed(2))))}
-            disabled={textScale >= 1.35}
-          >
-            +
-          </button>
-        </div>
-      </div>
-
-
-      <div className="share-translation-setting">
-        <div className="share-translation-setting-copy">
+      <div className="share-translation-inline-row">
+        <div>
           <strong>Translation</strong>
           <span>
             {translationOption
               ? `${translationOption.language === 'Ur' ? 'Urdu' : 'English'} · ${translationOption.shortName || translationOption.label}`
               : 'Uses the translation selected in Settings'}
           </span>
-          {translationLoading && showTranslation && (
-            <small>Loading selected translation…</small>
-          )}
+          {translationLoading && showTranslation && <small>Loading translation…</small>}
         </div>
-
         <button
           type="button"
           className={`share-translation-toggle${showTranslation ? ' is-on' : ''}`}
           role="switch"
           aria-checked={showTranslation}
-          aria-label="Include translation"
           onClick={() => onShowTranslationChange((value) => !value)}
+          aria-label="Include translation"
         >
           <span />
         </button>
       </div>
 
-      <div className="share-text-ayahs-card">
-        <div className="share-media-range-title">
-          <div>
-            <h3>Ayahs</h3>
-            <p>{mode === SHARE_MEDIA_MODES.VIDEO ? 'Maximum 10 ayahs' : 'One ayah per image'}</p>
-          </div>
-          <span>{surahName}</span>
-        </div>
+      {showTranslation && (
+        <FontSizeStepper
+          label="Translation font size"
+          value={`${translationPercent}%`}
+          onDecrease={() => onTranslationScaleChange((value) => Math.max(0.75, Number((value - 0.05).toFixed(2))))}
+          onIncrease={() => onTranslationScaleChange((value) => Math.min(1.35, Number((value + 0.05).toFixed(2))))}
+          decreaseDisabled={translationScale <= 0.75}
+          increaseDisabled={translationScale >= 1.35}
+        />
+      )}
+    </div>
+  );
+}
 
-        {mode === SHARE_MEDIA_MODES.IMAGE ? (
-          <div className="share-range-selectors is-single">
-            <RangeField
-              label="Ayah"
-              value={fromAyah}
-              options={ayahOptions}
-              open={openRangePicker === 'single'}
-              onToggle={() => onToggleRange((current) => current === 'single' ? null : 'single')}
-              onSelect={onChangeFrom}
-            />
-          </div>
-        ) : (
-          <div className="share-range-selectors">
-            <RangeField
-              label="From"
-              value={fromAyah}
-              options={fromOptions}
-              open={openRangePicker === 'from'}
-              onToggle={() => onToggleRange((current) => current === 'from' ? null : 'from')}
-              onSelect={onChangeFrom}
-            />
-            <RangeField
-              label="To"
-              value={toAyah}
-              options={toOptions}
-              open={openRangePicker === 'to'}
-              onToggle={() => onToggleRange((current) => current === 'to' ? null : 'to')}
-              onSelect={onChangeTo}
-            />
-          </div>
-        )}
+function FontSizeStepper({
+  label,
+  value,
+  onDecrease,
+  onIncrease,
+  decreaseDisabled,
+  increaseDisabled,
+}) {
+  return (
+    <div className="share-font-stepper-group">
+      <strong>{label}</strong>
+      <div className="share-font-stepper">
+        <button type="button" onClick={onDecrease} disabled={decreaseDisabled} aria-label={`Decrease ${label}`}>
+          −
+        </button>
+        <span>{value}</span>
+        <button type="button" onClick={onIncrease} disabled={increaseDisabled} aria-label={`Increase ${label}`}>
+          +
+        </button>
       </div>
     </div>
   );
@@ -986,7 +1013,55 @@ function StyleSettings({ orientation, onOrientationChange }) {
   );
 }
 
-function RangeField({ label, value, options, open, onToggle, onSelect }) {
+function SurahField({ value, label, options, open, onToggle, onSelect }) {
+  const fieldRef = useRef(null);
+  const [opensUp, setOpensUp] = useState(false);
+
+  useEffect(() => {
+    if (!open || !fieldRef.current) return undefined;
+    const updateDirection = () => {
+      const rect = fieldRef.current.getBoundingClientRect();
+      const viewportHeight = window.visualViewport?.height || window.innerHeight;
+      const menuHeight = Math.min(320, Math.max(52, options.length * 52));
+      const roomBelow = viewportHeight - rect.bottom;
+      const roomAbove = rect.top;
+      setOpensUp(roomBelow < menuHeight + 12 && roomAbove > roomBelow);
+    };
+    updateDirection();
+    window.visualViewport?.addEventListener('resize', updateDirection);
+    window.addEventListener('resize', updateDirection);
+    return () => {
+      window.visualViewport?.removeEventListener('resize', updateDirection);
+      window.removeEventListener('resize', updateDirection);
+    };
+  }, [open, options.length]);
+
+  return (
+    <div ref={fieldRef} className={`share-surah-field${opensUp ? ' opens-up' : ''}`}>
+      <button type="button" className="share-surah-trigger" aria-expanded={open} onClick={onToggle}>
+        <span>{label}</span>
+        <ChevronDown size={18} aria-hidden="true" />
+      </button>
+      {open && (
+        <div className="share-surah-menu">
+          {options.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              className={Number(option.value) === Number(value) ? 'is-selected' : ''}
+              onClick={() => onSelect(option.value)}
+            >
+              <span>{option.label}</span>
+              {Number(option.value) === Number(value) && <Check size={17} aria-hidden="true" />}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function RangeField({ label, value, options, open, onToggle, onSelect, compact = false }) {
   const fieldRef = useRef(null);
   const [opensUp, setOpensUp] = useState(false);
 
@@ -1019,7 +1094,7 @@ function RangeField({ label, value, options, open, onToggle, onSelect }) {
   return (
     <div
       ref={fieldRef}
-      className={`share-range-field${opensUp ? ' opens-up' : ''}`}
+      className={`share-range-field${opensUp ? ' opens-up' : ''}${compact ? ' is-compact' : ''}`}
     >
       <span>{label}</span>
       <button
@@ -1028,7 +1103,7 @@ function RangeField({ label, value, options, open, onToggle, onSelect }) {
         aria-expanded={open}
         onClick={onToggle}
       >
-        <span>Ayah {value}</span>
+        <span>{compact ? value : `Ayah ${value}`}</span>
         <ChevronDown size={18} aria-hidden="true" />
       </button>
 
@@ -1096,10 +1171,3 @@ function getTabIcon(id) {
   return Palette;
 }
 
-function getFromOptions(ayahs, selectedIndex) {
-  if (selectedIndex < 4) return ayahs.slice(selectedIndex, selectedIndex + 10);
-
-  let start = selectedIndex - 4;
-  if (start + 10 > ayahs.length) start = Math.max(0, ayahs.length - 10);
-  return ayahs.slice(start, start + 10);
-}
