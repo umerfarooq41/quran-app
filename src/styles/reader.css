@@ -4643,3 +4643,83 @@ body {
 [data-theme='dark'] .share-translation-setting {
   background: var(--theme-surface-solid) !important;
 }
+
+
+/* Share Quran final mode behavior */
+.share-range-selectors.is-single {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+.share-range-selectors.is-single .share-range-field {
+  width: 100%;
+}
+
+/* Video Quran text is part of the composition, not a Text-tab-only preview. */
+.share-media-live-preview.is-video .share-video-preview-ayah-card {
+  display: grid !important;
+}
+
+/* Reserve independent zones in landscape: title / ayah card / controls. */
+.share-media-live-preview.is-video.is-landscape .share-video-preview-header {
+  top: 5% !important;
+  right: 8% !important;
+  left: 8% !important;
+}
+
+.share-media-live-preview.is-video.is-landscape .share-video-preview-header strong {
+  font-size: clamp(1.05rem, 3.3vw, 1.55rem) !important;
+  line-height: 1.15 !important;
+}
+
+.share-media-live-preview.is-video.is-landscape .share-video-preview-header span {
+  margin-top: 1px !important;
+  font-size: .72rem !important;
+}
+
+.share-media-live-preview.is-video.is-landscape .share-video-preview-ayah-card {
+  top: 47% !important;
+  right: 11% !important;
+  left: 11% !important;
+  min-height: 0 !important;
+  max-height: 46% !important;
+  padding: 10px 20px !important;
+  overflow: hidden !important;
+}
+
+.share-media-live-preview.is-video.is-landscape .share-video-preview-ayah {
+  font-size: calc(clamp(.95rem, 3.2vw, 1.55rem) * var(--share-text-scale)) !important;
+  line-height: 1.42 !important;
+}
+
+.share-media-live-preview.is-video.is-landscape .share-video-preview-translation {
+  display: -webkit-box;
+  margin-top: 6px !important;
+  overflow: hidden;
+  font-size: .68rem !important;
+  line-height: 1.28 !important;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.share-media-live-preview.is-video.is-landscape .share-video-preview-controls {
+  right: 8% !important;
+  bottom: 4% !important;
+  left: 8% !important;
+  min-height: 48px !important;
+}
+
+/* In portrait, keep the text card clear of the playback controls. */
+.share-media-live-preview.is-video.is-portrait .share-video-preview-ayah-card {
+  top: 45% !important;
+  max-height: 48% !important;
+  overflow: hidden !important;
+}
+
+/* Export progress remains visually active while recording. */
+.share-media-final-action:disabled {
+  opacity: .62;
+}
+
+.share-media-final-action[disabled] {
+  cursor: default;
+}
