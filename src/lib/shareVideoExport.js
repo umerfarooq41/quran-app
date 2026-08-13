@@ -15,6 +15,7 @@ export async function generateQuranShareVideo({
   surahName,
   surahMeaning = '',
   highlightColor = '#d8b36a',
+  translationScale = 1,
   onProgress,
 }) {
   assertVideoExportSupport();
@@ -153,6 +154,7 @@ export async function generateQuranShareVideo({
               : '',
             translationDirection,
             textScale: composition?.style?.textScale || 1,
+            translationScale: composition?.style?.translationScale || translationScale || 1,
           });
 
           onProgress?.(Math.min(1, elapsedMs / durationMs));
@@ -238,7 +240,7 @@ function drawVideoFrame(ctx, {
     arabicFont -= 2;
   }
   const arabicLineHeight = arabicFont * 1.52;
-  const translationFont = isLandscape ? 18 : 21;
+  const translationFont = (isLandscape ? 18 : 21) * clamp(Number(translationScale) || 1, .75, 1.35);
   let translationLines = [];
   if (translation) {
     ctx.direction = translationDirection === 'rtl' ? 'rtl' : 'ltr';

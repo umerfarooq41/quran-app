@@ -8,6 +8,7 @@ export async function generateQuranShareImage({
   surahMeaning = '',
   orientation = 'portrait',
   textScale = 1,
+  translationScale = 1,
   backgroundAsset = null,
   showTranslation = false,
   translationsByAyah = {},
@@ -53,6 +54,7 @@ export async function generateQuranShareImage({
     isLandscape,
     ayahs,
     textScale: clamp(Number(textScale) || 1, 0.75, 1.35),
+    translationScale: clamp(Number(translationScale) || 1, 0.75, 1.35),
     showTranslation,
     translationsByAyah,
     translationDirection,
@@ -111,6 +113,7 @@ function drawAyahCard(ctx, {
   isLandscape,
   ayahs,
   textScale,
+  translationScale,
   showTranslation,
   translationsByAyah,
   translationDirection,
@@ -150,7 +153,7 @@ function drawAyahCard(ctx, {
         .filter(Boolean)
         .join(' ')
     : '';
-  const translationFontSize = isLandscape ? 30 : 32;
+  const translationFontSize = (isLandscape ? 30 : 32) * translationScale;
   let translationLines = [];
 
   if (translationText) {
