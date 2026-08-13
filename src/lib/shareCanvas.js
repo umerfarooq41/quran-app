@@ -157,7 +157,7 @@ function drawAyahCard(ctx, {
         .filter(Boolean)
         .join(' ')
     : '';
-  const translationFontSize = isLandscape ? 28 : 30;
+  const translationFontSize = isLandscape ? 30 : 32;
   let translationLines = [];
 
   if (translationText) {
