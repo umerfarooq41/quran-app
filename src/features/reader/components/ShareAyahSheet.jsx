@@ -15,6 +15,7 @@ import { getTranslationOption, loadTranslationEntry } from '../../../lib/transla
 import { useAppStore } from '../../../store/useAppStore';
 import { getSurahNameMeta } from '../../../data/surahNames';
 import { generateQuranShareImage } from '../../../lib/shareCanvas';
+import { generateQuranShareVideo } from '../../../lib/shareVideoExport';
 import { getReciterImageUrl, normalizeLocalReciters } from '../../../lib/localAudio';
 import {
   SHARE_BACKGROUND_ASSETS,
@@ -70,6 +71,8 @@ export function ShareQuranScreen({ ayah, onClose }) {
   const [videoTimelineStatus, setVideoTimelineStatus] = useState('');
   const [videoPlaying, setVideoPlaying] = useState(false);
   const [videoElapsedMs, setVideoElapsedMs] = useState(0);
+  const [exportingVideo, setExportingVideo] = useState(false);
+  const [videoExportProgress, setVideoExportProgress] = useState(0);
 
   const audioRef = useRef(null);
   const rafRef = useRef(0);
@@ -80,6 +83,12 @@ export function ShareQuranScreen({ ayah, onClose }) {
     () => surahAyahs.filter((item) => item.ayahNumber >= fromAyah && item.ayahNumber <= toAyah),
     [surahAyahs, fromAyah, toAyah],
   );
+
+  useEffect(() => {
+    if (mode === SHARE_MEDIA_MODES.IMAGE && toAyah !== fromAyah) {
+      setToAyah(fromAyah);
+    }
+  }, [mode, fromAyah, toAyah]);
 
   const arabicSurahName = surahArabicNames[ayah.surahNumber] || surah?.name || '';
   const selectedBackground = useMemo(
@@ -253,9 +262,15 @@ export function ShareQuranScreen({ ayah, onClose }) {
 
   function changeFrom(nextValue) {
     const nextFrom = Number(nextValue);
+    setFromAyah(nextFrom);
+
+    if (mode === SHARE_MEDIA_MODES.IMAGE) {
+      setToAyah(nextFrom);
+      return;
+    }
+
     const nextIndex = Math.max(0, surahAyahs.findIndex((item) => item.ayahNumber === nextFrom));
     const maxTo = surahAyahs[Math.min(surahAyahs.length - 1, nextIndex + 9)]?.ayahNumber || nextFrom;
-    setFromAyah(nextFrom);
     setToAyah((current) => Math.min(maxTo, Math.max(nextFrom, current)));
   }
 
@@ -344,6 +359,53 @@ export function ShareQuranScreen({ ayah, onClose }) {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
+  async function downloadVideo() {
+    if (!videoTimeline?.audioUrl || !videoTimeline?.timeline?.length) {
+      setStatus('This reciter does not have usable timing data for video export.');
+      return;
+    }
+    if (!selectedBackground?.videoSrc) {
+      setStatus('Select a video background first.');
+      return;
+    }
+    if (showTranslation && translationLoading) {
+      setStatus('Wait for the selected translation to finish loading.');
+      return;
+    }
+
+    stopVideoPreview();
+    setStatus('');
+    setExportingVideo(true);
+    setVideoExportProgress(0);
+
+    try {
+      const blob = await generateQuranShareVideo({
+        composition,
+        timeline: videoTimeline,
+        ayahs: range,
+        translationsByAyah,
+        translationDirection: translationOption?.direction || 'ltr',
+        surahName: arabicSurahName,
+        surahMeaning: surahMeta?.meaning || '',
+        onProgress: setVideoExportProgress,
+      });
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `quran-${ayah.surahNumber}-${fromAyah}-${toAyah}.webm`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1500);
+      setVideoExportProgress(1);
+    } catch (error) {
+      setStatus(error?.message || 'Video could not be generated on this device.');
+    } finally {
+      setExportingVideo(false);
+    }
+  }
+
   return (
     <Screen className="share-quran-screen app-page-shell bg-fluent">
       <div className="app-fixed-header">
@@ -354,6 +416,8 @@ export function ShareQuranScreen({ ayah, onClose }) {
         <ModeSwitch mode={mode} onChange={(nextMode) => {
           stopVideoPreview();
           setVideoElapsedMs(0);
+          setOpenRangePicker(null);
+          if (nextMode === SHARE_MEDIA_MODES.IMAGE) setToAyah(fromAyah);
           setMode(nextMode);
         }} />
 
@@ -385,7 +449,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
               onTogglePlay={toggleVideoPreview}
               onSeek={seekVideoPreview}
               textScale={textScale}
-              showAyahCard={activeTab === 'text'}
+              showAyahCard
               showTranslation={showTranslation}
               translation={translationsByAyah[activeVideoAyah?.ayahNumber] || ''}
               translationDirection={translationOption?.direction || 'ltr'}
@@ -438,6 +502,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
               surahName={surah?.name || `Surah ${ayah.surahNumber}`}
               fromAyah={fromAyah}
               toAyah={toAyah}
+              ayahOptions={fromOptions}
               fromOptions={fromOptions}
               toOptions={toOptions}
               openRangePicker={openRangePicker}
@@ -463,20 +528,26 @@ export function ShareQuranScreen({ ayah, onClose }) {
             <StyleSettings orientation={orientation} onOrientationChange={setOrientation} />
           )}
         </section>
-<button
+        <button
           type="button"
           className="share-media-final-action"
-          onClick={mode === SHARE_MEDIA_MODES.IMAGE ? downloadImage : undefined}
+          onClick={mode === SHARE_MEDIA_MODES.IMAGE ? downloadImage : downloadVideo}
           disabled={
             mode === SHARE_MEDIA_MODES.IMAGE
-              ? preparingImage || !imageBlob || range.length === 0
-              : true
+              ? preparingImage || !imageBlob || range.length !== 1
+              : exportingVideo
+                || !videoTimeline?.audioUrl
+                || !videoTimeline?.timeline?.length
+                || !selectedBackground?.videoSrc
+                || (showTranslation && translationLoading)
           }
         >
           <Download size={19} />
           {mode === SHARE_MEDIA_MODES.IMAGE
             ? preparingImage ? 'Preparing Image…' : 'Download Image'
-            : 'Download Video'}
+            : exportingVideo
+              ? `Creating Video ${Math.round(videoExportProgress * 100)}%`
+              : 'Download Video'}
         </button>
 {(status || videoTimelineStatus) && (
           <p className="share-sheet-status">{status || videoTimelineStatus}</p>
@@ -753,6 +824,7 @@ function TextSettings({
   surahName,
   fromAyah,
   toAyah,
+  ayahOptions,
   fromOptions,
   toOptions,
   openRangePicker,
@@ -775,8 +847,8 @@ function TextSettings({
           <strong>Quran text size</strong>
           <span>
             {mode === SHARE_MEDIA_MODES.VIDEO
-              ? 'One ayah is shown at a time in the center.'
-              : `Ayahs ${fromAyah}–${toAyah} are composed together.`}
+              ? 'Each selected ayah appears one at a time during recitation.'
+              : 'Image mode shares one ayah at a time.'}
           </span>
         </div>
 
@@ -836,29 +908,42 @@ function TextSettings({
         <div className="share-media-range-title">
           <div>
             <h3>Ayahs</h3>
-            <p>Maximum 10 ayahs</p>
+            <p>{mode === SHARE_MEDIA_MODES.VIDEO ? 'Maximum 10 ayahs' : 'One ayah per image'}</p>
           </div>
           <span>{surahName}</span>
         </div>
 
-        <div className="share-range-selectors">
-          <RangeField
-            label="From"
-            value={fromAyah}
-            options={fromOptions}
-            open={openRangePicker === 'from'}
-            onToggle={() => onToggleRange((current) => current === 'from' ? null : 'from')}
-            onSelect={onChangeFrom}
-          />
-          <RangeField
-            label="To"
-            value={toAyah}
-            options={toOptions}
-            open={openRangePicker === 'to'}
-            onToggle={() => onToggleRange((current) => current === 'to' ? null : 'to')}
-            onSelect={onChangeTo}
-          />
-        </div>
+        {mode === SHARE_MEDIA_MODES.IMAGE ? (
+          <div className="share-range-selectors is-single">
+            <RangeField
+              label="Ayah"
+              value={fromAyah}
+              options={ayahOptions}
+              open={openRangePicker === 'single'}
+              onToggle={() => onToggleRange((current) => current === 'single' ? null : 'single')}
+              onSelect={onChangeFrom}
+            />
+          </div>
+        ) : (
+          <div className="share-range-selectors">
+            <RangeField
+              label="From"
+              value={fromAyah}
+              options={fromOptions}
+              open={openRangePicker === 'from'}
+              onToggle={() => onToggleRange((current) => current === 'from' ? null : 'from')}
+              onSelect={onChangeFrom}
+            />
+            <RangeField
+              label="To"
+              value={toAyah}
+              options={toOptions}
+              open={openRangePicker === 'to'}
+              onToggle={() => onToggleRange((current) => current === 'to' ? null : 'to')}
+              onSelect={onChangeTo}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
