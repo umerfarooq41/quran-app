@@ -15,12 +15,12 @@ export const SHARE_MEDIA_TABS = Object.freeze([
 // Add user-owned/AI-generated clips here. The UI intentionally tolerates an
 // empty library so no copyrighted sample media needs to ship with the app.
 export const SHARE_BACKGROUND_ASSETS = Object.freeze([
-  { id: 'desert', label: 'Desert', imageSrc: '/share/backgrounds/desert.png', videoSrc: '/share/videos/desert.mp4' },
-  { id: 'forest', label: 'Forest', imageSrc: '/share/backgrounds/forest.png', videoSrc: '/share/videos/forest.mp4' },
-  { id: 'ice', label: 'Ice', imageSrc: '/share/backgrounds/ice.png', videoSrc: '/share/videos/ice.mp4' },
-  { id: 'mountains', label: 'Mountains', imageSrc: '/share/backgrounds/mountains.png', videoSrc: '/share/videos/mountains.mp4' },
-  { id: 'space', label: 'Space', imageSrc: '/share/backgrounds/space.png', videoSrc: '/share/videos/space.mp4' },
-  { id: 'undersea', label: 'Undersea', imageSrc: '/share/backgrounds/undersea.png', videoSrc: '/share/videos/undersea.mp4' },
+  { id: 'desert', label: 'Desert', imageSrc: '/share/backgrounds/desert.png', videoSrc: '/share/videos/desert.mp4', accentColor: '#F5CA86' },
+  { id: 'forest', label: 'Forest', imageSrc: '/share/backgrounds/forest.png', videoSrc: '/share/videos/forest.mp4', accentColor: '#B7D77F' },
+  { id: 'ice', label: 'Ice', imageSrc: '/share/backgrounds/ice.png', videoSrc: '/share/videos/ice.mp4', accentColor: '#C9DDF0' },
+  { id: 'mountains', label: 'Mountains', imageSrc: '/share/backgrounds/mountains.png', videoSrc: '/share/videos/mountains.mp4', accentColor: '#B8CFDD' },
+  { id: 'space', label: 'Space', imageSrc: '/share/backgrounds/space.png', videoSrc: '/share/videos/space.mp4', accentColor: '#B7B3FF' },
+  { id: 'undersea', label: 'Undersea', imageSrc: '/share/backgrounds/undersea.png', videoSrc: '/share/videos/undersea.mp4', accentColor: '#54D5E6' },
 ]);
 
 export function buildShareComposition({
@@ -47,6 +47,7 @@ export function buildShareComposition({
           label: backgroundAsset.label || '',
           imageSrc: backgroundAsset.imageSrc || '',
           videoSrc: backgroundAsset.videoSrc || '',
+          accentColor: backgroundAsset.accentColor || '#d8b36a',
         }
       : {
           type: 'solid',
@@ -54,6 +55,7 @@ export function buildShareComposition({
           label: '',
           imageSrc: '',
           videoSrc: '',
+          accentColor: '#d8b36a',
         },
     orientation: orientation === 'landscape' ? 'landscape' : 'portrait',
     reciterId,
@@ -93,6 +95,13 @@ export async function loadShareVideoTimeline(composition, fetchImpl = globalThis
     sourceEndMs: Number(entry.endMs) || 0,
     startMs: Math.max(0, (Number(entry.startMs) || 0) - firstStart),
     endMs: Math.max(0, (Number(entry.endMs) || 0) - firstStart),
+    wordSegments: (Array.isArray(entry.wordSegments) ? entry.wordSegments : []).map((segment) => ({
+      ...segment,
+      sourceStartMs: Number(segment.startMs) || 0,
+      sourceEndMs: Number(segment.endMs) || 0,
+      startMs: Math.max(0, (Number(segment.startMs) || 0) - firstStart),
+      endMs: Math.max(0, (Number(segment.endMs) || 0) - firstStart),
+    })),
   }));
 
   return {

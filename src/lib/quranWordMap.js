@@ -23,6 +23,18 @@ quranWords.forEach((ayah) => {
   });
 });
 
+export function getQuranWordsForAyah(surahNumber, ayahNumber) {
+  const surah = Number(surahNumber);
+  const ayah = Number(ayahNumber);
+  if (!Number.isInteger(surah) || !Number.isInteger(ayah)) return [];
+
+  const result = [];
+  WORD_BY_ID.forEach((word) => {
+    if (word.surahNumber === surah && word.ayahNumber === ayah) result.push(word);
+  });
+  return result.sort((first, second) => first.position - second.position);
+}
+
 export function getQuranWordById(wordId) {
   const id = Number(wordId);
   return Number.isInteger(id) && id > 0 ? WORD_BY_ID.get(id) || null : null;

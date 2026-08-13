@@ -1,4 +1,6 @@
 import { findShareAyahAtTime } from './shareMedia';
+import { findWordAtTime } from './fullSurahAudio';
+import { getQuranWordsForAyah } from './quranWordMap';
 
 const VIDEO_FPS = 30;
 const DEFAULT_VIDEO_BITRATE = 5_000_000;
@@ -12,6 +14,7 @@ export async function generateQuranShareVideo({
   translationDirection = 'ltr',
   surahName,
   surahMeaning = '',
+  highlightColor = '#d8b36a',
   onProgress,
 }) {
   assertVideoExportSupport();
@@ -39,7 +42,8 @@ export async function generateQuranShareVideo({
   backgroundVideo.preload = 'auto';
 
   const audio = document.createElement('audio');
-  audio.src = audioSrc;
+  const capturableAudio = await prepareCapturableAudio(audioSrc);
+  audio.src = capturableAudio.src;
   audio.preload = 'auto';
 
   await Promise.all([
@@ -60,6 +64,10 @@ export async function generateQuranShareVideo({
   try {
     audioSource = audioContext.createMediaElementSource(audio);
     audioSource.connect(audioDestination);
+    const silentGain = audioContext.createGain();
+    silentGain.gain.value = 0;
+    audioSource.connect(silentGain);
+    silentGain.connect(audioContext.destination);
   } catch (error) {
     canvasStream.getTracks().forEach((track) => track.stop());
     await audioContext.close().catch(() => {});
@@ -96,6 +104,7 @@ export async function generateQuranShareVideo({
     canvasStream.getTracks().forEach((track) => track.stop());
     combinedStream.getTracks().forEach((track) => track.stop());
     try { audioSource?.disconnect(); } catch {}
+    capturableAudio.revoke?.();
     try { await audioContext.close(); } catch {}
   };
 
@@ -124,6 +133,9 @@ export async function generateQuranShareVideo({
             (item) => Number(item.ayahNumber) === Number(timelineEntry?.ayahNumber),
           ) || ayahs[0];
 
+          const activeWord = findWordAtTime(timelineEntry, elapsedMs);
+          const wordItems = getQuranWordsForAyah(composition?.surahNumber, currentAyah?.ayahNumber);
+
           drawVideoFrame(ctx, {
             video: backgroundVideo,
             width,
@@ -131,7 +143,11 @@ export async function generateQuranShareVideo({
             isLandscape,
             surahName,
             surahMeaning,
+            surahNumber: composition?.surahNumber,
             ayah: currentAyah,
+            wordItems,
+            activeWordPosition: activeWord?.position || null,
+            highlightColor,
             translation: composition?.showTranslation
               ? translationsByAyah?.[currentAyah?.ayahNumber] || ''
               : '',
@@ -183,113 +199,136 @@ export async function generateQuranShareVideo({
 }
 
 function drawVideoFrame(ctx, {
-  video,
-  width,
-  height,
-  isLandscape,
-  surahName,
-  surahMeaning,
-  ayah,
-  translation,
-  translationDirection,
-  textScale,
+  video, width, height, isLandscape, surahName, surahMeaning, surahNumber,
+  ayah, wordItems, activeWordPosition, highlightColor, translation,
+  translationDirection, textScale,
 }) {
   drawVideoCover(ctx, video, width, height);
-
   const overlay = ctx.createLinearGradient(0, 0, 0, height);
-  overlay.addColorStop(0, 'rgba(4,18,17,.20)');
-  overlay.addColorStop(.55, 'rgba(4,18,17,.30)');
-  overlay.addColorStop(1, 'rgba(4,18,17,.42)');
+  overlay.addColorStop(0, 'rgba(4,18,17,.16)');
+  overlay.addColorStop(.55, 'rgba(4,18,17,.22)');
+  overlay.addColorStop(1, 'rgba(4,18,17,.34)');
   ctx.fillStyle = overlay;
   ctx.fillRect(0, 0, width, height);
-
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-
-  // Header gets a reserved top zone.
   ctx.direction = 'rtl';
   ctx.fillStyle = '#fff';
-  ctx.font = `700 ${isLandscape ? 42 : 50}px IndopakNastaleeq, serif`;
-  ctx.fillText(`سُورَةُ ${surahName}`, width / 2, height * (isLandscape ? .105 : .09));
-
+  ctx.font = `700 ${isLandscape ? 40 : 48}px IndopakNastaleeq, serif`;
+  ctx.fillText(`سُورَةُ ${surahName}`, width / 2, height * (isLandscape ? .09 : .075));
   if (surahMeaning) {
     ctx.direction = 'ltr';
-    ctx.font = `500 ${isLandscape ? 20 : 24}px Inter, ui-sans-serif, system-ui`;
+    ctx.font = `500 ${isLandscape ? 19 : 23}px Inter, ui-sans-serif, system-ui`;
     ctx.fillStyle = 'rgba(255,255,255,.90)';
-    ctx.fillText(surahMeaning, width / 2, height * (isLandscape ? .155 : .13));
+    ctx.fillText(surahMeaning, width / 2, height * (isLandscape ? .135 : .112));
   }
-
-  const cardCenterY = height * (isLandscape ? .50 : .49);
-  const cardWidth = width * (isLandscape ? .76 : .86);
-  const maxCardHeight = height * (isLandscape ? .47 : .50);
+  const cardCenterY = height * (isLandscape ? .47 : .45);
+  const cardWidth = width * (isLandscape ? .86 : .88);
+  const maxCardHeight = height * .56;
   const cardX = (width - cardWidth) / 2;
   const maxTextWidth = cardWidth * .88;
-
-  const arabicText = String(ayah?.text || '');
-  let arabicFont = (isLandscape ? 39 : 47) * clamp(Number(textScale) || 1, .75, 1.35);
+  let arabicFont = (isLandscape ? 37 : 45) * clamp(Number(textScale) || 1, .75, 1.35);
+  const minimumArabicFont = isLandscape ? 26 : 31;
   let arabicLines = [];
-
-  while (arabicFont >= (isLandscape ? 27 : 32)) {
+  while (arabicFont >= minimumArabicFont) {
     ctx.direction = 'rtl';
     ctx.font = `${Math.round(arabicFont)}px IndopakNastaleeq, serif`;
-    arabicLines = wrapText(ctx, arabicText, maxTextWidth);
-    if (arabicLines.length <= (isLandscape ? 3 : 5)) break;
+    arabicLines = wrapWordItems(ctx, wordItems, maxTextWidth);
+    if (arabicLines.length <= (isLandscape ? 4 : 6)) break;
     arabicFont -= 2;
   }
-
-  const arabicLineHeight = arabicFont * 1.58;
-  const translationFont = isLandscape ? 19 : 22;
+  const arabicLineHeight = arabicFont * 1.52;
+  const translationFont = isLandscape ? 18 : 21;
   let translationLines = [];
-
   if (translation) {
     ctx.direction = translationDirection === 'rtl' ? 'rtl' : 'ltr';
     ctx.font = `500 ${translationFont}px Inter, ui-sans-serif, system-ui`;
     translationLines = wrapText(ctx, translation, maxTextWidth);
-    const maxTranslationLines = isLandscape ? 3 : 5;
-    if (translationLines.length > maxTranslationLines) {
-      translationLines = truncateLines(translationLines, maxTranslationLines);
-    }
   }
-
-  const translationLineHeight = translationFont * 1.42;
+  const translationLineHeight = translationFont * 1.38;
+  const referenceFont = isLandscape ? 15 : 18;
   const arabicHeight = arabicLines.length * arabicLineHeight;
-  const translationHeight = translationLines.length
-    ? 18 + (translationLines.length * translationLineHeight)
-    : 0;
-  const cardHeight = Math.min(
-    maxCardHeight,
-    Math.max(
-      height * (isLandscape ? .25 : .20),
-      arabicHeight + translationHeight + (isLandscape ? 62 : 78),
-    ),
-  );
+  const referenceHeight = referenceFont * 1.6 + 12;
+  let translationHeight = translationLines.length ? 18 + translationLines.length * translationLineHeight : 0;
+  let cardHeight = arabicHeight + translationHeight + referenceHeight + (isLandscape ? 54 : 66);
+  if (cardHeight > maxCardHeight && translationLines.length) {
+    const availableTranslationHeight = Math.max(0, maxCardHeight - arabicHeight - referenceHeight - (isLandscape ? 54 : 66));
+    const maxTranslationLines = Math.max(1, Math.floor((availableTranslationHeight - 18) / translationLineHeight));
+    translationLines = truncateLines(translationLines, maxTranslationLines);
+    translationHeight = 18 + translationLines.length * translationLineHeight;
+    cardHeight = arabicHeight + translationHeight + referenceHeight + (isLandscape ? 54 : 66);
+  }
+  cardHeight = Math.min(maxCardHeight, Math.max(height * (isLandscape ? .24 : .18), cardHeight));
   const cardY = cardCenterY - cardHeight / 2;
-
-  roundedRect(ctx, cardX, cardY, cardWidth, cardHeight, isLandscape ? 28 : 34);
-  ctx.fillStyle = 'rgba(5,22,20,.52)';
+  roundedRect(ctx, cardX, cardY, cardWidth, cardHeight, isLandscape ? 22 : 28);
+  ctx.fillStyle = 'rgba(4, 19, 18, .42)';
   ctx.fill();
-  ctx.strokeStyle = 'rgba(255,255,255,.10)';
-  ctx.lineWidth = 1.5;
-  ctx.stroke();
-
-  let cursorY = cardCenterY - ((arabicHeight + translationHeight) / 2) + arabicLineHeight / 2;
+  const contentHeight = arabicHeight + translationHeight + referenceHeight;
+  let cursorY = cardCenterY - contentHeight / 2 + arabicLineHeight / 2;
   ctx.direction = 'rtl';
-  ctx.fillStyle = '#fff';
   ctx.font = `${Math.round(arabicFont)}px IndopakNastaleeq, serif`;
   arabicLines.forEach((line) => {
-    ctx.fillText(line, width / 2, cursorY);
+    drawRtlWordLine(ctx, { words: line, centerX: width / 2, y: cursorY, font: `${Math.round(arabicFont)}px IndopakNastaleeq, serif`, normalColor: '#ffffff', highlightColor, activeWordPosition });
     cursorY += arabicLineHeight;
   });
-
   if (translationLines.length) {
     cursorY += 10;
     ctx.direction = translationDirection === 'rtl' ? 'rtl' : 'ltr';
-    ctx.fillStyle = 'rgba(255,255,255,.93)';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = 'rgba(255,255,255,.94)';
     ctx.font = `500 ${translationFont}px Inter, ui-sans-serif, system-ui`;
-    translationLines.forEach((line) => {
-      ctx.fillText(line, width / 2, cursorY);
-      cursorY += translationLineHeight;
-    });
+    translationLines.forEach((line) => { ctx.fillText(line, width / 2, cursorY); cursorY += translationLineHeight; });
+  }
+  cursorY += 8;
+  ctx.direction = 'ltr';
+  ctx.textAlign = 'center';
+  ctx.fillStyle = 'rgba(255,255,255,.70)';
+  ctx.font = `500 ${referenceFont}px Inter, ui-sans-serif, system-ui`;
+  ctx.fillText(`${surahNumber}:${ayah?.ayahNumber}`, width / 2, cursorY);
+}
+
+function wrapWordItems(ctx, wordItems, maxWidth) {
+  const items = Array.isArray(wordItems) && wordItems.length ? wordItems : [];
+  if (!items.length) return [[]];
+  const lines = [];
+  let current = [];
+  items.forEach((word) => {
+    const candidate = [...current, word];
+    const text = candidate.map((item) => item.text).join(' ');
+    if (!current.length || ctx.measureText(text).width <= maxWidth) current = candidate;
+    else { lines.push(current); current = [word]; }
+  });
+  if (current.length) lines.push(current);
+  return lines;
+}
+
+function drawRtlWordLine(ctx, { words, centerX, y, font, normalColor, highlightColor, activeWordPosition }) {
+  ctx.font = font;
+  ctx.textBaseline = 'middle';
+  ctx.direction = 'rtl';
+  const spaceWidth = ctx.measureText(' ').width;
+  const widths = words.map((word) => ctx.measureText(word.text).width);
+  const totalWidth = widths.reduce((sum, value) => sum + value, 0) + Math.max(0, words.length - 1) * spaceWidth;
+  let x = centerX + totalWidth / 2;
+  words.forEach((word, index) => {
+    const width = widths[index];
+    ctx.textAlign = 'right';
+    ctx.fillStyle = Number(word.position) === Number(activeWordPosition) ? highlightColor : normalColor;
+    ctx.fillText(word.text, x, y);
+    x -= width + spaceWidth;
+  });
+}
+
+
+async function prepareCapturableAudio(src) {
+  try {
+    const response = await fetch(src);
+    if (!response.ok) throw new Error('Audio fetch failed.');
+    const blob = await response.blob();
+    const objectUrl = URL.createObjectURL(blob);
+    return { src: objectUrl, revoke: () => URL.revokeObjectURL(objectUrl) };
+  } catch {
+    return { src, revoke: null };
   }
 }
 

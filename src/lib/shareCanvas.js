@@ -56,17 +56,9 @@ export async function generateQuranShareImage({
     showTranslation,
     translationsByAyah,
     translationDirection,
-  });
-
-  drawReference(ctx, {
-    width,
-    height,
-    isLandscape,
     surahNumber,
-    ayahs,
   });
-
-  return canvasToBlob(canvas);
+return canvasToBlob(canvas);
 }
 
 async function drawBackground(ctx, { width, height, imageSrc }) {
@@ -122,6 +114,7 @@ function drawAyahCard(ctx, {
   showTranslation,
   translationsByAyah,
   translationDirection,
+  surahNumber,
 }) {
   const cardWidth = width * (isLandscape ? 0.76 : 0.89);
   const maxCardHeight = height * (isLandscape ? 0.56 : 0.60);
@@ -170,13 +163,15 @@ function drawAyahCard(ctx, {
   const translationHeight = translationLines.length
     ? (translationLines.length * translationLineHeight) + 28
     : 0;
+  const referenceFontSize = isLandscape ? 20 : 22;
+  const referenceHeight = referenceFontSize * 1.5 + 18;
 
   const minimumCardHeight = height * (isLandscape ? 0.30 : 0.24);
   const cardHeight = Math.min(
     maxCardHeight,
     Math.max(
       minimumCardHeight,
-      textHeight + translationHeight + (isLandscape ? 88 : 110),
+      textHeight + translationHeight + referenceHeight + (isLandscape ? 72 : 90),
     ),
   );
   const cardY = cardCenterY - (cardHeight / 2);
@@ -188,7 +183,7 @@ function drawAyahCard(ctx, {
   ctx.lineWidth = 2;
   ctx.stroke();
 
-  const combinedContentHeight = textHeight + translationHeight;
+  const combinedContentHeight = textHeight + translationHeight + referenceHeight;
   let cursorY = cardCenterY - (combinedContentHeight / 2) + (lineHeight / 2);
 
   ctx.textAlign = 'center';
@@ -213,24 +208,17 @@ function drawAyahCard(ctx, {
       cursorY += translationLineHeight;
     });
   }
-}
 
-function drawReference(ctx, { width, height, isLandscape, surahNumber, ayahs }) {
   const firstAyah = ayahs?.[0]?.ayahNumber;
-  const lastAyah = ayahs?.[ayahs.length - 1]?.ayahNumber;
-  if (!firstAyah || !lastAyah) return;
-
-  const reference = firstAyah === lastAyah
-    ? `${surahNumber}:${firstAyah}`
-    : `${surahNumber}:${firstAyah}-${lastAyah}`;
-
-  ctx.direction = 'ltr';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillStyle = 'rgba(255,255,255,.72)';
-  ctx.font = `500 ${isLandscape ? 22 : 24}px Inter, ui-sans-serif, system-ui`;
-  ctx.fillText(reference, width / 2, height * 0.91);
+  if (firstAyah) {
+    cursorY += 10;
+    ctx.direction = 'ltr';
+    ctx.fillStyle = 'rgba(255,255,255,.72)';
+    ctx.font = `500 ${referenceFontSize}px Inter, ui-sans-serif, system-ui`;
+    ctx.fillText(`${surahNumber}:${firstAyah}`, width / 2, cursorY);
+  }
 }
+
 
 function wrapArabicText(ctx, text, maxWidth) {
   const words = String(text || '').trim().split(/\s+/).filter(Boolean);
