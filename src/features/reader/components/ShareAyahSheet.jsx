@@ -8,6 +8,7 @@ import {
   Palette,
   Pause,
   Play,
+  Maximize2,
   Type,
 } from 'lucide-react';
 import { getSurah, getSurahAyahs } from '../../../lib/quran';
@@ -17,6 +18,8 @@ import { getSurahNameMeta } from '../../../data/surahNames';
 import { generateQuranShareImage } from '../../../lib/shareCanvas';
 import { generateQuranShareVideo } from '../../../lib/shareVideoExport';
 import { getReciterImageUrl, normalizeLocalReciters } from '../../../lib/localAudio';
+import { findWordAtTime } from '../../../lib/fullSurahAudio';
+import { getQuranWordsForAyah } from '../../../lib/quranWordMap';
 import {
   SHARE_BACKGROUND_ASSETS,
   SHARE_MEDIA_MODES,
@@ -137,6 +140,15 @@ export function ShareQuranScreen({ ayah, onClose }) {
     const ayahNumber = Number(activeVideoEntry?.ayahNumber) || fromAyah;
     return surahAyahs.find((item) => item.ayahNumber === ayahNumber) || range[0] || ayah;
   }, [activeVideoEntry, fromAyah, surahAyahs, range, ayah]);
+
+  const activeVideoWord = useMemo(
+    () => findWordAtTime(activeVideoEntry, videoElapsedMs),
+    [activeVideoEntry, videoElapsedMs],
+  );
+  const activeVideoWords = useMemo(
+    () => getQuranWordsForAyah(ayah.surahNumber, activeVideoAyah?.ayahNumber),
+    [ayah.surahNumber, activeVideoAyah?.ayahNumber],
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -387,6 +399,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
         translationDirection: translationOption?.direction || 'ltr',
         surahName: arabicSurahName,
         surahMeaning: surahMeta?.meaning || '',
+        highlightColor: selectedBackground?.accentColor || '#d8b36a',
         onProgress: setVideoExportProgress,
       });
 
@@ -453,6 +466,10 @@ export function ShareQuranScreen({ ayah, onClose }) {
               showTranslation={showTranslation}
               translation={translationsByAyah[activeVideoAyah?.ayahNumber] || ''}
               translationDirection={translationOption?.direction || 'ltr'}
+              surahNumber={ayah.surahNumber}
+              wordItems={activeVideoWords}
+              activeWordPosition={activeVideoWord?.position || null}
+              highlightColor={selectedBackground?.accentColor || '#d8b36a'}
             />
           )}
         </section>
@@ -595,88 +612,81 @@ function VideoPreview({
   showTranslation,
   translation,
   translationDirection,
+  surahNumber,
+  wordItems,
+  activeWordPosition,
+  highlightColor,
 }) {
-  const backgroundVideoRef = useRef(null);
+  const backgroundSrc = background?.videoSrc || '';
+  const stageRef = useRef(null);
+  const [fullscreen, setFullscreen] = useState(false);
 
   useEffect(() => {
-    const video = backgroundVideoRef.current;
-    if (!video) return;
+    const onFullscreenChange = () => setFullscreen(document.fullscreenElement === stageRef.current);
+    document.addEventListener('fullscreenchange', onFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', onFullscreenChange);
+  }, []);
 
-    if (playing) {
-      video.play().catch(() => {});
-    } else {
-      video.pause();
-    }
-  }, [playing, background?.videoSrc]);
+  async function toggleFullscreen() {
+    const stage = stageRef.current;
+    if (!stage) return;
+    try {
+      if (document.fullscreenElement === stage) await document.exitFullscreen?.();
+      else await stage.requestFullscreen?.();
+    } catch {}
+  }
 
   return (
-    <div className="share-video-preview-stage">
-      {background?.videoSrc ? (
-        <video
-          ref={backgroundVideoRef}
-          className="share-video-preview-background"
-          src={background.videoSrc}
-          poster={background.imageSrc || undefined}
-          muted
-          loop
-          playsInline
-        />
+    <div ref={stageRef} className={`share-video-preview-stage${fullscreen ? ' is-fullscreen' : ''}`}>
+      {backgroundSrc ? (
+        <video className="share-video-preview-background" src={backgroundSrc} poster={background?.imageSrc || undefined} autoPlay muted loop playsInline aria-hidden="true" />
       ) : (
-        <div className="share-video-preview-fallback" />
+        <div className="share-video-preview-fallback" aria-hidden="true" />
       )}
 
       <div className="share-video-preview-overlay" />
+
       <div className="share-video-preview-header">
-        <strong>{`سُورَةُ ${surahName}`}</strong>
+        <strong>سُورَةُ {surahName}</strong>
         {surahMeaning && <span>{surahMeaning}</span>}
       </div>
 
       {showAyahCard && (
-        <div
-          className="share-video-preview-ayah-card"
-          key={ayah?.ayahNumber}
-          style={{ '--share-text-scale': textScale }}
-        >
-          <div className="share-video-preview-ayah">
-            {ayah?.text || ''}
+        <div className="share-video-preview-ayah-card" key={ayah?.ayahNumber} style={{ '--share-text-scale': textScale }}>
+          <div className="share-video-preview-ayah" dir="rtl">
+            {wordItems?.length
+              ? wordItems.map((word) => (
+                  <React.Fragment key={word.id}>
+                    <span
+                      className={Number(word.position) === Number(activeWordPosition) ? 'is-reciting' : ''}
+                      style={Number(word.position) === Number(activeWordPosition) ? { color: highlightColor } : undefined}
+                    >
+                      {word.text}
+                    </span>{' '}
+                  </React.Fragment>
+                ))
+              : ayah?.text || ''}
           </div>
+
           {showTranslation && translation && (
-            <div
-              className="share-video-preview-translation"
-              dir={translationDirection}
-            >
-              {translation}
-            </div>
+            <div className="share-video-preview-translation" dir={translationDirection}>{translation}</div>
           )}
+
+          <div className="share-video-preview-reference">{surahNumber}:{ayah?.ayahNumber}</div>
         </div>
       )}
 
       <div className="share-video-preview-controls">
-        <button
-          type="button"
-          className="share-video-preview-play"
-          onClick={onTogglePlay}
-          aria-label={playing ? 'Pause video preview' : 'Play video preview'}
-        >
-          {playing ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}
-        </button>
-
-        <div className="share-video-preview-seek-wrap">
-          <input
-            className="share-video-preview-seek"
-            type="range"
-            min="0"
-            max={Math.max(1, durationMs || 1)}
-            step="50"
-            value={Math.min(elapsedMs, Math.max(1, durationMs || 1))}
-            onChange={(event) => onSeek(Number(event.target.value))}
-            aria-label="Seek video preview"
-          />
-          <div className="share-video-preview-time">
-            <span>{formatMediaTime(elapsedMs)}</span>
-            <span>{formatMediaTime(durationMs)}</span>
-          </div>
+        <div className="share-video-preview-control-row">
+          <button type="button" className="share-video-preview-play" onClick={onTogglePlay} aria-label={playing ? 'Pause video preview' : 'Play video preview'}>
+            {playing ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}
+          </button>
+          <span className="share-video-preview-inline-time">{formatMediaTime(elapsedMs)} / {formatMediaTime(durationMs)}</span>
+          <button type="button" className="share-video-preview-fullscreen" onClick={toggleFullscreen} aria-label={fullscreen ? 'Exit fullscreen preview' : 'Fullscreen preview'}>
+            <Maximize2 size={20} />
+          </button>
         </div>
+        <input className="share-video-preview-seek" type="range" min="0" max={Math.max(1, durationMs || 1)} step="50" value={Math.min(elapsedMs, Math.max(1, durationMs || 1))} onChange={(event) => onSeek(Number(event.target.value))} aria-label="Seek video preview" />
       </div>
     </div>
   );
