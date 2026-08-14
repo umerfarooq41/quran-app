@@ -2,9 +2,12 @@ import { findShareAyahAtTime } from './shareMedia';
 import { findWordAtTime } from './fullSurahAudio';
 import { getQuranWordsForAyah } from './quranWordMap';
 
-const VIDEO_FPS = 30;
-const DEFAULT_VIDEO_BITRATE = 5_000_000;
-const AUDIO_BITRATE = 128_000;
+// The bundled share backgrounds are 1280×720 / 24 fps at roughly 2 Mbps.
+// Matching the source cadence and using a modest headroom avoids wasting bits
+// without reducing the visible detail that exists in the source clips.
+const VIDEO_FPS = 24;
+const DEFAULT_VIDEO_BITRATE = 2_200_000;
+const AUDIO_BITRATE = 96_000;
 
 export async function generateQuranShareVideo({
   composition,
@@ -71,23 +74,38 @@ export async function generateQuranShareVideo({
     silentGain.connect(audioContext.destination);
   } catch (error) {
     canvasStream.getTracks().forEach((track) => track.stop());
+    capturableAudio.revoke?.();
     await audioContext.close().catch(() => {});
     throw new Error(
       'This reciter audio cannot be captured for offline video export. Use a bundled/local reciter audio source.',
+      { cause: error },
     );
+  }
+
+  const audioTracks = audioDestination.stream.getAudioTracks();
+  if (!audioTracks.length) {
+    canvasStream.getTracks().forEach((track) => track.stop());
+    capturableAudio.revoke?.();
+    await audioContext.close().catch(() => {});
+    throw new Error('The browser did not create an audio track for the exported video.');
   }
 
   const combinedStream = new MediaStream([
     ...canvasStream.getVideoTracks(),
-    ...audioDestination.stream.getAudioTracks(),
+    ...audioTracks,
   ]);
 
-  const mimeType = chooseRecorderMimeType();
-  const recorder = new MediaRecorder(combinedStream, {
-    mimeType,
-    videoBitsPerSecond: DEFAULT_VIDEO_BITRATE,
-    audioBitsPerSecond: AUDIO_BITRATE,
-  });
+  let recorderSetup;
+  try {
+    recorderSetup = createVideoRecorder(combinedStream);
+  } catch (error) {
+    canvasStream.getTracks().forEach((track) => track.stop());
+    combinedStream.getTracks().forEach((track) => track.stop());
+    capturableAudio.revoke?.();
+    await audioContext.close().catch(() => {});
+    throw new Error('This browser cannot start the offline video encoder.', { cause: error });
+  }
+  const { recorder, mimeType } = recorderSetup;
 
   const chunks = [];
   recorder.addEventListener('dataavailable', (event) => {
@@ -115,8 +133,12 @@ export async function generateQuranShareVideo({
     await audioContext.resume();
     await backgroundVideo.play();
 
-    recorder.start(500);
-    await audio.play();
+    recorder.start(1000);
+    try {
+      await audio.play();
+    } catch (error) {
+      throw new Error('Recitation audio could not start during video export.', { cause: error });
+    }
 
     const startedAt = performance.now();
     let animationFrame = 0;
@@ -191,7 +213,9 @@ export async function generateQuranShareVideo({
     onProgress?.(1);
 
     if (!chunks.length) throw new Error('The browser did not produce a video file.');
-    return new Blob(chunks, { type: mimeType });
+    const output = new Blob(chunks, { type: mimeType });
+    if (!output.size) throw new Error('The browser produced an empty video file.');
+    return output;
   } finally {
     if (recorder.state !== 'inactive') {
       try { recorder.stop(); } catch {}
@@ -203,7 +227,7 @@ export async function generateQuranShareVideo({
 function drawVideoFrame(ctx, {
   video, width, height, isLandscape, surahName, surahMeaning, surahNumber,
   ayah, wordItems, activeWordPosition, highlightColor, translation,
-  translationDirection, textScale,
+  translationDirection, textScale, translationScale = 1,
 }) {
   drawVideoCover(ctx, video, width, height);
   const overlay = ctx.createLinearGradient(0, 0, 0, height);
@@ -323,24 +347,70 @@ function drawRtlWordLine(ctx, { words, centerX, y, font, normalColor, highlightC
 
 
 async function prepareCapturableAudio(src) {
+  let response;
   try {
-    const response = await fetch(src);
-    if (!response.ok) throw new Error('Audio fetch failed.');
-    const blob = await response.blob();
-    const objectUrl = URL.createObjectURL(blob);
-    return { src: objectUrl, revoke: () => URL.revokeObjectURL(objectUrl) };
-  } catch {
-    return { src, revoke: null };
+    response = await fetch(src, { mode: 'cors', credentials: 'omit' });
+  } catch (error) {
+    throw new Error(
+      'The selected reciter audio cannot be captured for video export because its server blocks cross-origin downloads. Try another reciter or use a bundled/local audio source.',
+      { cause: error },
+    );
   }
+
+  if (!response.ok) {
+    throw new Error(`Recitation audio download failed (${response.status}).`);
+  }
+
+  const blob = await response.blob();
+  if (!blob.size) {
+    throw new Error('The selected reciter returned an empty audio file.');
+  }
+
+  const objectUrl = URL.createObjectURL(blob);
+  return {
+    src: objectUrl,
+    revoke: () => URL.revokeObjectURL(objectUrl),
+  };
 }
 
-function chooseRecorderMimeType() {
+function createVideoRecorder(stream) {
   const candidates = [
-    'video/webm;codecs=vp9,opus',
     'video/webm;codecs=vp8,opus',
+    'video/webm;codecs=vp9,opus',
     'video/webm',
   ];
-  return candidates.find((type) => MediaRecorder.isTypeSupported(type)) || 'video/webm';
+
+  let lastError = null;
+  for (const mimeType of candidates) {
+    if (!MediaRecorder.isTypeSupported(mimeType)) continue;
+    try {
+      return {
+        mimeType,
+        recorder: new MediaRecorder(stream, {
+          mimeType,
+          videoBitsPerSecond: DEFAULT_VIDEO_BITRATE,
+          audioBitsPerSecond: AUDIO_BITRATE,
+        }),
+      };
+    } catch (error) {
+      lastError = error;
+    }
+  }
+
+  // Some WebViews reject an explicit MIME type but can still choose a working
+  // encoder automatically.
+  try {
+    const recorder = new MediaRecorder(stream, {
+      videoBitsPerSecond: DEFAULT_VIDEO_BITRATE,
+      audioBitsPerSecond: AUDIO_BITRATE,
+    });
+    return {
+      mimeType: recorder.mimeType || 'video/webm',
+      recorder,
+    };
+  } catch (error) {
+    throw lastError || error;
+  }
 }
 
 function assertVideoExportSupport() {
