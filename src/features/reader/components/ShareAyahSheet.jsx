@@ -643,13 +643,92 @@ function VideoPreview({
 }) {
   const backgroundSrc = background?.videoSrc || '';
   const stageRef = useRef(null);
+  const cardRef = useRef(null);
   const [fullscreen, setFullscreen] = useState(false);
+  const [autoFitScale, setAutoFitScale] = useState(1);
+  const [cardMetrics, setCardMetrics] = useState({ top: 0, maxHeight: 0 });
 
   useEffect(() => {
     const onFullscreenChange = () => setFullscreen(document.fullscreenElement === stageRef.current);
     document.addEventListener('fullscreenchange', onFullscreenChange);
     return () => document.removeEventListener('fullscreenchange', onFullscreenChange);
   }, []);
+
+  useEffect(() => {
+    if (!showAyahCard) return undefined;
+    let firstFrame = 0;
+    let secondFrame = 0;
+
+    setAutoFitScale(1);
+
+    const measure = () => {
+      const stage = stageRef.current;
+      const card = cardRef.current;
+      if (!stage || !card) return;
+
+      const stageRect = stage.getBoundingClientRect();
+      const header = stage.querySelector('.share-video-preview-header');
+      const controls = stage.querySelector('.share-video-preview-controls');
+      const headerRect = header?.getBoundingClientRect();
+      const controlsRect = controls?.getBoundingClientRect();
+
+      const top = Math.max(
+        14,
+        (headerRect?.bottom || (stageRect.top + (stageRect.height * 0.14))) - stageRect.top + 12,
+      );
+      const bottom = Math.min(
+        stageRect.height - 12,
+        (controlsRect?.top || (stageRect.bottom - (stageRect.height * 0.13))) - stageRect.top - 12,
+      );
+      const maxHeight = Math.max(96, bottom - top);
+
+      setCardMetrics({ top, maxHeight });
+
+      // scrollHeight reports the full content even when max-height clips it.
+      const contentHeight = Math.max(card.scrollHeight, card.getBoundingClientRect().height);
+      if (contentHeight > maxHeight + 2) {
+        const ratio = Math.max(0.58, Math.min(1, (maxHeight / contentHeight) * 0.97));
+        setAutoFitScale(ratio);
+      }
+    };
+
+    firstFrame = requestAnimationFrame(() => {
+      secondFrame = requestAnimationFrame(measure);
+    });
+
+    const viewport = window.visualViewport;
+    viewport?.addEventListener('resize', measure);
+    window.addEventListener('resize', measure);
+
+    return () => {
+      cancelAnimationFrame(firstFrame);
+      cancelAnimationFrame(secondFrame);
+      viewport?.removeEventListener('resize', measure);
+      window.removeEventListener('resize', measure);
+    };
+  }, [
+    showAyahCard,
+    ayah?.ayahNumber,
+    ayah?.text,
+    translation,
+    showTranslation,
+    textScale,
+    translationScale,
+    fullscreen,
+    wordItems?.length,
+  ]);
+
+  useEffect(() => {
+    if (!showAyahCard || autoFitScale >= 0.999 || !cardMetrics.maxHeight) return undefined;
+    const frame = requestAnimationFrame(() => {
+      const card = cardRef.current;
+      if (!card) return;
+      if (card.scrollHeight > cardMetrics.maxHeight + 3 && autoFitScale > 0.58) {
+        setAutoFitScale((value) => Math.max(0.58, Number((value - 0.04).toFixed(2))));
+      }
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [autoFitScale, cardMetrics.maxHeight, showAyahCard]);
 
   async function toggleFullscreen() {
     const stage = stageRef.current;
@@ -676,7 +755,17 @@ function VideoPreview({
       </div>
 
       {showAyahCard && (
-        <div className="share-video-preview-ayah-card" key={ayah?.ayahNumber} style={{ '--share-text-scale': textScale, '--share-translation-scale': translationScale }}>
+        <div
+          ref={cardRef}
+          className="share-video-preview-ayah-card"
+          key={ayah?.ayahNumber}
+          style={{
+            '--share-text-scale': textScale * autoFitScale,
+            '--share-translation-scale': translationScale * autoFitScale,
+            '--share-card-top': `${cardMetrics.top || 96}px`,
+            '--share-card-max-height': `${cardMetrics.maxHeight || 360}px`,
+          }}
+        >
           <div className="share-video-preview-ayah" dir="rtl">
             {wordItems?.length
               ? wordItems.map((word) => (
