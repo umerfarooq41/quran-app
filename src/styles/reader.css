@@ -4987,3 +4987,72 @@ body {
   .share-range-to-label { padding-bottom: 17px; }
   .share-font-stepper { width: 82%; }
 }
+
+
+/* Share Quran dynamic content fit — title-safe composition */
+.share-video-preview-header {
+  top: 5.5% !important;
+  right: 7% !important;
+  left: 7% !important;
+  z-index: 7 !important;
+  pointer-events: none;
+}
+
+.share-video-preview-header strong,
+.share-video-preview-header span {
+  position: relative;
+  z-index: 1;
+}
+
+.share-video-preview-ayah-card {
+  top: var(--share-card-top, 96px) !important;
+  right: 6% !important;
+  bottom: auto !important;
+  left: 6% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: var(--share-card-max-height, 360px) !important;
+  transform: none !important;
+  overflow: hidden !important;
+  display: block !important;
+  box-sizing: border-box;
+}
+
+.share-video-preview-ayah {
+  font-size: calc(clamp(1.18rem, 5.3vw, 2.05rem) * var(--share-text-scale, 1)) !important;
+  line-height: 1.48 !important;
+}
+
+.share-video-preview-translation {
+  font-size: calc(.84rem * var(--share-translation-scale, 1)) !important;
+  line-height: 1.42 !important;
+}
+
+.share-media-live-preview.is-video.is-landscape .share-video-preview-header {
+  top: 4.5% !important;
+}
+
+.share-media-live-preview.is-video.is-landscape .share-video-preview-ayah-card {
+  top: var(--share-card-top, 70px) !important;
+  right: 8% !important;
+  left: 8% !important;
+  max-height: var(--share-card-max-height, 220px) !important;
+  transform: none !important;
+  padding: 9px 15px 8px !important;
+}
+
+.share-media-live-preview.is-video.is-landscape .share-video-preview-ayah {
+  font-size: calc(clamp(.95rem, 3.2vw, 1.55rem) * var(--share-text-scale, 1)) !important;
+  line-height: 1.38 !important;
+}
+
+.share-media-live-preview.is-video.is-landscape .share-video-preview-translation {
+  font-size: calc(.70rem * var(--share-translation-scale, 1)) !important;
+  line-height: 1.28 !important;
+}
+
+.share-video-preview-stage:fullscreen .share-video-preview-ayah-card {
+  top: var(--share-card-top, 120px) !important;
+  max-height: var(--share-card-max-height, calc(100vh - 260px)) !important;
+  transform: none !important;
+}
