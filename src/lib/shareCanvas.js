@@ -119,81 +119,99 @@ function drawAyahCard(ctx, {
   translationDirection,
   surahNumber,
 }) {
-  const cardWidth = width * (isLandscape ? 0.76 : 0.89);
-  const maxCardHeight = height * (isLandscape ? 0.56 : 0.60);
+  const cardWidth = width * (isLandscape ? 0.82 : 0.89);
   const cardX = (width - cardWidth) / 2;
-  const cardCenterY = height * 0.52;
+
+  // The title owns the top of the composition. The text card never enters it.
+  const safeTop = height * (isLandscape ? 0.225 : 0.205);
+  const safeBottom = height * (isLandscape ? 0.94 : 0.94);
+  const maxCardHeight = safeBottom - safeTop;
+  const maxTextWidth = cardWidth * 0.88;
 
   const arabicText = (ayahs || [])
     .map((item) => String(item?.text || '').trim())
     .filter(Boolean)
     .join('  ');
-
-  const baseFontSize = (isLandscape ? 58 : 64) * textScale;
-  const minimumFontSize = isLandscape ? 34 : 38;
-  const maxTextWidth = cardWidth * 0.88;
-
-  let fontSize = baseFontSize;
-  let lines = [];
-  let lineHeight = fontSize * 1.72;
-
-  while (fontSize >= minimumFontSize) {
-    ctx.direction = 'rtl';
-    ctx.font = `${Math.round(fontSize)}px IndopakNastaleeq, serif`;
-    lines = wrapArabicText(ctx, arabicText, maxTextWidth);
-    lineHeight = fontSize * 1.72;
-    if ((lines.length * lineHeight) <= maxCardHeight * 0.76) break;
-    fontSize -= 2;
-  }
-
-  const textHeight = Math.max(lineHeight, lines.length * lineHeight);
   const translationText = showTranslation
     ? (ayahs || [])
         .map((item) => translationsByAyah?.[item.ayahNumber] || '')
         .filter(Boolean)
         .join(' ')
     : '';
-  const translationFontSize = (isLandscape ? 30 : 32) * translationScale;
-  let translationLines = [];
 
-  if (translationText) {
-    ctx.direction = translationDirection === 'rtl' ? 'rtl' : 'ltr';
-    ctx.font = `500 ${translationFontSize}px Inter, ui-sans-serif, system-ui`;
-    translationLines = wrapPlainText(ctx, translationText, maxTextWidth);
+  const requestedArabicFont = (isLandscape ? 58 : 64) * textScale;
+  const requestedTranslationFont = (isLandscape ? 30 : 32) * translationScale;
+  const minimumArabicFont = isLandscape ? 27 : 30;
+  const minimumTranslationFont = isLandscape ? 17 : 18;
+  const referenceFontSize = isLandscape ? 20 : 22;
+  const referenceHeight = referenceFontSize * 1.5 + 16;
+  const verticalPadding = isLandscape ? 58 : 72;
+
+  let arabicFont = requestedArabicFont;
+  let translationFont = requestedTranslationFont;
+  let lines = [];
+  let translationLines = [];
+  let lineHeight = 0;
+  let translationLineHeight = 0;
+  let contentHeight = 0;
+
+  const measure = () => {
+    ctx.direction = 'rtl';
+    ctx.font = `${Math.round(arabicFont)}px IndopakNastaleeq, serif`;
+    lines = wrapArabicText(ctx, arabicText, maxTextWidth);
+    lineHeight = arabicFont * 1.66;
+
+    translationLines = [];
+    translationLineHeight = translationFont * 1.46;
+    if (translationText) {
+      ctx.direction = translationDirection === 'rtl' ? 'rtl' : 'ltr';
+      ctx.font = `500 ${Math.round(translationFont)}px Inter, ui-sans-serif, system-ui`;
+      translationLines = wrapPlainText(ctx, translationText, maxTextWidth);
+    }
+
+    const arabicHeight = Math.max(lineHeight, lines.length * lineHeight);
+    const translationHeight = translationLines.length
+      ? 18 + (translationLines.length * translationLineHeight)
+      : 0;
+    contentHeight = arabicHeight + translationHeight + referenceHeight;
+    return contentHeight + verticalPadding;
+  };
+
+  let requiredHeight = measure();
+  let guard = 0;
+  while (requiredHeight > maxCardHeight && guard < 80) {
+    guard += 1;
+    const canReduceArabic = arabicFont > minimumArabicFont;
+    const canReduceTranslation = translationText && translationFont > minimumTranslationFont;
+    if (!canReduceArabic && !canReduceTranslation) break;
+
+    if (canReduceArabic) arabicFont = Math.max(minimumArabicFont, arabicFont - 1.5);
+    if (canReduceTranslation) translationFont = Math.max(minimumTranslationFont, translationFont - 1);
+    requiredHeight = measure();
   }
 
-  const translationLineHeight = translationFontSize * 1.5;
-  const translationHeight = translationLines.length
-    ? (translationLines.length * translationLineHeight) + 28
-    : 0;
-  const referenceFontSize = isLandscape ? 20 : 22;
-  const referenceHeight = referenceFontSize * 1.5 + 18;
+  const minimumCardHeight = height * (isLandscape ? 0.26 : 0.22);
+  const cardHeight = Math.min(maxCardHeight, Math.max(minimumCardHeight, requiredHeight));
+  // Anchor below the title. Long Ayahs grow downward rather than upward into it.
+  const cardY = safeTop;
+  const cardCenterY = cardY + (cardHeight / 2);
 
-  const minimumCardHeight = height * (isLandscape ? 0.30 : 0.24);
-  const cardHeight = Math.min(
-    maxCardHeight,
-    Math.max(
-      minimumCardHeight,
-      textHeight + translationHeight + referenceHeight + (isLandscape ? 72 : 90),
-    ),
-  );
-  const cardY = cardCenterY - (cardHeight / 2);
-
-  roundedRect(ctx, cardX, cardY, cardWidth, cardHeight, isLandscape ? 32 : 42);
-  ctx.fillStyle = 'rgba(5, 22, 20, .48)';
+  roundedRect(ctx, cardX, cardY, cardWidth, cardHeight, isLandscape ? 24 : 28);
+  ctx.fillStyle = 'rgba(4, 19, 18, .42)';
   ctx.fill();
-  ctx.strokeStyle = 'rgba(255,255,255,.12)';
-  ctx.lineWidth = 2;
-  ctx.stroke();
 
-  const combinedContentHeight = textHeight + translationHeight + referenceHeight;
+  const arabicHeight = Math.max(lineHeight, lines.length * lineHeight);
+  const translationHeight = translationLines.length
+    ? 18 + (translationLines.length * translationLineHeight)
+    : 0;
+  const combinedContentHeight = arabicHeight + translationHeight + referenceHeight;
   let cursorY = cardCenterY - (combinedContentHeight / 2) + (lineHeight / 2);
 
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.direction = 'rtl';
   ctx.fillStyle = '#ffffff';
-  ctx.font = `${Math.round(fontSize)}px IndopakNastaleeq, serif`;
+  ctx.font = `${Math.round(arabicFont)}px IndopakNastaleeq, serif`;
 
   lines.forEach((line) => {
     ctx.fillText(line, width / 2, cursorY);
@@ -201,11 +219,10 @@ function drawAyahCard(ctx, {
   });
 
   if (translationLines.length) {
-    cursorY += 14;
+    cursorY += 12;
     ctx.direction = translationDirection === 'rtl' ? 'rtl' : 'ltr';
     ctx.fillStyle = 'rgba(255,255,255,.92)';
-    ctx.font = `500 ${translationFontSize}px Inter, ui-sans-serif, system-ui`;
-
+    ctx.font = `500 ${Math.round(translationFont)}px Inter, ui-sans-serif, system-ui`;
     translationLines.forEach((line) => {
       ctx.fillText(line, width / 2, cursorY);
       cursorY += translationLineHeight;
@@ -214,7 +231,7 @@ function drawAyahCard(ctx, {
 
   const firstAyah = ayahs?.[0]?.ayahNumber;
   if (firstAyah) {
-    cursorY += 10;
+    cursorY += 8;
     ctx.direction = 'ltr';
     ctx.fillStyle = 'rgba(255,255,255,.72)';
     ctx.font = `500 ${referenceFontSize}px Inter, ui-sans-serif, system-ui`;
