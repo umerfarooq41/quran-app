@@ -143,7 +143,7 @@ function drawAyahCard(ctx, {
   const requestedTranslationFont = (isLandscape ? 30 : 32) * translationScale;
   const minimumArabicFont = isLandscape ? 27 : 30;
   const minimumTranslationFont = isLandscape ? 17 : 18;
-  const referenceFontSize = isLandscape ? 20 : 22;
+  const referenceFontSize = isLandscape ? 24 : 28;
   const referenceHeight = referenceFontSize * 1.5 + 16;
   const verticalPadding = isLandscape ? 58 : 72;
 

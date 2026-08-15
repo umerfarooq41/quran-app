@@ -269,7 +269,7 @@ function drawVideoFrame(ctx, {
   const requestedTranslationFont = (isLandscape ? 18 : 21) * clamp(Number(translationScale) || 1, .75, 1.35);
   const minimumArabicFont = isLandscape ? 23 : 27;
   const minimumTranslationFont = isLandscape ? 14 : 16;
-  const referenceFont = isLandscape ? 15 : 18;
+  const referenceFont = isLandscape ? 18 : 23;
   const referenceHeight = referenceFont * 1.6 + 10;
   const verticalPadding = isLandscape ? 44 : 56;
 
