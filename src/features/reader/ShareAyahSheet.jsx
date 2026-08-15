@@ -428,10 +428,14 @@ export function ShareQuranScreen({ ayah, onClose }) {
         onProgress: setVideoExportProgress,
       });
 
+      if (!blob?.type?.toLowerCase().startsWith('video/mp4')) {
+        throw new Error('Video export did not return an MP4 file.');
+      }
+
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `quran-${selectedSurahNumber}-${fromAyah}-${toAyah}.webm`;
+      link.download = `quran-${selectedSurahNumber}-${fromAyah}-${toAyah}.mp4`;
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -711,8 +715,8 @@ function VideoPreview({
       const stageRect = stage.getBoundingClientRect();
       const isLandscape = orientation === 'landscape';
 
-      // Keep preview geometry identical to shareVideoExport.js.
-      // Player controls are only an overlay and do not reserve export space.
+      // Match shareVideoExport.js exactly. Playback controls are preview-only
+      // chrome and never reserve export composition space.
       const safeTop = stageRect.height * (isLandscape ? 0.18 : 0.165);
       const safeBottom = stageRect.height * (isLandscape ? 0.93 : 0.91);
       const maxHeight = Math.max(96, safeBottom - safeTop);
