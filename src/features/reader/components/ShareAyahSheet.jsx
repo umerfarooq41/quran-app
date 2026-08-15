@@ -649,17 +649,33 @@ function VideoPreview({
   const [cardMetrics, setCardMetrics] = useState({ top: 0, maxHeight: 0 });
 
   useEffect(() => {
-    const onFullscreenChange = () => setFullscreen(document.fullscreenElement === stageRef.current);
-    document.addEventListener('fullscreenchange', onFullscreenChange);
-    return () => document.removeEventListener('fullscreenchange', onFullscreenChange);
-  }, []);
+    if (!fullscreen) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [fullscreen]);
+
+  useEffect(() => {
+    setAutoFitScale(1);
+  }, [
+    showAyahCard,
+    ayah?.ayahNumber,
+    ayah?.text,
+    translation,
+    showTranslation,
+    textScale,
+    translationScale,
+    fullscreen,
+    wordItems?.length,
+  ]);
 
   useEffect(() => {
     if (!showAyahCard) return undefined;
+
     let firstFrame = 0;
     let secondFrame = 0;
-
-    setAutoFitScale(1);
 
     const measure = () => {
       const stage = stageRef.current;
@@ -672,24 +688,48 @@ function VideoPreview({
       const headerRect = header?.getBoundingClientRect();
       const controlsRect = controls?.getBoundingClientRect();
 
-      const top = Math.max(
+      const safeTop = Math.max(
         14,
-        (headerRect?.bottom || (stageRect.top + (stageRect.height * 0.14))) - stageRect.top + 12,
+        (headerRect?.bottom || (stageRect.top + (stageRect.height * 0.14))) - stageRect.top + 14,
       );
-      const bottom = Math.min(
+      const safeBottom = Math.min(
         stageRect.height - 12,
-        (controlsRect?.top || (stageRect.bottom - (stageRect.height * 0.13))) - stageRect.top - 12,
+        (controlsRect?.top || (stageRect.bottom - (stageRect.height * 0.13))) - stageRect.top - 14,
       );
-      const maxHeight = Math.max(96, bottom - top);
+      const maxHeight = Math.max(96, safeBottom - safeTop);
+
+      // scrollHeight gives the full natural card height even when CSS max-height is active.
+      const contentHeight = Math.max(
+        card.scrollHeight,
+        card.getBoundingClientRect().height,
+      );
+
+      if (contentHeight > maxHeight + 2 && autoFitScale > 0.58) {
+        const ratio = Math.max(
+          0.58,
+          Math.min(autoFitScale, autoFitScale * (maxHeight / contentHeight) * 0.985),
+        );
+        if (ratio < autoFitScale - 0.005) {
+          setAutoFitScale(Number(ratio.toFixed(3)));
+          return;
+        }
+      }
+
+      const fittedHeight = Math.min(contentHeight, maxHeight);
+
+      // Center-first growth model:
+      // 1. Short/medium cards stay exactly centered in the media.
+      // 2. They grow equally upward and downward from that center.
+      // 3. Once the upper edge reaches the protected title zone, the top locks
+      //    there and any additional height grows downward only.
+      const previewCenterY = stageRect.height / 2;
+      const centeredTop = previewCenterY - (fittedHeight / 2);
+      const symmetricHeightBeforeTitle = Math.max(0, (previewCenterY - safeTop) * 2);
+      const top = fittedHeight <= symmetricHeightBeforeTitle
+        ? centeredTop
+        : safeTop;
 
       setCardMetrics({ top, maxHeight });
-
-      // scrollHeight reports the full content even when max-height clips it.
-      const contentHeight = Math.max(card.scrollHeight, card.getBoundingClientRect().height);
-      if (contentHeight > maxHeight + 2) {
-        const ratio = Math.max(0.58, Math.min(1, (maxHeight / contentHeight) * 0.97));
-        setAutoFitScale(ratio);
-      }
     };
 
     firstFrame = requestAnimationFrame(() => {
@@ -716,27 +756,14 @@ function VideoPreview({
     translationScale,
     fullscreen,
     wordItems?.length,
+    autoFitScale,
   ]);
 
-  useEffect(() => {
-    if (!showAyahCard || autoFitScale >= 0.999 || !cardMetrics.maxHeight) return undefined;
-    const frame = requestAnimationFrame(() => {
-      const card = cardRef.current;
-      if (!card) return;
-      if (card.scrollHeight > cardMetrics.maxHeight + 3 && autoFitScale > 0.58) {
-        setAutoFitScale((value) => Math.max(0.58, Number((value - 0.04).toFixed(2))));
-      }
-    });
-    return () => cancelAnimationFrame(frame);
-  }, [autoFitScale, cardMetrics.maxHeight, showAyahCard]);
-
-  async function toggleFullscreen() {
-    const stage = stageRef.current;
-    if (!stage) return;
-    try {
-      if (document.fullscreenElement === stage) await document.exitFullscreen?.();
-      else await stage.requestFullscreen?.();
-    } catch {}
+  function toggleFullscreen() {
+    // Use an in-app fixed fullscreen instead of the browser Fullscreen API.
+    // This avoids Android/browser instructional overlays while keeping a
+    // predictable way back: tap the same fullscreen button again.
+    setFullscreen((value) => !value);
   }
 
   return (
@@ -1152,6 +1179,7 @@ function SurahField({ value, label, options, open, onToggle, onSelect }) {
 
 function RangeField({ label, value, options, open, onToggle, onSelect, compact = false }) {
   const fieldRef = useRef(null);
+  const selectedOptionRef = useRef(null);
   const [opensUp, setOpensUp] = useState(false);
 
   useEffect(() => {
@@ -1180,6 +1208,14 @@ function RangeField({ label, value, options, open, onToggle, onSelect, compact =
     };
   }, [open, options.length]);
 
+  useEffect(() => {
+    if (!open) return undefined;
+    const frame = requestAnimationFrame(() => {
+      selectedOptionRef.current?.scrollIntoView({ block: 'center' });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [open, value]);
+
   return (
     <div
       ref={fieldRef}
@@ -1201,6 +1237,7 @@ function RangeField({ label, value, options, open, onToggle, onSelect, compact =
           {options.map((item) => (
             <button
               key={item.ayahNumber}
+              ref={item.ayahNumber === value ? selectedOptionRef : null}
               type="button"
               className={item.ayahNumber === value ? 'is-selected' : ''}
               onClick={() => onSelect(item.ayahNumber)}
