@@ -5056,4 +5056,94 @@ body {
   max-height: var(--share-card-max-height, calc(100vh - 260px)) !important;
   transform: none !important;
 }
-\n\n/* Share Quran transport + app fullscreen final polish */\n.share-video-preview-controls {\n  background: transparent !important;\n  border: 0 !important;\n  border-radius: 0 !important;\n  box-shadow: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n  padding: 0 4px 2px !important;\n}\n\n.share-video-preview-control-row,\n.share-video-preview-seek {\n  filter: drop-shadow(0 1px 2px rgba(0,0,0,.36));\n}\n\n/* App-controlled fullscreen avoids native browser fullscreen instruction banners. */\n.share-video-preview-stage.is-fullscreen {\n  position: fixed !important;\n  inset: 0 !important;\n  z-index: 10000 !important;\n  width: 100vw !important;\n  height: 100dvh !important;\n  max-width: none !important;\n  max-height: none !important;\n  aspect-ratio: auto !important;\n  border-radius: 0 !important;\n  background: #000 !important;\n}\n\n.share-video-preview-stage.is-fullscreen .share-video-preview-background {\n  width: 100% !important;\n  height: 100% !important;\n  object-fit: cover !important;\n}\n\n.share-video-preview-stage.is-fullscreen .share-video-preview-controls {\n  right: 4% !important;\n  bottom: max(18px, env(safe-area-inset-bottom)) !important;\n  left: 4% !important;\n}\n\n.share-video-preview-stage.is-fullscreen .share-video-preview-ayah-card {\n  right: 8% !important;\n  left: 8% !important;\n}\n
+
+/* Share Quran verified final preview authority */
+.share-media-live-preview.is-image.is-portrait,
+.share-media-live-preview.is-video.is-portrait {
+  aspect-ratio: 9 / 16 !important;
+}
+
+.share-media-live-preview.is-image.is-landscape,
+.share-media-live-preview.is-video.is-landscape {
+  aspect-ratio: 16 / 9 !important;
+}
+
+.share-image-preview-stage,
+.share-video-preview-stage {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: none !important;
+}
+
+.share-image-preview-stage .quran-share-generated-image,
+.share-video-preview-background {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.share-image-preview-stage .quran-share-generated-image {
+  object-fit: contain !important;
+  object-position: center !important;
+}
+
+.share-video-preview-background {
+  object-fit: cover !important;
+  object-position: center !important;
+}
+
+/* Playback controls sit directly on the media; no transport background card. */
+.share-video-preview-controls {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  padding: 0 4px 2px !important;
+}
+
+.share-video-preview-control-row,
+.share-video-preview-seek {
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,.36));
+}
+
+.share-video-preview-play,
+.share-video-preview-fullscreen {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* App-controlled fullscreen avoids native browser fullscreen instruction banners. */
+.share-video-preview-stage.is-fullscreen {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 10000 !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  max-width: none !important;
+  max-height: none !important;
+  aspect-ratio: auto !important;
+  border-radius: 0 !important;
+  background: #000 !important;
+}
+
+.share-video-preview-stage.is-fullscreen .share-video-preview-background {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+.share-video-preview-stage.is-fullscreen .share-video-preview-controls {
+  right: 4% !important;
+  bottom: max(18px, env(safe-area-inset-bottom)) !important;
+  left: 4% !important;
+}
+
+.share-video-preview-stage.is-fullscreen .share-video-preview-ayah-card {
+  right: 8% !important;
+  left: 8% !important;
+}
