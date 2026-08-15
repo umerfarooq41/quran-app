@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
   Check,
   ChevronDown,
@@ -503,6 +504,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
               wordItems={activeVideoWords}
               activeWordPosition={activeVideoWord?.position || null}
               highlightColor={selectedBackground?.accentColor || '#d8b36a'}
+              orientation={orientation}
             />
           )}
         </section>
@@ -654,11 +656,13 @@ function VideoPreview({
   wordItems,
   activeWordPosition,
   highlightColor,
+  orientation,
 }) {
   const backgroundSrc = background?.videoSrc || '';
   const stageRef = useRef(null);
   const cardRef = useRef(null);
   const [fullscreen, setFullscreen] = useState(false);
+  const [fullscreenControlsVisible, setFullscreenControlsVisible] = useState(true);
   const [autoFitScale, setAutoFitScale] = useState(1);
   const [cardMetrics, setCardMetrics] = useState({ top: 0, maxHeight: 0 });
 
@@ -670,6 +674,14 @@ function VideoPreview({
       document.body.style.overflow = previousOverflow;
     };
   }, [fullscreen]);
+
+  useEffect(() => {
+    if (!fullscreen || !fullscreenControlsVisible) return undefined;
+    const timer = window.setTimeout(() => {
+      setFullscreenControlsVisible(false);
+    }, 2200);
+    return () => window.clearTimeout(timer);
+  }, [fullscreen, fullscreenControlsVisible]);
 
   useEffect(() => {
     setAutoFitScale(1);
@@ -697,19 +709,12 @@ function VideoPreview({
       if (!stage || !card) return;
 
       const stageRect = stage.getBoundingClientRect();
-      const header = stage.querySelector('.share-video-preview-header');
-      const controls = stage.querySelector('.share-video-preview-controls');
-      const headerRect = header?.getBoundingClientRect();
-      const controlsRect = controls?.getBoundingClientRect();
+      const isLandscape = orientation === 'landscape';
 
-      const safeTop = Math.max(
-        14,
-        (headerRect?.bottom || (stageRect.top + (stageRect.height * 0.14))) - stageRect.top + 14,
-      );
-      const safeBottom = Math.min(
-        stageRect.height - 12,
-        (controlsRect?.top || (stageRect.bottom - (stageRect.height * 0.13))) - stageRect.top - 14,
-      );
+      // Match shareVideoExport.js exactly. Playback controls are preview-only
+      // chrome and never reserve export composition space.
+      const safeTop = stageRect.height * (isLandscape ? 0.18 : 0.165);
+      const safeBottom = stageRect.height * (isLandscape ? 0.93 : 0.91);
       const maxHeight = Math.max(96, safeBottom - safeTop);
 
       // scrollHeight gives the full natural card height even when CSS max-height is active.
@@ -771,19 +776,45 @@ function VideoPreview({
     fullscreen,
     wordItems?.length,
     autoFitScale,
+    orientation,
   ]);
 
-  function toggleFullscreen() {
-    // Use an in-app fixed fullscreen instead of the browser Fullscreen API.
-    // This avoids Android/browser instructional overlays while keeping a
-    // predictable way back: tap the same fullscreen button again.
-    setFullscreen((value) => !value);
+  function toggleFullscreen(event) {
+    event?.stopPropagation?.();
+    setFullscreen((value) => {
+      const next = !value;
+      setFullscreenControlsVisible(true);
+      return next;
+    });
   }
 
-  return (
-    <div ref={stageRef} className={`share-video-preview-stage${fullscreen ? ' is-fullscreen' : ''}`}>
+  function revealFullscreenControls() {
+    if (!fullscreen) return;
+    setFullscreenControlsVisible(true);
+  }
+
+  const stage = (
+    <div
+      ref={stageRef}
+      className={[
+        'share-video-preview-stage',
+        orientation === 'landscape' ? 'is-landscape' : 'is-portrait',
+        fullscreen ? 'is-fullscreen' : '',
+        fullscreen && !fullscreenControlsVisible ? 'is-controls-hidden' : '',
+      ].filter(Boolean).join(' ')}
+      onClick={revealFullscreenControls}
+    >
       {backgroundSrc ? (
-        <video className="share-video-preview-background" src={backgroundSrc} poster={background?.imageSrc || undefined} autoPlay muted loop playsInline aria-hidden="true" />
+        <video
+          className="share-video-preview-background"
+          src={backgroundSrc}
+          poster={background?.imageSrc || undefined}
+          autoPlay
+          muted
+          loop
+          playsInline
+          aria-hidden="true"
+        />
       ) : (
         <div className="share-video-preview-fallback" aria-hidden="true" />
       )}
@@ -813,7 +844,9 @@ function VideoPreview({
                   <React.Fragment key={word.id}>
                     <span
                       className={Number(word.position) === Number(activeWordPosition) ? 'is-reciting' : ''}
-                      style={Number(word.position) === Number(activeWordPosition) ? { color: highlightColor } : undefined}
+                      style={Number(word.position) === Number(activeWordPosition)
+                        ? { color: highlightColor }
+                        : undefined}
                     >
                       {word.text}
                     </span>{' '}
@@ -823,27 +856,79 @@ function VideoPreview({
           </div>
 
           {showTranslation && translation && (
-            <div className="share-video-preview-translation" dir={translationDirection}>{translation}</div>
+            <div className="share-video-preview-translation" dir={translationDirection}>
+              {translation}
+            </div>
           )}
 
-          <div className="share-video-preview-reference">{surahNumber}:{ayah?.ayahNumber}</div>
+          <div className="share-video-preview-reference">
+            {surahNumber}:{ayah?.ayahNumber}
+          </div>
         </div>
       )}
 
-      <div className="share-video-preview-controls">
+      <div
+        className="share-video-preview-controls"
+        onClick={(event) => event.stopPropagation()}
+      >
         <div className="share-video-preview-control-row">
-          <button type="button" className="share-video-preview-play" onClick={onTogglePlay} aria-label={playing ? 'Pause video preview' : 'Play video preview'}>
-            {playing ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}
+          <button
+            type="button"
+            className="share-video-preview-play"
+            onClick={onTogglePlay}
+            aria-label={playing ? 'Pause video preview' : 'Play video preview'}
+          >
+            {playing
+              ? <Pause size={20} fill="currentColor" />
+              : <Play size={20} fill="currentColor" />}
           </button>
-          <span className="share-video-preview-inline-time">{formatMediaTime(elapsedMs)} / {formatMediaTime(durationMs)}</span>
-          <button type="button" className="share-video-preview-fullscreen" onClick={toggleFullscreen} aria-label={fullscreen ? 'Exit fullscreen preview' : 'Fullscreen preview'}>
+
+          <span className="share-video-preview-inline-time">
+            {formatMediaTime(elapsedMs)} / {formatMediaTime(durationMs)}
+          </span>
+
+          <button
+            type="button"
+            className="share-video-preview-fullscreen"
+            onClick={toggleFullscreen}
+            aria-label={fullscreen ? 'Exit fullscreen preview' : 'Fullscreen preview'}
+          >
             <Maximize2 size={20} />
           </button>
         </div>
-        <input className="share-video-preview-seek" type="range" min="0" max={Math.max(1, durationMs || 1)} step="50" value={Math.min(elapsedMs, Math.max(1, durationMs || 1))} onChange={(event) => onSeek(Number(event.target.value))} aria-label="Seek video preview" />
+
+        <input
+          className="share-video-preview-seek"
+          type="range"
+          min="0"
+          max={Math.max(1, durationMs || 1)}
+          step="50"
+          value={Math.min(elapsedMs, Math.max(1, durationMs || 1))}
+          onChange={(event) => onSeek(Number(event.target.value))}
+          aria-label="Seek video preview"
+        />
       </div>
     </div>
   );
+
+  if (fullscreen && typeof document !== 'undefined') {
+    return createPortal(
+      <div
+        className={`share-video-fullscreen-shell ${
+          orientation === 'landscape' ? 'is-landscape' : 'is-portrait'
+        }`}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Video export preview"
+      >
+        {stage}
+      </div>,
+      document.body,
+    );
+  }
+
+  return stage;
+
 }
 
 function AudioSettings({
