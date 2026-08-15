@@ -2707,9 +2707,9 @@ body {
 }
 
 .quran-share-reference {
-  margin: 10px 0 0;
-  color: rgba(48, 39, 30, .56);
-  font-size: .72rem;
+  margin: 12px 0 0;
+  color: rgba(48, 39, 30, .64);
+  font-size: .92rem;
   font-weight: 650;
   line-height: 1.2;
   text-align: center;
@@ -4747,7 +4747,7 @@ body {
 .share-video-preview-ayah { line-height: 1.52 !important; }
 .share-video-preview-ayah span { transition: color 80ms linear; }
 .share-video-preview-translation { margin-top: 12px !important; display: block !important; overflow: visible !important; font-size: .84rem !important; line-height: 1.45 !important; -webkit-line-clamp: unset !important; }
-.share-video-preview-reference { margin-top: 10px; color: rgba(255,255,255,.68); font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: .72rem; line-height: 1.2; text-align: center; }
+.share-video-preview-reference { margin-top: 12px; color: rgba(255,255,255,.76); font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: .92rem; font-weight: 600; line-height: 1.2; text-align: center; }
 .share-video-preview-controls { position: absolute !important; right: 5% !important; bottom: 4% !important; left: 5% !important; z-index: 8 !important; display: grid !important; grid-template-columns: 1fr !important; gap: 8px !important; min-height: 0 !important; border: 0 !important; border-radius: 0 !important; background: linear-gradient(180deg, transparent, rgba(0,0,0,.34)) !important; padding: 24px 4px 2px !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
 .share-video-preview-control-row { display: grid; grid-template-columns: 38px 1fr 38px; align-items: center; gap: 10px; }
 .share-video-preview-play, .share-video-preview-fullscreen { display: grid !important; width: 38px !important; height: 38px !important; place-items: center !important; border: 0 !important; border-radius: 999px !important; background: transparent !important; color: #fff !important; padding: 0 !important; }
