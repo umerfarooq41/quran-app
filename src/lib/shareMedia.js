@@ -9,7 +9,6 @@ export const SHARE_MEDIA_TABS = Object.freeze([
   { id: 'audio', label: 'Audio' },
   { id: 'background', label: 'Background' },
   { id: 'text', label: 'Text' },
-  { id: 'style', label: 'Style' },
 ]);
 
 // Add user-owned/AI-generated clips here. The UI intentionally tolerates an
@@ -29,7 +28,6 @@ export function buildShareComposition({
   fromAyah,
   toAyah,
   backgroundAsset = null,
-  orientation = 'portrait',
   reciterId = '',
   showTranslation = false,
   translationId = null,
@@ -57,7 +55,7 @@ export function buildShareComposition({
           videoSrc: '',
           accentColor: '#d8b36a',
         },
-    orientation: orientation === 'landscape' ? 'landscape' : 'portrait',
+    orientation: 'portrait',
     reciterId,
     showTranslation: Boolean(showTranslation),
     translationId,
