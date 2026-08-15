@@ -213,8 +213,15 @@ export async function generateQuranShareVideo({
     onProgress?.(1);
 
     if (!chunks.length) throw new Error('The browser did not produce a video file.');
-    const output = new Blob(chunks, { type: mimeType });
+    const outputMimeType = mimeType?.toLowerCase().startsWith('video/mp4')
+      ? mimeType
+      : 'video/mp4';
+
+    const output = new Blob(chunks, { type: outputMimeType });
     if (!output.size) throw new Error('The browser produced an empty video file.');
+    if (!output.type.toLowerCase().startsWith('video/mp4')) {
+      throw new Error('The browser did not produce an MP4 video.');
+    }
     return output;
   } finally {
     if (recorder.state !== 'inactive') {
@@ -429,43 +436,45 @@ async function prepareCapturableAudio(src) {
 }
 
 function createVideoRecorder(stream) {
+  // WhatsApp is most reliable with an MP4 container using H.264/AVC video
+  // and AAC-LC audio. Prefer an explicit mobile-friendly AVC/AAC profile,
+  // then allow the browser to choose its own MP4-compatible codecs.
   const candidates = [
-    'video/webm;codecs=vp8,opus',
-    'video/webm;codecs=vp9,opus',
-    'video/webm',
+    'video/mp4;codecs="avc1.42E01E,mp4a.40.2"',
+    'video/mp4;codecs="avc1.424028,mp4a.40.2"',
+    'video/mp4;codecs=avc1.42E01E,mp4a.40.2',
+    'video/mp4',
   ];
 
   let lastError = null;
   for (const mimeType of candidates) {
     if (!MediaRecorder.isTypeSupported(mimeType)) continue;
+
     try {
-      return {
+      const recorder = new MediaRecorder(stream, {
         mimeType,
-        recorder: new MediaRecorder(stream, {
-          mimeType,
-          videoBitsPerSecond: DEFAULT_VIDEO_BITRATE,
-          audioBitsPerSecond: AUDIO_BITRATE,
-        }),
+        videoBitsPerSecond: DEFAULT_VIDEO_BITRATE,
+        audioBitsPerSecond: AUDIO_BITRATE,
+      });
+
+      const actualMimeType = recorder.mimeType || mimeType;
+      if (!actualMimeType.toLowerCase().startsWith('video/mp4')) {
+        continue;
+      }
+
+      return {
+        mimeType: actualMimeType,
+        recorder,
       };
     } catch (error) {
       lastError = error;
     }
   }
 
-  // Some WebViews reject an explicit MIME type but can still choose a working
-  // encoder automatically.
-  try {
-    const recorder = new MediaRecorder(stream, {
-      videoBitsPerSecond: DEFAULT_VIDEO_BITRATE,
-      audioBitsPerSecond: AUDIO_BITRATE,
-    });
-    return {
-      mimeType: recorder.mimeType || 'video/webm',
-      recorder,
-    };
-  } catch (error) {
-    throw lastError || error;
-  }
+  throw new Error(
+    'This browser cannot encode WhatsApp-compatible MP4 video. Update Chrome/your Android WebView and try again.',
+    { cause: lastError || undefined },
+  );
 }
 
 function assertVideoExportSupport() {
