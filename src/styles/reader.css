@@ -5147,3 +5147,23 @@ body {
   right: 8% !important;
   left: 8% !important;
 }
+
+
+/* Share Quran final image/video positioning authority. */
+.share-media-live-preview.is-video.is-portrait .share-video-preview-ayah-card,
+.share-media-live-preview.is-video.is-landscape .share-video-preview-ayah-card {
+  top: var(--share-card-top, 50%) !important;
+  bottom: auto !important;
+  max-height: var(--share-card-max-height, 58%) !important;
+  transform: none !important;
+}
+
+.share-media-live-preview.is-video .share-video-preview-controls,
+.share-video-preview-stage.is-fullscreen .share-video-preview-controls {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
