@@ -311,17 +311,15 @@ function drawVideoFrame(ctx, {
   const minimumCardHeight = height * (isLandscape ? .22 : .16);
   const cardHeight = Math.min(maxCardHeight, Math.max(minimumCardHeight, requiredHeight));
 
-  // Center-first positioning:
-  // short content is centered in the whole composition; growing content expands
-  // in both directions. Once the card reaches the title-safe top boundary,
-  // its top stays fixed and further growth extends downward.
+  // Match the live preview's center-first growth model.
+  // Keep short/medium cards centered. Once their upper edge reaches the
+  // protected title zone, lock the top there and grow downward.
   const previewCenterY = height / 2;
   const centeredCardY = previewCenterY - (cardHeight / 2);
-  const latestAllowedCardY = safeBottom - cardHeight;
-  const cardY = Math.max(
-    safeTop,
-    Math.min(centeredCardY, latestAllowedCardY),
-  );
+  const symmetricHeightBeforeTitle = Math.max(0, (previewCenterY - safeTop) * 2);
+  const cardY = cardHeight <= symmetricHeightBeforeTitle
+    ? centeredCardY
+    : safeTop;
   const cardCenterY = cardY + cardHeight / 2;
 
   roundedRect(ctx, cardX, cardY, cardWidth, cardHeight, isLandscape ? 20 : 24);

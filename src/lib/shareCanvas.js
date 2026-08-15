@@ -230,12 +230,16 @@ function drawAyahCard(ctx, {
   }
 
   const firstAyah = ayahs?.[0]?.ayahNumber;
+  const lastAyah = ayahs?.[ayahs.length - 1]?.ayahNumber;
   if (firstAyah) {
+    const reference = Number(lastAyah) > Number(firstAyah)
+      ? `${surahNumber}:${firstAyah}-${lastAyah}`
+      : `${surahNumber}:${firstAyah}`;
     cursorY += 8;
     ctx.direction = 'ltr';
     ctx.fillStyle = 'rgba(255,255,255,.72)';
     ctx.font = `500 ${referenceFontSize}px Inter, ui-sans-serif, system-ui`;
-    ctx.fillText(`${surahNumber}:${firstAyah}`, width / 2, cursorY);
+    ctx.fillText(reference, width / 2, cursorY);
   }
 }
 
