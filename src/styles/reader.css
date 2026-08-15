@@ -5269,3 +5269,104 @@ body {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
+
+
+/* ==========================================================
+   Share Quran — exact exported-video fullscreen preview
+   ========================================================== */
+
+/* Portal shell sits outside all Share Quran app chrome. */
+.share-video-fullscreen-shell {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483000 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: #000 !important;
+}
+
+.share-video-fullscreen-shell .share-video-preview-stage.is-fullscreen {
+  position: relative !important;
+  inset: auto !important;
+  flex: none !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  overflow: hidden !important;
+  background: #000 !important;
+}
+
+/* Exact export aspect ratios:
+   portrait export = 720×1280, landscape export = 1280×720. */
+.share-video-fullscreen-shell.is-portrait .share-video-preview-stage.is-fullscreen {
+  width: min(100vw, calc(100dvh * 9 / 16)) !important;
+  height: min(100dvh, calc(100vw * 16 / 9)) !important;
+  aspect-ratio: 9 / 16 !important;
+}
+
+.share-video-fullscreen-shell.is-landscape .share-video-preview-stage.is-fullscreen {
+  width: min(100vw, calc(100dvh * 16 / 9)) !important;
+  height: min(100dvh, calc(100vw * 9 / 16)) !important;
+  aspect-ratio: 16 / 9 !important;
+}
+
+/* Match exported-video title geometry. */
+.share-video-preview-stage.is-portrait .share-video-preview-header {
+  top: 4.5% !important;
+  right: 6% !important;
+  left: 6% !important;
+}
+
+.share-video-preview-stage.is-landscape .share-video-preview-header {
+  top: 4.5% !important;
+  right: 7% !important;
+  left: 7% !important;
+}
+
+/* Match exported-video card widths: 88% portrait / 86% landscape. */
+.share-video-preview-stage.is-portrait .share-video-preview-ayah-card {
+  right: 6% !important;
+  left: 6% !important;
+}
+
+.share-video-preview-stage.is-landscape .share-video-preview-ayah-card {
+  right: 7% !important;
+  left: 7% !important;
+}
+
+/* Player controls are preview chrome only. They never alter the export
+   composition geometry and auto-hide in fullscreen. */
+.share-video-fullscreen-shell .share-video-preview-controls {
+  transition: opacity 160ms ease !important;
+}
+
+.share-video-fullscreen-shell
+.share-video-preview-stage.is-controls-hidden
+.share-video-preview-controls {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.share-video-fullscreen-shell .share-video-preview-background {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+
+/* Remove any old background panel behind player controls. */
+.share-video-preview-stage .share-video-preview-controls,
+.share-video-fullscreen-shell .share-video-preview-controls {
+  z-index: 12 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
