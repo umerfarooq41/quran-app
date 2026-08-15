@@ -88,6 +88,20 @@ export function ShareQuranScreen({ ayah, onClose }) {
   const audioRef = useRef(null);
   const rafRef = useRef(0);
 
+  const lastSourceAyahRef = useRef(`${ayah.surahNumber}:${ayah.ayahNumber}`);
+
+  useEffect(() => {
+    const nextKey = `${ayah.surahNumber}:${ayah.ayahNumber}`;
+    if (lastSourceAyahRef.current === nextKey) return;
+    lastSourceAyahRef.current = nextKey;
+    stopVideoPreview();
+    setSelectedSurahNumber(ayah.surahNumber);
+    setFromAyah(ayah.ayahNumber);
+    setToAyah(ayah.ayahNumber);
+    setOpenRangePicker(null);
+    setVideoElapsedMs(0);
+  }, [ayah.surahNumber, ayah.ayahNumber]);
+
   const maxRange = mode === SHARE_MEDIA_MODES.IMAGE ? 5 : 10;
   const fromIndex = Math.max(0, surahAyahs.findIndex((item) => item.ayahNumber === fromAyah));
   const toOptions = surahAyahs.slice(fromIndex, fromIndex + maxRange);
