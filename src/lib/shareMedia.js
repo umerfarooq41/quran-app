@@ -15,12 +15,12 @@ export const SHARE_MEDIA_TABS = Object.freeze([
 // Add user-owned/AI-generated clips here. The UI intentionally tolerates an
 // empty library so no copyrighted sample media needs to ship with the app.
 export const SHARE_BACKGROUND_ASSETS = Object.freeze([
-  { id: 'desert', label: 'Desert', imageSrc: '/share/backgrounds/desert.png', videoSrc: '/share/videos/desert.mp4', accentColor: '#F5CA86' },
-  { id: 'forest', label: 'Forest', imageSrc: '/share/backgrounds/forest.png', videoSrc: '/share/videos/forest.mp4', accentColor: '#B7D77F' },
-  { id: 'ice', label: 'Ice', imageSrc: '/share/backgrounds/ice.png', videoSrc: '/share/videos/ice.mp4', accentColor: '#C9DDF0' },
-  { id: 'mountains', label: 'Mountains', imageSrc: '/share/backgrounds/mountains.png', videoSrc: '/share/videos/mountains.mp4', accentColor: '#B8CFDD' },
-  { id: 'space', label: 'Space', imageSrc: '/share/backgrounds/space.png', videoSrc: '/share/videos/space.mp4', accentColor: '#B7B3FF' },
-  { id: 'undersea', label: 'Undersea', imageSrc: '/share/backgrounds/undersea.png', videoSrc: '/share/videos/undersea.mp4', accentColor: '#54D5E6' },
+  { id: 'green_forest', label: 'Green Forest', imageSrc: '/share/backgrounds/green_forest.webp', videoSrc: '/share/videos/green_forest.mp4', accentColor: '#6FA66F' },
+  { id: 'ice_stream', label: 'Ice Stream', imageSrc: '/share/backgrounds/ice_stream.webp', videoSrc: '/share/videos/ice_stream.mp4', accentColor: '#B9D9EA' },
+  { id: 'night_city', label: 'Night City', imageSrc: '/share/backgrounds/night_city.webp', videoSrc: '/share/videos/night_city.mp4', accentColor: '#7183A6' },
+  { id: 'stormy_coast', label: 'Stormy Coast', imageSrc: '/share/backgrounds/stormy_coast.webp', videoSrc: '/share/videos/stormy_coast.mp4', accentColor: '#7895A3' },
+  { id: 'sunset_coast', label: 'Sunset Coast', imageSrc: '/share/backgrounds/sunset_coast.webp', videoSrc: '/share/videos/sunset_coast.mp4', accentColor: '#D99B63' },
+  { id: 'underwater_canyon', label: 'Underwater Canyon', imageSrc: '/share/backgrounds/underwater_canyon.webp', videoSrc: '/share/videos/underwater_canyon.mp4', accentColor: '#4A9FB0' },
 ]);
 
 export function buildShareComposition({
