@@ -1,4 +1,4 @@
-const PORTRAIT_SIZE = Object.freeze({ width: 1080, height: 1440 });
+const PORTRAIT_SIZE = Object.freeze({ width: 1080, height: 1920 });
 const LANDSCAPE_SIZE = Object.freeze({ width: 1600, height: 900 });
 
 export async function generateQuranShareImage({
