@@ -67,7 +67,6 @@ export function ShareQuranScreen({ ayah, onClose }) {
   const [selectedBackgroundId, setSelectedBackgroundId] = useState(
     SHARE_BACKGROUND_ASSETS[0]?.id || '',
   );
-  const [orientation, setOrientation] = useState('portrait');
   const [textScale, setTextScale] = useState(1);
   const [translationScale, setTranslationScale] = useState(1);
   const [showTranslation, setShowTranslation] = useState(false);
@@ -128,7 +127,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
     fromAyah,
     toAyah,
     backgroundAsset: selectedBackground,
-    orientation,
+    orientation: 'portrait',
     reciterId: selectedReciter,
     showTranslation,
     translationId: settingsTranslationId,
@@ -145,7 +144,6 @@ export function ShareQuranScreen({ ayah, onClose }) {
     fromAyah,
     toAyah,
     selectedBackground,
-    orientation,
     selectedReciter,
     textScale,
     translationScale,
@@ -218,7 +216,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
       surahNumber: selectedSurahNumber,
       ayahs: range,
       surahMeaning: surahMeta?.meaning || '',
-      orientation,
+      orientation: 'portrait',
       textScale,
       translationScale,
       backgroundAsset: selectedBackground,
@@ -244,7 +242,6 @@ export function ShareQuranScreen({ ayah, onClose }) {
     selectedSurahNumber,
     range,
     surahMeta?.meaning,
-    orientation,
     textScale,
     translationScale,
     selectedBackground,
@@ -464,7 +461,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
         }} />
 
         <section
-          className={`share-media-live-preview is-${mode} is-${orientation} tab-${activeTab}`}
+          className={`share-media-live-preview is-${mode} is-portrait tab-${activeTab}`}
           aria-label={`${mode} preview`}
         >
           {mode === SHARE_MEDIA_MODES.IMAGE ? (
@@ -504,7 +501,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
               wordItems={activeVideoWords}
               activeWordPosition={activeVideoWord?.position || null}
               highlightColor={selectedBackground?.accentColor || '#d8b36a'}
-              orientation={orientation}
+              orientation="portrait"
             />
           )}
         </section>
@@ -580,9 +577,6 @@ export function ShareQuranScreen({ ayah, onClose }) {
             />
           )}
 
-          {activeTab === 'style' && (
-            <StyleSettings orientation={orientation} onOrientationChange={setOrientation} />
-          )}
         </section>
         <button
           type="button"
@@ -776,7 +770,6 @@ function VideoPreview({
     fullscreen,
     wordItems?.length,
     autoFitScale,
-    orientation,
   ]);
 
   function toggleFullscreen(event) {
@@ -1195,33 +1188,6 @@ function FontSizeStepper({
         <span>{value}</span>
         <button type="button" onClick={onIncrease} disabled={increaseDisabled} aria-label={`Increase ${label}`}>
           +
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function StyleSettings({ orientation, onOrientationChange }) {
-  return (
-    <div className="share-media-control-group">
-      <div className="share-media-section-heading">
-        <strong>Orientation</strong>
-        <span>Used by both preview and future export layouts.</span>
-      </div>
-      <div className="share-orientation-switch">
-        <button
-          type="button"
-          className={orientation === 'landscape' ? 'is-active' : ''}
-          onClick={() => onOrientationChange('landscape')}
-        >
-          Landscape
-        </button>
-        <button
-          type="button"
-          className={orientation === 'portrait' ? 'is-active' : ''}
-          onClick={() => onOrientationChange('portrait')}
-        >
-          Portrait
         </button>
       </div>
     </div>
