@@ -5167,3 +5167,105 @@ body {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
+
+
+/* ==========================================================
+   Share Quran — export-faithful fullscreen preview
+   ========================================================== */
+
+/* Render fullscreen outside the Share Quran screen via a React portal.
+   This prevents page header, mode switch, tabs and settings cards from
+   appearing around the media even when app ancestors use transforms. */
+.share-video-fullscreen-shell {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483000 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  overflow: hidden !important;
+  background: #000 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.share-video-fullscreen-shell .share-video-preview-stage.is-fullscreen {
+  position: relative !important;
+  inset: auto !important;
+  flex: none !important;
+  max-width: 100vw !important;
+  max-height: 100dvh !important;
+  border-radius: 0 !important;
+  overflow: hidden !important;
+  background: #000 !important;
+}
+
+/* Keep the exact downloaded-video aspect ratio instead of stretching the
+   composition to the device's screen ratio. */
+.share-video-fullscreen-shell.is-portrait .share-video-preview-stage.is-fullscreen {
+  width: min(100vw, calc(100dvh * 9 / 16)) !important;
+  height: min(100dvh, calc(100vw * 16 / 9)) !important;
+  aspect-ratio: 9 / 16 !important;
+}
+
+.share-video-fullscreen-shell.is-landscape .share-video-preview-stage.is-fullscreen {
+  width: min(100vw, calc(100dvh * 16 / 9)) !important;
+  height: min(100dvh, calc(100vw * 9 / 16)) !important;
+  aspect-ratio: 16 / 9 !important;
+}
+
+/* Match shareVideoExport.js geometry. */
+.share-video-preview-stage.is-portrait .share-video-preview-header {
+  top: 4.5% !important;
+  right: 6% !important;
+  left: 6% !important;
+}
+
+.share-video-preview-stage.is-landscape .share-video-preview-header {
+  top: 4.5% !important;
+  right: 7% !important;
+  left: 7% !important;
+}
+
+.share-video-preview-stage.is-portrait .share-video-preview-ayah-card {
+  right: 6% !important;
+  left: 6% !important;
+}
+
+.share-video-preview-stage.is-landscape .share-video-preview-ayah-card {
+  right: 7% !important;
+  left: 7% !important;
+}
+
+/* Controls are preview chrome, not part of the composition.
+   They disappear automatically so fullscreen becomes an unobstructed
+   representation of the downloaded video. Tap the video to reveal them. */
+.share-video-fullscreen-shell .share-video-preview-controls {
+  transition: opacity 160ms ease !important;
+}
+
+.share-video-fullscreen-shell
+.share-video-preview-stage.is-controls-hidden
+.share-video-preview-controls {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.share-video-fullscreen-shell .share-video-preview-background {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+
+/* Playback controls never participate in text/card layout calculations. */
+.share-video-preview-stage .share-video-preview-controls {
+  z-index: 12 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
