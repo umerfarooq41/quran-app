@@ -192,8 +192,15 @@ function drawAyahCard(ctx, {
 
   const minimumCardHeight = height * (isLandscape ? 0.26 : 0.22);
   const cardHeight = Math.min(maxCardHeight, Math.max(minimumCardHeight, requiredHeight));
-  // Anchor below the title. Long Ayahs grow downward rather than upward into it.
-  const cardY = safeTop;
+
+  // Match video positioning: start centered, grow symmetrically, then lock
+  // the top edge at the protected Surah-title area and continue downward.
+  const compositionCenterY = height / 2;
+  const centeredCardY = compositionCenterY - (cardHeight / 2);
+  const symmetricHeightBeforeTitle = Math.max(0, (compositionCenterY - safeTop) * 2);
+  const cardY = cardHeight <= symmetricHeightBeforeTitle
+    ? centeredCardY
+    : safeTop;
   const cardCenterY = cardY + (cardHeight / 2);
 
   roundedRect(ctx, cardX, cardY, cardWidth, cardHeight, isLandscape ? 24 : 28);
