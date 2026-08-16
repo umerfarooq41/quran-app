@@ -6,6 +6,8 @@ import { OVERLAY_TYPES, sanitizeSettings, useAppStore } from './store/useAppStor
 import { Shell } from './components/common/AppChrome';
 import { panel } from './components/common/ui';
 import { VIEWS, normalizeView } from './app/routes';
+
+const NAVIGATION_SNAPSHOT_KEY = 'quran-app-navigation-snapshot-v1';
 import HomeScreen from './pages/HomeScreen';
 import ReaderScreen from './pages/ReaderScreen';
 import IndexScreen from './pages/IndexScreen';
@@ -46,10 +48,32 @@ function requestPortraitLock() {
   });
 }
 
+function isPageReload() {
+  try {
+    const navigationEntry = window.performance?.getEntriesByType?.('navigation')?.[0];
+    if (navigationEntry?.type) return navigationEntry.type === 'reload';
+
+    // Legacy fallback for older Android WebViews.
+    return window.performance?.navigation?.type === 1;
+  } catch {
+    return false;
+  }
+}
+
+function readNavigationSnapshot() {
+  try {
+    const raw = window.sessionStorage.getItem(NAVIGATION_SNAPSHOT_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
 export default function App() {
   const {
     view,
     hydrateLastRead,
+    restoreNavigation,
     settings,
     updateSettings,
     goBack,
@@ -60,9 +84,18 @@ export default function App() {
     hideAudioPlayer,
     shareTarget,
     closeSharePage,
+    selectedSurah,
+    surahInfoReturnView,
+    indexTab,
+    expandedIndexSurah,
+    expandedIndexJuz,
+    page,
+    lastReadTarget,
+    tafsirTarget,
   } = useAppStore(useShallow((state) => ({
     view: state.view,
     hydrateLastRead: state.hydrateLastRead,
+    restoreNavigation: state.restoreNavigation,
     settings: state.settings,
     updateSettings: state.updateSettings,
     goBack: state.goBack,
@@ -73,6 +106,14 @@ export default function App() {
     hideAudioPlayer: state.hideAudioPlayer,
     shareTarget: state.shareTarget,
     closeSharePage: state.closeSharePage,
+    selectedSurah: state.selectedSurah,
+    surahInfoReturnView: state.surahInfoReturnView,
+    indexTab: state.indexTab,
+    expandedIndexSurah: state.expandedIndexSurah,
+    expandedIndexJuz: state.expandedIndexJuz,
+    page: state.page,
+    lastReadTarget: state.lastReadTarget,
+    tafsirTarget: state.tafsirTarget,
   })));
   const activeView = normalizeView(view);
   const [booted, setBooted] = useState(false);
@@ -120,15 +161,33 @@ export default function App() {
 
   useEffect(() => {
     let mounted = true;
+    const reload = isPageReload();
+    const navigationSnapshot = reload ? readNavigationSnapshot() : null;
+
+    // A brand-new app launch always starts at Home. A snapshot is used only
+    // for an actual page refresh, never as the app's default entry screen.
+    if (!reload) {
+      try {
+        window.sessionStorage.removeItem(NAVIGATION_SNAPSHOT_KEY);
+      } catch {
+        // Ignore storage restrictions; Home is already the store default.
+      }
+    }
 
     Promise.all([getLastRead(), getSettings()])
       .then(([lastRead, storedSettings]) => {
         if (!mounted) return;
+
+        // Restore reading progress independently from navigation.
         if (lastRead?.page) hydrateLastRead(lastRead);
         if (storedSettings.app) updateSettings(sanitizeSettings(storedSettings.app));
+
+        // Refresh returns to the exact screen that was open.
+        if (navigationSnapshot) restoreNavigation(navigationSnapshot);
       })
       .catch(() => {
         // Start with safe defaults if local persistence is unavailable.
+        if (mounted && navigationSnapshot) restoreNavigation(navigationSnapshot);
       })
       .finally(() => {
         if (mounted) setBooted(true);
@@ -137,11 +196,13 @@ export default function App() {
     return () => {
       mounted = false;
     };
-  }, [hydrateLastRead, updateSettings]);
+  }, [hydrateLastRead, restoreNavigation, updateSettings]);
 
 
 
   useEffect(() => {
+    if (!booted) return undefined;
+
     const createHistoryState = () => ({
       ...(window.history.state || {}),
       quranApp: true,
@@ -181,7 +242,43 @@ export default function App() {
     }
 
     window.history.pushState(createHistoryState(), document.title);
-  }, [activeView, navDirection, overlayStack.length]);
+  }, [activeView, booted, navDirection, overlayStack.length]);
+
+  useEffect(() => {
+    if (!booted) return;
+
+    const snapshot = {
+      view: activeView,
+      viewHistory: useAppStore.getState().viewHistory,
+      page,
+      lastReadTarget,
+      selectedSurah,
+      surahInfoReturnView,
+      indexTab,
+      expandedIndexSurah,
+      expandedIndexJuz,
+      shareTarget,
+      tafsirTarget,
+    };
+
+    try {
+      window.sessionStorage.setItem(NAVIGATION_SNAPSHOT_KEY, JSON.stringify(snapshot));
+    } catch {
+      // Route restoration is best-effort when session storage is restricted.
+    }
+  }, [
+    activeView,
+    booted,
+    expandedIndexJuz,
+    expandedIndexSurah,
+    indexTab,
+    lastReadTarget,
+    page,
+    selectedSurah,
+    shareTarget,
+    surahInfoReturnView,
+    tafsirTarget,
+  ]);
 
   useEffect(() => {
     const handlePopState = () => {
