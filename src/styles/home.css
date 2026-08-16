@@ -21,6 +21,11 @@
   color: #1f180f;
 }
 
+
+.home-brand-block + .home-hero-card {
+  margin-top: 10px !important;
+}
+
 .home-hero-card {
   width: 100%;
   display: flex;
@@ -88,7 +93,7 @@
   font-size: 0.72rem;
   font-weight: 700;
   color: #3a3228;
-  box-shadow: 0 4px 16px rgba(19, 54, 105, 0.07);
+  box-shadow: 0 8px 22px rgba(38, 52, 45, 0.11);
 }
 
 .home-action-icon { color: #b8882a; }
@@ -190,7 +195,7 @@
   position: relative;
   z-index: 1;
   width: 100%;
-  min-height: 82px;
+  min-height: 76px;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
@@ -198,7 +203,7 @@
   border: 1px solid rgba(255,255,255,.88);
   border-radius: 18px;
   background: #fff;
-  padding: 14px 18px;
+  padding: 11px 18px;
   color: #30291f;
   text-align: left;
   box-shadow: 0 7px 22px rgba(38, 52, 45, .07);
@@ -232,6 +237,26 @@
   min-width: 0;
   display: grid;
   gap: 5px;
+}
+
+.home-favorite-title-row {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.home-favorite-arabic {
+  flex: 0 0 auto;
+  max-width: 42%;
+  overflow: hidden;
+  color: #675e51;
+  font-family: IndopakNastaleeq, serif;
+  font-size: 1rem;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .home-favorite-copy strong {
