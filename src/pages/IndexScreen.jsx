@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ChevronDown, Minus, Plus, Search, Star, X } from 'lucide-react';
+import { BookOpen, ChevronDown, List, Minus, Plus, Search, Star, X } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../store/useAppStore';
 import { Header } from '../components/common/AppChrome';
@@ -57,7 +57,7 @@ export default function IndexScreen() {
         </div>
 
         <div className="app-scroll-content">
-          <div className="index-segment" role="tablist" aria-label="Index tabs">
+          <div className="index-segment app-media-segment" role="tablist" aria-label="Index tabs">
             <button
               id="index-tab-juz"
               className={tab === 'juz' ? 'is-active' : ''}
@@ -67,7 +67,8 @@ export default function IndexScreen() {
               aria-selected={tab === 'juz'}
               aria-controls="index-panel-juz"
             >
-              Juz
+              <BookOpen size={18} strokeWidth={2.1} aria-hidden="true" />
+              <span>Juz</span>
             </button>
             <button
               id="index-tab-surahs"
@@ -78,7 +79,8 @@ export default function IndexScreen() {
               aria-selected={tab === 'surahs'}
               aria-controls="index-panel-surahs"
             >
-              Surahs
+              <List size={18} strokeWidth={2.1} aria-hidden="true" />
+              <span>Surahs</span>
             </button>
           </div>
 
