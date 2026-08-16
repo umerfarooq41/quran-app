@@ -4140,3 +4140,117 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
 [data-theme='dark'] .share-video-fullscreen-shell {
   color: inherit;
 }
+
+
+/* FINAL WHOLE-APP DARK MODE DISCREPANCY AUDIT
+   theme.css is intentionally the last theme authority in main.jsx. */
+
+/* Settings: rows belong to the parent card; never render as nested cards. */
+[data-theme='dark'] .settings-card > .settings-toggle-row,
+[data-theme='dark'] .settings-card > .settings-picker-row {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+[data-theme='dark'] .settings-card > .settings-toggle-row + .settings-toggle-row,
+[data-theme='dark'] .settings-card > .settings-toggle-row + .settings-picker-row,
+[data-theme='dark'] .settings-card > .settings-picker-row + .settings-toggle-row,
+[data-theme='dark'] .settings-card > .settings-picker-row + .settings-picker-row {
+  border-top: 1px solid var(--theme-border) !important;
+}
+
+/* WBW is one continuous two-row card with the divider exactly at 50%. */
+[data-theme='dark'] .settings-section-word-by-word.is-balanced .settings-card {
+  grid-template-rows: repeat(2, minmax(0, 1fr)) !important;
+}
+
+[data-theme='dark'] .settings-section-word-by-word.is-balanced
+.settings-toggle-row + .settings-picker-row {
+  border-top: 1px solid var(--theme-border) !important;
+}
+
+/* Home: headings must use semantic theme text, not the light-theme brown. */
+[data-theme='dark'] .home-section-heading h2 {
+  color: var(--theme-text) !important;
+}
+
+[data-theme='dark'] .home-section-heading,
+[data-theme='dark'] .home-favorites-section {
+  color: var(--theme-text) !important;
+}
+
+/* Shared app typography: remove remaining light-theme text leaks. */
+[data-theme='dark'] .settings-row-copy strong,
+[data-theme='dark'] .settings-section-heading strong,
+[data-theme='dark'] .search-results-heading strong,
+[data-theme='dark'] .tabs-section-heading,
+[data-theme='dark'] .tab-card-title,
+[data-theme='dark'] .surah-info-title,
+[data-theme='dark'] .tafsir-title {
+  color: var(--theme-text) !important;
+}
+
+[data-theme='dark'] .settings-row-copy small,
+[data-theme='dark'] .settings-section-heading small,
+[data-theme='dark'] .search-results-heading small,
+[data-theme='dark'] .tab-card-subtitle,
+[data-theme='dark'] .surah-info-subtitle,
+[data-theme='dark'] .tafsir-subtitle {
+  color: var(--theme-muted) !important;
+}
+
+/* Common controls and transient surfaces across Index/Search/Library/
+   Settings/Surah Info/Tafsir use the same dark surface system. */
+[data-theme='dark'] .search-form input,
+[data-theme='dark'] .settings-dialog input,
+[data-theme='dark'] .settings-dialog select,
+[data-theme='dark'] .tab-inline-editor input,
+[data-theme='dark'] .tab-inline-editor textarea {
+  border-color: var(--theme-border) !important;
+  background: var(--theme-soft) !important;
+  color: var(--theme-text) !important;
+}
+
+[data-theme='dark'] .search-form input::placeholder,
+[data-theme='dark'] .settings-dialog input::placeholder,
+[data-theme='dark'] .tab-inline-editor input::placeholder,
+[data-theme='dark'] .tab-inline-editor textarea::placeholder {
+  color: var(--theme-subtle) !important;
+}
+
+/* Dropdown/menu rows should never flash a light background in dark mode. */
+[data-theme='dark'] .settings-picker-panel,
+[data-theme='dark'] .settings-picker-item,
+[data-theme='dark'] .tab-menu,
+[data-theme='dark'] .tab-menu button {
+  color: var(--theme-text) !important;
+}
+
+[data-theme='dark'] .settings-picker-item:not(.selected),
+[data-theme='dark'] .tab-menu button:not(.active) {
+  background: transparent !important;
+}
+
+/* Preserve the Mushaf page itself: these rules only normalize surrounding
+   app chrome, sheets and controls. */
+[data-theme='dark'] .reader-header,
+[data-theme='dark'] .reader-footer,
+[data-theme='dark'] .audio-player-shell,
+[data-theme='dark'] .ayah-actions-card,
+[data-theme='dark'] .ayah-translation-card {
+  border-color: var(--reader-border) !important;
+  background-color: var(--reader-surface-raised) !important;
+  color: var(--reader-text) !important;
+}
+
+/* Status/empty states across app must stay readable. */
+[data-theme='dark'] .search-empty,
+[data-theme='dark'] .tabs-status,
+[data-theme='dark'] .home-favorites-empty,
+[data-theme='dark'] .share-sheet-status {
+  color: var(--theme-muted) !important;
+}
