@@ -820,3 +820,73 @@
   background: var(--theme-accent, #2f7d68) !important;
   color: #fff !important;
 }
+
+
+/* Exact Share Quran-style two-tab segmented control with a visible outer pill. */
+.app-media-segment {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  width: 100% !important;
+  min-height: 58px !important;
+  gap: 0 !important;
+  margin: 8px 0 18px !important;
+  padding: 6px !important;
+  border: 1px solid rgba(201, 162, 75, .12) !important;
+  border-radius: 999px !important;
+  background: rgba(255, 252, 246, .94) !important;
+  box-shadow: 0 5px 18px rgba(31, 61, 43, .05) !important;
+  overflow: hidden !important;
+}
+
+.app-media-segment > button {
+  display: inline-flex !important;
+  min-width: 0 !important;
+  min-height: 46px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  padding: 0 16px !important;
+  color: rgba(45, 45, 45, .62) !important;
+  font-family: var(--ui-font) !important;
+  font-size: .98rem !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  box-shadow: none !important;
+  transition: background-color .18s ease, color .18s ease, transform .14s ease, box-shadow .18s ease !important;
+}
+
+.app-media-segment > button svg {
+  width: 20px !important;
+  height: 20px !important;
+  flex: 0 0 auto !important;
+  stroke-width: 2 !important;
+}
+
+.app-media-segment > button.is-active {
+  background: var(--theme-accent, #2f7d68) !important;
+  color: #fff !important;
+  box-shadow: 0 5px 16px rgba(31, 61, 43, .13) !important;
+}
+
+.app-media-segment > button:active {
+  transform: scale(.985);
+}
+
+[data-theme='dark'] .app-media-segment {
+  border-color: var(--theme-border) !important;
+  background: color-mix(in srgb, var(--theme-surface-solid) 92%, transparent) !important;
+  box-shadow: none !important;
+}
+
+[data-theme='dark'] .app-media-segment > button {
+  color: var(--theme-muted) !important;
+}
+
+[data-theme='dark'] .app-media-segment > button.is-active {
+  background: var(--theme-accent, #2f7d68) !important;
+  color: #fff !important;
+}
