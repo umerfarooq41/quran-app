@@ -101,12 +101,13 @@ export const useAppStore = create((set, get) => ({
   pendingQuarterFlash: null,
   settings: { ...DEFAULT_SETTINGS },
   hydrateLastRead: (lastRead) => set((state) => ({
-    ...transitionToView(state, VIEWS.READER, { replace: true }),
-    page: clampPage(lastRead?.page || 1),
+    // Last-read hydration must never decide which screen opens.
+    // A fresh app launch stays on Home; Reader is opened only by navigation.
+    page: clampPage(lastRead?.page || state.page || 1),
     lastReadTarget: {
-      page: clampPage(lastRead?.page || 1),
-      surahNumber: Number(lastRead?.surahNumber) || 1,
-      ayahNumber: Number(lastRead?.ayahNumber) || 1,
+      page: clampPage(lastRead?.page || state.page || 1),
+      surahNumber: Number(lastRead?.surahNumber) || state.lastReadTarget?.surahNumber || 1,
+      ayahNumber: Number(lastRead?.ayahNumber) || state.lastReadTarget?.ayahNumber || 1,
     },
     controlsVisible: false,
   })),
@@ -116,6 +117,43 @@ export const useAppStore = create((set, get) => ({
     options,
   )),
   setView: (view, navDirection = 'forward') => get().navigateTo(view, { direction: navDirection }),
+  restoreNavigation: (snapshot) => set((state) => {
+    if (!snapshot || typeof snapshot !== 'object') return state;
+
+    const restoredView = normalizeView(snapshot.view);
+    const restoredHistory = Array.isArray(snapshot.viewHistory)
+      ? snapshot.viewHistory.map(normalizeView).filter(Boolean).slice(-24)
+      : [];
+
+    return {
+      ...state,
+      view: restoredView,
+      viewHistory: restoredHistory,
+      navDirection: 'forward',
+      overlayStack: [],
+      page: snapshot.page ? clampPage(snapshot.page) : state.page,
+      lastReadTarget: snapshot.lastReadTarget?.surahNumber && snapshot.lastReadTarget?.ayahNumber
+        ? {
+            page: clampPage(snapshot.lastReadTarget.page || snapshot.page || state.page),
+            surahNumber: Number(snapshot.lastReadTarget.surahNumber),
+            ayahNumber: Number(snapshot.lastReadTarget.ayahNumber),
+          }
+        : state.lastReadTarget,
+      selectedSurah: Number(snapshot.selectedSurah) || state.selectedSurah,
+      surahInfoReturnView: normalizeView(snapshot.surahInfoReturnView || state.surahInfoReturnView),
+      indexTab: snapshot.indexTab === 'surahs' ? 'surahs' : 'juz',
+      expandedIndexSurah: Number(snapshot.expandedIndexSurah) || null,
+      expandedIndexJuz: Number(snapshot.expandedIndexJuz) || null,
+      shareTarget: restoredView === VIEWS.SHARE_QURAN
+        ? (snapshot.shareTarget || state.shareTarget)
+        : null,
+      tafsirTarget: restoredView === VIEWS.TAFSIR
+        ? (snapshot.tafsirTarget || state.tafsirTarget)
+        : state.tafsirTarget,
+      selectedAyah: null,
+      controlsVisible: false,
+    };
+  }),
   goBack: (fallbackView = VIEWS.HOME) => set((state) => navigateBack(
     state,
     normalizeView(fallbackView),
