@@ -3804,3 +3804,339 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
   width: 23px !important;
   height: 23px !important;
 }
+
+
+/* FINAL SETTINGS / HOME FAVORITES / SHARE DARK-MODE AUDIT
+   Loaded from theme.css after screen-specific styles, so these are the
+   final cross-theme alignment and dark-mode authorities. */
+
+/* ------------------------------------------------------------------
+   Settings — one shared icon/text grid and consistent vertical rhythm.
+   ------------------------------------------------------------------ */
+:root {
+  --settings-icon-column: 38px;
+  --settings-row-gap: 11px;
+  --settings-row-min-height: 72px;
+  --settings-picker-height: 44px;
+}
+
+.settings-screen .app-scroll-content {
+  gap: 20px !important;
+}
+
+.settings-section {
+  gap: 10px !important;
+}
+
+.settings-section-heading {
+  gap: 4px !important;
+  padding-inline: 4px !important;
+}
+
+.settings-card {
+  padding: 6px 14px !important;
+}
+
+.settings-toggle-row,
+.settings-picker-row {
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: var(--settings-row-min-height) !important;
+  margin: 0 !important;
+  padding: 11px 2px !important;
+  box-sizing: border-box !important;
+  display: grid !important;
+  grid-template-columns: var(--settings-icon-column) minmax(0, 1fr) auto !important;
+  column-gap: var(--settings-row-gap) !important;
+  row-gap: 8px !important;
+  align-items: center !important;
+  background: transparent !important;
+}
+
+.settings-row-icon {
+  grid-column: 1 !important;
+  width: var(--settings-icon-column) !important;
+  height: var(--settings-icon-column) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  justify-self: start !important;
+  align-self: center !important;
+  transform: none !important;
+}
+
+.settings-row-copy {
+  grid-column: 2 !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  align-self: center !important;
+}
+
+.settings-picker-row:not(.is-full-width) .settings-picker-pill {
+  grid-column: 3 !important;
+  min-width: 104px !important;
+  height: var(--settings-picker-height) !important;
+  min-height: var(--settings-picker-height) !important;
+  align-self: center !important;
+}
+
+.settings-picker-row.is-full-width {
+  grid-template-columns: var(--settings-icon-column) minmax(0, 1fr) !important;
+}
+
+.settings-picker-row.is-full-width .settings-row-icon {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+}
+
+.settings-picker-row.is-full-width .settings-row-copy {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+}
+
+.settings-picker-row.is-full-width .settings-picker-pill {
+  grid-column: 1 / -1 !important;
+  grid-row: 2 !important;
+  width: 100% !important;
+  max-width: none !important;
+  height: var(--settings-picker-height) !important;
+  min-height: var(--settings-picker-height) !important;
+}
+
+.settings-picker-row.is-full-width .settings-picker-panel,
+.settings-picker-row.is-full-width.opens-up .settings-picker-panel {
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+}
+
+.settings-section-word-by-word.is-balanced .settings-card {
+  height: 168px !important;
+  min-height: 168px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  grid-template-rows: repeat(2, minmax(0, 1fr)) !important;
+}
+
+.settings-section-word-by-word.is-balanced .settings-toggle-row,
+.settings-section-word-by-word.is-balanced .settings-picker-row {
+  height: 100% !important;
+  min-height: 0 !important;
+}
+
+.settings-section-word-by-word.is-balanced
+.settings-toggle-row + .settings-picker-row {
+  border-top-color: var(--theme-divider, rgba(36, 75, 66, .08)) !important;
+}
+
+@media (max-width: 380px) {
+  :root {
+    --settings-row-gap: 9px;
+  }
+
+  .settings-section-word-by-word.is-balanced .settings-card {
+    height: 160px !important;
+    min-height: 160px !important;
+  }
+}
+
+/* Settings dark mode must not reintroduce row backgrounds or offsets. */
+[data-theme='dark'] .settings-toggle-row,
+[data-theme='dark'] .settings-picker-row {
+  background: transparent !important;
+}
+
+[data-theme='dark'] .settings-card {
+  border-color: var(--theme-border) !important;
+  background: var(--theme-surface-solid) !important;
+  box-shadow: 0 10px 28px var(--theme-shadow) !important;
+}
+
+[data-theme='dark'] .settings-card > .settings-toggle-row + .settings-toggle-row,
+[data-theme='dark'] .settings-card > .settings-toggle-row + .settings-picker-row,
+[data-theme='dark'] .settings-card > .settings-picker-row + .settings-toggle-row,
+[data-theme='dark'] .settings-card > .settings-picker-row + .settings-picker-row {
+  border-top-color: var(--theme-border) !important;
+}
+
+/* ------------------------------------------------------------------
+   Home favorites — explicit dark-mode authority.
+   ------------------------------------------------------------------ */
+[data-theme='dark'] .home-favorite-swipe {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+[data-theme='dark'] .home-favorite-swipe.is-swiped {
+  background: #c83a35 !important;
+}
+
+[data-theme='dark'] .home-favorite-row {
+  border-color: var(--theme-border) !important;
+  background: var(--theme-surface-solid) !important;
+  color: var(--theme-text) !important;
+  box-shadow: 0 8px 22px var(--theme-shadow) !important;
+}
+
+[data-theme='dark'] .home-favorite-row:active {
+  background: var(--theme-soft) !important;
+}
+
+[data-theme='dark'] .home-favorite-copy strong {
+  color: var(--theme-text) !important;
+}
+
+[data-theme='dark'] .home-favorite-copy small {
+  color: var(--theme-muted) !important;
+}
+
+[data-theme='dark'] .home-favorite-number {
+  border-color: color-mix(in srgb, var(--brand-gold) 48%, var(--theme-border)) !important;
+  color: color-mix(in srgb, var(--brand-gold) 72%, #fff) !important;
+  background: color-mix(in srgb, var(--brand-gold) 8%, transparent) !important;
+}
+
+[data-theme='dark'] .home-favorites-empty {
+  border-color: var(--theme-border) !important;
+  background: var(--theme-surface-solid) !important;
+  color: var(--theme-text) !important;
+  box-shadow: 0 8px 22px var(--theme-shadow) !important;
+}
+
+[data-theme='dark'] .home-favorites-empty small {
+  color: var(--theme-muted) !important;
+}
+
+/* ------------------------------------------------------------------
+   Share Quran — dark-mode authority for app UI only.
+   Media composition itself remains unchanged so exported content is not
+   recolored by the app theme.
+   ------------------------------------------------------------------ */
+[data-theme='dark'] .share-quran-screen {
+  color: var(--theme-text) !important;
+}
+
+[data-theme='dark'] .share-media-mode-switch,
+[data-theme='dark'] .share-media-tabs,
+[data-theme='dark'] .share-media-settings-card {
+  border-color: var(--theme-border) !important;
+  background: var(--theme-surface-solid) !important;
+  color: var(--theme-text) !important;
+  box-shadow: none !important;
+}
+
+[data-theme='dark'] .share-media-mode-switch button,
+[data-theme='dark'] .share-media-tabs button {
+  color: var(--theme-muted) !important;
+}
+
+[data-theme='dark'] .share-media-mode-switch button.is-active,
+[data-theme='dark'] .share-media-tabs button.is-active {
+  background: var(--theme-accent) !important;
+  color: #fff !important;
+}
+
+[data-theme='dark'] .share-media-section-heading strong,
+[data-theme='dark'] .share-reference-heading,
+[data-theme='dark'] .share-font-stepper-group > strong,
+[data-theme='dark'] .share-translation-inline-row strong {
+  color: var(--theme-text) !important;
+}
+
+[data-theme='dark'] .share-media-section-heading span,
+[data-theme='dark'] .share-range-field > span,
+[data-theme='dark'] .share-range-to-label,
+[data-theme='dark'] .share-translation-inline-row span,
+[data-theme='dark'] .share-translation-inline-row small,
+[data-theme='dark'] .share-sheet-status {
+  color: var(--theme-muted) !important;
+}
+
+[data-theme='dark'] .share-surah-trigger,
+[data-theme='dark'] .share-range-trigger,
+[data-theme='dark'] .share-reciter-trigger {
+  border-color: color-mix(in srgb, var(--brand-gold) 30%, var(--theme-border)) !important;
+  background: var(--theme-soft) !important;
+  color: var(--theme-text) !important;
+  box-shadow: none !important;
+}
+
+[data-theme='dark'] .share-surah-menu,
+[data-theme='dark'] .share-range-menu,
+[data-theme='dark'] .share-reciter-menu {
+  border-color: var(--theme-border) !important;
+  background: var(--theme-surface-solid) !important;
+  color: var(--theme-text) !important;
+  box-shadow: 0 12px 30px var(--theme-shadow) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+[data-theme='dark'] .share-surah-menu > button,
+[data-theme='dark'] .share-range-menu > button,
+[data-theme='dark'] .share-reciter-menu > button {
+  color: var(--theme-text) !important;
+  background: transparent !important;
+}
+
+[data-theme='dark'] .share-surah-menu > button.is-selected,
+[data-theme='dark'] .share-range-menu > button.is-selected,
+[data-theme='dark'] .share-reciter-menu > button.is-selected {
+  background: color-mix(in srgb, var(--theme-accent) 18%, transparent) !important;
+  color: color-mix(in srgb, var(--theme-accent) 68%, #fff) !important;
+}
+
+[data-theme='dark'] .share-text-reference-controls,
+[data-theme='dark'] .share-font-stepper-group {
+  color: var(--theme-text) !important;
+}
+
+[data-theme='dark'] .share-font-stepper > button,
+[data-theme='dark'] .share-font-stepper > span {
+  color: var(--theme-text) !important;
+}
+
+[data-theme='dark'] .share-translation-inline-row {
+  border-top-color: var(--theme-border) !important;
+  border-bottom-color: var(--theme-border) !important;
+}
+
+[data-theme='dark'] .share-background-grid button {
+  background: var(--theme-soft) !important;
+}
+
+[data-theme='dark'] .share-background-grid button.is-selected {
+  border-color: var(--theme-accent) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-accent) 18%, transparent) !important;
+}
+
+[data-theme='dark'] .share-background-empty {
+  border-color: color-mix(in srgb, var(--brand-gold) 34%, var(--theme-border)) !important;
+  background: var(--theme-soft) !important;
+  color: var(--theme-muted) !important;
+}
+
+[data-theme='dark'] .share-media-final-action {
+  background: var(--theme-accent) !important;
+  color: #fff !important;
+}
+
+[data-theme='dark'] .share-media-final-action:disabled {
+  background: color-mix(in srgb, var(--theme-accent) 55%, var(--theme-soft)) !important;
+  color: rgba(255,255,255,.72) !important;
+}
+
+[data-theme='dark'] .share-translation-toggle {
+  background: rgba(255,255,255,.16) !important;
+}
+
+[data-theme='dark'] .share-translation-toggle.is-on {
+  background: var(--theme-accent) !important;
+}
+
+/* Do not theme the actual image/video composition or fullscreen export preview. */
+[data-theme='dark'] .share-media-live-preview,
+[data-theme='dark'] .share-video-preview-stage,
+[data-theme='dark'] .share-video-fullscreen-shell {
+  color: inherit;
+}

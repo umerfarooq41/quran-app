@@ -9,18 +9,18 @@
 .settings-screen .app-scroll-content {
   display: grid;
   align-content: start;
-  gap: 18px;
+  gap: 20px;
 }
 
 .settings-section {
   display: grid;
-  gap: 9px;
+  gap: 10px;
 }
 
 .settings-section-heading {
   display: grid;
-  gap: 3px;
-  padding: 0 6px;
+  gap: 4px;
+  padding: 0 4px;
 }
 
 .settings-section-heading strong {
