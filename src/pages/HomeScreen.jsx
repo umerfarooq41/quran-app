@@ -59,11 +59,25 @@ export default function HomeScreen() {
 
   return (
     <Screen className="space-y-5 pb-8">
-      <motion.div className="pt-6 text-center" initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.04 }}>
-        <p className="home-subtitle">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</p>
-        <h1 className="home-title">Qur'an Reader</h1>
-        <p className="mt-2 text-sm font-medium text-[#6f6253]">Premium 16-line IndoPak mushaf</p>
-      </motion.div>
+      <motion.div
+  className="pt-6 text-center"
+  initial={{ opacity: 0, y: -12 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: 0.04 }}
+>
+  <p
+    className="home-subtitle"
+    style={{ fontSize: '1.15rem' }}
+  >
+    بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
+  </p>
+
+  <h1 className="home-title">Al Quran</h1>
+
+  <p className="mt-2 text-sm font-medium text-[#6f6253]">
+    Read · Listen · Understand · Reflect
+  </p>
+</motion.div>
 
       <motion.button
         onClick={() => lastReadTarget?.surahNumber && lastReadTarget?.ayahNumber
