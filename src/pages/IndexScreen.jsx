@@ -57,7 +57,7 @@ export default function IndexScreen() {
         </div>
 
         <div className="app-scroll-content">
-          <div className="index-segment app-media-segment" role="tablist" aria-label="Index tabs">
+          <div className="index-segment share-like-segment" role="tablist" aria-label="Index tabs">
             <button
               id="index-tab-juz"
               className={tab === 'juz' ? 'is-active' : ''}
@@ -67,7 +67,7 @@ export default function IndexScreen() {
               aria-selected={tab === 'juz'}
               aria-controls="index-panel-juz"
             >
-              <BookOpen size={18} strokeWidth={2.1} aria-hidden="true" />
+              <BookOpen size={20} strokeWidth={2} aria-hidden="true" />
               <span>Juz</span>
             </button>
             <button
@@ -79,7 +79,7 @@ export default function IndexScreen() {
               aria-selected={tab === 'surahs'}
               aria-controls="index-panel-surahs"
             >
-              <List size={18} strokeWidth={2.1} aria-hidden="true" />
+              <List size={20} strokeWidth={2} aria-hidden="true" />
               <span>Surahs</span>
             </button>
           </div>

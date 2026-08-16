@@ -186,7 +186,7 @@ export default function BookmarksScreen() {
       </div>
 
       <div className="app-scroll-content">
-        <div className="library-tabs app-media-segment" role="tablist" aria-label="Library tabs">
+        <div className="library-tabs share-like-segment" role="tablist" aria-label="Library tabs">
           <button
             type="button"
             role="tab"
@@ -194,7 +194,7 @@ export default function BookmarksScreen() {
             className={activeTab === 'bookmarks' ? 'is-active' : ''}
             onClick={() => selectTab('bookmarks')}
           >
-            <Bookmark size={18} strokeWidth={2.1} aria-hidden="true" />
+            <Bookmark size={20} strokeWidth={2} aria-hidden="true" />
             <span>Bookmarks</span>
           </button>
           <button
@@ -204,7 +204,7 @@ export default function BookmarksScreen() {
             className={activeTab === 'highlights' ? 'is-active' : ''}
             onClick={() => selectTab('highlights')}
           >
-            <Highlighter size={18} strokeWidth={2.1} aria-hidden="true" />
+            <Highlighter size={20} strokeWidth={2} aria-hidden="true" />
             <span>Highlights</span>
           </button>
         </div>
