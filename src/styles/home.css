@@ -21,11 +21,6 @@
   color: #1f180f;
 }
 
-
-.home-brand-block + .home-hero-card {
-  margin-top: 10px !important;
-}
-
 .home-hero-card {
   width: 100%;
   display: flex;
@@ -93,7 +88,7 @@
   font-size: 0.72rem;
   font-weight: 700;
   color: #3a3228;
-  box-shadow: 0 8px 22px rgba(38, 52, 45, 0.11);
+  box-shadow: 0 4px 16px rgba(19, 54, 105, 0.07);
 }
 
 .home-action-icon { color: #b8882a; }
@@ -195,7 +190,7 @@
   position: relative;
   z-index: 1;
   width: 100%;
-  min-height: 76px;
+  min-height: 82px;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
@@ -203,7 +198,7 @@
   border: 1px solid rgba(255,255,255,.88);
   border-radius: 18px;
   background: #fff;
-  padding: 11px 18px;
+  padding: 14px 18px;
   color: #30291f;
   text-align: left;
   box-shadow: 0 7px 22px rgba(38, 52, 45, .07);
@@ -237,26 +232,6 @@
   min-width: 0;
   display: grid;
   gap: 5px;
-}
-
-.home-favorite-title-row {
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.home-favorite-arabic {
-  flex: 0 0 auto;
-  max-width: 42%;
-  overflow: hidden;
-  color: #675e51;
-  font-family: IndopakNastaleeq, serif;
-  font-size: 1rem;
-  line-height: 1.25;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .home-favorite-copy strong {
@@ -331,4 +306,45 @@
   }
 
   .home-empty-link { display: none; }
+}
+
+
+/* Final Home spacing / navigation / favorite refinements */
+.home-branding-block {
+  padding-bottom: 8px;
+}
+
+/* Higher specificity than later generic theme rules. */
+.home-actions-row.home-actions-row-spaced {
+  gap: 12px !important;
+}
+
+.home-actions-row.home-actions-row-spaced .home-action-chip {
+  box-shadow:
+    0 6px 18px rgba(31, 61, 43, .09),
+    0 1px 3px rgba(31, 61, 43, .04) !important;
+}
+
+.home-favorite-row {
+  min-height: 74px;
+  padding-top: 11px;
+  padding-bottom: 11px;
+}
+
+.home-favorite-copy {
+  gap: 4px;
+}
+
+@media (max-width: 420px) {
+  .home-actions-row.home-actions-row-spaced {
+    gap: 10px !important;
+  }
+}
+
+@media (max-width: 370px) {
+  .home-favorite-row {
+    min-height: 70px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
 }
