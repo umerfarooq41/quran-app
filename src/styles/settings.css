@@ -312,364 +312,101 @@
   .settings-theme-picker button { transition: none; }
 }
 
-/* Settings polish: quieter inline values and full-width identity pickers. */
+/* ==========================================================================
+   SETTINGS ROW ALIGNMENT SYSTEM
+   One source of truth for every icon/text/control row.
+   ========================================================================== */
+
+:root {
+  --settings-icon-column: 38px;
+  --settings-row-gap: 11px;
+  --settings-row-min-height: 72px;
+  --settings-picker-height: 44px;
+}
+
+/* Section hierarchy */
 .settings-section-heading small {
   color: var(--theme-text-secondary, #666c69);
   font-weight: 580;
 }
+
 .settings-row-copy small {
   color: var(--text-muted, #8a9096);
   font-weight: 450;
 }
 
-/* Dropdown values read as settings values, not input fields. */
-.settings-picker-pill {
-  min-width: 0;
-  max-width: min(46vw, 210px);
-  min-height: 34px;
-  border: 0 !important;
-  border-radius: 0;
-  background: transparent !important;
-  padding: 5px 0 5px 8px;
-  box-shadow: none !important;
-}
-.settings-picker-pill:active,
-.settings-picker-pill:focus-visible {
-  background: transparent !important;
-}
-.settings-picker-selected {
-  font-weight: 760;
-}
-
-/* Translator and reciter get their own full-width value row. */
-.settings-picker-row.is-full-width {
-  grid-template-columns: 38px minmax(0, 1fr);
-  align-items: center;
-  padding-bottom: 13px;
-}
-.settings-picker-row.is-full-width .settings-row-icon {
-  grid-column: 1;
-  grid-row: 1;
-}
-.settings-picker-row.is-full-width .settings-row-copy {
-  grid-column: 2;
-  grid-row: 1;
-}
-.settings-picker-row.is-full-width .settings-picker-pill {
-  grid-column: 1 / -1;
-  grid-row: 2;
-  width: 100%;
-  max-width: none;
-  min-height: 38px;
-  justify-content: flex-start;
-  padding: 6px 2px 2px 49px;
-  text-align: left;
-}
-.settings-picker-row.is-full-width .settings-picker-selected {
-  overflow: visible;
-  text-overflow: clip;
-  white-space: normal;
-  text-align: left;
-  line-height: 1.3;
-}
-.settings-picker-row.is-full-width .settings-picker-chevron {
-  margin-left: auto;
-}
-.settings-picker-row.is-full-width .settings-picker-panel {
-  right: 0;
-  left: 0;
-  width: 100%;
-}
-.settings-picker-row.is-full-width.opens-up .settings-picker-panel {
-  right: 0;
-  left: 0;
-}
-
-/* Keep every icon chip on the exact same left edge inside a card. */
-.settings-toggle-row,
-.settings-picker-row {
-  grid-template-columns: 38px minmax(0, 1fr) auto;
-}
-.settings-row-icon {
-  justify-self: start;
-}
-
-[data-theme='dark'] .settings-picker-pill {
-  background: transparent !important;
-}
-
-@media (max-width: 380px) {
-  .settings-picker-pill { max-width: 150px; }
-  .settings-picker-row.is-full-width .settings-picker-pill { max-width: none; }
-}
-[data-theme='dark'] .settings-section-heading small {
-  color: var(--theme-muted) !important;
-}
-
-/* Final settings picker affordance: premium hairline control, aligned with row grid. */
-.settings-picker-pill {
-  min-width: 92px;
-  max-width: min(48vw, 220px);
-  min-height: 38px;
-  border: 1px solid rgba(201, 162, 75, .32) !important;
-  border-radius: 12px;
-  background: rgba(201, 162, 75, .045) !important;
-  padding: 7px 10px;
-  color: #1f3d2b;
-  box-shadow: none !important;
-  transition: background-color .16s ease, border-color .16s ease, transform .14s ease;
-}
-.settings-picker-pill:active {
-  background: rgba(201, 162, 75, .10) !important;
-  transform: scale(.985);
-}
-.settings-picker-pill:focus-visible {
-  background: rgba(201, 162, 75, .06) !important;
-  outline: 2px solid rgba(45, 110, 94, .18);
-  outline-offset: 2px;
-}
-.settings-picker-selected {
-  overflow: visible;
-  text-overflow: clip;
-  white-space: normal;
-  overflow-wrap: normal;
-  word-break: normal;
-  text-align: right;
-  font-weight: 760;
-  line-height: 1.28;
-}
-.settings-picker-chevron {
-  color: rgba(31, 61, 43, .62);
-}
-
-/* Translator and reciter controls occupy the content column at full width. */
-.settings-picker-row.is-full-width {
-  grid-template-columns: 38px minmax(0, 1fr);
-}
-.settings-picker-row.is-full-width .settings-picker-pill {
-  grid-column: 2;
-  grid-row: 2;
-  width: 100%;
-  max-width: none;
-  min-height: 42px;
-  justify-content: flex-start;
-  padding: 8px 10px;
-  text-align: left;
-}
-.settings-picker-row.is-full-width .settings-picker-selected {
-  flex: 1 1 auto;
-  min-width: 0;
-  text-align: left;
-}
-.settings-picker-row.is-full-width .settings-picker-chevron {
-  margin-left: auto;
-}
-.settings-picker-row.is-full-width .settings-picker-panel {
-  left: 49px;
-  right: 0;
-  width: auto;
-}
-.settings-picker-row.is-full-width.opens-up .settings-picker-panel {
-  left: 49px;
-  right: 0;
-  width: auto;
-}
-
-/* Avatar stays optically centered without increasing the row height. */
-.settings-picker-pill.has-avatar {
-  align-items: center;
-  gap: 8px;
-  padding-inline-start: 7px;
-}
-.settings-picker-pill.has-avatar .settings-picker-avatar {
-  width: 28px;
-  height: 28px;
-}
-
-/* Dropdown option labels may wrap instead of truncating names mid-word. */
-.settings-picker-item-label {
-  overflow: visible;
-  text-overflow: clip;
-  white-space: normal;
-  overflow-wrap: normal;
-  word-break: normal;
-  line-height: 1.3;
-}
-
-[data-theme='dark'] .settings-picker-pill {
-  border-color: rgba(201, 162, 75, .30) !important;
-  background: rgba(201, 162, 75, .07) !important;
-  color: var(--theme-text) !important;
-}
-[data-theme='dark'] .settings-picker-pill:active {
-  background: rgba(201, 162, 75, .13) !important;
-}
-[data-theme='dark'] .settings-picker-chevron {
-  color: var(--theme-muted) !important;
-}
-
-@media (max-width: 380px) {
-  .settings-picker-pill {
-    max-width: 145px;
-    font-size: .70rem;
-  }
-  .settings-picker-row.is-full-width .settings-picker-pill {
-    max-width: none;
-    font-size: .72rem;
-  }
-}
-
-
-/* Settings alignment authority
-   - fixed icon column
-   - identical picker heights
-   - left-aligned values
-   - full-width Translator/Reciter controls + menus */
-.settings-toggle-row,
-.settings-picker-row {
-  grid-template-columns: 38px minmax(0, 1fr) auto;
-  column-gap: 11px;
-}
-
-.settings-row-icon {
-  width: 38px;
-  height: 38px;
-  justify-self: start;
-  align-self: center;
-}
-
-/* All dropdown triggers share one visual height and left-aligned value text. */
-.settings-picker-pill,
-.settings-picker-row.is-full-width .settings-picker-pill {
-  height: 44px;
-  min-height: 44px;
-  box-sizing: border-box;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 8px;
-}
-
-.settings-picker-selected,
-.settings-picker-row.is-full-width .settings-picker-selected {
-  flex: 1 1 auto;
-  min-width: 0;
-  text-align: left;
-  line-height: 1.25;
-}
-
-.settings-picker-chevron,
-.settings-picker-row.is-full-width .settings-picker-chevron {
-  margin-left: auto;
-  flex: 0 0 auto;
-}
-
-/* Short language controls remain trailing controls, but their text starts
-   from the left edge of the pill instead of floating against the chevron. */
-.settings-picker-row:not(.is-full-width) .settings-picker-pill {
-  min-width: 104px;
-  padding: 8px 10px;
-}
-
-/* Translator + Reciter:
-   the trigger begins on the same left edge as the icon chip and spans the
-   full available row/card width. */
-.settings-picker-row.is-full-width {
-  grid-template-columns: 38px minmax(0, 1fr);
-}
-
-.settings-picker-row.is-full-width .settings-row-icon {
-  grid-column: 1;
-  grid-row: 1;
-}
-
-.settings-picker-row.is-full-width .settings-row-copy {
-  grid-column: 2;
-  grid-row: 1;
-}
-
-.settings-picker-row.is-full-width .settings-picker-pill {
-  grid-column: 1 / -1;
-  grid-row: 2;
-  width: 100%;
-  max-width: none;
-  padding: 8px 10px;
-  text-align: left;
-}
-
-/* Their expanded menus exactly follow the same full-width left/right edges. */
-.settings-picker-row.is-full-width .settings-picker-panel,
-.settings-picker-row.is-full-width.opens-up .settings-picker-panel {
-  left: 0;
-  right: 0;
-  width: 100%;
-}
-
-/* Reciter avatar stays centered inside the same 44px control height. */
-.settings-picker-pill.has-avatar {
-  padding: 7px 10px;
-}
-.settings-picker-pill.has-avatar .settings-picker-avatar {
-  width: 28px;
-  height: 28px;
-  align-self: center;
-}
-
-/* All option labels align to the left, including English/Urdu,
-   translator names and reciter names. */
-.settings-picker-item,
-.settings-picker-item-label {
-  text-align: left;
-}
-
-@media (max-width: 380px) {
-  .settings-picker-pill,
-  .settings-picker-row.is-full-width .settings-picker-pill {
-    height: 44px;
-    min-height: 44px;
-  }
-
-  .settings-picker-row.is-full-width .settings-picker-panel,
-  .settings-picker-row.is-full-width.opens-up .settings-picker-panel {
-    left: 0;
-    right: 0;
-    width: 100%;
-  }
-}
-
-
-/* Final Settings alignment polish
-   Short language values are centered; identity values remain left aligned. */
-
-/* Prevent any older responsive/grid rule from nudging the Word-by-word icon. */
+/* Shared geometry: Translation language, Translator, WBW translation,
+   WBW language and Audio reciter all start from the exact same grid lines. */
 .settings-toggle-row,
 .settings-picker-row {
   width: 100%;
+  min-width: 0;
+  min-height: var(--settings-row-min-height);
   margin: 0 !important;
-  grid-template-columns: 38px minmax(0, 1fr) auto !important;
-  column-gap: 11px !important;
+  padding: 11px 2px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: var(--settings-icon-column) minmax(0, 1fr) auto !important;
+  column-gap: var(--settings-row-gap) !important;
+  row-gap: 8px;
+  align-items: center;
   justify-self: stretch;
+  background: transparent;
 }
 
 .settings-row-icon {
   grid-column: 1 !important;
-  justify-self: start !important;
+  width: var(--settings-icon-column);
+  height: var(--settings-icon-column);
   margin: 0 !important;
   padding: 0 !important;
+  justify-self: start !important;
+  align-self: center !important;
   transform: none !important;
 }
 
-/* Center English / Urdu visually inside the compact language pills.
-   Chevron is positioned independently so it does not push the word off-center. */
+.settings-row-copy {
+  grid-column: 2;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  align-self: center;
+}
+
+/* Compact language pickers stay in the trailing column. */
 .settings-picker-row:not(.is-full-width) .settings-picker-pill {
+  grid-column: 3;
+  width: auto;
+  min-width: 104px;
+  max-width: min(48vw, 220px);
+  height: var(--settings-picker-height);
+  min-height: var(--settings-picker-height);
+  box-sizing: border-box;
   position: relative;
+  align-self: center;
   justify-content: center;
+  gap: 8px;
   padding: 8px 30px 8px 12px;
+  border: 1px solid rgba(201, 162, 75, .32) !important;
+  border-radius: 12px;
+  background: rgba(201, 162, 75, .045) !important;
+  color: #1f3d2b;
+  box-shadow: none !important;
+  transition: background-color .16s ease, border-color .16s ease, transform .14s ease;
 }
 
 .settings-picker-row:not(.is-full-width) .settings-picker-selected {
   width: 100%;
+  min-width: 0;
   flex: 1 1 100%;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  overflow-wrap: normal;
+  word-break: normal;
   text-align: center !important;
+  font-weight: 760;
+  line-height: 1.25;
 }
 
 .settings-picker-row:not(.is-full-width) .settings-picker-chevron {
@@ -677,50 +414,177 @@
   right: 9px;
   top: 50%;
   margin: 0 !important;
+  flex: 0 0 auto;
   transform: translateY(-50%);
+  color: rgba(31, 61, 43, .62);
 }
 
 .settings-picker-row:not(.is-full-width).is-open .settings-picker-chevron {
   transform: translateY(-50%) rotate(180deg);
 }
 
-/* Translator + Reciter stay full-width and left aligned, with more breathing room. */
+/* Translator + Reciter keep the exact same icon/title grid on row 1.
+   Their value control begins at the card's left edge and spans full width. */
 .settings-picker-row.is-full-width {
-  grid-template-columns: 38px minmax(0, 1fr) !important;
+  grid-template-columns: var(--settings-icon-column) minmax(0, 1fr) !important;
+}
+
+.settings-picker-row.is-full-width .settings-row-icon {
+  grid-column: 1 !important;
+  grid-row: 1;
+}
+
+.settings-picker-row.is-full-width .settings-row-copy {
+  grid-column: 2;
+  grid-row: 1;
 }
 
 .settings-picker-row.is-full-width .settings-picker-pill {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  width: 100%;
+  max-width: none;
+  height: var(--settings-picker-height);
+  min-height: var(--settings-picker-height);
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
   padding: 8px 14px !important;
+  border: 1px solid rgba(201, 162, 75, .32) !important;
+  border-radius: 12px;
+  background: rgba(201, 162, 75, .045) !important;
+  color: #1f3d2b;
+  box-shadow: none !important;
+  text-align: left;
+  transition: background-color .16s ease, border-color .16s ease, transform .14s ease;
 }
 
 .settings-picker-row.is-full-width .settings-picker-selected {
+  flex: 1 1 auto;
+  min-width: 0;
   padding-left: 2px;
   padding-right: 6px;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  overflow-wrap: normal;
+  word-break: normal;
   text-align: left !important;
+  font-weight: 760;
+  line-height: 1.25;
 }
 
+.settings-picker-row.is-full-width .settings-picker-chevron {
+  margin-left: auto;
+  flex: 0 0 auto;
+  color: rgba(31, 61, 43, .62);
+}
+
+/* Expanded Translator/Reciter lists match the trigger width exactly. */
+.settings-picker-row.is-full-width .settings-picker-panel,
+.settings-picker-row.is-full-width.opens-up .settings-picker-panel {
+  left: 0;
+  right: 0;
+  width: 100%;
+}
+
+/* Reciter avatar is optical content inside the same 44px control. */
 .settings-picker-row.is-full-width .settings-picker-pill.has-avatar {
   padding: 7px 14px 7px 10px !important;
 }
 
-.settings-picker-row.is-full-width .settings-picker-pill.has-avatar .settings-picker-selected {
-  padding-left: 2px;
+.settings-picker-pill.has-avatar .settings-picker-avatar {
+  width: 28px;
+  height: 28px;
+  align-self: center;
 }
 
-/* Keep menu labels left aligned even though compact trigger values are centered. */
+/* Interaction */
+.settings-picker-pill:active {
+  background: rgba(201, 162, 75, .10) !important;
+  transform: scale(.985);
+}
+
+.settings-picker-pill:focus-visible {
+  background: rgba(201, 162, 75, .06) !important;
+  outline: 2px solid rgba(45, 110, 94, .18);
+  outline-offset: 2px;
+}
+
 .settings-picker-item,
 .settings-picker-item-label {
   text-align: left !important;
 }
 
+.settings-picker-item-label {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  overflow-wrap: normal;
+  word-break: normal;
+  line-height: 1.3;
+}
+
+/* Word-by-word: when both rows are shown, the card is an exact 50/50 split.
+   Both halves still use the same global grid above. */
+.settings-section-word-by-word.is-balanced .settings-card {
+  height: 168px;
+  min-height: 168px;
+  padding-top: 0;
+  padding-bottom: 0;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+
+.settings-section-word-by-word.is-balanced .settings-toggle-row,
+.settings-section-word-by-word.is-balanced .settings-picker-row {
+  height: 100%;
+  min-height: 0;
+}
+
+.settings-section-word-by-word.is-balanced
+  .settings-toggle-row + .settings-picker-row {
+  border-top: 1px solid var(--theme-divider, rgba(36, 75, 66, .08));
+}
+
+/* Dark mode */
+[data-theme='dark'] .settings-picker-pill {
+  border-color: rgba(201, 162, 75, .30) !important;
+  background: rgba(201, 162, 75, .07) !important;
+  color: var(--theme-text) !important;
+}
+
+[data-theme='dark'] .settings-picker-pill:active {
+  background: rgba(201, 162, 75, .13) !important;
+}
+
+[data-theme='dark'] .settings-picker-chevron {
+  color: var(--theme-muted) !important;
+}
+
+[data-theme='dark'] .settings-section-heading small {
+  color: var(--theme-muted) !important;
+}
+
+/* Small screens: shrink only the gap, never the alignment grid. */
 @media (max-width: 380px) {
-  .settings-toggle-row,
-  .settings-picker-row {
-    grid-template-columns: 38px minmax(0, 1fr) auto !important;
-    column-gap: 9px !important;
+  :root {
+    --settings-row-gap: 9px;
   }
 
-  .settings-picker-row.is-full-width {
-    grid-template-columns: 38px minmax(0, 1fr) !important;
+  .settings-picker-row:not(.is-full-width) .settings-picker-pill {
+    min-width: 96px;
+    max-width: 145px;
+    font-size: .70rem;
+  }
+
+  .settings-picker-row.is-full-width .settings-picker-pill {
+    max-width: none;
+    font-size: .72rem;
+  }
+
+  .settings-section-word-by-word.is-balanced .settings-card {
+    height: 160px;
+    min-height: 160px;
   }
 }
