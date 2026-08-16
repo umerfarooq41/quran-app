@@ -108,6 +108,7 @@ export default function SettingsScreen() {
       <SettingsSection
         title="Word-by-word"
         description="Choose English or Urdu individual word meanings"
+        className={settings.wordByWordTranslation ? 'settings-section-word-by-word is-balanced' : 'settings-section-word-by-word'}
       >
         <SettingSwitch
           icon={ListTree}
@@ -184,9 +185,9 @@ export default function SettingsScreen() {
   );
 }
 
-function SettingsSection({ title, description, children }) {
+function SettingsSection({ title, description, children, className = '' }) {
   return (
-    <section className="settings-section">
+    <section className={['settings-section', className].filter(Boolean).join(' ')}>
       <div className="settings-section-heading">
         <strong>{title}</strong>
         <small>{description}</small>
