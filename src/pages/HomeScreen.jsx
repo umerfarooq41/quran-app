@@ -5,6 +5,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../store/useAppStore';
 import { findPageForReference, getMushafPageNumber, getPage, getPageMeta, getSurah } from '../lib/quran';
 import { formatIndoPakQuarterLabel, getCurrentIndoPakJuzProgress } from '../data/indoPakParaQuarters';
+import { getSurahNameMeta } from '../data/surahNames';
 import { Screen } from '../components/common/AppChrome';
 
 export default function HomeScreen() {
@@ -60,24 +61,16 @@ export default function HomeScreen() {
   return (
     <Screen className="space-y-5 pb-8">
       <motion.div
-  className="pt-6 text-center"
-  initial={{ opacity: 0, y: -12 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ delay: 0.04 }}
->
-  <p
-    className="home-subtitle"
-    style={{ fontSize: '1.15rem' }}
-  >
-    بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
-  </p>
-
-  <h1 className="home-title">Al Quran</h1>
-
-  <p className="mt-2 text-sm font-medium text-[#6f6253]">
-    Read · Listen · Understand · Reflect
-  </p>
-</motion.div>
+        className="home-brand-block pt-6 text-center"
+        initial={{ opacity: 0, y: -12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.04 }}
+      >
+        <p className="home-subtitle" style={{ fontSize: '1.15rem' }}>
+          بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
+        </p>
+        <h1 className="home-title">Al Quran</h1>
+      </motion.div>
 
       <motion.button
         onClick={() => lastReadTarget?.surahNumber && lastReadTarget?.ayahNumber
@@ -217,8 +210,16 @@ function FavoriteSurahRow({ surah, onOpen, onRemove }) {
       >
         <span className="home-favorite-number">{surah.number}</span>
         <span className="home-favorite-copy">
-          <strong>{surah.name}</strong>
-          <small>{surah.verses} Ayahs · {surah.revelation}</small>
+          <span className="home-favorite-title-row">
+            <strong>{surah.name}</strong>
+            <span className="home-favorite-arabic" dir="rtl">
+              {getSurahNameMeta(surah.number)?.arabicName || ''}
+            </span>
+          </span>
+          <small>
+            {getSurahNameMeta(surah.number)?.meaning ? `${getSurahNameMeta(surah.number).meaning} · ` : ''}
+            {surah.verses} Ayahs · {surah.revelation}
+          </small>
         </span>
       </button>
     </motion.article>
