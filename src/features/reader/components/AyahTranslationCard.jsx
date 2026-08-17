@@ -177,7 +177,7 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
                 aria-expanded={footnotesOpen}
                 onClick={() => setFootnotesOpen((open) => !open)}
               >
-                <span>{footnotesOpen ? 'Hide footnotes' : getNotesButtonLabel(translation.footnotes)}</span>
+                <span>{footnotesOpen ? 'Hide Tafsir' : getNotesButtonLabel()}</span>
                 <ChevronDown size={16} aria-hidden="true" />
               </button>
 
@@ -247,9 +247,8 @@ function renderTranslationText(translation, onFootnoteOpen) {
   });
 }
 
-function getNotesButtonLabel(footnotes) {
-  const count = Array.isArray(footnotes) ? footnotes.length : 0;
-  return `Show footnotes (${count})`;
+function getNotesButtonLabel() {
+  return 'Show Tafsir';
 }
 
 function normalizeTarget(target) {
