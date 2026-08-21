@@ -84,7 +84,7 @@
   background:
     radial-gradient(circle at top left, rgba(204, 185, 120, .24), transparent 34%),
     linear-gradient(180deg, #f5f1df 0%, #faf8ee 34%, #f6f0dc 100%);
-  color: #111827;
+  color: var(--theme-text);
   padding: calc(env(safe-area-inset-top, 0px) + 52px) 18px calc(env(safe-area-inset-bottom, 0px) + 34px);
 }
 
@@ -103,13 +103,13 @@
   height: 36px;
   border: 0;
   background: transparent;
-  color: #1f2937;
+  color: var(--theme-text);
   padding: 0;
 }
 
 .surah-info-topbar h1 {
   margin: 0;
-  color: #101827;
+  color: var(--theme-text);
   font-size: clamp(2rem, 8vw, 2.85rem);
   font-weight: 650;
   line-height: 1;
@@ -120,7 +120,7 @@
   width: min(100%, 430px);
   margin: 0 auto;
   border-radius: 34px 34px 0 0;
-  background: rgba(255, 255, 255, .74);
+  background: var(--theme-surface);
   padding: 28px 28px 42px;
 }
 
@@ -133,7 +133,7 @@
 
 .surah-info-kicker {
   margin: 0 0 8px;
-  color: #9ca5b4;
+  color: var(--theme-subtle);
   font-size: .82rem;
   font-weight: 700;
   letter-spacing: .24em;
@@ -142,7 +142,7 @@
 
 .surah-info-title-row h2 {
   margin: 0;
-  color: #111827;
+  color: var(--theme-text);
   font-size: clamp(2.4rem, 10vw, 3.25rem);
   font-weight: 700;
   line-height: .96;
@@ -151,7 +151,7 @@
 
 .surah-info-meta {
   margin: 14px 0 0;
-  color: #667085;
+  color: var(--theme-muted);
   font-size: clamp(1rem, 4.3vw, 1.18rem);
   line-height: 1.35;
 }
@@ -163,13 +163,13 @@
   place-items: center;
   flex: 0 0 auto;
   border-radius: 24px;
-  background: #e8f2ec;
-  color: #2e796a;
+  background: var(--theme-soft);
+  color: var(--theme-accent);
 }
 
 .surah-info-html {
   margin-top: 28px;
-  color: #111827;
+  color: var(--theme-text);
   direction: rtl;
   font-family: var(--translation-urdu-font);
   font-size: clamp(1rem, 4.2vw, 1.15rem);
@@ -180,7 +180,7 @@
 
 .surah-info-html h2 {
   margin: 28px 0 10px;
-  color: #111827;
+  color: var(--theme-text);
   font-size: clamp(1.3rem, 5.4vw, 1.65rem);
   font-weight: 750;
   line-height: 1.15;
@@ -193,7 +193,7 @@
 
 .surah-info-html h3 {
   margin: 18px 0 7px;
-  color: #111827;
+  color: var(--theme-text);
   font-size: 1rem;
   font-weight: 750;
   line-height: 1.25;
@@ -214,7 +214,7 @@
 }
 
 .surah-info-html a {
-  color: #256b5b;
+  color: var(--theme-accent);
   font-weight: 700;
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -222,7 +222,7 @@
 
 .surah-info-empty {
   margin-top: 28px;
-  color: #667085;
+  color: var(--theme-muted);
   font-size: 1rem;
   line-height: 1.7;
 }
