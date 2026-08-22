@@ -466,13 +466,16 @@ export function ShareQuranScreen({ ayah, onClose }) {
           (bismillahAudio.currentTime * 1000) - Number(videoTimeline.bismillah.sourceStartMs),
         );
         setVideoElapsedMs(Math.min(preRollMs, preElapsed));
+        const remainingMs = Math.max(0, preRollMs - preElapsed);
+        bismillahAudio.volume = Math.max(0, Math.min(1, remainingMs / 120));
 
         if (
-          preElapsed >= preRollMs - 20
+          preElapsed >= preRollMs - 12
           || bismillahAudio.currentTime * 1000 >= Number(videoTimeline.bismillah.sourceEndMs) - 20
           || bismillahAudio.ended
         ) {
           bismillahAudio.pause();
+          bismillahAudio.volume = 1;
           previewPhaseRef.current = 'main';
           audio.currentTime = Number(videoTimeline.sourceStartMs) / 1000;
           audio.play().catch((error) => {
@@ -984,17 +987,12 @@ function VideoPreview({
                   </React.Fragment>
                 ))
               : isBismillah ? bismillahText : ayah?.text || ''}
+            {isBismillah && <span className="share-video-preview-bismillah-reference">1:1</span>}
           </div>
 
           {showTranslation && (isBismillah ? bismillahTranslation : translation) && (
             <div className="share-video-preview-translation" dir={translationDirection}>
-              {isBismillah ? (
-                bismillahTranslation
-              ) : (
-                <>
-                  {translation} <span className="share-video-preview-inline-reference">({surahNumber}:{ayah?.ayahNumber})</span>
-                </>
-              )}
+              {isBismillah ? bismillahTranslation : translation}
             </div>
           )}
 
