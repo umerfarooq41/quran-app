@@ -1,5 +1,6 @@
 export const FULL_SURAH_FOLDER_BY_RECITER = Object.freeze({
   'abdul-basit-abdul-samad': 'abdul-basit-abdul-samad',
+  'abdullah-awad-al-juhani': 'abdullah-al-jawad-juhani',
   'abdur-rahman-as-sudais': 'abdur-rahman-as-sudais',
   'abu-bakr-al-shatri': 'abu-bakr-al-shatri',
   'khalid-al-jalil': 'khalid-al-jalil',
@@ -85,8 +86,13 @@ export async function getFullSurahPlayback(reciterId, surahNumber, fetchImpl = g
   const surah = normalizePositiveInteger(surahNumber);
   if (!surah || surah > 114) return null;
 
+  const folder = getFullSurahFolder(reciterId);
   const qfReciterConfig = QF_CHAPTER_RECITER_BY_RECITER[reciterId];
-  if (qfReciterConfig) {
+
+  // Prefer bundled full-Surah metadata whenever it exists. This keeps local
+  // surah.json/segments.json authoritative while retaining Quran Foundation
+  // as a fallback for reciters that do not have bundled timing data.
+  if (!folder && qfReciterConfig) {
     const qfReciterId = await resolveQfChapterReciterId(
       reciterId,
       qfReciterConfig,
