@@ -70,9 +70,11 @@ export function ShareQuranScreen({ ayah, onClose }) {
     SHARE_BACKGROUND_ASSETS[0]?.id || '',
   );
   const [textScale, setTextScale] = useState(1);
-  const [translationScale, setTranslationScale] = useState(1);
+  const [translationScale, setTranslationScale] = useState(1.1);
   const [showTranslation, setShowTranslation] = useState(false);
   const [translationsByAyah, setTranslationsByAyah] = useState({});
+  const [bismillahTranslation, setBismillahTranslation] = useState('');
+  const [bismillahTranslationLoading, setBismillahTranslationLoading] = useState(false);
   const [translationLoading, setTranslationLoading] = useState(false);
   const [status, setStatus] = useState('');
 
@@ -169,12 +171,17 @@ export function ShareQuranScreen({ ayah, onClose }) {
   }, [activeVideoEntry, fromAyah, surahAyahs, range, ayah]);
 
   const activeVideoWord = useMemo(
-    () => findWordAtTime(activeVideoEntry, videoElapsedMs),
-    [activeVideoEntry, videoElapsedMs],
+    () => findWordAtTime(
+      videoInBismillah ? videoTimeline?.bismillah : activeVideoEntry,
+      videoElapsedMs,
+    ),
+    [videoInBismillah, videoTimeline, activeVideoEntry, videoElapsedMs],
   );
   const activeVideoWords = useMemo(
-    () => getQuranWordsForAyah(selectedSurahNumber, activeVideoAyah?.ayahNumber),
-    [selectedSurahNumber, activeVideoAyah?.ayahNumber],
+    () => videoInBismillah
+      ? getQuranWordsForAyah(1, 1)
+      : getQuranWordsForAyah(selectedSurahNumber, activeVideoAyah?.ayahNumber),
+    [videoInBismillah, selectedSurahNumber, activeVideoAyah?.ayahNumber],
   );
 
   useEffect(() => {
@@ -216,6 +223,32 @@ export function ShareQuranScreen({ ayah, onClose }) {
 
   useEffect(() => {
     let cancelled = false;
+
+    if (!showTranslation || !showBismillah) {
+      setBismillahTranslation('');
+      setBismillahTranslationLoading(false);
+      return undefined;
+    }
+
+    setBismillahTranslationLoading(true);
+    loadTranslationEntry(settingsTranslationId, 1, 1, { includeTafsir: false })
+      .then((entry) => {
+        if (!cancelled) setBismillahTranslation(entry?.plainText || '');
+      })
+      .catch(() => {
+        if (!cancelled) setBismillahTranslation('');
+      })
+      .finally(() => {
+        if (!cancelled) setBismillahTranslationLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [showTranslation, showBismillah, settingsTranslationId]);
+
+  useEffect(() => {
+    let cancelled = false;
     setStatus('');
     setPreparingImage(true);
 
@@ -232,6 +265,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
       translationsByAyah,
       translationDirection: translationOption?.direction || 'ltr',
       showBismillah,
+      bismillahTranslation,
     })
       .then((blob) => {
         if (!cancelled) setImageBlob(blob);
@@ -258,6 +292,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
     translationsByAyah,
     translationOption?.direction,
     showBismillah,
+    bismillahTranslation,
   ]);
 
   useEffect(() => {
@@ -493,7 +528,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
       setStatus('Select a video background first.');
       return;
     }
-    if (showTranslation && translationLoading) {
+    if (showTranslation && (translationLoading || bismillahTranslationLoading)) {
       setStatus('Wait for the selected translation to finish loading.');
       return;
     }
@@ -509,6 +544,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
         timeline: videoTimeline,
         ayahs: range,
         translationsByAyah,
+        bismillahTranslation,
         translationDirection: translationOption?.direction || 'ltr',
         surahName: arabicSurahName,
         surahMeaning: surahMeta?.meaning || '',
@@ -596,6 +632,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
               orientation="portrait"
               isBismillah={videoInBismillah}
               bismillahText={SHARE_BISMILLAH_TEXT}
+              bismillahTranslation={bismillahTranslation}
             />
           )}
         </section>
@@ -683,7 +720,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
                 || !videoTimeline?.audioUrl
                 || !videoTimeline?.timeline?.length
                 || !selectedBackground?.videoSrc
-                || (showTranslation && translationLoading)
+                || (showTranslation && (translationLoading || bismillahTranslationLoading))
           }
         >
           <Download size={19} />
@@ -747,6 +784,7 @@ function VideoPreview({
   orientation,
   isBismillah = false,
   bismillahText = SHARE_BISMILLAH_TEXT,
+  bismillahTranslation = '',
 }) {
   const backgroundSrc = background?.videoSrc || '';
   const stageRef = useRef(null);
@@ -785,6 +823,8 @@ function VideoPreview({
     translationScale,
     fullscreen,
     wordItems?.length,
+    isBismillah,
+    bismillahTranslation,
   ]);
 
   useEffect(() => {
@@ -866,6 +906,8 @@ function VideoPreview({
     fullscreen,
     wordItems?.length,
     autoFitScale,
+    isBismillah,
+    bismillahTranslation,
   ]);
 
   function toggleFullscreen(event) {
@@ -915,17 +957,7 @@ function VideoPreview({
         {surahMeaning && <span>{surahMeaning}</span>}
       </div>
 
-      {isBismillah && (
-        <div
-          className="share-video-preview-bismillah"
-          dir="rtl"
-          style={{ '--share-text-scale': textScale }}
-        >
-          {bismillahText}
-        </div>
-      )}
-
-      {showAyahCard && !isBismillah && (
+      {showAyahCard && (
         <div
           ref={cardRef}
           className="share-video-preview-ayah-card"
@@ -951,18 +983,26 @@ function VideoPreview({
                     </span>{' '}
                   </React.Fragment>
                 ))
-              : ayah?.text || ''}
+              : isBismillah ? bismillahText : ayah?.text || ''}
           </div>
 
-          {showTranslation && translation && (
+          {showTranslation && (isBismillah ? bismillahTranslation : translation) && (
             <div className="share-video-preview-translation" dir={translationDirection}>
-              {translation}
+              {isBismillah ? (
+                bismillahTranslation
+              ) : (
+                <>
+                  {translation} <span className="share-video-preview-inline-reference">({surahNumber}:{ayah?.ayahNumber})</span>
+                </>
+              )}
             </div>
           )}
 
-          <div className={`share-video-preview-reference ${showTranslation && translation ? 'is-translation-sized' : 'is-arabic-sized'}`}>
-            {surahNumber}:{ayah?.ayahNumber}
-          </div>
+          {!isBismillah && !(showTranslation && translation) && (
+            <div className="share-video-preview-reference is-arabic-sized">
+              {surahNumber}:{ayah?.ayahNumber}
+            </div>
+          )}
         </div>
       )}
 
