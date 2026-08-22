@@ -5444,3 +5444,29 @@ body {
   font-size: calc(.82rem * var(--share-translation-scale, 1)) !important;
   line-height: 1.36 !important;
 }
+
+
+/* Share Quran — compact ayah references + Bismillah 1:1 marker */
+.share-video-preview-reference.is-arabic-sized {
+  font-size: calc(.68rem * var(--share-text-scale, 1)) !important;
+  line-height: 1.2 !important;
+  font-weight: 500 !important;
+}
+.share-video-preview-stage.is-landscape .share-video-preview-reference.is-arabic-sized {
+  font-size: calc(.58rem * var(--share-text-scale, 1)) !important;
+}
+.share-video-preview-bismillah-reference {
+  display: inline-block;
+  margin-inline-start: .45em;
+  color: rgba(255,255,255,.74);
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: .42em;
+  font-weight: 500;
+  line-height: 1;
+  direction: ltr;
+  vertical-align: .12em;
+  white-space: nowrap;
+}
+.share-video-preview-inline-reference {
+  font-size: .7em !important;
+}
