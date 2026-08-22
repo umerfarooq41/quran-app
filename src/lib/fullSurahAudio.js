@@ -89,9 +89,8 @@ export async function getFullSurahPlayback(reciterId, surahNumber, fetchImpl = g
   const folder = getFullSurahFolder(reciterId);
   const qfReciterConfig = QF_CHAPTER_RECITER_BY_RECITER[reciterId];
 
-  // Prefer bundled full-Surah metadata whenever it exists. This keeps local
-  // surah.json/segments.json authoritative while retaining Quran Foundation
-  // as a fallback for reciters that do not have bundled timing data.
+  // Reciters without bundled data use Quran Foundation for both the audio URL
+  // and timing data.
   if (!folder && qfReciterConfig) {
     const qfReciterId = await resolveQfChapterReciterId(
       reciterId,
@@ -109,6 +108,39 @@ export async function getFullSurahPlayback(reciterId, surahNumber, fetchImpl = g
     ? rawSurah.audio_url.trim()
     : '';
   if (!audioUrl) return null;
+
+  // Juhani's bundled audio is the same Quranicaudio recording used by Quran
+  // Foundation. Keep the local/bundled audio URL, but obtain the complete
+  // word-level timeline from Quran Foundation. The bundled segments file is
+  // retained as an ayah-level fallback if the API is temporarily unavailable.
+  if (reciterId === 'abdullah-awad-al-juhani' && qfReciterConfig) {
+    try {
+      const qfReciterId = await resolveQfChapterReciterId(
+        reciterId,
+        qfReciterConfig,
+        fetchImpl,
+      );
+      const qfPlayback = await loadQfChapterPlayback(
+        reciterId,
+        qfReciterId,
+        surah,
+        fetchImpl,
+      );
+
+      if (qfPlayback?.timeline?.length) {
+        return {
+          ...qfPlayback,
+          folder: reciterData.folder,
+          source: 'local-audio+quran-foundation-segments',
+          audioUrl,
+        };
+      }
+    } catch (error) {
+      // Do not break recitation when Quran Foundation is unavailable. The
+      // bundled Juhani timings still provide ayah-level synchronization.
+      console.warn('Falling back to bundled Juhani ayah timings:', error);
+    }
+  }
 
   let timeline = reciterData.timelines.get(surah);
   if (!timeline) {
