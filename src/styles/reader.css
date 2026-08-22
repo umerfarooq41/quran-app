@@ -5470,3 +5470,21 @@ body {
 .share-video-preview-inline-reference {
   font-size: .7em !important;
 }
+
+/* Share Quran: compact inline ayah references when translation is enabled. */
+.share-video-preview-translation .share-video-preview-inline-reference {
+  display: inline;
+  margin: 0;
+  white-space: nowrap;
+  font: inherit;
+  font-size: .72em;
+  font-weight: 500;
+  line-height: inherit;
+  color: rgba(255,255,255,.72);
+  vertical-align: baseline;
+}
+
+.share-video-preview-reference.is-arabic-sized {
+  font-size: calc(.52rem * var(--share-text-scale, 1)) !important;
+  font-weight: 500 !important;
+}
