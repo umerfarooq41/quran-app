@@ -5380,3 +5380,42 @@ body {
   width: 100%;
   min-width: 0;
 }
+
+/* Share Quran — Bismillah pre-roll + reference sizing authority */
+.share-video-preview-bismillah {
+  position: absolute;
+  top: 19%;
+  right: 7%;
+  left: 7%;
+  z-index: 6;
+  color: #fff;
+  font-family: IndopakNastaleeq, serif;
+  font-size: calc(clamp(1.2rem, 5.1vw, 2rem) * var(--share-text-scale, 1));
+  line-height: 1.55;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0,0,0,.28);
+  pointer-events: none;
+}
+
+.share-video-preview-stage.is-landscape .share-video-preview-bismillah {
+  top: 20%;
+  font-size: calc(clamp(1rem, 3.2vw, 1.5rem) * var(--share-text-scale, 1));
+}
+
+.share-video-preview-reference.is-arabic-sized {
+  font-size: calc(clamp(1.18rem, 5.3vw, 2.05rem) * var(--share-text-scale, 1)) !important;
+  line-height: 1.25 !important;
+}
+
+.share-video-preview-reference.is-translation-sized {
+  font-size: calc(.84rem * var(--share-translation-scale, 1)) !important;
+  line-height: 1.3 !important;
+}
+
+.share-video-preview-stage.is-landscape .share-video-preview-reference.is-arabic-sized {
+  font-size: calc(clamp(.95rem, 3.2vw, 1.55rem) * var(--share-text-scale, 1)) !important;
+}
+
+.share-video-preview-stage.is-landscape .share-video-preview-reference.is-translation-sized {
+  font-size: calc(.70rem * var(--share-translation-scale, 1)) !important;
+}
