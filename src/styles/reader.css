@@ -5419,3 +5419,28 @@ body {
 .share-video-preview-stage.is-landscape .share-video-preview-reference.is-translation-sized {
   font-size: calc(.70rem * var(--share-translation-scale, 1)) !important;
 }
+
+/* Share Quran — Bismillah lives inside the same ayah card. */
+.share-video-preview-bismillah {
+  position: static !important;
+  inset: auto !important;
+  font-size: inherit !important;
+}
+
+/* Translation is intentionally more readable by default in both preview sizes. */
+.share-video-preview-translation {
+  font-size: calc(.96rem * var(--share-translation-scale, 1)) !important;
+  line-height: 1.48 !important;
+}
+
+.share-video-preview-inline-reference {
+  font: inherit;
+  color: inherit;
+  white-space: nowrap;
+}
+
+.share-media-live-preview.is-video.is-landscape .share-video-preview-translation,
+.share-video-preview-stage.is-landscape .share-video-preview-translation {
+  font-size: calc(.82rem * var(--share-translation-scale, 1)) !important;
+  line-height: 1.36 !important;
+}
