@@ -5,7 +5,7 @@ export const FULL_SURAH_FOLDER_BY_RECITER = Object.freeze({
   'abu-bakr-al-shatri': 'abu-bakr-al-shatri',
   'khalid-al-jalil': 'khalid-al-jalil',
   'maher-al-mu-aiqly': 'maher-al-mu-aiqly',
-  'mahmoud-khalil-al-husary': 'mahmoud-khalil-al-husary',
+  'muhammad-al-hadi-toure': 'muhammad-al-hadi-toure',
   'mishari-rashid-al-afasy': 'mishari-rashid-al-afasy',
   'saad-al-ghamdi': 'saad-al-ghamdi',
   'saud-al-shuraim': 'saud-al-shuraim',
