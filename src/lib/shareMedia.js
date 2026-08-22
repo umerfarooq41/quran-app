@@ -2,6 +2,11 @@ import { getFullSurahPlayback } from './fullSurahAudio';
 
 export const SHARE_BISMILLAH_TEXT = 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ';
 
+// Trim only the tiny tail after the final 1:1 word so the next Fatiha ayah
+// cannot leak into the Share Bismillah clip. The start always comes from the
+// first 1:1 word segment, so any reciter intro/A‘udhu remains excluded.
+const BISMILLAH_END_GUARD_MS = 80;
+
 export const SHARE_MEDIA_MODES = Object.freeze({
   IMAGE: 'image',
   VIDEO: 'video',
