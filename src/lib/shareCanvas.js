@@ -155,7 +155,7 @@ function drawAyahCard(ctx, {
       : `${surahNumber}:${firstAyah}`)
     : '';
   const translationText = showTranslation && mainTranslationText
-    ? `${showBismillah && bismillahTranslation ? `${bismillahTranslation}\n` : ''}${mainTranslationText}`
+    ? `${showBismillah && bismillahTranslation ? `${bismillahTranslation}\n` : ''}${mainTranslationText}${reference ? ` (${reference})` : ''}`
     : '';
 
   const requestedArabicFont = (isLandscape ? 58 : 64) * textScale;
@@ -251,14 +251,8 @@ function drawAyahCard(ctx, {
       ctx.fillText(line, width / 2, cursorY);
       cursorY += lineHeight;
     });
-    ctx.direction = 'ltr';
-    ctx.fillStyle = 'rgba(255,255,255,.74)';
-    ctx.font = `500 ${Math.max(14, Math.round(arabicFont * 0.42))}px Inter, ui-sans-serif, system-ui`;
-    ctx.fillText('1:1', width / 2, cursorY - lineHeight * 0.22);
+    // In image mode Bismillah is part of the Arabic block; do not label it 1:1.
     cursorY += lineHeight * 0.20;
-    ctx.direction = 'rtl';
-    ctx.fillStyle = '#ffffff';
-    ctx.font = `${Math.round(arabicFont)}px IndopakNastaleeq, serif`;
   }
 
   lines.forEach((line) => {

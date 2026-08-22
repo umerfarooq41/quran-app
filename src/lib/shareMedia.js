@@ -5,7 +5,8 @@ export const SHARE_BISMILLAH_TEXT = 'بِسْمِ اللَّهِ الرَّحْ�
 // Trim only the tiny tail after the final 1:1 word so the next Fatiha ayah
 // cannot leak into the Share Bismillah clip. The start always comes from the
 // first 1:1 word segment, so any reciter intro/A‘udhu remains excluded.
-const BISMILLAH_END_GUARD_MS = 80;
+const BISMILLAH_END_GUARD_MS = 140;
+const BISMILLAH_FALLBACK_END_GUARD_MS = 180;
 
 export const SHARE_MEDIA_MODES = Object.freeze({
   IMAGE: 'image',
@@ -119,34 +120,45 @@ export async function loadShareVideoTimeline(composition, fetchImpl = globalThis
       // That guarantees reciter-specific A'udhu/intro audio is never included.
       // If a reciter has no 1:1 word timings, skip the Bismillah audio rather
       // than risk exporting non-Quran intro audio.
-      if (wordSegments.length) {
-        const sourceStartMs = Number(wordSegments[0].startMs);
-        const rawSourceEndMs = Number(wordSegments[wordSegments.length - 1].endMs);
-        // A tiny end guard removes timing-file tails that can contain the onset
-        // of Al-Fatiha 1:2 after the final Bismillah word has finished.
-        const sourceEndMs = Math.max(sourceStartMs, rawSourceEndMs - BISMILLAH_END_GUARD_MS);
-        const durationMs = Math.max(0, sourceEndMs - sourceStartMs);
-        if (durationMs > 0) {
-          bismillah = {
-            audioUrl: fatihaPlayback.audioUrl,
-            sourceStartMs,
-            sourceEndMs,
-            startMs: 0,
-            endMs: durationMs,
-            durationMs,
-            ayahNumber: 1,
-            wordSegments: wordSegments.map((segment) => ({
-              ...segment,
-              sourceStartMs: Number(segment.startMs) || 0,
-              sourceEndMs: Number(segment.endMs) || 0,
-              startMs: Math.max(0, (Number(segment.startMs) || 0) - sourceStartMs),
-              endMs: Math.min(
-                durationMs,
-                Math.max(0, (Number(segment.endMs) || 0) - sourceStartMs),
-              ),
-            })),
-          };
-        }
+      // Prefer exact 1:1 word boundaries. If a reciter has ayah-level
+      // timings only (for example a local fallback), use the 1:1 ayah start
+      // and end instead. The ayah start already excludes any A'udhu/intro,
+      // while a slightly larger end guard prevents 1:2 onset leakage.
+      const hasWordBoundaries = wordSegments.length > 0;
+      const sourceStartMs = hasWordBoundaries
+        ? Number(wordSegments[0].startMs)
+        : Number(firstAyah.startMs);
+      const rawSourceEndMs = hasWordBoundaries
+        ? Number(wordSegments[wordSegments.length - 1].endMs)
+        : Number(firstAyah.endMs);
+      const endGuardMs = hasWordBoundaries
+        ? BISMILLAH_END_GUARD_MS
+        : BISMILLAH_FALLBACK_END_GUARD_MS;
+      const sourceEndMs = Math.max(sourceStartMs, rawSourceEndMs - endGuardMs);
+      const durationMs = Math.max(0, sourceEndMs - sourceStartMs);
+
+      if (Number.isFinite(sourceStartMs) && Number.isFinite(sourceEndMs) && durationMs > 0) {
+        bismillah = {
+          audioUrl: fatihaPlayback.audioUrl,
+          sourceStartMs,
+          sourceEndMs,
+          startMs: 0,
+          endMs: durationMs,
+          durationMs,
+          ayahNumber: 1,
+          wordSegments: hasWordBoundaries
+            ? wordSegments.map((segment) => ({
+                ...segment,
+                sourceStartMs: Number(segment.startMs) || 0,
+                sourceEndMs: Number(segment.endMs) || 0,
+                startMs: Math.max(0, (Number(segment.startMs) || 0) - sourceStartMs),
+                endMs: Math.min(
+                  durationMs,
+                  Math.max(0, (Number(segment.endMs) || 0) - sourceStartMs),
+                ),
+              })).filter((segment) => segment.endMs > segment.startMs)
+            : [],
+        };
       }
     }
   }

@@ -344,7 +344,10 @@ function drawVideoFrame(ctx, {
 
   const effectiveWordItems = wordItems;
   const effectiveReference = isBismillah ? '1:1' : `${surahNumber}:${ayah?.ayahNumber}`;
-  const effectiveTranslation = translation || '';
+  const cleanTranslation = translation || '';
+  const effectiveTranslation = cleanTranslation
+    ? `${cleanTranslation} (${effectiveReference})`
+    : '';
 
   const safeTop = height * (isLandscape ? .18 : .165);
   const safeBottom = height * (isLandscape ? .93 : .91);
@@ -358,7 +361,7 @@ function drawVideoFrame(ctx, {
   const minimumArabicFont = isLandscape ? 23 : 27;
   const minimumTranslationFont = isLandscape ? 14 : 16;
   let referenceFont = (effectiveTranslation ? requestedTranslationFont : requestedArabicFont) * 0.56;
-  let referenceHeight = (!effectiveReference || (!isBismillah && effectiveTranslation)) ? 0 : (referenceFont * 1.6 + 10);
+  let referenceHeight = (!effectiveReference || effectiveTranslation) ? 0 : (referenceFont * 1.6 + 10);
   const verticalPadding = isLandscape ? 44 : 56;
 
   let arabicFont = requestedArabicFont;
@@ -384,7 +387,7 @@ function drawVideoFrame(ctx, {
     }
 
     referenceFont = (effectiveTranslation ? translationFont : arabicFont) * 0.56;
-    referenceHeight = (!effectiveReference || (!isBismillah && effectiveTranslation)) ? 0 : (referenceFont * 1.6 + 10);
+    referenceHeight = (!effectiveReference || effectiveTranslation) ? 0 : (referenceFont * 1.6 + 10);
 
     const arabicHeight = Math.max(arabicLineHeight, arabicLines.length * arabicLineHeight);
     const translationHeight = translationLines.length
@@ -458,7 +461,7 @@ function drawVideoFrame(ctx, {
     });
   }
 
-  if (effectiveReference && (isBismillah || !effectiveTranslation)) {
+  if (effectiveReference && !effectiveTranslation) {
     cursorY += 7;
     ctx.direction = 'ltr';
     ctx.textAlign = 'center';
