@@ -34,6 +34,11 @@ import {
 import { surahArabicNames } from '../../../utils/quranLabels';
 import { Header, Screen } from '../../../components/common/AppChrome';
 
+const stripShareFootnoteMarkers = (value) => String(value || '')
+  .replace(/\s*\[\s*\d+\s*\]/g, '')
+  .replace(/\s{2,}/g, ' ')
+  .trim();
+
 
 export function ShareQuranScreen({ ayah, onClose }) {
   const settingsTranslationId = useAppStore((state) => state.settings.translation);
@@ -203,7 +208,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
             rangeAyah.ayahNumber,
             { includeTafsir: false },
           );
-          return [rangeAyah.ayahNumber, entry?.plainText || ''];
+          return [rangeAyah.ayahNumber, stripShareFootnoteMarkers(entry?.plainText)];
         } catch {
           return [rangeAyah.ayahNumber, ''];
         }
@@ -233,7 +238,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
     setBismillahTranslationLoading(true);
     loadTranslationEntry(settingsTranslationId, 1, 1, { includeTafsir: false })
       .then((entry) => {
-        if (!cancelled) setBismillahTranslation(entry?.plainText || '');
+        if (!cancelled) setBismillahTranslation(stripShareFootnoteMarkers(entry?.plainText));
       })
       .catch(() => {
         if (!cancelled) setBismillahTranslation('');
@@ -987,18 +992,20 @@ function VideoPreview({
                   </React.Fragment>
                 ))
               : isBismillah ? bismillahText : ayah?.text || ''}
-            {isBismillah && <span className="share-video-preview-bismillah-reference">1:1</span>}
           </div>
 
           {showTranslation && (isBismillah ? bismillahTranslation : translation) && (
             <div className="share-video-preview-translation" dir={translationDirection}>
-              {isBismillah ? bismillahTranslation : translation}
+              <span>{isBismillah ? bismillahTranslation : translation}</span>{' '}
+              <span className="share-video-preview-inline-reference">
+                {isBismillah ? '1:1' : `${surahNumber}:${ayah?.ayahNumber}`}
+              </span>
             </div>
           )}
 
-          {!isBismillah && !(showTranslation && translation) && (
+          {(!showTranslation || !(isBismillah ? bismillahTranslation : translation)) && (
             <div className="share-video-preview-reference is-arabic-sized">
-              {surahNumber}:{ayah?.ayahNumber}
+              {isBismillah ? '1:1' : `${surahNumber}:${ayah?.ayahNumber}`}
             </div>
           )}
         </div>
