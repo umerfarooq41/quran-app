@@ -125,8 +125,17 @@ export async function loadShareVideoTimeline(composition, fetchImpl = globalThis
           audioUrl: fatihaPlayback.audioUrl,
           sourceStartMs,
           sourceEndMs,
+          startMs: 0,
+          endMs: durationMs,
           durationMs,
           ayahNumber: 1,
+          wordSegments: wordSegments.map((segment) => ({
+            ...segment,
+            sourceStartMs: Number(segment.startMs) || 0,
+            sourceEndMs: Number(segment.endMs) || 0,
+            startMs: Math.max(0, (Number(segment.startMs) || 0) - sourceStartMs),
+            endMs: Math.max(0, (Number(segment.endMs) || 0) - sourceStartMs),
+          })),
         };
       }
     }

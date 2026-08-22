@@ -15,6 +15,7 @@ export async function generateQuranShareImage({
   translationsByAyah = {},
   translationDirection = 'ltr',
   showBismillah = false,
+  bismillahTranslation = '',
 }) {
   const isLandscape = orientation === 'landscape';
   const { width, height } = isLandscape ? LANDSCAPE_SIZE : PORTRAIT_SIZE;
@@ -50,9 +51,6 @@ export async function generateQuranShareImage({
     surahMeaning,
   });
 
-  if (showBismillah) {
-    drawBismillah(ctx, { width, height, isLandscape, textScale });
-  }
 
   drawAyahCard(ctx, {
     width,
@@ -66,6 +64,7 @@ export async function generateQuranShareImage({
     translationDirection,
     surahNumber,
     showBismillah,
+    bismillahTranslation,
   });
 return canvasToBlob(canvas);
 }
@@ -114,20 +113,6 @@ function drawSurahHeader(ctx, { width, height, isLandscape, surahName, surahMean
   }
 }
 
-function drawBismillah(ctx, { width, height, isLandscape, textScale }) {
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.direction = 'rtl';
-  ctx.fillStyle = '#ffffff';
-  const fontSize = (isLandscape ? 58 : 64) * clamp(Number(textScale) || 1, 0.75, 1.35);
-  ctx.font = `${Math.round(fontSize)}px IndopakNastaleeq, serif`;
-  ctx.fillText(
-    BISMILLAH_TEXT,
-    width / 2,
-    height * (isLandscape ? 0.225 : 0.205),
-  );
-}
-
 function drawAyahCard(ctx, {
   width,
   height,
@@ -140,27 +125,37 @@ function drawAyahCard(ctx, {
   translationDirection,
   surahNumber,
   showBismillah = false,
+  bismillahTranslation = '',
 }) {
   const cardWidth = width * (isLandscape ? 0.82 : 0.89);
   const cardX = (width - cardWidth) / 2;
 
   // The title owns the top of the composition. The text card never enters it.
-  const safeTop = height * (showBismillah
-    ? (isLandscape ? 0.285 : 0.255)
-    : (isLandscape ? 0.225 : 0.205));
+  const safeTop = height * (isLandscape ? 0.225 : 0.205);
   const safeBottom = height * (isLandscape ? 0.94 : 0.94);
   const maxCardHeight = safeBottom - safeTop;
   const maxTextWidth = cardWidth * 0.88;
 
-  const arabicText = (ayahs || [])
+  const mainArabicText = (ayahs || [])
     .map((item) => String(item?.text || '').trim())
     .filter(Boolean)
     .join('  ');
-  const translationText = showTranslation
+  const mainTranslationText = showTranslation
     ? (ayahs || [])
         .map((item) => translationsByAyah?.[item.ayahNumber] || '')
         .filter(Boolean)
         .join(' ')
+    : '';
+
+  const firstAyah = ayahs?.[0]?.ayahNumber;
+  const lastAyah = ayahs?.[ayahs.length - 1]?.ayahNumber;
+  const reference = firstAyah
+    ? (Number(lastAyah) > Number(firstAyah)
+      ? `${surahNumber}:${firstAyah}-${lastAyah}`
+      : `${surahNumber}:${firstAyah}`)
+    : '';
+  const translationText = showTranslation && mainTranslationText
+    ? `${showBismillah && bismillahTranslation ? `${bismillahTranslation}\n` : ''}${mainTranslationText}${reference ? ` (${reference})` : ''}`
     : '';
 
   const requestedArabicFont = (isLandscape ? 58 : 64) * textScale;
@@ -168,11 +163,12 @@ function drawAyahCard(ctx, {
   const minimumArabicFont = isLandscape ? 27 : 30;
   const minimumTranslationFont = isLandscape ? 17 : 18;
   let referenceFontSize = showTranslation ? requestedTranslationFont : requestedArabicFont;
-  let referenceHeight = referenceFontSize * 1.5 + 16;
+  let referenceHeight = translationText ? 0 : (referenceFontSize * 1.5 + 16);
   const verticalPadding = isLandscape ? 58 : 72;
 
   let arabicFont = requestedArabicFont;
   let translationFont = requestedTranslationFont;
+  let bismillahLines = [];
   let lines = [];
   let translationLines = [];
   let lineHeight = 0;
@@ -182,7 +178,8 @@ function drawAyahCard(ctx, {
   const measure = () => {
     ctx.direction = 'rtl';
     ctx.font = `${Math.round(arabicFont)}px IndopakNastaleeq, serif`;
-    lines = wrapArabicText(ctx, arabicText, maxTextWidth);
+    bismillahLines = showBismillah ? wrapArabicText(ctx, BISMILLAH_TEXT, maxTextWidth) : [];
+    lines = wrapArabicText(ctx, mainArabicText, maxTextWidth);
     lineHeight = arabicFont * 1.66;
 
     translationLines = [];
@@ -194,9 +191,10 @@ function drawAyahCard(ctx, {
     }
 
     referenceFontSize = translationText ? translationFont : arabicFont;
-    referenceHeight = referenceFontSize * 1.5 + 16;
+    referenceHeight = translationText ? 0 : (referenceFontSize * 1.5 + 16);
 
-    const arabicHeight = Math.max(lineHeight, lines.length * lineHeight);
+    const bismillahHeight = bismillahLines.length ? (bismillahLines.length * lineHeight) + (lineHeight * 0.28) : 0;
+    const arabicHeight = Math.max(lineHeight, lines.length * lineHeight) + bismillahHeight;
     const translationHeight = translationLines.length
       ? 18 + (translationLines.length * translationLineHeight)
       : 0;
@@ -234,7 +232,8 @@ function drawAyahCard(ctx, {
   ctx.fillStyle = 'rgba(4, 19, 18, .42)';
   ctx.fill();
 
-  const arabicHeight = Math.max(lineHeight, lines.length * lineHeight);
+  const bismillahHeight = bismillahLines.length ? (bismillahLines.length * lineHeight) + (lineHeight * 0.28) : 0;
+  const arabicHeight = Math.max(lineHeight, lines.length * lineHeight) + bismillahHeight;
   const translationHeight = translationLines.length
     ? 18 + (translationLines.length * translationLineHeight)
     : 0;
@@ -246,6 +245,14 @@ function drawAyahCard(ctx, {
   ctx.direction = 'rtl';
   ctx.fillStyle = '#ffffff';
   ctx.font = `${Math.round(arabicFont)}px IndopakNastaleeq, serif`;
+
+  if (bismillahLines.length) {
+    bismillahLines.forEach((line) => {
+      ctx.fillText(line, width / 2, cursorY);
+      cursorY += lineHeight;
+    });
+    cursorY += lineHeight * 0.28;
+  }
 
   lines.forEach((line) => {
     ctx.fillText(line, width / 2, cursorY);
@@ -263,12 +270,7 @@ function drawAyahCard(ctx, {
     });
   }
 
-  const firstAyah = ayahs?.[0]?.ayahNumber;
-  const lastAyah = ayahs?.[ayahs.length - 1]?.ayahNumber;
-  if (firstAyah) {
-    const reference = Number(lastAyah) > Number(firstAyah)
-      ? `${surahNumber}:${firstAyah}-${lastAyah}`
-      : `${surahNumber}:${firstAyah}`;
+  if (reference && !translationText) {
     cursorY += 8;
     ctx.direction = 'ltr';
     ctx.fillStyle = 'rgba(255,255,255,.72)';
@@ -300,21 +302,25 @@ function wrapArabicText(ctx, text, maxWidth) {
 }
 
 function wrapPlainText(ctx, text, maxWidth) {
-  const words = String(text || '').trim().split(/\s+/).filter(Boolean);
-  if (!words.length) return [];
+  const paragraphs = String(text || '').trim().split(/\n+/).filter(Boolean);
+  if (!paragraphs.length) return [];
 
   const lines = [];
-  let currentLine = '';
-  words.forEach((word) => {
-    const candidate = currentLine ? `${currentLine} ${word}` : word;
-    if (!currentLine || ctx.measureText(candidate).width <= maxWidth) {
-      currentLine = candidate;
-    } else {
-      lines.push(currentLine);
-      currentLine = word;
-    }
+  paragraphs.forEach((paragraph, paragraphIndex) => {
+    const words = paragraph.trim().split(/\s+/).filter(Boolean);
+    let currentLine = '';
+    words.forEach((word) => {
+      const candidate = currentLine ? `${currentLine} ${word}` : word;
+      if (!currentLine || ctx.measureText(candidate).width <= maxWidth) {
+        currentLine = candidate;
+      } else {
+        lines.push(currentLine);
+        currentLine = word;
+      }
+    });
+    if (currentLine) lines.push(currentLine);
+    if (paragraphIndex < paragraphs.length - 1) lines.push('');
   });
-  if (currentLine) lines.push(currentLine);
   return lines;
 }
 

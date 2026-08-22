@@ -14,6 +14,7 @@ export async function generateQuranShareVideo({
   timeline,
   ayahs,
   translationsByAyah = {},
+  bismillahTranslation = '',
   translationDirection = 'ltr',
   surahName,
   surahMeaning = '',
@@ -219,9 +220,11 @@ export async function generateQuranShareVideo({
           const currentAyah = isBismillah
             ? null
             : ayahs.find((item) => Number(item.ayahNumber) === Number(timelineEntry?.ayahNumber)) || ayahs[0];
-          const activeWord = isBismillah ? null : findWordAtTime(timelineEntry, elapsedMs);
+          const activeWord = isBismillah
+            ? findWordAtTime(timeline?.bismillah, elapsedMs)
+            : findWordAtTime(timelineEntry, elapsedMs);
           const wordItems = isBismillah
-            ? []
+            ? getQuranWordsForAyah(1, 1)
             : getQuranWordsForAyah(composition?.surahNumber, currentAyah?.ayahNumber);
 
           drawVideoFrame(ctx, {
@@ -236,9 +239,9 @@ export async function generateQuranShareVideo({
             wordItems,
             activeWordPosition: activeWord?.position || null,
             highlightColor,
-            translation: !isBismillah && composition?.showTranslation
-              ? translationsByAyah?.[currentAyah?.ayahNumber] || ''
-              : '',
+            translation: isBismillah
+              ? (composition?.showTranslation ? bismillahTranslation : '')
+              : (composition?.showTranslation ? translationsByAyah?.[currentAyah?.ayahNumber] || '' : ''),
             translationDirection,
             textScale: composition?.style?.textScale || 1,
             translationScale: composition?.style?.translationScale || translationScale || 1,
@@ -328,20 +331,11 @@ function drawVideoFrame(ctx, {
     ctx.fillText(surahMeaning, width / 2, height * (isLandscape ? .12 : .102));
   }
 
-  if (isBismillah) {
-    ctx.direction = 'rtl';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillStyle = '#ffffff';
-    const bismillahFont = (isLandscape ? 37 : 45) * clamp(Number(textScale) || 1, .75, 1.35);
-    ctx.font = `${Math.round(bismillahFont)}px IndopakNastaleeq, serif`;
-    ctx.fillText(
-      'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
-      width / 2,
-      height * (isLandscape ? .24 : .21),
-    );
-    return;
-  }
+  const effectiveWordItems = wordItems;
+  const effectiveReference = isBismillah ? '' : `${surahNumber}:${ayah?.ayahNumber}`;
+  const effectiveTranslation = translation
+    ? `${translation}${effectiveReference ? ` (${effectiveReference})` : ''}`
+    : '';
 
   const safeTop = height * (isLandscape ? .18 : .165);
   const safeBottom = height * (isLandscape ? .93 : .91);
@@ -354,8 +348,8 @@ function drawVideoFrame(ctx, {
   const requestedTranslationFont = (isLandscape ? 18 : 21) * clamp(Number(translationScale) || 1, .75, 1.35);
   const minimumArabicFont = isLandscape ? 23 : 27;
   const minimumTranslationFont = isLandscape ? 14 : 16;
-  let referenceFont = translation ? requestedTranslationFont : requestedArabicFont;
-  let referenceHeight = referenceFont * 1.6 + 10;
+  let referenceFont = effectiveTranslation ? requestedTranslationFont : requestedArabicFont;
+  let referenceHeight = effectiveTranslation || !effectiveReference ? 0 : (referenceFont * 1.6 + 10);
   const verticalPadding = isLandscape ? 44 : 56;
 
   let arabicFont = requestedArabicFont;
@@ -369,19 +363,19 @@ function drawVideoFrame(ctx, {
   const measure = () => {
     ctx.direction = 'rtl';
     ctx.font = `${Math.round(arabicFont)}px IndopakNastaleeq, serif`;
-    arabicLines = wrapWordItems(ctx, wordItems, maxTextWidth);
+    arabicLines = wrapWordItems(ctx, effectiveWordItems, maxTextWidth);
     arabicLineHeight = arabicFont * 1.50;
 
     translationLines = [];
     translationLineHeight = translationFont * 1.36;
-    if (translation) {
+    if (effectiveTranslation) {
       ctx.direction = translationDirection === 'rtl' ? 'rtl' : 'ltr';
       ctx.font = `500 ${Math.round(translationFont)}px Inter, ui-sans-serif, system-ui`;
-      translationLines = wrapText(ctx, translation, maxTextWidth);
+      translationLines = wrapText(ctx, effectiveTranslation, maxTextWidth);
     }
 
-    referenceFont = translation ? translationFont : arabicFont;
-    referenceHeight = referenceFont * 1.6 + 10;
+    referenceFont = effectiveTranslation ? translationFont : arabicFont;
+    referenceHeight = effectiveTranslation || !effectiveReference ? 0 : (referenceFont * 1.6 + 10);
 
     const arabicHeight = Math.max(arabicLineHeight, arabicLines.length * arabicLineHeight);
     const translationHeight = translationLines.length
@@ -396,7 +390,7 @@ function drawVideoFrame(ctx, {
   while (requiredHeight > maxCardHeight && guard < 80) {
     guard += 1;
     const canReduceArabic = arabicFont > minimumArabicFont;
-    const canReduceTranslation = translation && translationFont > minimumTranslationFont;
+    const canReduceTranslation = effectiveTranslation && translationFont > minimumTranslationFont;
     if (!canReduceArabic && !canReduceTranslation) break;
     if (canReduceArabic) arabicFont = Math.max(minimumArabicFont, arabicFont - 1);
     if (canReduceTranslation) translationFont = Math.max(minimumTranslationFont, translationFont - .75);
@@ -455,12 +449,14 @@ function drawVideoFrame(ctx, {
     });
   }
 
-  cursorY += 7;
-  ctx.direction = 'ltr';
-  ctx.textAlign = 'center';
-  ctx.fillStyle = 'rgba(255,255,255,.70)';
-  ctx.font = `500 ${referenceFont}px Inter, ui-sans-serif, system-ui`;
-  ctx.fillText(`${surahNumber}:${ayah?.ayahNumber}`, width / 2, cursorY);
+  if (effectiveReference && !effectiveTranslation) {
+    cursorY += 7;
+    ctx.direction = 'ltr';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = 'rgba(255,255,255,.70)';
+    ctx.font = `500 ${referenceFont}px Inter, ui-sans-serif, system-ui`;
+    ctx.fillText(effectiveReference, width / 2, cursorY);
+  }
 }
 
 function wrapWordItems(ctx, wordItems, maxWidth) {
