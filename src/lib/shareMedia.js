@@ -110,33 +110,38 @@ export async function loadShareVideoTimeline(composition, fetchImpl = globalThis
             && Number.isFinite(Number(segment?.endMs))
           ))
         : [];
-      // Prefer the exact first/last Quran-word boundaries for 1:1. This keeps
-      // reciter-specific A'udhu/intro audio outside the Share Bismillah clip.
-      // Fall back to the ayah boundary for datasets without word segments.
-      const sourceStartMs = wordSegments.length
-        ? Number(wordSegments[0].startMs)
-        : (Number(firstAyah.startMs) || 0);
-      const sourceEndMs = wordSegments.length
-        ? Number(wordSegments[wordSegments.length - 1].endMs)
-        : (Number(firstAyah.endMs) || sourceStartMs);
-      const durationMs = Math.max(0, sourceEndMs - sourceStartMs);
-      if (durationMs > 0) {
-        bismillah = {
-          audioUrl: fatihaPlayback.audioUrl,
-          sourceStartMs,
-          sourceEndMs,
-          startMs: 0,
-          endMs: durationMs,
-          durationMs,
-          ayahNumber: 1,
-          wordSegments: wordSegments.map((segment) => ({
-            ...segment,
-            sourceStartMs: Number(segment.startMs) || 0,
-            sourceEndMs: Number(segment.endMs) || 0,
-            startMs: Math.max(0, (Number(segment.startMs) || 0) - sourceStartMs),
-            endMs: Math.max(0, (Number(segment.endMs) || 0) - sourceStartMs),
-          })),
-        };
+      // Only build a Share Bismillah clip from exact Quran-word boundaries.
+      // That guarantees reciter-specific A'udhu/intro audio is never included.
+      // If a reciter has no 1:1 word timings, skip the Bismillah audio rather
+      // than risk exporting non-Quran intro audio.
+      if (wordSegments.length) {
+        const sourceStartMs = Number(wordSegments[0].startMs);
+        const rawSourceEndMs = Number(wordSegments[wordSegments.length - 1].endMs);
+        // A tiny end guard removes timing-file tails that can contain the onset
+        // of Al-Fatiha 1:2 after the final Bismillah word has finished.
+        const sourceEndMs = Math.max(sourceStartMs, rawSourceEndMs - BISMILLAH_END_GUARD_MS);
+        const durationMs = Math.max(0, sourceEndMs - sourceStartMs);
+        if (durationMs > 0) {
+          bismillah = {
+            audioUrl: fatihaPlayback.audioUrl,
+            sourceStartMs,
+            sourceEndMs,
+            startMs: 0,
+            endMs: durationMs,
+            durationMs,
+            ayahNumber: 1,
+            wordSegments: wordSegments.map((segment) => ({
+              ...segment,
+              sourceStartMs: Number(segment.startMs) || 0,
+              sourceEndMs: Number(segment.endMs) || 0,
+              startMs: Math.max(0, (Number(segment.startMs) || 0) - sourceStartMs),
+              endMs: Math.min(
+                durationMs,
+                Math.max(0, (Number(segment.endMs) || 0) - sourceStartMs),
+              ),
+            })),
+          };
+        }
       }
     }
   }

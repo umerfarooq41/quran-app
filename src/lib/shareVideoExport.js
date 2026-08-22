@@ -83,17 +83,23 @@ export async function generateQuranShareVideo({
 
   const connectAudio = (media) => {
     const source = audioContext.createMediaElementSource(media);
-    source.connect(audioDestination);
+    const captureGain = audioContext.createGain();
+    captureGain.gain.value = 1;
+    source.connect(captureGain);
+    captureGain.connect(audioDestination);
     const silentGain = audioContext.createGain();
     silentGain.gain.value = 0;
     source.connect(silentGain);
     silentGain.connect(audioContext.destination);
     audioSources.push(source);
+    return captureGain;
   };
 
+  let mainCaptureGain = null;
+  let bismillahCaptureGain = null;
   try {
-    connectAudio(audio);
-    if (bismillahAudio) connectAudio(bismillahAudio);
+    mainCaptureGain = connectAudio(audio);
+    if (bismillahAudio) bismillahCaptureGain = connectAudio(bismillahAudio);
   } catch (error) {
     canvasStream.getTracks().forEach((track) => track.stop());
     capturableAudio.revoke?.();
@@ -192,13 +198,18 @@ export async function generateQuranShareVideo({
             );
             elapsedMs = Math.min(preRollMs, bismillahElapsed);
             isBismillah = true;
+            if (bismillahCaptureGain) {
+              const remainingMs = Math.max(0, preRollMs - bismillahElapsed);
+              bismillahCaptureGain.gain.value = Math.max(0, Math.min(1, remainingMs / 120));
+            }
 
             if (
-              bismillahElapsed >= preRollMs - 20
+              bismillahElapsed >= preRollMs - 12
               || bismillahAudio.currentTime * 1000 >= Number(timeline.bismillah?.sourceEndMs || 0) - 20
               || bismillahAudio.ended
             ) {
               bismillahAudio.pause();
+              if (bismillahCaptureGain) bismillahCaptureGain.gain.value = 1;
               phase = 'main';
               mainStartPending = true;
               audio.currentTime = Math.max(0, Number(timeline.sourceStartMs) || 0) / 1000;
@@ -332,10 +343,8 @@ function drawVideoFrame(ctx, {
   }
 
   const effectiveWordItems = wordItems;
-  const effectiveReference = isBismillah ? '' : `${surahNumber}:${ayah?.ayahNumber}`;
-  const effectiveTranslation = translation
-    ? `${translation}${effectiveReference ? ` (${effectiveReference})` : ''}`
-    : '';
+  const effectiveReference = isBismillah ? '1:1' : `${surahNumber}:${ayah?.ayahNumber}`;
+  const effectiveTranslation = translation || '';
 
   const safeTop = height * (isLandscape ? .18 : .165);
   const safeBottom = height * (isLandscape ? .93 : .91);
@@ -348,8 +357,8 @@ function drawVideoFrame(ctx, {
   const requestedTranslationFont = (isLandscape ? 18 : 21) * clamp(Number(translationScale) || 1, .75, 1.35);
   const minimumArabicFont = isLandscape ? 23 : 27;
   const minimumTranslationFont = isLandscape ? 14 : 16;
-  let referenceFont = effectiveTranslation ? requestedTranslationFont : requestedArabicFont;
-  let referenceHeight = effectiveTranslation || !effectiveReference ? 0 : (referenceFont * 1.6 + 10);
+  let referenceFont = (effectiveTranslation ? requestedTranslationFont : requestedArabicFont) * 0.56;
+  let referenceHeight = (!effectiveReference || (!isBismillah && effectiveTranslation)) ? 0 : (referenceFont * 1.6 + 10);
   const verticalPadding = isLandscape ? 44 : 56;
 
   let arabicFont = requestedArabicFont;
@@ -374,8 +383,8 @@ function drawVideoFrame(ctx, {
       translationLines = wrapText(ctx, effectiveTranslation, maxTextWidth);
     }
 
-    referenceFont = effectiveTranslation ? translationFont : arabicFont;
-    referenceHeight = effectiveTranslation || !effectiveReference ? 0 : (referenceFont * 1.6 + 10);
+    referenceFont = (effectiveTranslation ? translationFont : arabicFont) * 0.56;
+    referenceHeight = (!effectiveReference || (!isBismillah && effectiveTranslation)) ? 0 : (referenceFont * 1.6 + 10);
 
     const arabicHeight = Math.max(arabicLineHeight, arabicLines.length * arabicLineHeight);
     const translationHeight = translationLines.length
@@ -449,7 +458,7 @@ function drawVideoFrame(ctx, {
     });
   }
 
-  if (effectiveReference && !effectiveTranslation) {
+  if (effectiveReference && (isBismillah || !effectiveTranslation)) {
     cursorY += 7;
     ctx.direction = 'ltr';
     ctx.textAlign = 'center';

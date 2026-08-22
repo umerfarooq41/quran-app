@@ -155,14 +155,14 @@ function drawAyahCard(ctx, {
       : `${surahNumber}:${firstAyah}`)
     : '';
   const translationText = showTranslation && mainTranslationText
-    ? `${showBismillah && bismillahTranslation ? `${bismillahTranslation}\n` : ''}${mainTranslationText}${reference ? ` (${reference})` : ''}`
+    ? `${showBismillah && bismillahTranslation ? `${bismillahTranslation}\n` : ''}${mainTranslationText}`
     : '';
 
   const requestedArabicFont = (isLandscape ? 58 : 64) * textScale;
   const requestedTranslationFont = (isLandscape ? 30 : 32) * translationScale;
   const minimumArabicFont = isLandscape ? 27 : 30;
   const minimumTranslationFont = isLandscape ? 17 : 18;
-  let referenceFontSize = showTranslation ? requestedTranslationFont : requestedArabicFont;
+  let referenceFontSize = (showTranslation ? requestedTranslationFont : requestedArabicFont) * 0.56;
   let referenceHeight = translationText ? 0 : (referenceFontSize * 1.5 + 16);
   const verticalPadding = isLandscape ? 58 : 72;
 
@@ -190,7 +190,7 @@ function drawAyahCard(ctx, {
       translationLines = wrapPlainText(ctx, translationText, maxTextWidth);
     }
 
-    referenceFontSize = translationText ? translationFont : arabicFont;
+    referenceFontSize = (translationText ? translationFont : arabicFont) * 0.56;
     referenceHeight = translationText ? 0 : (referenceFontSize * 1.5 + 16);
 
     const bismillahHeight = bismillahLines.length ? (bismillahLines.length * lineHeight) + (lineHeight * 0.28) : 0;
@@ -251,7 +251,14 @@ function drawAyahCard(ctx, {
       ctx.fillText(line, width / 2, cursorY);
       cursorY += lineHeight;
     });
-    cursorY += lineHeight * 0.28;
+    ctx.direction = 'ltr';
+    ctx.fillStyle = 'rgba(255,255,255,.74)';
+    ctx.font = `500 ${Math.max(14, Math.round(arabicFont * 0.42))}px Inter, ui-sans-serif, system-ui`;
+    ctx.fillText('1:1', width / 2, cursorY - lineHeight * 0.22);
+    cursorY += lineHeight * 0.20;
+    ctx.direction = 'rtl';
+    ctx.fillStyle = '#ffffff';
+    ctx.font = `${Math.round(arabicFont)}px IndopakNastaleeq, serif`;
   }
 
   lines.forEach((line) => {
