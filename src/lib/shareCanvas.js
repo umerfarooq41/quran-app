@@ -1,5 +1,6 @@
 const PORTRAIT_SIZE = Object.freeze({ width: 1080, height: 1920 });
 const LANDSCAPE_SIZE = Object.freeze({ width: 1600, height: 900 });
+const BISMILLAH_TEXT = 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ';
 
 export async function generateQuranShareImage({
   surahName,
@@ -13,6 +14,7 @@ export async function generateQuranShareImage({
   showTranslation = false,
   translationsByAyah = {},
   translationDirection = 'ltr',
+  showBismillah = false,
 }) {
   const isLandscape = orientation === 'landscape';
   const { width, height } = isLandscape ? LANDSCAPE_SIZE : PORTRAIT_SIZE;
@@ -48,6 +50,10 @@ export async function generateQuranShareImage({
     surahMeaning,
   });
 
+  if (showBismillah) {
+    drawBismillah(ctx, { width, height, isLandscape, textScale });
+  }
+
   drawAyahCard(ctx, {
     width,
     height,
@@ -59,6 +65,7 @@ export async function generateQuranShareImage({
     translationsByAyah,
     translationDirection,
     surahNumber,
+    showBismillah,
   });
 return canvasToBlob(canvas);
 }
@@ -107,6 +114,20 @@ function drawSurahHeader(ctx, { width, height, isLandscape, surahName, surahMean
   }
 }
 
+function drawBismillah(ctx, { width, height, isLandscape, textScale }) {
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.direction = 'rtl';
+  ctx.fillStyle = '#ffffff';
+  const fontSize = (isLandscape ? 58 : 64) * clamp(Number(textScale) || 1, 0.75, 1.35);
+  ctx.font = `${Math.round(fontSize)}px IndopakNastaleeq, serif`;
+  ctx.fillText(
+    BISMILLAH_TEXT,
+    width / 2,
+    height * (isLandscape ? 0.225 : 0.205),
+  );
+}
+
 function drawAyahCard(ctx, {
   width,
   height,
@@ -118,12 +139,15 @@ function drawAyahCard(ctx, {
   translationsByAyah,
   translationDirection,
   surahNumber,
+  showBismillah = false,
 }) {
   const cardWidth = width * (isLandscape ? 0.82 : 0.89);
   const cardX = (width - cardWidth) / 2;
 
   // The title owns the top of the composition. The text card never enters it.
-  const safeTop = height * (isLandscape ? 0.225 : 0.205);
+  const safeTop = height * (showBismillah
+    ? (isLandscape ? 0.285 : 0.255)
+    : (isLandscape ? 0.225 : 0.205));
   const safeBottom = height * (isLandscape ? 0.94 : 0.94);
   const maxCardHeight = safeBottom - safeTop;
   const maxTextWidth = cardWidth * 0.88;
@@ -143,8 +167,8 @@ function drawAyahCard(ctx, {
   const requestedTranslationFont = (isLandscape ? 30 : 32) * translationScale;
   const minimumArabicFont = isLandscape ? 27 : 30;
   const minimumTranslationFont = isLandscape ? 17 : 18;
-  const referenceFontSize = isLandscape ? 24 : 28;
-  const referenceHeight = referenceFontSize * 1.5 + 16;
+  let referenceFontSize = showTranslation ? requestedTranslationFont : requestedArabicFont;
+  let referenceHeight = referenceFontSize * 1.5 + 16;
   const verticalPadding = isLandscape ? 58 : 72;
 
   let arabicFont = requestedArabicFont;
@@ -168,6 +192,9 @@ function drawAyahCard(ctx, {
       ctx.font = `500 ${Math.round(translationFont)}px Inter, ui-sans-serif, system-ui`;
       translationLines = wrapPlainText(ctx, translationText, maxTextWidth);
     }
+
+    referenceFontSize = translationText ? translationFont : arabicFont;
+    referenceHeight = referenceFontSize * 1.5 + 16;
 
     const arabicHeight = Math.max(lineHeight, lines.length * lineHeight);
     const translationHeight = translationLines.length

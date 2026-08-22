@@ -1,5 +1,7 @@
 import { getFullSurahPlayback } from './fullSurahAudio';
 
+export const SHARE_BISMILLAH_TEXT = 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ';
+
 export const SHARE_MEDIA_MODES = Object.freeze({
   IMAGE: 'image',
   VIDEO: 'video',
@@ -66,8 +68,17 @@ export function buildShareComposition({
         : 0.42,
       alignment: style.alignment || 'center',
       textScale: Number.isFinite(Number(style.textScale)) ? Number(style.textScale) : 1,
+      translationScale: Number.isFinite(Number(style.translationScale)) ? Number(style.translationScale) : 1,
     },
   };
+}
+
+export function shouldIncludeShareBismillah(surahNumber, fromAyah) {
+  const surah = Number(surahNumber) || 1;
+  const firstAyah = Number(fromAyah) || 1;
+  if (surah === 9) return false;
+  if (surah === 1 && firstAyah === 1) return false;
+  return true;
 }
 
 export async function loadShareVideoTimeline(composition, fetchImpl = globalThis.fetch) {
@@ -86,30 +97,71 @@ export async function loadShareVideoTimeline(composition, fetchImpl = globalThis
   });
   if (!selected.length) return null;
 
+  let bismillah = null;
+  if (shouldIncludeShareBismillah(composition.surahNumber, composition.fromAyah)) {
+    const fatihaPlayback = composition.surahNumber === 1
+      ? playback
+      : await getFullSurahPlayback(composition.reciterId, 1, fetchImpl);
+    const firstAyah = fatihaPlayback?.timeline?.find((entry) => Number(entry.ayahNumber) === 1);
+    if (fatihaPlayback?.audioUrl && firstAyah) {
+      const wordSegments = Array.isArray(firstAyah.wordSegments)
+        ? firstAyah.wordSegments.filter((segment) => (
+            Number.isFinite(Number(segment?.startMs))
+            && Number.isFinite(Number(segment?.endMs))
+          ))
+        : [];
+      // Prefer the exact first/last Quran-word boundaries for 1:1. This keeps
+      // reciter-specific A'udhu/intro audio outside the Share Bismillah clip.
+      // Fall back to the ayah boundary for datasets without word segments.
+      const sourceStartMs = wordSegments.length
+        ? Number(wordSegments[0].startMs)
+        : (Number(firstAyah.startMs) || 0);
+      const sourceEndMs = wordSegments.length
+        ? Number(wordSegments[wordSegments.length - 1].endMs)
+        : (Number(firstAyah.endMs) || sourceStartMs);
+      const durationMs = Math.max(0, sourceEndMs - sourceStartMs);
+      if (durationMs > 0) {
+        bismillah = {
+          audioUrl: fatihaPlayback.audioUrl,
+          sourceStartMs,
+          sourceEndMs,
+          durationMs,
+          ayahNumber: 1,
+        };
+      }
+    }
+  }
+
+  const preRollMs = Number(bismillah?.durationMs) || 0;
   const firstStart = Number(selected[0].startMs) || 0;
   const normalizedTimeline = selected.map((entry) => ({
     ...entry,
     sourceStartMs: Number(entry.startMs) || 0,
     sourceEndMs: Number(entry.endMs) || 0,
-    startMs: Math.max(0, (Number(entry.startMs) || 0) - firstStart),
-    endMs: Math.max(0, (Number(entry.endMs) || 0) - firstStart),
+    startMs: preRollMs + Math.max(0, (Number(entry.startMs) || 0) - firstStart),
+    endMs: preRollMs + Math.max(0, (Number(entry.endMs) || 0) - firstStart),
     wordSegments: (Array.isArray(entry.wordSegments) ? entry.wordSegments : []).map((segment) => ({
       ...segment,
       sourceStartMs: Number(segment.startMs) || 0,
       sourceEndMs: Number(segment.endMs) || 0,
-      startMs: Math.max(0, (Number(segment.startMs) || 0) - firstStart),
-      endMs: Math.max(0, (Number(segment.endMs) || 0) - firstStart),
+      startMs: preRollMs + Math.max(0, (Number(segment.startMs) || 0) - firstStart),
+      endMs: preRollMs + Math.max(0, (Number(segment.endMs) || 0) - firstStart),
     })),
   }));
+
+  const selectedDurationMs = Math.max(
+    1,
+    (Number(selected[selected.length - 1].endMs) || firstStart) - firstStart,
+  );
 
   return {
     ...playback,
     sourceStartMs: firstStart,
     sourceEndMs: Number(selected[selected.length - 1].endMs) || firstStart,
-    durationMs: Math.max(
-      1,
-      (Number(selected[selected.length - 1].endMs) || firstStart) - firstStart,
-    ),
+    selectedDurationMs,
+    bismillah,
+    bismillahDurationMs: preRollMs,
+    durationMs: preRollMs + selectedDurationMs,
     timeline: normalizedTimeline,
   };
 }

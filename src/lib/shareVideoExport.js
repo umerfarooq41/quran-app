@@ -27,11 +27,14 @@ export async function generateQuranShareVideo({
   const width = isLandscape ? 1280 : 720;
   const height = isLandscape ? 720 : 1280;
   const durationMs = Math.max(1, Number(timeline?.durationMs) || 0);
+  const preRollMs = Math.max(0, Number(timeline?.bismillahDurationMs) || 0);
   const backgroundSrc = composition?.background?.videoSrc;
   const audioSrc = timeline?.audioUrl;
+  const bismillahSrc = preRollMs > 0 ? timeline?.bismillah?.audioUrl : '';
 
   if (!backgroundSrc) throw new Error('A video background is required.');
   if (!audioSrc) throw new Error('Recitation audio is unavailable.');
+  if (preRollMs > 0 && !bismillahSrc) throw new Error('Bismillah audio is unavailable.');
 
   await Promise.all([
     document.fonts?.load?.('58px IndopakNastaleeq'),
@@ -50,9 +53,21 @@ export async function generateQuranShareVideo({
   audio.src = capturableAudio.src;
   audio.preload = 'auto';
 
+  let bismillahAudio = null;
+  let capturableBismillah = null;
+  if (bismillahSrc) {
+    bismillahAudio = document.createElement('audio');
+    capturableBismillah = await prepareCapturableAudio(bismillahSrc);
+    bismillahAudio.src = capturableBismillah.src;
+    bismillahAudio.preload = 'auto';
+  }
+
   await Promise.all([
     waitForMedia(backgroundVideo, 'Background video could not be loaded.'),
     waitForMedia(audio, 'Recitation audio could not be loaded.'),
+    bismillahAudio
+      ? waitForMedia(bismillahAudio, 'Bismillah audio could not be loaded.')
+      : Promise.resolve(),
   ]);
 
   const canvas = document.createElement('canvas');
@@ -63,18 +78,25 @@ export async function generateQuranShareVideo({
   const canvasStream = canvas.captureStream(VIDEO_FPS);
   const audioContext = new (window.AudioContext || window.webkitAudioContext)();
   const audioDestination = audioContext.createMediaStreamDestination();
+  const audioSources = [];
 
-  let audioSource;
-  try {
-    audioSource = audioContext.createMediaElementSource(audio);
-    audioSource.connect(audioDestination);
+  const connectAudio = (media) => {
+    const source = audioContext.createMediaElementSource(media);
+    source.connect(audioDestination);
     const silentGain = audioContext.createGain();
     silentGain.gain.value = 0;
-    audioSource.connect(silentGain);
+    source.connect(silentGain);
     silentGain.connect(audioContext.destination);
+    audioSources.push(source);
+  };
+
+  try {
+    connectAudio(audio);
+    if (bismillahAudio) connectAudio(bismillahAudio);
   } catch (error) {
     canvasStream.getTracks().forEach((track) => track.stop());
     capturableAudio.revoke?.();
+    capturableBismillah?.revoke?.();
     await audioContext.close().catch(() => {});
     throw new Error(
       'This reciter audio cannot be captured for offline video export. Use a bundled/local reciter audio source.',
@@ -86,6 +108,7 @@ export async function generateQuranShareVideo({
   if (!audioTracks.length) {
     canvasStream.getTracks().forEach((track) => track.stop());
     capturableAudio.revoke?.();
+    capturableBismillah?.revoke?.();
     await audioContext.close().catch(() => {});
     throw new Error('The browser did not create an audio track for the exported video.');
   }
@@ -102,6 +125,7 @@ export async function generateQuranShareVideo({
     canvasStream.getTracks().forEach((track) => track.stop());
     combinedStream.getTracks().forEach((track) => track.stop());
     capturableAudio.revoke?.();
+    capturableBismillah?.revoke?.();
     await audioContext.close().catch(() => {});
     throw new Error('This browser cannot start the offline video encoder.', { cause: error });
   }
@@ -120,44 +144,85 @@ export async function generateQuranShareVideo({
   const cleanup = async () => {
     backgroundVideo.pause();
     audio.pause();
+    bismillahAudio?.pause();
     canvasStream.getTracks().forEach((track) => track.stop());
     combinedStream.getTracks().forEach((track) => track.stop());
-    try { audioSource?.disconnect(); } catch {}
+    audioSources.forEach((source) => {
+      try { source.disconnect(); } catch {}
+    });
     capturableAudio.revoke?.();
+    capturableBismillah?.revoke?.();
     try { await audioContext.close(); } catch {}
   };
 
   try {
     backgroundVideo.currentTime = 0;
     audio.currentTime = Math.max(0, Number(timeline.sourceStartMs) || 0) / 1000;
+    if (bismillahAudio) {
+      bismillahAudio.currentTime = Math.max(0, Number(timeline.bismillah?.sourceStartMs) || 0) / 1000;
+    }
+
     await audioContext.resume();
     await backgroundVideo.play();
-
     recorder.start(1000);
+
+    let phase = preRollMs > 0 && bismillahAudio ? 'bismillah' : 'main';
     try {
-      await audio.play();
+      if (phase === 'bismillah') await bismillahAudio.play();
+      else await audio.play();
     } catch (error) {
       throw new Error('Recitation audio could not start during video export.', { cause: error });
     }
 
     const startedAt = performance.now();
     let animationFrame = 0;
+    let mainStartPending = false;
 
     await new Promise((resolve, reject) => {
       const render = () => {
         try {
-          const audioElapsedMs = Math.max(
-            0,
-            (audio.currentTime * 1000) - (Number(timeline.sourceStartMs) || 0),
-          );
-          const elapsedMs = Math.min(durationMs, audioElapsedMs);
-          const timelineEntry = findShareAyahAtTime(timeline.timeline, elapsedMs);
-          const currentAyah = ayahs.find(
-            (item) => Number(item.ayahNumber) === Number(timelineEntry?.ayahNumber),
-          ) || ayahs[0];
+          let elapsedMs = 0;
+          let isBismillah = false;
 
-          const activeWord = findWordAtTime(timelineEntry, elapsedMs);
-          const wordItems = getQuranWordsForAyah(composition?.surahNumber, currentAyah?.ayahNumber);
+          if (phase === 'bismillah' && bismillahAudio) {
+            const bismillahElapsed = Math.max(
+              0,
+              (bismillahAudio.currentTime * 1000) - Number(timeline.bismillah?.sourceStartMs || 0),
+            );
+            elapsedMs = Math.min(preRollMs, bismillahElapsed);
+            isBismillah = true;
+
+            if (
+              bismillahElapsed >= preRollMs - 20
+              || bismillahAudio.currentTime * 1000 >= Number(timeline.bismillah?.sourceEndMs || 0) - 20
+              || bismillahAudio.ended
+            ) {
+              bismillahAudio.pause();
+              phase = 'main';
+              mainStartPending = true;
+              audio.currentTime = Math.max(0, Number(timeline.sourceStartMs) || 0) / 1000;
+              audio.play().then(() => {
+                mainStartPending = false;
+              }).catch(reject);
+            }
+          } else {
+            const mainElapsed = Math.max(
+              0,
+              (audio.currentTime * 1000) - (Number(timeline.sourceStartMs) || 0),
+            );
+            elapsedMs = Math.min(durationMs, preRollMs + mainElapsed);
+          }
+
+          const timelineEntry = isBismillah
+            ? null
+            : findShareAyahAtTime(timeline.timeline, elapsedMs);
+          const currentAyah = isBismillah
+            ? null
+            : ayahs.find((item) => Number(item.ayahNumber) === Number(timelineEntry?.ayahNumber)) || ayahs[0];
+          const activeWord = isBismillah ? null : findWordAtTime(timelineEntry, elapsedMs);
+          const wordItems = isBismillah
+            ? []
+            : getQuranWordsForAyah(composition?.surahNumber, currentAyah?.ayahNumber);
 
           drawVideoFrame(ctx, {
             video: backgroundVideo,
@@ -171,27 +236,31 @@ export async function generateQuranShareVideo({
             wordItems,
             activeWordPosition: activeWord?.position || null,
             highlightColor,
-            translation: composition?.showTranslation
+            translation: !isBismillah && composition?.showTranslation
               ? translationsByAyah?.[currentAyah?.ayahNumber] || ''
               : '',
             translationDirection,
             textScale: composition?.style?.textScale || 1,
             translationScale: composition?.style?.translationScale || translationScale || 1,
+            isBismillah,
           });
 
           onProgress?.(Math.min(1, elapsedMs / durationMs));
 
           if (
-            elapsedMs >= durationMs - 20
-            || audio.currentTime * 1000 >= Number(timeline.sourceEndMs) - 20
-            || audio.ended
+            phase === 'main'
+            && !mainStartPending
+            && (
+              elapsedMs >= durationMs - 20
+              || audio.currentTime * 1000 >= Number(timeline.sourceEndMs) - 20
+              || audio.ended
+            )
           ) {
             resolve();
             return;
           }
 
-          // Fallback guard in case a browser fails to advance the audio element.
-          if (performance.now() - startedAt > durationMs + 5000) {
+          if (performance.now() - startedAt > durationMs + 8000) {
             reject(new Error('Video export timed out.'));
             return;
           }
@@ -207,6 +276,7 @@ export async function generateQuranShareVideo({
 
     cancelAnimationFrame(animationFrame);
     audio.pause();
+    bismillahAudio?.pause();
     backgroundVideo.pause();
     if (recorder.state !== 'inactive') recorder.stop();
     await stopped;
@@ -234,7 +304,7 @@ export async function generateQuranShareVideo({
 function drawVideoFrame(ctx, {
   video, width, height, isLandscape, surahName, surahMeaning, surahNumber,
   ayah, wordItems, activeWordPosition, highlightColor, translation,
-  translationDirection, textScale, translationScale = 1,
+  translationDirection, textScale, translationScale = 1, isBismillah = false,
 }) {
   drawVideoCover(ctx, video, width, height);
   const overlay = ctx.createLinearGradient(0, 0, 0, height);
@@ -258,6 +328,21 @@ function drawVideoFrame(ctx, {
     ctx.fillText(surahMeaning, width / 2, height * (isLandscape ? .12 : .102));
   }
 
+  if (isBismillah) {
+    ctx.direction = 'rtl';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#ffffff';
+    const bismillahFont = (isLandscape ? 37 : 45) * clamp(Number(textScale) || 1, .75, 1.35);
+    ctx.font = `${Math.round(bismillahFont)}px IndopakNastaleeq, serif`;
+    ctx.fillText(
+      'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
+      width / 2,
+      height * (isLandscape ? .24 : .21),
+    );
+    return;
+  }
+
   const safeTop = height * (isLandscape ? .18 : .165);
   const safeBottom = height * (isLandscape ? .93 : .91);
   const maxCardHeight = safeBottom - safeTop;
@@ -269,8 +354,8 @@ function drawVideoFrame(ctx, {
   const requestedTranslationFont = (isLandscape ? 18 : 21) * clamp(Number(translationScale) || 1, .75, 1.35);
   const minimumArabicFont = isLandscape ? 23 : 27;
   const minimumTranslationFont = isLandscape ? 14 : 16;
-  const referenceFont = isLandscape ? 18 : 23;
-  const referenceHeight = referenceFont * 1.6 + 10;
+  let referenceFont = translation ? requestedTranslationFont : requestedArabicFont;
+  let referenceHeight = referenceFont * 1.6 + 10;
   const verticalPadding = isLandscape ? 44 : 56;
 
   let arabicFont = requestedArabicFont;
@@ -294,6 +379,9 @@ function drawVideoFrame(ctx, {
       ctx.font = `500 ${Math.round(translationFont)}px Inter, ui-sans-serif, system-ui`;
       translationLines = wrapText(ctx, translation, maxTextWidth);
     }
+
+    referenceFont = translation ? translationFont : arabicFont;
+    referenceHeight = referenceFont * 1.6 + 10;
 
     const arabicHeight = Math.max(arabicLineHeight, arabicLines.length * arabicLineHeight);
     const translationHeight = translationLines.length
