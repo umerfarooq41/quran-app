@@ -25,9 +25,11 @@ import {
   SHARE_BACKGROUND_ASSETS,
   SHARE_MEDIA_MODES,
   SHARE_MEDIA_TABS,
+  SHARE_BISMILLAH_TEXT,
   buildShareComposition,
   findShareAyahAtTime,
   loadShareVideoTimeline,
+  shouldIncludeShareBismillah,
 } from '../../../lib/shareMedia';
 import { surahArabicNames } from '../../../utils/quranLabels';
 import { Header, Screen } from '../../../components/common/AppChrome';
@@ -86,6 +88,8 @@ export function ShareQuranScreen({ ayah, onClose }) {
   const [videoExportProgress, setVideoExportProgress] = useState(0);
 
   const audioRef = useRef(null);
+  const bismillahAudioRef = useRef(null);
+  const previewPhaseRef = useRef('main');
   const rafRef = useRef(0);
 
   const lastSourceAyahRef = useRef(`${ayah.surahNumber}:${ayah.ayahNumber}`);
@@ -150,6 +154,10 @@ export function ShareQuranScreen({ ayah, onClose }) {
     showTranslation,
     settingsTranslationId,
   ]);
+
+  const showBismillah = shouldIncludeShareBismillah(selectedSurahNumber, fromAyah);
+  const videoInBismillah = Boolean(videoTimeline?.bismillahDurationMs)
+    && videoElapsedMs < Number(videoTimeline.bismillahDurationMs);
 
   const activeVideoEntry = useMemo(
     () => findShareAyahAtTime(videoTimeline?.timeline, videoElapsedMs),
@@ -223,6 +231,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
       showTranslation,
       translationsByAyah,
       translationDirection: translationOption?.direction || 'ltr',
+      showBismillah,
     })
       .then((blob) => {
         if (!cancelled) setImageBlob(blob);
@@ -248,6 +257,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
     showTranslation,
     translationsByAyah,
     translationOption?.direction,
+    showBismillah,
   ]);
 
   useEffect(() => {
@@ -286,6 +296,10 @@ export function ShareQuranScreen({ ayah, onClose }) {
       audioRef.current.pause();
       audioRef.current.src = '';
     }
+    if (bismillahAudioRef.current) {
+      bismillahAudioRef.current.pause();
+      bismillahAudioRef.current.src = '';
+    }
   }, []);
 
   function changeFrom(nextValue) {
@@ -311,16 +325,39 @@ export function ShareQuranScreen({ ayah, onClose }) {
     cancelAnimationFrame(rafRef.current);
     rafRef.current = 0;
     if (audioRef.current) audioRef.current.pause();
+    if (bismillahAudioRef.current) bismillahAudioRef.current.pause();
     setVideoPlaying(false);
   }
 
   function seekVideoPreview(nextElapsedMs) {
     const durationMs = Number(videoTimeline?.durationMs) || 0;
     const nextMs = Math.max(0, Math.min(durationMs, Number(nextElapsedMs) || 0));
+    const preRollMs = Number(videoTimeline?.bismillahDurationMs) || 0;
     setVideoElapsedMs(nextMs);
 
+    if (nextMs < preRollMs && videoTimeline?.bismillah) {
+      previewPhaseRef.current = 'bismillah';
+      if (audioRef.current) audioRef.current.pause();
+      if (bismillahAudioRef.current) {
+        bismillahAudioRef.current.currentTime = (
+          Number(videoTimeline.bismillah.sourceStartMs) + nextMs
+        ) / 1000;
+        if (videoPlaying) {
+          bismillahAudioRef.current.play().catch(() => {});
+        }
+      }
+      return;
+    }
+
+    previewPhaseRef.current = 'main';
+    if (bismillahAudioRef.current) bismillahAudioRef.current.pause();
     if (audioRef.current && videoTimeline?.sourceStartMs != null) {
-      audioRef.current.currentTime = (videoTimeline.sourceStartMs + nextMs) / 1000;
+      audioRef.current.currentTime = (
+        Number(videoTimeline.sourceStartMs) + Math.max(0, nextMs - preRollMs)
+      ) / 1000;
+      if (videoPlaying) {
+        audioRef.current.play().catch(() => {});
+      }
     }
   }
 
@@ -341,21 +378,44 @@ export function ShareQuranScreen({ ayah, onClose }) {
       audio.preload = 'auto';
       audioRef.current = audio;
     }
+
+    let bismillahAudio = bismillahAudioRef.current;
+    if (videoTimeline?.bismillah?.audioUrl && !bismillahAudio) {
+      bismillahAudio = new Audio();
+      bismillahAudio.preload = 'auto';
+      bismillahAudioRef.current = bismillahAudio;
+    }
+
     try {
       setStatus('');
-
       if (audio.src !== new URL(videoTimeline.audioUrl, window.location.href).href) {
         audio.src = videoTimeline.audioUrl;
         audio.load();
       }
-
       await waitForMediaReady(audio);
 
-      const sourceStartSeconds = videoTimeline.sourceStartMs / 1000;
-      const requestedTime = sourceStartSeconds + (videoElapsedMs / 1000);
-      if (Number.isFinite(requestedTime)) audio.currentTime = requestedTime;
+      if (bismillahAudio && videoTimeline?.bismillah?.audioUrl) {
+        if (bismillahAudio.src !== new URL(videoTimeline.bismillah.audioUrl, window.location.href).href) {
+          bismillahAudio.src = videoTimeline.bismillah.audioUrl;
+          bismillahAudio.load();
+        }
+        await waitForMediaReady(bismillahAudio);
+      }
 
-      await audio.play();
+      const preRollMs = Number(videoTimeline.bismillahDurationMs) || 0;
+      if (preRollMs > 0 && videoElapsedMs < preRollMs && bismillahAudio) {
+        previewPhaseRef.current = 'bismillah';
+        bismillahAudio.currentTime = (
+          Number(videoTimeline.bismillah.sourceStartMs) + videoElapsedMs
+        ) / 1000;
+        await bismillahAudio.play();
+      } else {
+        previewPhaseRef.current = 'main';
+        audio.currentTime = (
+          Number(videoTimeline.sourceStartMs) + Math.max(0, videoElapsedMs - preRollMs)
+        ) / 1000;
+        await audio.play();
+      }
       setVideoPlaying(true);
     } catch (error) {
       setVideoPlaying(false);
@@ -364,13 +424,45 @@ export function ShareQuranScreen({ ayah, onClose }) {
     }
 
     const tick = () => {
-      const elapsed = Math.max(0, (audio.currentTime * 1000) - videoTimeline.sourceStartMs);
-      setVideoElapsedMs(elapsed);
-      if (elapsed >= videoTimeline.durationMs || audio.ended) {
-        audio.pause();
-        setVideoPlaying(false);
-        setVideoElapsedMs(0);
-        return;
+      const preRollMs = Number(videoTimeline.bismillahDurationMs) || 0;
+      if (previewPhaseRef.current === 'bismillah' && bismillahAudio) {
+        const preElapsed = Math.max(
+          0,
+          (bismillahAudio.currentTime * 1000) - Number(videoTimeline.bismillah.sourceStartMs),
+        );
+        setVideoElapsedMs(Math.min(preRollMs, preElapsed));
+
+        if (
+          preElapsed >= preRollMs - 20
+          || bismillahAudio.currentTime * 1000 >= Number(videoTimeline.bismillah.sourceEndMs) - 20
+          || bismillahAudio.ended
+        ) {
+          bismillahAudio.pause();
+          previewPhaseRef.current = 'main';
+          audio.currentTime = Number(videoTimeline.sourceStartMs) / 1000;
+          audio.play().catch((error) => {
+            stopVideoPreview();
+            setStatus(error?.message || 'Recitation audio could not continue after Bismillah.');
+          });
+        }
+      } else {
+        const mainElapsed = Math.max(
+          0,
+          (audio.currentTime * 1000) - Number(videoTimeline.sourceStartMs),
+        );
+        const elapsed = preRollMs + mainElapsed;
+        setVideoElapsedMs(elapsed);
+        if (
+          elapsed >= videoTimeline.durationMs
+          || audio.currentTime * 1000 >= Number(videoTimeline.sourceEndMs) - 20
+          || audio.ended
+        ) {
+          audio.pause();
+          setVideoPlaying(false);
+          setVideoElapsedMs(0);
+          previewPhaseRef.current = preRollMs > 0 ? 'bismillah' : 'main';
+          return;
+        }
       }
       rafRef.current = requestAnimationFrame(tick);
     };
@@ -502,6 +594,8 @@ export function ShareQuranScreen({ ayah, onClose }) {
               activeWordPosition={activeVideoWord?.position || null}
               highlightColor={selectedBackground?.accentColor || '#d8b36a'}
               orientation="portrait"
+              isBismillah={videoInBismillah}
+              bismillahText={SHARE_BISMILLAH_TEXT}
             />
           )}
         </section>
@@ -651,6 +745,8 @@ function VideoPreview({
   activeWordPosition,
   highlightColor,
   orientation,
+  isBismillah = false,
+  bismillahText = SHARE_BISMILLAH_TEXT,
 }) {
   const backgroundSrc = background?.videoSrc || '';
   const stageRef = useRef(null);
@@ -819,7 +915,17 @@ function VideoPreview({
         {surahMeaning && <span>{surahMeaning}</span>}
       </div>
 
-      {showAyahCard && (
+      {isBismillah && (
+        <div
+          className="share-video-preview-bismillah"
+          dir="rtl"
+          style={{ '--share-text-scale': textScale }}
+        >
+          {bismillahText}
+        </div>
+      )}
+
+      {showAyahCard && !isBismillah && (
         <div
           ref={cardRef}
           className="share-video-preview-ayah-card"
@@ -854,7 +960,7 @@ function VideoPreview({
             </div>
           )}
 
-          <div className="share-video-preview-reference">
+          <div className={`share-video-preview-reference ${showTranslation && translation ? 'is-translation-sized' : 'is-arabic-sized'}`}>
             {surahNumber}:{ayah?.ayahNumber}
           </div>
         </div>
