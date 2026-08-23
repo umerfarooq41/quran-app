@@ -7,7 +7,6 @@ export const RECITERS = [
   { id: 'abu-bakr-al-shatri', displayName: 'Abu Bakr Al Shatri', imageFile: 'Abu Bakr Al Shatri.png', ayahCount: 6236, hasAyahAudioUrls: true },
   { id: 'khalid-al-jalil', displayName: 'Khalid Al-Jalil', imageFile: 'Khalid Al-Jalil.png', ayahCount: 6236, hasAyahAudioUrls: false },
   { id: 'maher-al-mu-aiqly', displayName: 'Maher Al Muaiqly', imageFile: 'Maher Al Muaiqly.png', ayahCount: 6236, hasAyahAudioUrls: true },
-  { id: 'muhammad-al-hadi-toure', displayName: 'Muhammad Al-Hadi Touré', imageFile: 'muhammad-al-hadi-toure.png', ayahCount: 6236, hasAyahAudioUrls: false },
   { id: 'saad-al-ghamdi', displayName: 'Saad Al Ghamdi', imageFile: 'Saad Al Ghamdi.png', ayahCount: 6236, hasAyahAudioUrls: true },
   { id: 'saud-al-shuraim', displayName: 'Saud Al Shuraim', imageFile: 'Saud Al Shuraim.png', ayahCount: 6236, hasAyahAudioUrls: true },
   { id: 'yasser-al-dosari', displayName: 'Yasser Al Dosari', imageFile: 'Yasser Al Dosari.png', ayahCount: 6236, hasAyahAudioUrls: true },
