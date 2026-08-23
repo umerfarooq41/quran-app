@@ -302,7 +302,7 @@ export function MushafPage({
 
   const startsWithDoubleHeader = (
     renderedLines[0]?.type === 'surah_name' &&
-    (renderedLines[1]?.type === 'basmallah' || renderedLines[1]?.type === 'bismillah')
+    isCombinedHeaderBasmallahLine(renderedLines[1], renderedLines[0])
   );
 
   return (
@@ -376,10 +376,10 @@ export function MushafPage({
       {renderedLines.map((line, index) => {
         const previousLine = renderedLines[index - 1];
         const nextLine = renderedLines[index + 1];
-        const hasSeparateBasmallah = nextLine?.type === 'basmallah' || nextLine?.type === 'bismillah';
+        const hasSeparateBasmallah = isCombinedHeaderBasmallahLine(nextLine, line);
         const coveredByCombinedHeader = (
-          (line.type === 'basmallah' || line.type === 'bismillah') &&
-          previousLine?.type === 'surah_name'
+          previousLine?.type === 'surah_name' &&
+          isCombinedHeaderBasmallahLine(line, previousLine)
         );
 
         return (
@@ -415,6 +415,25 @@ export function MushafPage({
         );
       })}
     </div>
+  );
+}
+
+
+function isCombinedHeaderBasmallahLine(line, headerLine) {
+  if (!line || !headerLine || headerLine.type !== 'surah_name') return false;
+
+  if (line.type === 'basmallah' || line.type === 'bismillah') return true;
+
+  // Al-Fatihah is unique in the Mushaf data: its Bismillah is ayah 1:1
+  // rather than a separate `basmallah` row. Render that ayah in the same
+  // second-row Surah-header compartment used by the rest of the Mushaf,
+  // while leaving the source Quran data and ayah numbering untouched.
+  return Boolean(
+    Number(headerLine.surahNumber) === 1 &&
+    line.type === 'ayah' &&
+    Number(line.surahNumber) === 1 &&
+    Number(line.ayahStart) === 1 &&
+    Number(line.ayahEnd) === 1
   );
 }
 
