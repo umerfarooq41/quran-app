@@ -8,6 +8,7 @@ import {
   ListTree,
   Mic2,
   Moon,
+  CircleHelp,
   RotateCcw,
   Sun,
   X,
@@ -24,10 +25,11 @@ import { useAppStore } from '../store/useAppStore';
 import { Header, Screen } from '../components/common/AppChrome';
 
 export default function SettingsScreen() {
-  const { settings, updateSettings, resetSettings } = useAppStore(useShallow((state) => ({
+  const { settings, updateSettings, resetSettings, openHelp } = useAppStore(useShallow((state) => ({
     settings: state.settings,
     updateSettings: state.updateSettings,
     resetSettings: state.resetSettings,
+    openHelp: state.openHelp,
   })));
   const [confirmReset, setConfirmReset] = useState(false);
   const reciters = normalizeLocalReciters();
@@ -147,6 +149,20 @@ export default function SettingsScreen() {
           fullWidth
         />
 
+      </SettingsSection>
+
+      <SettingsSection
+        title="Help"
+        description="Learn how to use the reader and app features"
+      >
+        <button type="button" className="settings-help-row" onClick={openHelp}>
+          <span className="settings-row-icon"><CircleHelp size={18} /></span>
+          <span className="settings-row-copy">
+            <strong>Help & Guide</strong>
+            <small>Reader, translation, audio, library, sharing and more</small>
+          </span>
+          <span className="settings-help-arrow" aria-hidden="true">›</span>
+        </button>
       </SettingsSection>
 
       <button type="button" className="settings-reset-button" onClick={() => setConfirmReset(true)}>
