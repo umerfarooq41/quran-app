@@ -1,25 +1,180 @@
-.help-screen { display:grid; width:min(100%,480px); gap:14px; padding-bottom:calc(env(safe-area-inset-bottom,0px) + 22px); }
-.help-screen .app-scroll-content { display:grid; align-content:start; gap:14px; }
-.help-intro { display:grid; grid-template-columns:auto minmax(0,1fr); gap:12px; align-items:center; padding:16px; border:1px solid rgba(201,162,75,.16); border-radius:22px; background:var(--theme-surface-solid,#fbfaf7); box-shadow:0 10px 28px rgba(44,53,48,.055); }
-.help-intro-icon,.help-section-icon { display:grid; place-items:center; width:40px; height:40px; border-radius:13px; background:rgba(45,110,94,.10); color:var(--theme-accent,#357765); }
-.help-intro h2 { margin:0; color:var(--text-primary,#252525); font-size:.96rem; font-weight:760; }
-.help-intro p { margin:4px 0 0; color:var(--text-muted,#858b93); font-size:.75rem; line-height:1.45; }
-.help-sections { display:grid; gap:9px; }
-.help-section { overflow:hidden; border:1px solid rgba(201,162,75,.16); border-radius:20px; background:var(--theme-surface-solid,#fbfaf7); box-shadow:0 7px 22px rgba(44,53,48,.04); }
-.help-section-trigger { display:grid; width:100%; grid-template-columns:auto minmax(0,1fr) auto; gap:11px; align-items:center; min-height:70px; padding:12px 14px; text-align:left; }
-.help-section-label { display:grid; min-width:0; gap:3px; }
-.help-section-label strong { color:var(--text-primary,#383b40); font-size:.82rem; font-weight:730; }
-.help-section-label small { color:var(--text-muted,#858b93); font-size:.7rem; line-height:1.35; }
-.help-section-chevron { color:var(--text-muted,#858b93); transition:transform .2s ease; }
-.help-section.is-open .help-section-chevron { transform:rotate(180deg); }
-.help-section-content { margin:0 14px; padding:2px 2px 16px 51px; border-top:1px solid var(--theme-divider,rgba(36,75,66,.08)); color:var(--text-secondary,#5f6468); font-size:.77rem; line-height:1.65; }
-.help-section-content p { margin:12px 0 0; }
-.help-section-content h3 { margin:14px 0 -4px; color:var(--text-primary,#383b40); font-size:.78rem; font-weight:750; }
-.help-section-content strong { color:var(--text-primary,#383b40); font-weight:720; }
-.help-gesture-list { display:grid; }
-.help-gesture-list p { display:grid; gap:1px; padding-bottom:10px; border-bottom:1px solid var(--theme-divider,rgba(36,75,66,.07)); }
-.help-gesture-list p:last-child { padding-bottom:0; border-bottom:0; }
-.help-gesture-list span { color:var(--text-muted,#858b93); font-size:.71rem; }
-.settings-help-row { display:grid; width:100%; grid-template-columns:auto minmax(0,1fr) auto; align-items:center; gap:11px; min-height:72px; padding:11px 2px; text-align:left; }
-.settings-help-arrow { padding-right:4px; color:var(--text-muted,#858b93); font-size:1.45rem; font-weight:300; line-height:1; }
-@media (max-width:380px) { .help-section-content { padding-left:2px; } }
+.help-screen {
+  display: grid;
+  width: min(100%, 480px);
+  gap: 14px;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 22px);
+  color: var(--theme-text);
+}
+
+.help-screen .app-scroll-content {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+
+.help-intro {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  padding: 16px;
+  border: 1px solid var(--theme-border);
+  border-radius: 22px;
+  background: var(--theme-surface-solid);
+  box-shadow: 0 10px 28px var(--theme-shadow);
+}
+
+.help-intro-icon,
+.help-section-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 13px;
+  background: rgba(45, 110, 94, .10);
+  color: var(--theme-accent);
+}
+
+.help-intro h2 {
+  margin: 0;
+  color: var(--theme-text);
+  font-size: .96rem;
+  font-weight: 760;
+}
+
+.help-intro p {
+  margin: 4px 0 0;
+  color: var(--theme-muted);
+  font-size: .75rem;
+  line-height: 1.45;
+}
+
+.help-sections {
+  display: grid;
+  gap: 9px;
+}
+
+.help-section {
+  overflow: hidden;
+  border: 1px solid var(--theme-border);
+  border-radius: 20px;
+  background: var(--theme-surface-solid);
+  box-shadow: 0 7px 22px var(--theme-shadow);
+}
+
+.help-section-trigger {
+  display: grid;
+  width: 100%;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 11px;
+  align-items: center;
+  min-height: 70px;
+  padding: 12px 14px;
+  text-align: left;
+  color: var(--theme-text);
+}
+
+.help-section-label {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.help-section-label strong {
+  color: var(--theme-text);
+  font-size: .82rem;
+  font-weight: 730;
+}
+
+.help-section-label small {
+  color: var(--theme-muted);
+  font-size: .7rem;
+  line-height: 1.35;
+}
+
+.help-section-chevron {
+  color: var(--theme-muted);
+  transition: transform .2s ease;
+}
+
+.help-section.is-open .help-section-chevron {
+  transform: rotate(180deg);
+}
+
+.help-section-content {
+  margin: 0 14px;
+  padding: 2px 2px 16px 51px;
+  border-top: 1px solid var(--theme-border);
+  color: var(--theme-muted);
+  font-size: .77rem;
+  line-height: 1.65;
+}
+
+.help-section-content p {
+  margin: 12px 0 0;
+}
+
+.help-section-content h3 {
+  margin: 14px 0 -4px;
+  color: var(--theme-text);
+  font-size: .78rem;
+  font-weight: 750;
+}
+
+.help-section-content strong {
+  color: var(--theme-text);
+  font-weight: 720;
+}
+
+.help-gesture-list {
+  display: grid;
+}
+
+.help-gesture-list p {
+  display: grid;
+  gap: 1px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--theme-border);
+}
+
+.help-gesture-list p:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.help-gesture-list span {
+  color: var(--theme-muted);
+  font-size: .71rem;
+}
+
+.settings-help-row {
+  display: grid;
+  width: 100%;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 11px;
+  min-height: 72px;
+  padding: 11px 2px;
+  text-align: left;
+  color: var(--theme-text);
+}
+
+.settings-help-arrow {
+  padding-right: 4px;
+  color: var(--theme-muted);
+  font-size: 1.45rem;
+  font-weight: 300;
+  line-height: 1;
+}
+
+[data-theme='dark'] .help-intro-icon,
+[data-theme='dark'] .help-section-icon {
+  background: rgba(52, 112, 94, .22);
+  color: #9fcabb;
+}
+
+@media (max-width: 380px) {
+  .help-section-content {
+    padding-left: 2px;
+  }
+}
