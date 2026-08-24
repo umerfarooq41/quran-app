@@ -15,6 +15,7 @@ import SearchScreen from './pages/SearchScreen';
 import BookmarksScreen from './pages/BookmarksScreen';
 import TafsirScreen from './pages/TafsirScreen';
 import SettingsScreen from './pages/SettingsScreen';
+import HelpScreen from './pages/HelpScreen';
 import SurahScreen from './pages/SurahScreen';
 import SurahInfoScreen from './pages/SurahInfoScreen';
 import { ShareQuranScreen } from './features/reader/components/ShareAyahSheet';
@@ -389,6 +390,7 @@ export default function App() {
         {activeView === VIEWS.TABS && <BookmarksScreen key="tabs" />}
         {activeView === VIEWS.TAFSIR && <TafsirScreen key="tafsir" />}
         {activeView === VIEWS.SETTINGS && <SettingsScreen key="settings" />}
+        {activeView === VIEWS.HELP && <HelpScreen key="help" />}
         {activeView === VIEWS.SHARE_QURAN && shareTarget && (
           <ShareQuranScreen key="shareQuran" ayah={shareTarget} onClose={closeSharePage} />
         )}

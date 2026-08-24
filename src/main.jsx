@@ -14,6 +14,7 @@ import './styles/index.css';
 import './styles/search.css';
 import './styles/mobile-first.css';
 import './styles/settings.css';
+import './styles/help.css';
 import './styles/ui-polish.css';
 import './styles/theme.css';
 import './styles/index-refined.css';
