@@ -18,9 +18,9 @@ const LINKS = {
   qulCredits: 'https://qul.tarteel.ai/credits',
   quranFoundation: 'https://quran.foundation/',
   pixabayLicense: 'https://pixabay.com/service/license-summary/',
-  privacy: '/privacy.html',
-  terms: '/terms.html',
-  licenses: '/licenses.html',
+  privacy: 'https://umerfarooq41.github.io/quran-app/privacy.html',
+  terms: 'https://umerfarooq41.github.io/quran-app/terms.html',
+  licenses: 'https://umerfarooq41.github.io/quran-app/licenses.html',
 };
 
 function ExternalLinkRow({ href, children }) {
