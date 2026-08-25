@@ -9,6 +9,7 @@ import {
   Mic2,
   Moon,
   CircleHelp,
+  Info,
   RotateCcw,
   Sun,
   X,
@@ -25,11 +26,12 @@ import { useAppStore } from '../store/useAppStore';
 import { Header, Screen } from '../components/common/AppChrome';
 
 export default function SettingsScreen() {
-  const { settings, updateSettings, resetSettings, openHelp } = useAppStore(useShallow((state) => ({
+  const { settings, updateSettings, resetSettings, openHelp, openAbout } = useAppStore(useShallow((state) => ({
     settings: state.settings,
     updateSettings: state.updateSettings,
     resetSettings: state.resetSettings,
     openHelp: state.openHelp,
+    openAbout: state.openAbout,
   })));
   const [confirmReset, setConfirmReset] = useState(false);
   const reciters = normalizeLocalReciters();
@@ -160,6 +162,20 @@ export default function SettingsScreen() {
           <span className="settings-row-copy">
             <strong>Help & Guide</strong>
             <small>Reader, translation, audio, library, sharing and more</small>
+          </span>
+          <span className="settings-help-arrow" aria-hidden="true">›</span>
+        </button>
+      </SettingsSection>
+
+      <SettingsSection
+        title="About"
+        description="Sources, licenses, privacy and app information"
+      >
+        <button type="button" className="settings-help-row" onClick={openAbout}>
+          <span className="settings-row-icon"><Info size={18} /></span>
+          <span className="settings-row-copy">
+            <strong>About Al Quran</strong>
+            <small>Sources & credits, open-source licenses, privacy and terms</small>
           </span>
           <span className="settings-help-arrow" aria-hidden="true">›</span>
         </button>

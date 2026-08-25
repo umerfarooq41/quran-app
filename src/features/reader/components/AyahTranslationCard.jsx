@@ -169,6 +169,12 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
               : ''}
           </p>
 
+          {translationLoaded && (translation.provider === 'quran-foundation' || translation.tafsirProvider === 'quran-foundation') && (
+            <p className="qf-attribution">
+              {translationOption.shortName || translationOption.label} · Quran data provided by Quran Foundation.
+            </p>
+          )}
+
           {translationLoaded && translation.footnotes?.length > 0 && (
             <div className="ayah-translation-footnote-wrap" dir={translationOption.direction || 'ltr'}>
               <button

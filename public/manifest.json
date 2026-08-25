@@ -1,7 +1,7 @@
 {
   "id": "/",
-  "name": "Quran Reader",
-  "short_name": "Quran",
+  "name": "Al Quran",
+  "short_name": "Al Quran",
   "description": "A mobile-first 16-line Quran reader with translation, bookmarks, highlights, and recitation.",
   "lang": "en",
   "dir": "ltr",

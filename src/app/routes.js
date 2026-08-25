@@ -9,6 +9,7 @@ export const VIEWS = {
   TAFSIR: 'tafsir',
   SETTINGS: 'settings',
   HELP: 'help',
+  ABOUT: 'about',
   SHARE_QURAN: 'shareQuran',
 };
 

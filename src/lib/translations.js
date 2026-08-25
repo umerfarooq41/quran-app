@@ -179,6 +179,7 @@ export async function loadTranslationEntry(translationId, surahNumber, ayahNumbe
   }
 
   let entry = normalizeTranslationEntry(rawEntry);
+  if (!option.file) entry = { ...entry, provider: 'quran-foundation' };
 
   // Translation text should not wait for optional tafsir. Callers can request
   // the translation first with includeTafsir:false, while the matching tafsir
@@ -190,7 +191,7 @@ export async function loadTranslationEntry(translationId, surahNumber, ayahNumbe
   ) {
     try {
       const tafsir = await loadMatchingTafsirEntry(option, surahNumber, ayahNumber, options);
-      if (tafsir) entry = appendTafsirFootnote(entry, tafsir, option.shortName || option.label);
+      if (tafsir) entry = appendTafsirFootnote(entry, tafsir, option.shortName || option.label, 'quran-foundation');
     } catch {
       // Tafsir is optional. Translation must remain usable when the catalog or
       // selected tafsir resource is unavailable.
@@ -533,7 +534,7 @@ async function loadTafsirCatalog(language, signal) {
   return request;
 }
 
-function appendTafsirFootnote(entry, tafsirText, sourceName) {
+function appendTafsirFootnote(entry, tafsirText, sourceName, provider = '') {
   if (!tafsirText) return entry;
 
   const existing = Array.isArray(entry?.footnotes) ? entry.footnotes : [];
@@ -554,8 +555,10 @@ function appendTafsirFootnote(entry, tafsirText, sourceName) {
         kind: 'tafsir',
         source: sourceName,
         text: tafsirText,
+        provider,
       },
     ],
+    tafsirProvider: provider || entry?.tafsirProvider || '',
   };
 }
 

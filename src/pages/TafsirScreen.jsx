@@ -94,6 +94,9 @@ export default function TafsirScreen() {
           {status ? <p>{status}</p> : (
             <>
               <p className="tafsir-translation-text" dir={translationOption.direction}>{translation.plainText}</p>
+              {(translation.provider === 'quran-foundation' || translation.tafsirProvider === 'quran-foundation') && (
+                <p className="qf-attribution">{translationOption.shortName || translationOption.label} · Quran data provided by Quran Foundation.</p>
+              )}
               {translation.footnotes?.length > 0 && (
                 <div className="tafsir-footnote-wrap" dir={translationOption.direction}>
                   <button

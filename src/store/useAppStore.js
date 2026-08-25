@@ -171,6 +171,7 @@ export const useAppStore = create((set, get) => ({
   openBookmarks: () => get().navigateTo(VIEWS.TABS),
   openSettings: () => get().navigateTo(VIEWS.SETTINGS, { direction: 'modal' }),
   openHelp: () => get().navigateTo(VIEWS.HELP),
+  openAbout: () => get().navigateTo(VIEWS.ABOUT),
   openSharePage: (shareTarget) => set((state) => ({
     ...transitionToView(state, VIEWS.SHARE_QURAN),
     shareTarget,
