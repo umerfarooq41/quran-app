@@ -18,9 +18,10 @@ const LINKS = {
   qulCredits: 'https://qul.tarteel.ai/credits',
   quranFoundation: 'https://quran.foundation/',
   pixabayLicense: 'https://pixabay.com/service/license-summary/',
-  privacy: 'https://umerfarooq41.github.io/quran-app/privacy.html',
-  terms: 'https://umerfarooq41.github.io/quran-app/terms.html',
-  licenses: 'https://umerfarooq41.github.io/quran-app/licenses.html',
+  privacy: 'https://umerfarooq41.github.io/al-quran-legal/privacy.html',
+  terms: 'https://umerfarooq41.github.io/al-quran-legal/terms.html',
+  licenses: 'https://umerfarooq41.github.io/al-quran-legal/licenses.html',
+  sourcesCredits: 'https://umerfarooq41.github.io/al-quran-legal/sources-and-credits.html',
 };
 
 function ExternalLinkRow({ href, children }) {
@@ -68,6 +69,7 @@ const SECTIONS = [
           <ExternalLinkRow href={LINKS.qulCredits}>QUL Credits & Contributors</ExternalLinkRow>
           <ExternalLinkRow href={LINKS.quranFoundation}>Quran Foundation</ExternalLinkRow>
           <ExternalLinkRow href={LINKS.pixabayLicense}>Pixabay Content License</ExternalLinkRow>
+          <ExternalLinkRow href={LINKS.sourcesCredits}>Full Sources & Credits</ExternalLinkRow>
         </div>
 
         <p className="about-disclaimer">Al Quran is an independent application and is not officially affiliated with or endorsed by Tarteel, QUL, Quran Foundation, Pixabay, or the individual translators and reciters unless expressly stated otherwise.</p>
