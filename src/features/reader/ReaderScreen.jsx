@@ -3,7 +3,7 @@ import { AnimatePresence } from 'framer-motion';
 import { useShallow } from 'zustand/react/shallow';
 import { db } from '../../lib/db';
 import { getCurrentIndoPakJuzProgress } from '../../data/indoPakParaQuarters';
-import { clampPage, getMushafPageNumber, getPage, getPageMeta, getSurah, getSurahAyahs } from '../../lib/quran';
+import { clampPage, findPageForReference, getMushafPageNumber, getPage, getPageMeta, getSurah, getSurahAyahs } from '../../lib/quran';
 import { OVERLAY_TYPES, useAppStore } from '../../store/useAppStore';
 import { AyahActionSheet } from './components/AyahActionSheet';
 import { AyahTranslationCard } from './components/AyahTranslationCard';
@@ -477,7 +477,7 @@ export default function ReaderScreen() {
     }
 
     const firstLine = pageData.lines.find((line) => line.surahNumber && line.ayahStart);
-    const target = targetLine || (firstLine ? {
+    const rawTarget = targetLine || (firstLine ? {
       page,
       surahNumber: firstLine.surahNumber,
       ayahNumber: firstLine.ayahStart,
@@ -485,7 +485,14 @@ export default function ReaderScreen() {
       arabic: firstLine.text,
     } : null);
 
-    if (!target) return;
+    if (!rawTarget) return;
+
+    // Resolve the canonical Mushaf page from the actual ayah reference instead
+    // of trusting a stale/current UI page value. This keeps the audio target,
+    // page-follow state, and the verse that will be sought in the recording in
+    // agreement from the first render.
+    const canonicalPage = findPageForReference(rawTarget.surahNumber, rawTarget.ayahNumber) || rawTarget.page || page;
+    const target = { ...rawTarget, page: canonicalPage };
 
     openAudioPlayer(target);
   }
