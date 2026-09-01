@@ -1459,7 +1459,9 @@ function targetFromTiming(timing, pageOverride = null) {
     reference: timing.verseKey,
   });
 
-  return pageOverride ? { ...target, page: Number(pageOverride) } : target;
+  return pageOverride
+    ? { ...target, page: Number(pageOverride), pageIsAuthoritative: true }
+    : { ...target, pageIsAuthoritative: false };
 }
 
 function clampSeekTime(audio, value) {
