@@ -1,5 +1,6 @@
 import rawPages from '../data/quranPages16.json';
 import rawAyahs from '../data/quranAyahs.json';
+import rawWords from '../data/quranWords.json';
 import surahInfoUrdu from '../data/surahInfo.json';
 import surahInfoEnglish from '../data/surahInfoEn.json';
 import { getJuzForReference, getPageJuz, getRevelationType } from '../data/quranMeta';
@@ -10,6 +11,24 @@ import { getIndoPakParaQuarterTargets } from '../data/indoPakParaQuarters';
 
 const pages = rawPages.map(normalizeMushafPage);
 const ayahs = rawAyahs.map(normalizeMushafAyah);
+
+const WORD_ID_BY_VERSE_POSITION = new Map();
+rawWords.forEach((verse) => {
+  const surahNumber = Number(verse?.surahNumber);
+  const ayahNumber = Number(verse?.ayahNumber);
+  (Array.isArray(verse?.words) ? verse.words : []).forEach((word) => {
+    const position = Number(word?.word);
+    const id = Number(word?.id);
+    if (
+      Number.isInteger(surahNumber)
+      && Number.isInteger(ayahNumber)
+      && Number.isInteger(position)
+      && Number.isInteger(id)
+    ) {
+      WORD_ID_BY_VERSE_POSITION.set(`${surahNumber}:${ayahNumber}:${position}`, id);
+    }
+  });
+});
 
 export const quranPages = pages;
 export const quranAyahs = ayahs;
@@ -96,6 +115,30 @@ export function findPageForReference(surahNumber, ayahNumber = 1) {
     ),
   );
   return page?.page ?? 1;
+}
+
+/**
+ * Return the exact Mushaf page that contains a timed Quran word. This matters
+ * for the uncommon case where one ayah continues across a page boundary: the
+ * ayah-level page is still the previous page until the ayah ends, while the
+ * recited word may already be visible on the next page.
+ */
+export function findPageForWordPosition(surahNumber, ayahNumber, wordPosition) {
+  const safeSurah = Number(surahNumber);
+  const safeAyah = Number(ayahNumber);
+  const safePosition = Number(wordPosition);
+  const wordId = WORD_ID_BY_VERSE_POSITION.get(`${safeSurah}:${safeAyah}:${safePosition}`);
+  if (!Number.isInteger(wordId)) return findPageForReference(safeSurah, safeAyah);
+
+  const page = pages.find((candidate) => candidate.lines.some((line) => (
+    line.type === 'ayah'
+    && Number.isInteger(Number(line.firstWordId))
+    && Number.isInteger(Number(line.lastWordId))
+    && wordId >= Number(line.firstWordId)
+    && wordId <= Number(line.lastWordId)
+  )));
+
+  return page?.page ?? findPageForReference(safeSurah, safeAyah);
 }
 
 export function getAyahMarkerPage(surahNumber, ayahNumber) {
