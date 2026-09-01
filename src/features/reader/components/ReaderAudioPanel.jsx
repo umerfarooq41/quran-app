@@ -761,16 +761,12 @@ export function ReaderAudioPanel() {
         audio.playbackRate = playbackRateRef.current;
         audio.load();
 
-        // Start the real source as soon as it is installed. The shared audio
-        // element was primed by the originating tap, so this avoids waiting
-        // until after asynchronous metadata work has lost user activation.
-        if (playIntentRef.current && audioPrimedRef.current) {
-          Promise.resolve(audio.play()).catch(() => {
-            // startCurrentAudio() retries after metadata becomes seekable and
-            // provides the user-facing message if the browser still blocks it.
-          });
-        }
-
+        // Never start a full-Surah source before its selected ayah seek has
+        // been applied. Playing from time 0 even briefly lets Follow Recitation
+        // see an earlier verse and can move the Mushaf to the wrong page before
+        // the requested long-press target is reached. The originating gesture
+        // has already primed the shared audio element; actual playback starts
+        // only after metadata is ready and currentTime is set below.
         setAudioProgress(0, 0);
       } else {
         currentSourceRef.current = source;

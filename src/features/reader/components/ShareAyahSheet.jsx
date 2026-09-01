@@ -364,7 +364,10 @@ export function ShareQuranScreen({ ayah, onClose }) {
   function stopVideoPreview() {
     cancelAnimationFrame(rafRef.current);
     rafRef.current = 0;
-    if (audioRef.current) audioRef.current.pause();
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.volume = 1;
+    }
     if (bismillahAudioRef.current) bismillahAudioRef.current.pause();
     setVideoPlaying(false);
   }
@@ -494,6 +497,9 @@ export function ShareQuranScreen({ ayah, onClose }) {
           (audio.currentTime * 1000) - Number(videoTimeline.sourceStartMs),
         );
         const elapsed = preRollMs + mainElapsed;
+        const remainingMainMs = Math.max(0, Number(videoTimeline.sourceEndMs) - (audio.currentTime * 1000));
+        const fadeMs = Math.max(1, Number(videoTimeline.endFadeMs) || 180);
+        audio.volume = Math.max(0, Math.min(1, remainingMainMs / fadeMs));
         setVideoElapsedMs(elapsed);
         if (
           elapsed >= videoTimeline.durationMs
@@ -501,6 +507,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
           || audio.ended
         ) {
           audio.pause();
+          audio.volume = 1;
           setVideoPlaying(false);
           setVideoElapsedMs(0);
           previewPhaseRef.current = preRollMs > 0 ? 'bismillah' : 'main';
