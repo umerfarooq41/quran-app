@@ -1,3 +1,4 @@
+import { formatShareAyahReference, isolateShareReference } from './shareMedia';
 import { findShareAyahAtTime } from './shareMedia';
 import { findWordAtTime } from './fullSurahAudio';
 import { getQuranWordsForAyah } from './quranWordMap';
@@ -351,10 +352,10 @@ function drawVideoFrame(ctx, {
   }
 
   const effectiveWordItems = wordItems;
-  const effectiveReference = isBismillah ? '1:1' : `${surahNumber}:${ayah?.ayahNumber}`;
+  const effectiveReference = isBismillah ? '1:1' : formatShareAyahReference(surahNumber, ayah?.ayahNumber);
   const cleanTranslation = translation || '';
   const effectiveTranslation = cleanTranslation
-    ? `${cleanTranslation} (${effectiveReference})`
+    ? `${cleanTranslation} (${isolateShareReference(effectiveReference)})`
     : '';
 
   const safeTop = height * (isLandscape ? .18 : .165);

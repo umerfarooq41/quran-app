@@ -1,3 +1,5 @@
+import { formatShareAyahReference, isolateShareReference } from './shareMedia';
+
 const PORTRAIT_SIZE = Object.freeze({ width: 1080, height: 1920 });
 const LANDSCAPE_SIZE = Object.freeze({ width: 1600, height: 900 });
 const BISMILLAH_TEXT = 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ';
@@ -150,12 +152,10 @@ function drawAyahCard(ctx, {
   const firstAyah = ayahs?.[0]?.ayahNumber;
   const lastAyah = ayahs?.[ayahs.length - 1]?.ayahNumber;
   const reference = firstAyah
-    ? (Number(lastAyah) > Number(firstAyah)
-      ? `${surahNumber}:${firstAyah}-${lastAyah}`
-      : `${surahNumber}:${firstAyah}`)
+    ? formatShareAyahReference(surahNumber, firstAyah, lastAyah)
     : '';
   const translationText = showTranslation && mainTranslationText
-    ? `${showBismillah && bismillahTranslation ? `${bismillahTranslation}\n` : ''}${mainTranslationText}${reference ? ` (${reference})` : ''}`
+    ? `${showBismillah && bismillahTranslation ? `${bismillahTranslation}\n` : ''}${mainTranslationText}${reference ? ` (${isolateShareReference(reference)})` : ''}`
     : '';
 
   const requestedArabicFont = (isLandscape ? 58 : 64) * textScale;

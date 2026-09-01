@@ -80,6 +80,20 @@ export function buildShareComposition({
   };
 }
 
+
+export function formatShareAyahReference(surahNumber, fromAyah, toAyah = fromAyah) {
+  const surah = Number(surahNumber);
+  const start = Number(fromAyah);
+  const end = Number(toAyah);
+  if (!Number.isFinite(surah) || !Number.isFinite(start)) return '';
+  if (Number.isFinite(end) && end > start) return `${surah}:${start}-${end}`;
+  return `${surah}:${start}`;
+}
+
+export function isolateShareReference(reference) {
+  return reference ? `⁦${reference}⁩` : '';
+}
+
 export function shouldIncludeShareBismillah(surahNumber, fromAyah) {
   const surah = Number(surahNumber) || 1;
   const firstAyah = Number(fromAyah) || 1;
