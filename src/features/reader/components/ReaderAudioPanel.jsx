@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Check, ChevronDown, Pause, Play, Repeat, SkipBack, SkipForward, X } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { VIEWS } from '../../../app/routes';
-import { findPageForReference, getSurah, quranAyahs } from '../../../lib/quran';
+import { findPageForReference, findPageForWordPosition, getSurah, quranAyahs } from '../../../lib/quran';
 import {
   findAyahAtTime,
   findAyahTiming,
@@ -356,8 +356,14 @@ export function ReaderAudioPanel() {
     );
 
     if (!currentMatches && !loadingMatches) {
-      playIntentRef.current = playing;
-      loadTarget(target, selectedReciter, playing);
+      // Read the store at the moment the new target is handled instead of
+      // relying on the render-time `playing` closure. openAudioPlayer() sets
+      // audioPlaying=true in the same interaction as the target change; using
+      // a stale false value here could load the requested ayah paused and make
+      // the user press Play a second time.
+      const shouldAutoplay = Boolean(useAppStore.getState().audioPlaying || playIntentRef.current);
+      playIntentRef.current = shouldAutoplay;
+      loadTarget(target, selectedReciter, shouldAutoplay);
     }
   }, [ayah?.surahNumber, ayah?.ayahNumber, selectedReciter]);
 
@@ -933,17 +939,32 @@ export function ReaderAudioPanel() {
 
       const wordTiming = findWordAtTime(timing, timeMs);
       setPlayingWord(wordTiming?.position, wordTiming?.occurrenceIndex);
+
+      // Follow the currently recited WORD across a Mushaf page boundary, not
+      // only the ayah boundary. Some ayahs span two pages, so waiting for the
+      // next ayah would leave the reader showing the previous page while the
+      // reciter is already reading words from the next one.
+      const wordPage = wordTiming?.position
+        ? findPageForWordPosition(timing.surahNumber, timing.ayahNumber, wordTiming.position)
+        : null;
+      const target = targetFromTiming(timing, wordPage);
+      syncTargetFromTiming(target, timing);
+      return;
     }
 
     const target = targetFromTiming(timing);
+    syncTargetFromTiming(target, timing);
+  }
+
+  function syncTargetFromTiming(target, timing) {
     const currentTarget = currentTargetRef.current;
     const sameVerse = sameTarget(currentTarget, timing);
-    const sameCanonicalPage = Number(currentTarget?.page) === Number(target?.page);
+    const samePage = Number(currentTarget?.page) === Number(target?.page);
 
-    // A target can have the correct verse but a stale page (for example when
-    // playback starts from an ayah after an earlier navigation). Do not return
-    // early until both the verse and its canonical Mushaf page are correct.
-    if (sameVerse && sameCanonicalPage) return;
+    // Update even within the same ayah when the current timed word has crossed
+    // onto another Mushaf page. ReaderScreen follows audioTarget.page
+    // immediately, so the page turns while that word is being recited.
+    if (sameVerse && samePage) return;
 
     currentTargetRef.current = target;
     setAudioTarget(target);
@@ -1424,19 +1445,21 @@ function sameTarget(first, second) {
   );
 }
 
-function targetFromTiming(timing) {
+function targetFromTiming(timing, pageOverride = null) {
   const ayah = quranAyahs.find(
     (item) =>
       item.surahNumber === timing.surahNumber
       && item.ayahNumber === timing.ayahNumber,
   );
 
-  return normalizeTarget({
+  const target = normalizeTarget({
     ...ayah,
     surahNumber: timing.surahNumber,
     ayahNumber: timing.ayahNumber,
     reference: timing.verseKey,
   });
+
+  return pageOverride ? { ...target, page: Number(pageOverride) } : target;
 }
 
 function clampSeekTime(audio, value) {
