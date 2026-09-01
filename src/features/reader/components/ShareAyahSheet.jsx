@@ -28,6 +28,7 @@ import {
   SHARE_BISMILLAH_TEXT,
   buildShareComposition,
   findShareAyahAtTime,
+  formatShareAyahReference,
   loadShareVideoTimeline,
   shouldIncludeShareBismillah,
 } from '../../../lib/shareMedia';
@@ -1004,15 +1005,15 @@ function VideoPreview({
           {showTranslation && (isBismillah ? bismillahTranslation : translation) && (
             <div className="share-video-preview-translation" dir={translationDirection}>
               <span>{isBismillah ? bismillahTranslation : translation}</span>{' '}
-              <span className="share-video-preview-inline-reference">
-                {isBismillah ? '1:1' : `${surahNumber}:${ayah?.ayahNumber}`}
+              <span className="share-video-preview-inline-reference" dir="ltr">
+                {isBismillah ? '1:1' : formatShareAyahReference(surahNumber, ayah?.ayahNumber)}
               </span>
             </div>
           )}
 
           {(!showTranslation || !(isBismillah ? bismillahTranslation : translation)) && (
-            <div className="share-video-preview-reference is-arabic-sized">
-              {isBismillah ? '1:1' : `${surahNumber}:${ayah?.ayahNumber}`}
+            <div className="share-video-preview-reference is-arabic-sized" dir="ltr">
+              {isBismillah ? '1:1' : formatShareAyahReference(surahNumber, ayah?.ayahNumber)}
             </div>
           )}
         </div>
