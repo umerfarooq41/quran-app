@@ -223,6 +223,14 @@ export async function generateQuranShareVideo({
               (audio.currentTime * 1000) - (Number(timeline.sourceStartMs) || 0),
             );
             elapsedMs = Math.min(durationMs, preRollMs + mainElapsed);
+            if (mainCaptureGain) {
+              const remainingMainMs = Math.max(
+                0,
+                Number(timeline.sourceEndMs) - (audio.currentTime * 1000),
+              );
+              const fadeMs = Math.max(1, Number(timeline.endFadeMs) || 180);
+              mainCaptureGain.gain.value = Math.max(0, Math.min(1, remainingMainMs / fadeMs));
+            }
           }
 
           const timelineEntry = isBismillah

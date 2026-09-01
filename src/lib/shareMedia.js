@@ -7,6 +7,7 @@ export const SHARE_BISMILLAH_TEXT = 'بِسْمِ اللَّهِ الرَّحْ�
 // first 1:1 word segment, so any reciter intro/A‘udhu remains excluded.
 const BISMILLAH_END_GUARD_MS = 140;
 const BISMILLAH_FALLBACK_END_GUARD_MS = 180;
+const SHARE_MAIN_END_FADE_MS = 180;
 
 export const SHARE_MEDIA_MODES = Object.freeze({
   IMAGE: 'image',
@@ -116,14 +117,6 @@ export async function loadShareVideoTimeline(composition, fetchImpl = globalThis
             && Number.isFinite(Number(segment?.endMs))
           ))
         : [];
-      // Only build a Share Bismillah clip from exact Quran-word boundaries.
-      // That guarantees reciter-specific A'udhu/intro audio is never included.
-      // If a reciter has no 1:1 word timings, skip the Bismillah audio rather
-      // than risk exporting non-Quran intro audio.
-      // Prefer exact 1:1 word boundaries. If a reciter has ayah-level
-      // timings only (for example a local fallback), use the 1:1 ayah start
-      // and end instead. The ayah start already excludes any A'udhu/intro,
-      // while a slightly larger end guard prevents 1:2 onset leakage.
       const hasWordBoundaries = wordSegments.length > 0;
       const sourceStartMs = hasWordBoundaries
         ? Number(wordSegments[0].startMs)
@@ -163,33 +156,65 @@ export async function loadShareVideoTimeline(composition, fetchImpl = globalThis
     }
   }
 
-  const preRollMs = Number(bismillah?.durationMs) || 0;
-  const firstStart = Number(selected[0].startMs) || 0;
-  const normalizedTimeline = selected.map((entry) => ({
-    ...entry,
-    sourceStartMs: Number(entry.startMs) || 0,
-    sourceEndMs: Number(entry.endMs) || 0,
-    startMs: preRollMs + Math.max(0, (Number(entry.startMs) || 0) - firstStart),
-    endMs: preRollMs + Math.max(0, (Number(entry.endMs) || 0) - firstStart),
-    wordSegments: (Array.isArray(entry.wordSegments) ? entry.wordSegments : []).map((segment) => ({
-      ...segment,
-      sourceStartMs: Number(segment.startMs) || 0,
-      sourceEndMs: Number(segment.endMs) || 0,
-      startMs: preRollMs + Math.max(0, (Number(segment.startMs) || 0) - firstStart),
-      endMs: preRollMs + Math.max(0, (Number(segment.endMs) || 0) - firstStart),
-    })),
-  }));
+  // Use the first/last timed Quran words as the main clip boundaries whenever
+  // word timing exists. Ayah-level timestamps for several reciters overlap at
+  // boundaries, which can otherwise include the tail of the previous ayah or
+  // the opening of the next one in a Share Quran video.
+  const firstEntry = selected[0];
+  const lastEntry = selected[selected.length - 1];
+  const firstWord = Array.isArray(firstEntry.wordSegments) && firstEntry.wordSegments.length
+    ? firstEntry.wordSegments[0]
+    : null;
+  const lastWord = Array.isArray(lastEntry.wordSegments) && lastEntry.wordSegments.length
+    ? lastEntry.wordSegments[lastEntry.wordSegments.length - 1]
+    : null;
 
-  const selectedDurationMs = Math.max(
-    1,
-    (Number(selected[selected.length - 1].endMs) || firstStart) - firstStart,
-  );
+  const firstStart = Number(firstWord?.startMs ?? firstEntry.startMs) || 0;
+  let lastEnd = Number(lastWord?.endMs ?? lastEntry.endMs) || firstStart;
+
+  // Never let a selected clip cross into the first timed word of the following
+  // ayah, even when source timestamps overlap. This is a hard safety boundary;
+  // the final selected word gets a short fade instead of allowing next-ayah
+  // speech to leak into the export.
+  const lastPlaybackIndex = playback.timeline.indexOf(lastEntry);
+  const nextEntry = lastPlaybackIndex >= 0 ? playback.timeline[lastPlaybackIndex + 1] : null;
+  const nextFirstWord = Array.isArray(nextEntry?.wordSegments) && nextEntry.wordSegments.length
+    ? nextEntry.wordSegments[0]
+    : null;
+  const nextSpeechStartMs = Number(nextFirstWord?.startMs ?? nextEntry?.startMs);
+  if (Number.isFinite(nextSpeechStartMs) && nextSpeechStartMs > firstStart) {
+    lastEnd = Math.min(lastEnd, nextSpeechStartMs);
+  }
+  lastEnd = Math.max(firstStart + 1, lastEnd);
+
+  const preRollMs = Number(bismillah?.durationMs) || 0;
+  const normalizedTimeline = selected.map((entry) => {
+    const clippedStart = Math.max(firstStart, Number(entry.startMs) || firstStart);
+    const clippedEnd = Math.min(lastEnd, Number(entry.endMs) || lastEnd);
+    return {
+      ...entry,
+      sourceStartMs: clippedStart,
+      sourceEndMs: clippedEnd,
+      startMs: preRollMs + Math.max(0, clippedStart - firstStart),
+      endMs: preRollMs + Math.max(0, clippedEnd - firstStart),
+      wordSegments: (Array.isArray(entry.wordSegments) ? entry.wordSegments : []).map((segment) => ({
+        ...segment,
+        sourceStartMs: Number(segment.startMs) || 0,
+        sourceEndMs: Number(segment.endMs) || 0,
+        startMs: preRollMs + Math.max(0, Math.max(firstStart, Number(segment.startMs) || 0) - firstStart),
+        endMs: preRollMs + Math.max(0, Math.min(lastEnd, Number(segment.endMs) || 0) - firstStart),
+      })).filter((segment) => segment.endMs > segment.startMs),
+    };
+  }).filter((entry) => entry.endMs > entry.startMs);
+
+  const selectedDurationMs = Math.max(1, lastEnd - firstStart);
 
   return {
     ...playback,
     sourceStartMs: firstStart,
-    sourceEndMs: Number(selected[selected.length - 1].endMs) || firstStart,
+    sourceEndMs: lastEnd,
     selectedDurationMs,
+    endFadeMs: SHARE_MAIN_END_FADE_MS,
     bismillah,
     bismillahDurationMs: preRollMs,
     durationMs: preRollMs + selectedDurationMs,
