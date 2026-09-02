@@ -532,9 +532,13 @@ export function ReaderAudioPanel() {
     if (!audio) return;
 
     audio.pause();
+    audio.loop = false;
+    audio.muted = false;
+    audio.volume = 1;
     audio.removeAttribute('src');
     audio.load();
     currentSourceRef.current = null;
+    audioPrimedRef.current = false;
   }
 
   function syncMediaSessionPosition(audio) {
@@ -562,7 +566,6 @@ export function ReaderAudioPanel() {
       !audio
       || unmountedRef.current
       || currentSourceRef.current
-      || audio.currentSrc
     ) {
       return;
     }
