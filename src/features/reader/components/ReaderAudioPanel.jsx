@@ -216,8 +216,17 @@ export function ReaderAudioPanel() {
       bindCurrentAudio(audio);
     }
 
-    const handleUserPlayRequest = () => {
+    const handleUserPlayRequest = (event) => {
       playIntentRef.current = true;
+
+      // ReaderScreen commits the requested target before dispatching this
+      // event. Mirror it immediately into the refs so no stale previous target
+      // can win while React is scheduling the next render/effect.
+      const requestedTarget = normalizeTarget(event?.detail?.target);
+      if (requestedTarget) {
+        currentTargetRef.current = requestedTarget;
+      }
+
       primeAudioFromUserGesture();
     };
     window.addEventListener(AUDIO_USER_PLAY_REQUEST_EVENT, handleUserPlayRequest);
@@ -575,14 +584,26 @@ export function ReaderAudioPanel() {
         // unlock attempt must never leave the shared element muted.
       })
       .finally(() => {
-        if (audio.src === primedSource && !loadingRef.current) {
+        // Do not tear down the user-gesture unlock while an explicit Play
+        // request is still pending. Full-Surah metadata/source selection is
+        // asynchronous and React may not have entered loadTarget() yet. The
+        // old cleanup raced that work, leaving the panel loaded but paused and
+        // forcing a second tap on its Play button. installAudioSource() will
+        // replace this silent source as soon as the real source is ready.
+        if (
+          audio.src === primedSource
+          && !loadingRef.current
+          && !playIntentRef.current
+        ) {
           audio.pause();
           audio.removeAttribute('src');
           audio.load();
         }
-        audio.loop = false;
-        audio.muted = false;
-        sourceTransitionRef.current = false;
+        if (!playIntentRef.current || audio.src !== primedSource) {
+          audio.loop = false;
+          audio.muted = false;
+          sourceTransitionRef.current = false;
+        }
       });
   }
 
@@ -1390,11 +1411,18 @@ export function ReaderAudioPanel() {
 function normalizeTarget(ayah) {
   if (!ayah?.surahNumber || !ayah?.ayahNumber) return null;
 
+  const suppliedPage = Number(ayah.page);
+  const useSuppliedPage = Boolean(
+    ayah.pageIsAuthoritative
+    && Number.isInteger(suppliedPage)
+    && suppliedPage > 0
+  );
+
   return {
-    // Always derive the canonical Mushaf page from the verse reference. A
-    // caller-provided page may describe the previously visible page and can
-    // otherwise send Follow Recitation to the start of the Surah.
-    page: findPageForReference(ayah.surahNumber, ayah.ayahNumber),
+    page: useSuppliedPage
+      ? suppliedPage
+      : findPageForReference(ayah.surahNumber, ayah.ayahNumber),
+    pageIsAuthoritative: useSuppliedPage,
     surahNumber: Number(ayah.surahNumber),
     ayahNumber: Number(ayah.ayahNumber),
     reference: ayah.reference || `${ayah.surahNumber}:${ayah.ayahNumber}`,
