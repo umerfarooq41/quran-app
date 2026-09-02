@@ -466,10 +466,6 @@ export default function ReaderScreen() {
   }
 
   function openAudioPanel(targetLine = null) {
-    // Preserve the originating tap/long-press as a real media user gesture.
-    // Full-Surah metadata is loaded asynchronously, so the audio element is
-    // primed here before that browser activation window is lost.
-    window.dispatchEvent(new Event('quran:audio-user-play-request'));
     setAudioFollowEnabled(followRecitation);
     if (!targetLine && audioPlayerActive && !audioPlayerVisible) {
       showAudioPlayer();
@@ -487,14 +483,24 @@ export default function ReaderScreen() {
 
     if (!rawTarget) return;
 
-    // Resolve the canonical Mushaf page from the actual ayah reference instead
-    // of trusting a stale/current UI page value. This keeps the audio target,
-    // page-follow state, and the verse that will be sought in the recording in
-    // agreement from the first render.
-    const canonicalPage = findPageForReference(rawTarget.surahNumber, rawTarget.ayahNumber) || rawTarget.page || page;
-    const target = { ...rawTarget, page: canonicalPage };
+    // The originating Reader page is authoritative. An ayah can span two
+    // Mushaf pages, so findPageForReference() can legitimately resolve the
+    // same ayah to its earlier page. Overwriting an explicit current/selected
+    // page here made bottom Play and Long Press -> Play jump away before the
+    // audio had even started. Only calculate a page when the caller did not
+    // supply one.
+    const targetPage = rawTarget.page
+      || findPageForReference(rawTarget.surahNumber, rawTarget.ayahNumber)
+      || page;
+    const target = { ...rawTarget, page: targetPage, pageIsAuthoritative: Boolean(rawTarget.page) };
 
+    // Commit the exact target first, then preserve this same tap/long-press as
+    // the media user gesture. The audio panel can now see audioPlaying=true
+    // and the correct target while it primes the shared <audio> element.
     openAudioPlayer(target);
+    window.dispatchEvent(new CustomEvent('quran:audio-user-play-request', {
+      detail: { target },
+    }));
   }
 
   function returnToPlayingAyah() {
