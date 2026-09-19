@@ -968,9 +968,17 @@ export function ReaderAudioPanel() {
       // only the ayah boundary. Some ayahs span two pages, so waiting for the
       // next ayah would leave the reader showing the previous page while the
       // reciter is already reading words from the next one.
-      const wordPage = wordTiming?.position
+      const timedWordPage = wordTiming?.position
         ? findPageForWordPosition(timing.surahNumber, timing.ayahNumber, wordTiming.position)
         : null;
+      const currentTarget = currentTargetRef.current;
+      const retainAuthoritativePage = Boolean(
+        !timedWordPage
+        && currentTarget?.pageIsAuthoritative
+        && sameTarget(currentTarget, timing)
+        && currentTarget?.page
+      );
+      const wordPage = timedWordPage || (retainAuthoritativePage ? currentTarget.page : null);
       const target = targetFromTiming(timing, wordPage);
       syncTargetFromTiming(target, timing);
       return;
