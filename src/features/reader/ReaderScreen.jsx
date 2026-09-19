@@ -144,6 +144,7 @@ export default function ReaderScreen() {
   const readerShellRef = useRef(null);
   const pageSlideTimer = useRef(0);
   const pageTransitionTimer = useRef(0);
+  const playbackStartTargetRef = useRef(null);
   const {
     handleTouchStart,
     handleTouchMove,
@@ -318,7 +319,22 @@ export default function ReaderScreen() {
   ]);
 
   useEffect(() => {
+    const startupTarget = playbackStartTargetRef.current;
+    const authoritativeMatchesStartup = Boolean(
+      startupTarget
+      && playingVerseKey === `${startupTarget.surahNumber}:${startupTarget.ayahNumber}`
+      && playingWordPosition
+      && audioTarget?.pageIsAuthoritative
+      && Number(audioTarget?.surahNumber) === Number(startupTarget.surahNumber)
+      && Number(audioTarget?.ayahNumber) === Number(startupTarget.ayahNumber)
+    );
+
+    if (authoritativeMatchesStartup) {
+      playbackStartTargetRef.current = null;
+    }
+
     if (
+      !playbackStartTargetRef.current &&
       audioPlayerActive &&
       followRecitation &&
       audioFollowEnabled &&
@@ -365,7 +381,8 @@ export default function ReaderScreen() {
     // audio engine has confirmed the current Mushaf page from an actual timed
     // Quran word. Never follow a requested/seek target during source loading.
     if (
-      playingVerseKey
+      !playbackStartTargetRef.current
+      && playingVerseKey
       && playingWordPosition
       && audioTarget?.pageIsAuthoritative
       && audioTarget?.page
@@ -525,6 +542,15 @@ export default function ReaderScreen() {
       pageIsAuthoritative: false,
     };
 
+    // Lock timed-word page following synchronously on the user gesture. React
+    // may still have an already-scheduled effect from the previous recitation;
+    // that stale effect must not navigate until timing authority belongs to
+    // this newly requested ayah.
+    playbackStartTargetRef.current = {
+      surahNumber: Number(target.surahNumber),
+      ayahNumber: Number(target.ayahNumber),
+    };
+
     // Fresh playback always begins at the selected ayah's true beginning.
     // Navigate only when that beginning is on another Mushaf page. After audio
     // starts, timed-word synchronization becomes authoritative for page turns.
@@ -576,6 +602,10 @@ export default function ReaderScreen() {
     // begins on an earlier page.
     startPlaybackTarget(targetLine, { navigateToAyahStart: true });
   }
+
+  useEffect(() => {
+    if (!audioPlayerActive) playbackStartTargetRef.current = null;
+  }, [audioPlayerActive]);
 
   function returnToPlayingAyah() {
     if (
