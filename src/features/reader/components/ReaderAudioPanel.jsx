@@ -1002,6 +1002,23 @@ export function ReaderAudioPanel() {
     // whenever a timed word crosses a Mushaf page boundary.
     if (sameVerse && samePage && samePageAuthority) return;
 
+    // A timing sample without a real word is useful for verse/highlight state,
+    // but its page is only the ayah's canonical start page. Never publish that
+    // non-authoritative page into the shared audio target: doing so can make
+    // the reader briefly visit ayah 1 / the Surah start before the first timed
+    // word immediately corrects the page. Keep the last requested/timed target
+    // until a word supplies an authoritative Mushaf page.
+    if (!target?.pageIsAuthoritative) {
+      if (!sameVerse) {
+        currentTargetRef.current = {
+          ...target,
+          page: currentTarget?.page || target.page,
+          pageIsAuthoritative: Boolean(currentTarget?.pageIsAuthoritative),
+        };
+      }
+      return;
+    }
+
     currentTargetRef.current = target;
     setAudioTarget({
       ...target,
