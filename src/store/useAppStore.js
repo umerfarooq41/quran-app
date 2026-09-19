@@ -23,6 +23,8 @@ const LOCAL_OVERLAY_TYPES = new Set([
 
 const FAVORITE_SURAHS_STORAGE_KEY = 'quran-app-favorite-surahs';
 
+const PAGE_TRACE_LIMIT = 80;
+
 function tracePageMutation(action, state, nextPage, details = {}) {
   if (!import.meta.env.DEV) return;
 
@@ -30,8 +32,8 @@ function tracePageMutation(action, state, nextPage, details = {}) {
   const to = Number(nextPage);
   if (from === to) return;
 
-  console.groupCollapsed(`[Quran page trace] ${action}: ${from} → ${to}`);
-  console.log({
+  const entry = {
+    time: new Date().toISOString(),
     action,
     from,
     to,
@@ -47,10 +49,56 @@ function tracePageMutation(action, state, nextPage, details = {}) {
     followRecitation: state?.followRecitation,
     lastReadTarget: state?.lastReadTarget,
     pendingAyah: state?.pendingAyah,
-    ...details,
-  });
+    details,
+    stack: new Error('[Quran page trace] mutation stack').stack || '',
+  };
+
+  const entries = Array.isArray(window.__QURAN_PAGE_TRACE__)
+    ? window.__QURAN_PAGE_TRACE__
+    : [];
+  entries.push(entry);
+  window.__QURAN_PAGE_TRACE__ = entries.slice(-PAGE_TRACE_LIMIT);
+
+  console.groupCollapsed(`[Quran page trace] ${action}: ${from} → ${to}`);
+  console.log(entry);
   console.trace('[Quran page trace] mutation stack');
   console.groupEnd();
+
+  window.dispatchEvent(new CustomEvent('quran:page-trace', { detail: entry }));
+}
+
+export function getPageTraceText() {
+  if (typeof window === 'undefined' || !Array.isArray(window.__QURAN_PAGE_TRACE__)) {
+    return 'No page changes recorded yet.';
+  }
+
+  const entries = window.__QURAN_PAGE_TRACE__;
+  if (!entries.length) return 'No page changes recorded yet.';
+
+  return entries.map((entry, index) => [
+    `#${index + 1} ${entry.time}`,
+    `${entry.action}: ${entry.from} -> ${entry.to}`,
+    `view: ${entry.view || '-'}`,
+    `audioPlayerActive: ${Boolean(entry.audioPlayerActive)}`,
+    `audioPlaying: ${Boolean(entry.audioPlaying)}`,
+    `audioTarget: ${JSON.stringify(entry.audioTarget || null)}`,
+    `audioMode: ${entry.audioMode || '-'}`,
+    `audioSurahNumber: ${entry.audioSurahNumber ?? '-'}`,
+    `playingVerseKey: ${entry.playingVerseKey || '-'}`,
+    `playingWordPosition: ${entry.playingWordPosition ?? '-'}`,
+    `playingWordOccurrenceIndex: ${entry.playingWordOccurrenceIndex ?? '-'}`,
+    `followRecitation: ${Boolean(entry.followRecitation)}`,
+    `lastReadTarget: ${JSON.stringify(entry.lastReadTarget || null)}`,
+    `pendingAyah: ${JSON.stringify(entry.pendingAyah || null)}`,
+    `details: ${JSON.stringify(entry.details || {})}`,
+    `stack:\n${entry.stack || '-'}`,
+  ].join('\n')).join('\n\n');
+}
+
+export function clearPageTrace() {
+  if (typeof window === 'undefined') return;
+  window.__QURAN_PAGE_TRACE__ = [];
+  window.dispatchEvent(new CustomEvent('quran:page-trace-cleared'));
 }
 
 function getInitialFavoriteSurahs() {
