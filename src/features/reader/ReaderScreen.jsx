@@ -536,6 +536,10 @@ export default function ReaderScreen() {
   function playSelectedAyah(targetLine) {
     if (!targetLine) return;
 
+    // Playback must not inherit the long-press selection overlay. From this
+    // point the timed recitation state alone controls ayah/word highlighting.
+    closeAyahSheet();
+
     // Long Press -> Play starts exactly the selected ayah. Stay on the current
     // page when its beginning is here; move back only when the ayah actually
     // begins on an earlier page.
