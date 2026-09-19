@@ -600,21 +600,18 @@ function normalizeAudioTarget(target) {
   const surahNumber = Number(target.surahNumber);
   const ayahNumber = Number(target.ayahNumber);
 
-  const canonicalPage = findPageForReference(surahNumber, ayahNumber);
-  const timedWordPage = Number(target.page);
-  const useTimedWordPage = Boolean(
-    target.pageIsAuthoritative
-    && Number.isInteger(timedWordPage)
-    && timedWordPage > 0
-  );
+  const suppliedPage = Number(target.page);
+  const hasSuppliedPage = Number.isInteger(suppliedPage) && suppliedPage > 0;
+  const pageIsAuthoritative = Boolean(target.pageIsAuthoritative && hasSuppliedPage);
 
   return {
     ...target,
-    // Normal UI/audio entry points always resolve from the ayah reference.
-    // The only exception is a page explicitly verified from the currently
-    // recited timed word, because an ayah can cross a Mushaf page boundary.
-    page: useTimedWordPage ? clampPage(timedWordPage) : canonicalPage,
-    pageIsAuthoritative: useTimedWordPage,
+    // Preserve the page the reader is already showing/requesting even before
+    // word timing confirms it. A missing page stays missing; never manufacture
+    // a canonical ayah-start page here because that can flash the reader away
+    // from its current page during audio startup.
+    page: hasSuppliedPage ? clampPage(suppliedPage) : null,
+    pageIsAuthoritative,
     surahNumber,
     ayahNumber,
   };
