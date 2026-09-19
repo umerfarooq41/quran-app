@@ -326,13 +326,20 @@ export default function ReaderScreen() {
 
     if (!followRecitation) {
       setAudioFollowEnabled(false);
-      return;
     }
+  }, [audioPlayerActive, followRecitation]);
 
-    // Fresh playback temporarily disables following while the player seeks to
-    // the requested ayah. Re-enable it only after real timed-word sync begins;
-    // from that point audioTarget.page is the timed word's Mushaf page.
-    if (playingVerseKey && playingWordPosition) {
+  useEffect(() => {
+    if (
+      audioPlayerActive
+      && followRecitation
+      && playingVerseKey
+      && playingWordPosition
+      && audioTarget?.pageIsAuthoritative
+    ) {
+      // The audio engine marks a page authoritative only when it came from the
+      // currently timed Quran word. From this point onward page following is
+      // safe; the initial requested/seek target can no longer drive navigation.
       setAudioFollowEnabled(true);
     }
   }, [
@@ -340,6 +347,7 @@ export default function ReaderScreen() {
     followRecitation,
     playingVerseKey,
     playingWordPosition,
+    audioTarget?.pageIsAuthoritative,
   ]);
 
   useEffect(() => {
