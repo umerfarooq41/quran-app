@@ -466,7 +466,15 @@ function getRecitationHighlightRects(pageElement, pageData, playingVerseKey) {
 
   if (!Number.isInteger(surahNumber) || !Number.isInteger(ayahNumber)) return [];
 
-  return getAyahHighlightRects(pageElement, pageData, surahNumber, ayahNumber);
+  return getAyahHighlightRects(pageElement, pageData, surahNumber, ayahNumber)
+    .map((rect) => ({
+      ...rect,
+      // Recitation is one continuous visual state. Slightly expand each
+      // measured visual-line band vertically so adjacent lines read as a
+      // coherent ayah highlight instead of isolated text boxes.
+      top: Math.max(0, rect.top - 2),
+      height: rect.height + 4,
+    }));
 }
 
 function getSavedHighlightRects(pageElement, pageData, savedHighlights) {
