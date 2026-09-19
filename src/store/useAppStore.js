@@ -23,6 +23,36 @@ const LOCAL_OVERLAY_TYPES = new Set([
 
 const FAVORITE_SURAHS_STORAGE_KEY = 'quran-app-favorite-surahs';
 
+function tracePageMutation(action, state, nextPage, details = {}) {
+  if (!import.meta.env.DEV) return;
+
+  const from = Number(state?.page);
+  const to = Number(nextPage);
+  if (from === to) return;
+
+  console.groupCollapsed(`[Quran page trace] ${action}: ${from} → ${to}`);
+  console.log({
+    action,
+    from,
+    to,
+    view: state?.view,
+    audioPlayerActive: state?.audioPlayerActive,
+    audioPlaying: state?.audioPlaying,
+    audioTarget: state?.audioTarget,
+    audioMode: state?.audioMode,
+    audioSurahNumber: state?.audioSurahNumber,
+    playingVerseKey: state?.playingVerseKey,
+    playingWordPosition: state?.playingWordPosition,
+    playingWordOccurrenceIndex: state?.playingWordOccurrenceIndex,
+    followRecitation: state?.followRecitation,
+    lastReadTarget: state?.lastReadTarget,
+    pendingAyah: state?.pendingAyah,
+    ...details,
+  });
+  console.trace('[Quran page trace] mutation stack');
+  console.groupEnd();
+}
+
 function getInitialFavoriteSurahs() {
   if (typeof window === 'undefined') return [];
 
@@ -100,17 +130,21 @@ export const useAppStore = create((set, get) => ({
   pendingAyah: null,
   pendingQuarterFlash: null,
   settings: { ...DEFAULT_SETTINGS },
-  hydrateLastRead: (lastRead) => set((state) => ({
-    // Last-read hydration must never decide which screen opens.
-    // A fresh app launch stays on Home; Reader is opened only by navigation.
-    page: clampPage(lastRead?.page || state.page || 1),
-    lastReadTarget: {
-      page: clampPage(lastRead?.page || state.page || 1),
-      surahNumber: Number(lastRead?.surahNumber) || state.lastReadTarget?.surahNumber || 1,
-      ayahNumber: Number(lastRead?.ayahNumber) || state.lastReadTarget?.ayahNumber || 1,
-    },
-    controlsVisible: false,
-  })),
+  hydrateLastRead: (lastRead) => set((state) => {
+    const nextPage = clampPage(lastRead?.page || state.page || 1);
+    tracePageMutation('hydrateLastRead', state, nextPage, { requestedPage: lastRead?.page });
+    return {
+      // Last-read hydration must never decide which screen opens.
+      // A fresh app launch stays on Home; Reader is opened only by navigation.
+      page: nextPage,
+      lastReadTarget: {
+        page: nextPage,
+        surahNumber: Number(lastRead?.surahNumber) || state.lastReadTarget?.surahNumber || 1,
+        ayahNumber: Number(lastRead?.ayahNumber) || state.lastReadTarget?.ayahNumber || 1,
+      },
+      controlsVisible: false,
+    };
+  }),
   navigateTo: (view, options = {}) => set((state) => transitionToView(
     state,
     normalizeView(view),
@@ -125,13 +159,16 @@ export const useAppStore = create((set, get) => ({
       ? snapshot.viewHistory.map(normalizeView).filter(Boolean).slice(-24)
       : [];
 
+    const nextPage = snapshot.page ? clampPage(snapshot.page) : state.page;
+    tracePageMutation('restoreNavigation', state, nextPage, { requestedPage: snapshot.page });
+
     return {
       ...state,
       view: restoredView,
       viewHistory: restoredHistory,
       navDirection: 'forward',
       overlayStack: [],
-      page: snapshot.page ? clampPage(snapshot.page) : state.page,
+      page: nextPage,
       lastReadTarget: snapshot.lastReadTarget?.surahNumber && snapshot.lastReadTarget?.ayahNumber
         ? {
             page: clampPage(snapshot.lastReadTarget.page || snapshot.page || state.page),
@@ -185,6 +222,11 @@ export const useAppStore = create((set, get) => ({
     const nextState = state.view === VIEWS.READER
       ? state
       : transitionToView(state, VIEWS.READER);
+    tracePageMutation('goPage', state, nextPage, {
+      requestedPage: page,
+      pendingAyah,
+      options,
+    });
 
     return {
       ...nextState,
@@ -201,6 +243,8 @@ export const useAppStore = create((set, get) => ({
   }),
   goPreviousReaderPage: () => set((state) => {
     if (!state.previousReaderPage || state.previousReaderPage === state.page) return state;
+
+    tracePageMutation('goPreviousReaderPage', state, state.previousReaderPage);
 
     return {
       page: state.previousReaderPage,
@@ -436,6 +480,12 @@ export const useAppStore = create((set, get) => ({
     const nextState = state.view === VIEWS.READER
       ? state
       : transitionToView(state, VIEWS.READER);
+    tracePageMutation('goAyah', state, nextPage, {
+      surahNumber: safeSurahNumber,
+      ayahNumber: safeAyahNumber,
+      requestedPage: page,
+      canonicalPage,
+    });
 
     return {
       ...nextState,
@@ -459,6 +509,11 @@ export const useAppStore = create((set, get) => ({
     const nextState = state.view === VIEWS.READER
       ? state
       : transitionToView(state, VIEWS.READER);
+    tracePageMutation('goQuarterTarget', state, nextPage, {
+      markerId,
+      sourcePage,
+      target,
+    });
 
     return {
       ...nextState,
