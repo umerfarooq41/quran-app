@@ -465,42 +465,60 @@ export default function ReaderScreen() {
     }, PAGE_SLIDE_SETTLE_MS);
   }
 
-  function openAudioPanel(targetLine = null) {
-    setAudioFollowEnabled(followRecitation);
-    if (!targetLine && audioPlayerActive && !audioPlayerVisible) {
+  function startPlaybackTarget(rawTarget, { navigateToAyahStart = false } = {}) {
+    if (!rawTarget?.surahNumber || !rawTarget?.ayahNumber) return;
+
+    const ayahStartPage = findPageForReference(rawTarget.surahNumber, rawTarget.ayahNumber)
+      || rawTarget.page
+      || page;
+    const target = {
+      ...rawTarget,
+      page: ayahStartPage,
+      pageIsAuthoritative: false,
+    };
+
+    // Fresh playback always begins at the selected ayah's true beginning.
+    // Navigate only when that beginning is on another Mushaf page. After audio
+    // starts, timed-word synchronization becomes authoritative for page turns.
+    if (navigateToAyahStart && Number(ayahStartPage) !== Number(page)) {
+      goReaderPage(ayahStartPage, null, { navigationSource: 'audio-start' });
+    }
+
+    setAudioFollowEnabled(false);
+    openAudioPlayer(target);
+    window.dispatchEvent(new CustomEvent('quran:audio-user-play-request', {
+      detail: { target },
+    }));
+  }
+
+  function playFromPageStart() {
+    if (audioPlayerActive && !audioPlayerVisible) {
       showAudioPlayer();
       return;
     }
 
+    // The first ayah represented on the visible page is the playback target.
+    // If that ayah began on the previous page, startPlaybackTarget moves back
+    // to its true beginning before recitation starts.
     const firstLine = pageData.lines.find((line) => line.surahNumber && line.ayahStart);
-    const rawTarget = targetLine || (firstLine ? {
+    if (!firstLine) return;
+
+    startPlaybackTarget({
       page,
       surahNumber: firstLine.surahNumber,
       ayahNumber: firstLine.ayahStart,
       reference: `${firstLine.surahNumber}:${firstLine.ayahStart}`,
       arabic: firstLine.text,
-    } : null);
+    }, { navigateToAyahStart: true });
+  }
 
-    if (!rawTarget) return;
+  function playSelectedAyah(targetLine) {
+    if (!targetLine) return;
 
-    // A fresh UI playback request must begin where the requested ayah itself
-    // begins. The page attached to a visible line/long-press only identifies
-    // where the gesture happened; it must not override the canonical ayah
-    // start when that ayah spans a Mushaf page boundary. Once audio is running,
-    // ReaderAudioPanel marks timed-word pages authoritative so Follow Recitation
-    // can move across page boundaries at the exact recited word.
-    const targetPage = findPageForReference(rawTarget.surahNumber, rawTarget.ayahNumber)
-      || rawTarget.page
-      || page;
-    const target = { ...rawTarget, page: targetPage, pageIsAuthoritative: false };
-
-    // Commit the exact target first, then preserve this same tap/long-press as
-    // the media user gesture. The audio panel can now see audioPlaying=true
-    // and the correct target while it primes the shared <audio> element.
-    openAudioPlayer(target);
-    window.dispatchEvent(new CustomEvent('quran:audio-user-play-request', {
-      detail: { target },
-    }));
+    // Long Press -> Play starts exactly the selected ayah. Stay on the current
+    // page when its beginning is here; move back only when the ayah actually
+    // begins on an earlier page.
+    startPlaybackTarget(targetLine, { navigateToAyahStart: true });
   }
 
   function returnToPlayingAyah() {
@@ -770,7 +788,7 @@ export default function ReaderScreen() {
             goPage={goReaderPage}
             onPreviousPage={goPreviousReaderPageWithSlide}
             onSearch={openSearch}
-            onAudio={() => openAudioPanel()}
+            onAudio={playFromPageStart}
             compact={audioPlayerActive}
             juzProgress={juzProgress}
             onChromeTap={hideReaderChrome}
@@ -795,7 +813,7 @@ export default function ReaderScreen() {
           <AyahActionSheet
             ayah={selectedAyah}
             onClose={closeAyahSheet}
-            onPlay={openAudioPanel}
+            onPlay={playSelectedAyah}
             onShare={showSharePage}
             onCopied={showCopyToast}
             onAnnotationsChanged={annotationsChanged}
