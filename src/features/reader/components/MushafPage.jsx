@@ -35,7 +35,6 @@ export function MushafPage({
   pendingAyah,
   quarterFlashTarget,
   selectedAyah,
-  activeAudioAyah,
   playingVerseKey,
   playingWordPosition,
   playingWordOccurrenceIndex,
@@ -50,7 +49,6 @@ export function MushafPage({
     saved: [],
     savedWords: [],
     selection: [],
-    audio: [],
   });
   const [quarterMarkerFlashRect, setQuarterMarkerFlashRect] = useState(null);
   const supportsTextHighlights = enableTextHighlights && typeof CSS !== 'undefined' && Boolean(CSS.highlights) && typeof Highlight !== 'undefined';
@@ -59,7 +57,7 @@ export function MushafPage({
   useLayoutEffect(() => {
     const pageElement = pageRef.current;
     if (!pageElement) {
-      setHighlightRects({ saved: [], savedWords: [], selection: [], audio: [] });
+      setHighlightRects({ saved: [], savedWords: [], selection: [] });
       return undefined;
     }
 
@@ -78,14 +76,6 @@ export function MushafPage({
               pageData,
               selectedAyah.surahNumber,
               selectedAyah.ayahNumber,
-            )
-          : [],
-        audio: activeAudioAyah
-          ? getAyahHighlightRects(
-              pageElement,
-              pageData,
-              activeAudioAyah.surahNumber,
-              activeAudioAyah.ayahNumber,
             )
           : [],
       });
@@ -163,8 +153,6 @@ export function MushafPage({
     savedHighlights,
     selectedAyah?.surahNumber,
     selectedAyah?.ayahNumber,
-    activeAudioAyah?.surahNumber,
-    activeAudioAyah?.ayahNumber,
     settings.fontScale,
   ]);
 
@@ -344,18 +332,6 @@ export function MushafPage({
               top: `${item.rect.top}px`,
               width: `${item.rect.width}px`,
               height: `${item.rect.height}px`,
-            }}
-          />
-        ))}
-        {highlightRects.audio.map((rect, index) => (
-          <span
-            key={`audio-${rect.top}-${rect.left}-${index}`}
-            className="reader-ayah-highlight-block reader-ayah-highlight-audio"
-            style={{
-              left: `${rect.left}px`,
-              top: `${rect.top}px`,
-              width: `${rect.width}px`,
-              height: `${rect.height}px`,
             }}
           />
         ))}
