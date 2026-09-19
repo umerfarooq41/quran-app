@@ -100,7 +100,7 @@ export default function ReaderScreen() {
   const [translationTarget, setTranslationTarget] = useState(null);
   const [copyToastVisible, setCopyToastVisible] = useState(false);
   const [pageTraceCount, setPageTraceCount] = useState(() => (
-    import.meta.env.DEV && typeof window !== 'undefined' && Array.isArray(window.__QURAN_PAGE_TRACE__)
+    typeof window !== 'undefined' && Array.isArray(window.__QURAN_PAGE_TRACE__)
       ? window.__QURAN_PAGE_TRACE__.length
       : 0
   ));
@@ -189,8 +189,6 @@ export default function ReaderScreen() {
   }, [page, sliderInteracting]);
 
   useEffect(() => {
-    if (!import.meta.env.DEV) return undefined;
-
     const syncTraceCount = () => {
       setPageTraceCount(Array.isArray(window.__QURAN_PAGE_TRACE__) ? window.__QURAN_PAGE_TRACE__.length : 0);
     };
@@ -836,7 +834,7 @@ export default function ReaderScreen() {
         <ReaderFooterMeta displayPage={footerDisplayPage} progress={juzProgress} />
       </div>
 
-      {import.meta.env.DEV && (
+      {(
         <div
           data-reader-ui
           style={{
