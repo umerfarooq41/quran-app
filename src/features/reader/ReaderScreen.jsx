@@ -326,8 +326,21 @@ export default function ReaderScreen() {
 
     if (!followRecitation) {
       setAudioFollowEnabled(false);
+      return;
     }
-  }, [audioPlayerActive, followRecitation]);
+
+    // Fresh playback temporarily disables following while the player seeks to
+    // the requested ayah. Re-enable it only after real timed-word sync begins;
+    // from that point audioTarget.page is the timed word's Mushaf page.
+    if (playingVerseKey && playingWordPosition) {
+      setAudioFollowEnabled(true);
+    }
+  }, [
+    audioPlayerActive,
+    followRecitation,
+    playingVerseKey,
+    playingWordPosition,
+  ]);
 
   useEffect(() => {
     if (
@@ -667,10 +680,6 @@ export default function ReaderScreen() {
 
   function renderMushafPage(renderedPageData, { interactive = true } = {}) {
     const renderedPage = renderedPageData.page;
-    const activeAudioAyah = audioPlayerActive && audioTarget?.page === renderedPage
-      ? audioTarget
-      : null;
-
     return (
       <MushafPage
         pageData={renderedPageData}
@@ -680,7 +689,6 @@ export default function ReaderScreen() {
         pendingAyah={interactive ? pendingAyah : null}
         quarterFlashTarget={interactive ? quarterFlashTarget : null}
         selectedAyah={interactive ? selectedAyah : null}
-        activeAudioAyah={activeAudioAyah}
         playingVerseKey={playingVerseKey}
         playingWordPosition={playingWordPosition}
         playingWordOccurrenceIndex={playingWordOccurrenceIndex}
