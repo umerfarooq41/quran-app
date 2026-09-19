@@ -319,6 +319,10 @@ export const useAppStore = create((set, get) => ({
   setAudioTarget: (audioTarget) => set((state) => {
     const target = normalizeAudioTarget(audioTarget);
     const existingIndex = state.audioQueue.findIndex((item) => sameAudioTarget(item, target));
+    const preserveProgress = Boolean(
+      target?.preserveAudioProgress
+      || sameAudioTarget(state.audioTarget, target)
+    );
 
     return {
       audioTarget: target,
@@ -331,8 +335,10 @@ export const useAppStore = create((set, get) => ({
       audioQueueIndex: target
         ? (existingIndex >= 0 ? existingIndex : 0)
         : state.audioQueueIndex,
-      audioPosition: sameAudioTarget(state.audioTarget, target) ? state.audioPosition : 0,
-      audioDuration: sameAudioTarget(state.audioTarget, target) ? state.audioDuration : 0,
+      // Timed ayah/page changes inside one full-Surah media source must not
+      // reset the seek UI. Real source changes still start with fresh progress.
+      audioPosition: preserveProgress ? state.audioPosition : 0,
+      audioDuration: preserveProgress ? state.audioDuration : 0,
     };
   }),
   setAudioQueue: (audioQueue, audioQueueIndex = 0) => set((state) => {
