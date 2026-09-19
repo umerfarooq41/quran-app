@@ -26,8 +26,6 @@ const FAVORITE_SURAHS_STORAGE_KEY = 'quran-app-favorite-surahs';
 const PAGE_TRACE_LIMIT = 80;
 
 function tracePageMutation(action, state, nextPage, details = {}) {
-  if (!import.meta.env.DEV) return;
-
   const from = Number(state?.page);
   const to = Number(nextPage);
   if (from === to) return;
