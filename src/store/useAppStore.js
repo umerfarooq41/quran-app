@@ -378,6 +378,13 @@ export const useAppStore = create((set, get) => ({
       audioPosition: sameTarget ? state.audioPosition : 0,
       audioDuration: sameTarget ? state.audioDuration : 0,
       audioPlaying: true,
+      // A fresh user playback request must immediately revoke timing authority
+      // from the previous recitation. Until the new source/seek produces a real
+      // timed word, Reader follow has no verse/word state that can pull the
+      // page back to the previous playback target.
+      playingVerseKey: null,
+      playingWordPosition: null,
+      playingWordOccurrenceIndex: null,
       audioReciter: state.settings.reciter,
       audioPlaybackRate: state.settings.playbackRate,
       audioPlayerActive: true,
