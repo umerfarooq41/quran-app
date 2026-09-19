@@ -483,16 +483,16 @@ export default function ReaderScreen() {
 
     if (!rawTarget) return;
 
-    // The originating Reader page is authoritative. An ayah can span two
-    // Mushaf pages, so findPageForReference() can legitimately resolve the
-    // same ayah to its earlier page. Overwriting an explicit current/selected
-    // page here made bottom Play and Long Press -> Play jump away before the
-    // audio had even started. Only calculate a page when the caller did not
-    // supply one.
-    const targetPage = rawTarget.page
-      || findPageForReference(rawTarget.surahNumber, rawTarget.ayahNumber)
+    // A fresh UI playback request must begin where the requested ayah itself
+    // begins. The page attached to a visible line/long-press only identifies
+    // where the gesture happened; it must not override the canonical ayah
+    // start when that ayah spans a Mushaf page boundary. Once audio is running,
+    // ReaderAudioPanel marks timed-word pages authoritative so Follow Recitation
+    // can move across page boundaries at the exact recited word.
+    const targetPage = findPageForReference(rawTarget.surahNumber, rawTarget.ayahNumber)
+      || rawTarget.page
       || page;
-    const target = { ...rawTarget, page: targetPage, pageIsAuthoritative: Boolean(rawTarget.page) };
+    const target = { ...rawTarget, page: targetPage, pageIsAuthoritative: false };
 
     // Commit the exact target first, then preserve this same tap/long-press as
     // the media user gesture. The audio panel can now see audioPlaying=true
