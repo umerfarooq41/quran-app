@@ -1466,17 +1466,14 @@ function normalizeTarget(ayah) {
   if (!ayah?.surahNumber || !ayah?.ayahNumber) return null;
 
   const suppliedPage = Number(ayah.page);
-  const useSuppliedPage = Boolean(
-    ayah.pageIsAuthoritative
-    && Number.isInteger(suppliedPage)
-    && suppliedPage > 0
-  );
+  const hasSuppliedPage = Number.isInteger(suppliedPage) && suppliedPage > 0;
 
   return {
-    page: useSuppliedPage
-      ? suppliedPage
-      : findPageForReference(ayah.surahNumber, ayah.ayahNumber),
-    pageIsAuthoritative: useSuppliedPage,
+    // Preserve a valid requested/current page without claiming timed-word
+    // authority. If no page was supplied, leave it unset rather than jumping
+    // to the ayah's canonical start page during audio initialization.
+    page: hasSuppliedPage ? suppliedPage : null,
+    pageIsAuthoritative: Boolean(ayah.pageIsAuthoritative && hasSuppliedPage),
     surahNumber: Number(ayah.surahNumber),
     ayahNumber: Number(ayah.ayahNumber),
     reference: ayah.reference || `${ayah.surahNumber}:${ayah.ayahNumber}`,
