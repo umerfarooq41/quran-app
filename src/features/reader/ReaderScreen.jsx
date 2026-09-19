@@ -169,6 +169,8 @@ export default function ReaderScreen() {
     audioPlayerActive &&
       audioPlaying &&
       !audioFollowEnabled &&
+      audioTarget?.pageIsAuthoritative &&
+      playingVerseKey &&
       audioTarget?.page &&
       Number(audioTarget.page) !== Number(page)
   );
@@ -336,14 +338,21 @@ export default function ReaderScreen() {
   }, [audioPlayerActive, followRecitation]);
 
   useEffect(() => {
+    if (!followRecitation || !audioPlayerActive) return;
+
+    // Turning Follow Recitation back on is allowed to navigate only after the
+    // audio engine has confirmed the current Mushaf page from an actual timed
+    // Quran word. Never follow a requested/seek target during source loading.
     if (
-      followRecitation
-      && audioPlayerActive
+      playingVerseKey
+      && playingWordPosition
+      && audioTarget?.pageIsAuthoritative
       && audioTarget?.page
-      && Number(audioTarget.page) !== Number(page)
     ) {
-      setAudioFollowEnabled(followRecitation);
-      goReaderPage(audioTarget.page, null, { navigationSource: 'audio' });
+      setAudioFollowEnabled(true);
+      if (Number(audioTarget.page) !== Number(page)) {
+        goReaderPage(audioTarget.page, null, { navigationSource: 'audio' });
+      }
     }
   }, [followRecitation]);
 
@@ -545,7 +554,12 @@ export default function ReaderScreen() {
   }
 
   function returnToPlayingAyah() {
-    if (!audioPlaying || !audioTarget?.page) return;
+    if (
+      !audioPlaying
+      || !playingVerseKey
+      || !audioTarget?.pageIsAuthoritative
+      || !audioTarget?.page
+    ) return;
 
     setAudioFollowEnabled(true);
     goReaderPage(audioTarget.page, null, { navigationSource: 'return-to-audio' });
