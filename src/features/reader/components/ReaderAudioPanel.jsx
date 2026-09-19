@@ -225,6 +225,30 @@ export function ReaderAudioPanel() {
       const requestedTarget = normalizeTarget(event?.detail?.target);
       if (requestedTarget) {
         currentTargetRef.current = requestedTarget;
+
+        // A user can request another ayah while the player is already active.
+        // The activation-only store subscription will not fire in that case,
+        // and mirroring the ref alone makes the render effect think the new
+        // target is already loaded. Start the target load directly from the
+        // user gesture so the existing full-Surah source is re-seeked to the
+        // selected ayah and autoplay continues.
+        const state = useAppStore.getState();
+        const reciterId = state.audioReciter || state.settings.reciter || getDefaultReciterId();
+        const loadingMatches = (
+          sameTarget(loadingRef.current?.target, requestedTarget)
+          && loadingRef.current?.reciterId === reciterId
+        );
+        const sourceAlreadyAtTarget = (
+          sameTarget(currentTargetRef.current, requestedTarget)
+          && currentReciterRef.current === reciterId
+          && currentSourceRef.current
+          && sameTarget(state.audioTarget, requestedTarget)
+          && state.playingVerseKey === `${requestedTarget.surahNumber}:${requestedTarget.ayahNumber}`
+        );
+
+        if (!loadingMatches && !sourceAlreadyAtTarget) {
+          loadTarget(requestedTarget, reciterId, true);
+        }
       }
 
       primeAudioFromUserGesture();
