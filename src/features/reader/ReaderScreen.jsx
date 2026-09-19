@@ -299,6 +299,9 @@ export default function ReaderScreen() {
       audioPlayerActive &&
       followRecitation &&
       audioFollowEnabled &&
+      playingVerseKey &&
+      playingWordPosition &&
+      audioTarget?.pageIsAuthoritative &&
       audioTarget?.page &&
       Number(audioTarget.page) !== Number(page)
     ) {
@@ -313,6 +316,9 @@ export default function ReaderScreen() {
     audioPlayerActive,
     followRecitation,
     audioFollowEnabled,
+    playingVerseKey,
+    playingWordPosition,
+    audioTarget?.pageIsAuthoritative,
     controlsVisible,
     page,
     setControlsVisible,
@@ -328,27 +334,6 @@ export default function ReaderScreen() {
       setAudioFollowEnabled(false);
     }
   }, [audioPlayerActive, followRecitation]);
-
-  useEffect(() => {
-    if (
-      audioPlayerActive
-      && followRecitation
-      && playingVerseKey
-      && playingWordPosition
-      && audioTarget?.pageIsAuthoritative
-    ) {
-      // The audio engine marks a page authoritative only when it came from the
-      // currently timed Quran word. From this point onward page following is
-      // safe; the initial requested/seek target can no longer drive navigation.
-      setAudioFollowEnabled(true);
-    }
-  }, [
-    audioPlayerActive,
-    followRecitation,
-    playingVerseKey,
-    playingWordPosition,
-    audioTarget?.pageIsAuthoritative,
-  ]);
 
   useEffect(() => {
     if (
@@ -383,14 +368,19 @@ export default function ReaderScreen() {
   }
 
   function updateAudioFollowForDestination(nextPage, navigationSource = 'user') {
-    if (!audioPlayerActive || !audioTarget?.page) return;
+    if (!audioPlayerActive) return;
 
-    if (navigationSource === 'audio' || navigationSource === 'return-to-audio') {
+    if (navigationSource === 'return-to-audio') {
       setAudioFollowEnabled(true);
       return;
     }
 
-    setAudioFollowEnabled(Number(nextPage) === Number(audioTarget.page));
+    if (navigationSource === 'audio') return;
+
+    // Any reader navigation initiated outside the timed audio follower is an
+    // explicit decision to browse away. Keep following suspended until the
+    // user taps the existing Return to recitation control.
+    setAudioFollowEnabled(false);
   }
 
   function goReaderPage(nextPage, pendingAyah = null, options = {}) {
@@ -505,7 +495,11 @@ export default function ReaderScreen() {
       goReaderPage(ayahStartPage, null, { navigationSource: 'audio-start' });
     }
 
-    setAudioFollowEnabled(false);
+    // Start in follow mode, but the follow effect below is gated on an
+    // authoritative timed word. The non-authoritative seek target therefore
+    // cannot move the reader; once timing is established, normal following
+    // begins without a separate effect that could override manual browsing.
+    setAudioFollowEnabled(followRecitation);
     openAudioPlayer(target);
     window.dispatchEvent(new CustomEvent('quran:audio-user-play-request', {
       detail: { target },
