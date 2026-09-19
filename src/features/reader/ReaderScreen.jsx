@@ -4,7 +4,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { db } from '../../lib/db';
 import { getCurrentIndoPakJuzProgress } from '../../data/indoPakParaQuarters';
 import { clampPage, findPageForReference, getMushafPageNumber, getPage, getPageMeta, getSurah, getSurahAyahs } from '../../lib/quran';
-import { clearPageTrace, getPageTraceText, OVERLAY_TYPES, useAppStore } from '../../store/useAppStore';
+import { OVERLAY_TYPES, useAppStore } from '../../store/useAppStore';
 import { AyahActionSheet } from './components/AyahActionSheet';
 import { AyahTranslationCard } from './components/AyahTranslationCard';
 import { MushafPage } from './components/MushafPage';
@@ -99,12 +99,6 @@ export default function ReaderScreen() {
   const [sliderInteracting, setSliderInteracting] = useState(false);
   const [translationTarget, setTranslationTarget] = useState(null);
   const [copyToastVisible, setCopyToastVisible] = useState(false);
-  const [pageTraceCount, setPageTraceCount] = useState(() => (
-    typeof window !== 'undefined' && Array.isArray(window.__QURAN_PAGE_TRACE__)
-      ? window.__QURAN_PAGE_TRACE__.length
-      : 0
-  ));
-  const [pageTraceStatus, setPageTraceStatus] = useState('');
   const [pageSlide, setPageSlide] = useState(PAGE_SLIDE_IDLE);
   const [pageTransition, setPageTransition] = useState(null);
   const [audioFollowEnabled, setAudioFollowEnabled] = useState(() => (
@@ -189,20 +183,6 @@ export default function ReaderScreen() {
     if (!sliderInteracting) setSliderPreviewPage(null);
   }, [page, sliderInteracting]);
 
-  useEffect(() => {
-    const syncTraceCount = () => {
-      setPageTraceCount(Array.isArray(window.__QURAN_PAGE_TRACE__) ? window.__QURAN_PAGE_TRACE__.length : 0);
-    };
-
-    window.addEventListener('quran:page-trace', syncTraceCount);
-    window.addEventListener('quran:page-trace-cleared', syncTraceCount);
-    syncTraceCount();
-
-    return () => {
-      window.removeEventListener('quran:page-trace', syncTraceCount);
-      window.removeEventListener('quran:page-trace-cleared', syncTraceCount);
-    };
-  }, []);
 
   useEffect(() => () => {
     window.clearTimeout(copyToastTimer.current);
@@ -619,24 +599,6 @@ export default function ReaderScreen() {
     goReaderPage(audioTarget.page, null, { navigationSource: 'return-to-audio' });
   }
 
-  async function copyPageTrace() {
-    const trace = getPageTraceText();
-    try {
-      await navigator.clipboard.writeText(trace);
-      setPageTraceStatus('Copied');
-    } catch {
-      window.prompt('Copy page trace', trace);
-      setPageTraceStatus('Select all and copy');
-    }
-    window.setTimeout(() => setPageTraceStatus(''), 1800);
-  }
-
-  function resetPageTrace() {
-    clearPageTrace();
-    setPageTraceStatus('Cleared');
-    window.setTimeout(() => setPageTraceStatus(''), 1200);
-  }
-
   function annotationsChanged() {
     setAnnotationVersion((version) => version + 1);
   }
@@ -864,35 +826,7 @@ export default function ReaderScreen() {
         <ReaderFooterMeta displayPage={footerDisplayPage} progress={juzProgress} />
       </div>
 
-      {(
-        <div
-          data-reader-ui
-          style={{
-            position: 'fixed',
-            zIndex: 9999,
-            top: 'max(8px, env(safe-area-inset-top))',
-            right: '8px',
-            display: 'flex',
-            gap: '6px',
-            alignItems: 'center',
-            padding: '6px',
-            borderRadius: '10px',
-            background: 'rgba(17, 24, 39, .88)',
-            color: '#fff',
-            fontSize: '11px',
-            boxShadow: '0 4px 16px rgba(0,0,0,.25)',
-          }}
-        >
-          <span>Trace {pageTraceCount}</span>
-          <button type="button" onClick={copyPageTrace} style={{ padding: '4px 7px', borderRadius: '6px', background: '#fff', color: '#111827' }}>
-            Copy Trace
-          </button>
-          <button type="button" onClick={resetPageTrace} style={{ padding: '4px 7px', borderRadius: '6px', background: '#fff', color: '#111827' }}>
-            Clear
-          </button>
-          {pageTraceStatus && <span>{pageTraceStatus}</span>}
-        </div>
-      )}
+      
 
       {showReturnToAudioChip && (
         <button
