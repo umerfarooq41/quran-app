@@ -797,7 +797,9 @@ export function ReaderAudioPanel() {
         // the requested long-press target is reached. The originating gesture
         // has already primed the shared audio element; actual playback starts
         // only after metadata is ready and currentTime is set below.
-        setAudioProgress(0, 0);
+        // Keep the previous visual/store progress while metadata is loading.
+        // The real seek position is committed below after the new source is
+        // seekable; publishing 0 here makes the thumb flash to the beginning.
       } else {
         currentSourceRef.current = source;
       }
