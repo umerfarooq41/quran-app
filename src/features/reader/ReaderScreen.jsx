@@ -377,10 +377,14 @@ export default function ReaderScreen() {
 
     if (navigationSource === 'audio') return;
 
-    // Any reader navigation initiated outside the timed audio follower is an
-    // explicit decision to browse away. Keep following suspended until the
-    // user taps the existing Return to recitation control.
-    setAudioFollowEnabled(false);
+    // Manual browsing suspends following while the user is away. If they
+    // manually navigate back to the page confirmed by the current timed word,
+    // reconnect automatically; audio timing updates alone never do this.
+    setAudioFollowEnabled(Boolean(
+      audioTarget?.pageIsAuthoritative
+      && audioTarget?.page
+      && Number(nextPage) === Number(audioTarget.page)
+    ));
   }
 
   function goReaderPage(nextPage, pendingAyah = null, options = {}) {
