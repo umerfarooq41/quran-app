@@ -496,7 +496,6 @@ export function QuranLine({
             );
             const className = [
               'quran-word',
-              isRecitedAyah ? 'is-recited-ayah' : '',
               isRecitedWord ? 'is-recited-word' : '',
             ].filter(Boolean).join(' ');
 
