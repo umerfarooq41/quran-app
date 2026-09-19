@@ -384,7 +384,10 @@ export default function ReaderScreen() {
       return;
     }
 
-    if (navigationSource === 'audio') return;
+    // Audio-driven navigation, including the one intentional move to the
+    // selected ayah's true start page, must not be mistaken for manual
+    // browsing. Timed-word authority will take over after playback starts.
+    if (navigationSource === 'audio' || navigationSource === 'audio-start') return;
 
     // Manual browsing suspends following while the user is away. If they
     // manually navigate back to the page confirmed by the current timed word,
