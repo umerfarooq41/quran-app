@@ -67,7 +67,7 @@ export function ReaderAudioPanel() {
     setPlayingVerseKey,
     setPlayingWord,
     setSurahTimeline,
-    goAyah,
+    goPage,
   } = useAppStore(useShallow((state) => ({
     view: state.view,
     settings: state.settings,
@@ -94,7 +94,7 @@ export function ReaderAudioPanel() {
     setPlayingVerseKey: state.setPlayingVerseKey,
     setPlayingWord: state.setPlayingWord,
     setSurahTimeline: state.setSurahTimeline,
-    goAyah: state.goAyah,
+    goPage: state.goPage,
   })));
   const nativeAudioRef = useRef(null);
   const currentAudioRef = useRef(null);
@@ -1003,7 +1003,12 @@ export function ReaderAudioPanel() {
     if (sameVerse && samePage && samePageAuthority) return;
 
     currentTargetRef.current = target;
-    setAudioTarget(target);
+    setAudioTarget({
+      ...target,
+      // This target came from the timeline of the already loaded full-Surah
+      // media. Changing ayah/page metadata must not reset media progress.
+      preserveAudioProgress: true,
+    });
     updateAudioQueue(target);
   }
 
@@ -1193,8 +1198,12 @@ export function ReaderAudioPanel() {
   function returnToCurrentRecitation(event) {
     if (event?.target?.closest?.('button, input, select, a')) return;
     const target = currentTargetRef.current || normalizeTarget(ayah);
-    if (!target) return;
-    goAyah(target.surahNumber, target.ayahNumber, target.page);
+    if (!target?.pageIsAuthoritative || !target?.page) return;
+
+    // Return to the page containing the currently timed word. Do not route
+    // through goAyah(), which intentionally canonicalizes to the ayah start
+    // and is therefore wrong for an ayah continuing onto another page.
+    goPage(target.page);
   }
 
   function closePlayer() {
