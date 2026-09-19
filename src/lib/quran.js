@@ -128,7 +128,12 @@ export function findPageForWordPosition(surahNumber, ayahNumber, wordPosition) {
   const safeAyah = Number(ayahNumber);
   const safePosition = Number(wordPosition);
   const wordId = WORD_ID_BY_VERSE_POSITION.get(`${safeSurah}:${safeAyah}:${safePosition}`);
-  if (!Number.isInteger(wordId)) return findPageForReference(safeSurah, safeAyah);
+
+  // Word-follow navigation is allowed to move the reader only when the exact
+  // timed word can be mapped to a Mushaf page. Falling back to the ayah's
+  // canonical page here turns missing/early timing into a false authoritative
+  // page and can briefly jump to the ayah/Surah start.
+  if (!Number.isInteger(wordId)) return null;
 
   const page = pages.find((candidate) => candidate.lines.some((line) => (
     line.type === 'ayah'
@@ -138,7 +143,7 @@ export function findPageForWordPosition(surahNumber, ayahNumber, wordPosition) {
     && wordId <= Number(line.lastWordId)
   )));
 
-  return page?.page ?? findPageForReference(safeSurah, safeAyah);
+  return page?.page ?? null;
 }
 
 export function getAyahMarkerPage(surahNumber, ayahNumber) {
