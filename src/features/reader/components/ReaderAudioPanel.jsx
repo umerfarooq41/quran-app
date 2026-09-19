@@ -1004,13 +1004,26 @@ export function ReaderAudioPanel() {
 
   function syncPlaybackStateForSource(source, target) {
     const isFullSurah = source?.mode === 'full-surah';
-    const verseKey = `${target.surahNumber}:${target.ayahNumber}`;
 
     setPlayingWord(null);
     setAudioMode(isFullSurah ? 'surah' : 'ayah');
     setAudioSurahNumber(target.surahNumber);
     setSurahTimeline(isFullSurah ? source.timeline : []);
 
+    if (isFullSurah) {
+      // A requested target is only a seek destination. Do not present it as
+      // the currently recited ayah until the full-Surah timing data confirms
+      // the real verse/word at audio.currentTime.
+      if (lastSyncedVerseKeyRef.current !== null) {
+        lastSyncedVerseKeyRef.current = null;
+        setPlayingVerseKey(null);
+      }
+      return;
+    }
+
+    // Per-ayah fallback audio has no word timeline, so the loaded file itself
+    // is authoritative for the current ayah.
+    const verseKey = `${target.surahNumber}:${target.ayahNumber}`;
     if (lastSyncedVerseKeyRef.current !== verseKey) {
       lastSyncedVerseKeyRef.current = verseKey;
       setPlayingVerseKey(verseKey);
