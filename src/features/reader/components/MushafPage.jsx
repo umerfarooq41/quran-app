@@ -49,6 +49,7 @@ export function MushafPage({
     saved: [],
     savedWords: [],
     selection: [],
+    recitation: [],
   });
   const [quarterMarkerFlashRect, setQuarterMarkerFlashRect] = useState(null);
   const supportsTextHighlights = enableTextHighlights && typeof CSS !== 'undefined' && Boolean(CSS.highlights) && typeof Highlight !== 'undefined';
@@ -57,7 +58,7 @@ export function MushafPage({
   useLayoutEffect(() => {
     const pageElement = pageRef.current;
     if (!pageElement) {
-      setHighlightRects({ saved: [], savedWords: [], selection: [] });
+      setHighlightRects({ saved: [], savedWords: [], selection: [], recitation: [] });
       return undefined;
     }
 
@@ -78,6 +79,7 @@ export function MushafPage({
               selectedAyah.ayahNumber,
             )
           : [],
+        recitation: getRecitationHighlightRects(pageElement, pageData, playingVerseKey),
       });
     };
 
@@ -153,6 +155,7 @@ export function MushafPage({
     savedHighlights,
     selectedAyah?.surahNumber,
     selectedAyah?.ayahNumber,
+    playingVerseKey,
     settings.fontScale,
   ]);
 
@@ -335,6 +338,18 @@ export function MushafPage({
             }}
           />
         ))}
+        {highlightRects.recitation.map((rect, index) => (
+          <span
+            key={`recitation-${rect.top}-${rect.left}-${index}`}
+            className="reader-ayah-highlight-block reader-ayah-highlight-audio"
+            style={{
+              left: `${rect.left}px`,
+              top: `${rect.top}px`,
+              width: `${rect.width}px`,
+              height: `${rect.height}px`,
+            }}
+          />
+        ))}
         {highlightRects.selection.map((rect, index) => (
           <span
             key={`selection-${rect.top}-${rect.left}-${index}`}
@@ -442,6 +457,16 @@ function isBismillahOnlyAyahLine(line) {
       Number(line.ayahStart) === 1 &&
       Number(line.ayahEnd) === 1
   );
+}
+
+function getRecitationHighlightRects(pageElement, pageData, playingVerseKey) {
+  const [surahNumber, ayahNumber] = String(playingVerseKey || '')
+    .split(':')
+    .map(Number);
+
+  if (!Number.isInteger(surahNumber) || !Number.isInteger(ayahNumber)) return [];
+
+  return getAyahHighlightRects(pageElement, pageData, surahNumber, ayahNumber);
 }
 
 function getSavedHighlightRects(pageElement, pageData, savedHighlights) {
