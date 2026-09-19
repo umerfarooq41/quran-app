@@ -984,11 +984,13 @@ export function ReaderAudioPanel() {
     const currentTarget = currentTargetRef.current;
     const sameVerse = sameTarget(currentTarget, timing);
     const samePage = Number(currentTarget?.page) === Number(target?.page);
+    const samePageAuthority = Boolean(currentTarget?.pageIsAuthoritative)
+      === Boolean(target?.pageIsAuthoritative);
 
-    // Update even within the same ayah when the current timed word has crossed
-    // onto another Mushaf page. ReaderScreen follows audioTarget.page
-    // immediately, so the page turns while that word is being recited.
-    if (sameVerse && samePage) return;
+    // The first real timed word must replace the non-authoritative seek target
+    // even when both happen to be on the same page. After that, update again
+    // whenever a timed word crosses a Mushaf page boundary.
+    if (sameVerse && samePage && samePageAuthority) return;
 
     currentTargetRef.current = target;
     setAudioTarget(target);
