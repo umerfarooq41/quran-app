@@ -269,8 +269,15 @@ export function ReaderAudioPanel() {
   }, []);
 
   useEffect(() => {
-    playIntentRef.current = playing;
+    const shareIsOpen = view === VIEWS.SHARE_QURAN;
+    playIntentRef.current = playing && !shareIsOpen;
     const audio = currentAudioRef.current;
+
+    if (shareIsOpen) {
+      audio?.pause();
+      if (playing) setAudioPlaying(false);
+      return;
+    }
 
     if (
       playing &&
@@ -282,7 +289,7 @@ export function ReaderAudioPanel() {
     } else if (!playing && audio && !audio.paused) {
       audio.pause();
     }
-  }, [playing]);
+  }, [playing, view, setAudioPlaying]);
 
   useEffect(() => {
     if (!settings.reciter && selectedReciter) {
@@ -1341,7 +1348,9 @@ export function ReaderAudioPanel() {
     <audio ref={nativeAudioRef} className="reader-audio-native" preload="auto" playsInline />
   );
 
-  if (!audioPlayerActive) return nativeAudioElement;
+  // Keep the audio element mounted so its position survives Share navigation,
+  // but never display the reader's expanded or minimized transport over Share.
+  if (!audioPlayerActive || view === VIEWS.SHARE_QURAN) return nativeAudioElement;
 
   const panelWrapClassName = [
     'reader-audio-panel-wrap',
