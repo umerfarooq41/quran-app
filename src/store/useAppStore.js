@@ -182,6 +182,9 @@ export const useAppStore = create((set, get) => ({
   openSharePage: (shareTarget) => set((state) => ({
     ...transitionToView(state, VIEWS.SHARE_QURAN),
     shareTarget,
+    // Share owns preview audio. Keep the reader's target and position, but
+    // suspend playback without closing or resetting its audio element.
+    audioPlaying: false,
   })),
   closeSharePage: () => set((state) => ({
     ...navigateBack(state, VIEWS.READER),
