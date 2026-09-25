@@ -338,30 +338,22 @@ export function MushafPage({
             }}
           />
         ))}
-        {highlightRects.recitation.map((rect, index) => (
-          <span
-            key={`recitation-${rect.top}-${rect.left}-${index}`}
-            className={`reader-ayah-highlight-block reader-ayah-highlight-audio reader-ayah-highlight-segment ${getHighlightSegmentClass(index, highlightRects.recitation.length)}`}
-            style={{
-              left: `${rect.left}px`,
-              top: `${rect.top}px`,
-              width: `${rect.width}px`,
-              height: `${rect.height}px`,
-            }}
-          />
-        ))}
-        {highlightRects.selection.map((rect, index) => (
-          <span
-            key={`selection-${rect.top}-${rect.left}-${index}`}
-            className={`reader-ayah-highlight-block reader-ayah-highlight-selection reader-ayah-highlight-segment ${getHighlightSegmentClass(index, highlightRects.selection.length)}`}
-            style={{
-              left: `${rect.left}px`,
-              top: `${rect.top}px`,
-              width: `${rect.width}px`,
-              height: `${rect.height}px`,
-            }}
-          />
-        ))}
+        {highlightRects.recitation.length > 0 && (
+          <svg className="reader-ayah-highlight-shape" width="100%" height="100%" preserveAspectRatio="none">
+            <path
+              className="reader-ayah-highlight-audio"
+              d={buildContinuousHighlightPath(highlightRects.recitation)}
+            />
+          </svg>
+        )}
+        {highlightRects.selection.length > 0 && (
+          <svg className="reader-ayah-highlight-shape" width="100%" height="100%" preserveAspectRatio="none">
+            <path
+              className="reader-ayah-highlight-selection"
+              d={buildContinuousHighlightPath(highlightRects.selection)}
+            />
+          </svg>
+        )}
       </div>
 
       {renderedLines.map((line, index) => {
@@ -411,11 +403,45 @@ export function MushafPage({
 
 
 
-function getHighlightSegmentClass(index, total) {
-  if (total <= 1) return 'reader-ayah-highlight-segment--single';
-  if (index === 0) return 'reader-ayah-highlight-segment--first';
-  if (index === total - 1) return 'reader-ayah-highlight-segment--last';
-  return 'reader-ayah-highlight-segment--middle';
+function buildContinuousHighlightPath(rects) {
+  if (!rects?.length) return '';
+
+  const sorted = [...rects].sort((a, b) => a.top - b.top);
+  const radius = 3;
+  const commands = [];
+
+  sorted.forEach((rect, index) => {
+    const x1 = rect.left;
+    const x2 = rect.left + rect.width;
+    const y1 = rect.top;
+    const y2 = rect.top + rect.height;
+    const first = index === 0;
+    const last = index === sorted.length - 1;
+    const single = first && last;
+
+    if (single) {
+      commands.push(
+        `M ${x1 + radius} ${y1} H ${x2 - radius} Q ${x2} ${y1} ${x2} ${y1 + radius} V ${y2 - radius} Q ${x2} ${y2} ${x2 - radius} ${y2} H ${x1 + radius} Q ${x1} ${y2} ${x1} ${y2 - radius} V ${y1 + radius} Q ${x1} ${y1} ${x1 + radius} ${y1} Z`,
+      );
+      return;
+    }
+
+    // RTL continuation: first segment's right edge is the true ayah start;
+    // last segment's left edge is the true ayah end. Continuation edges stay square.
+    if (first) {
+      commands.push(
+        `M ${x1} ${y1} H ${x2 - radius} Q ${x2} ${y1} ${x2} ${y1 + radius} V ${y2} H ${x1} Z`,
+      );
+    } else if (last) {
+      commands.push(
+        `M ${x1} ${y1} H ${x2} V ${y2} H ${x1 + radius} Q ${x1} ${y2} ${x1} ${y2 - radius} V ${y1} Z`,
+      );
+    } else {
+      commands.push(`M ${x1} ${y1} H ${x2} V ${y2} H ${x1} Z`);
+    }
+  });
+
+  return commands.join(' ');
 }
 
 function isCombinedHeaderBasmallahLine(line, headerLine) {
