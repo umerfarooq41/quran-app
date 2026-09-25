@@ -3,18 +3,22 @@ import { saveLastRead } from '../../../lib/db';
 
 export function usePagePersistence({ page, pageData, lastReadTarget, setLastReadTarget }) {
   useEffect(() => {
-    const first = pageData.lines.find((line) => line.surahNumber && line.ayahStart);
     const exactTarget = Number(lastReadTarget?.page) === Number(page)
       && lastReadTarget?.surahNumber
       && lastReadTarget?.ayahNumber
       ? lastReadTarget
       : null;
 
-    const target = exactTarget || (first
-      ? { page, surahNumber: first.surahNumber, ayahNumber: first.ayahStart }
-      : { page });
-
-    if (!exactTarget && first) setLastReadTarget(target);
+    // Merely viewing/turning to a page does not prove which ayah the reader
+    // reached. Persist the page alone unless an ayah-level action already
+    // supplied an exact target for this page.
+    const target = exactTarget
+      ? {
+          page,
+          surahNumber: Number(exactTarget.surahNumber),
+          ayahNumber: Number(exactTarget.ayahNumber),
+        }
+      : { page };
 
     saveLastRead(target).catch(() => {
       // Keep reading available even when persistence is temporarily unavailable.
