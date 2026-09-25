@@ -348,6 +348,7 @@ export function MushafPage({
           <svg className="reader-ayah-highlight-shape reader-navigation-highlight-shape" width="100%" height="100%" preserveAspectRatio="none">
             <path
               className="reader-ayah-highlight-navigation"
+              fill="rgba(218, 174, 82, 0.16)"
               d={buildContinuousHighlightPath(highlightRects.navigation)}
             />
           </svg>
