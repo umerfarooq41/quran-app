@@ -50,6 +50,7 @@ export function MushafPage({
     savedWords: [],
     selection: [],
     recitation: [],
+    navigation: [],
   });
   const [quarterMarkerFlashRect, setQuarterMarkerFlashRect] = useState(null);
   const supportsTextHighlights = enableTextHighlights && typeof CSS !== 'undefined' && Boolean(CSS.highlights) && typeof Highlight !== 'undefined';
@@ -58,7 +59,7 @@ export function MushafPage({
   useLayoutEffect(() => {
     const pageElement = pageRef.current;
     if (!pageElement) {
-      setHighlightRects({ saved: [], savedWords: [], selection: [], recitation: [] });
+      setHighlightRects({ saved: [], savedWords: [], selection: [], recitation: [], navigation: [] });
       return undefined;
     }
 
@@ -80,6 +81,9 @@ export function MushafPage({
             )
           : [],
         recitation: getRecitationHighlightRects(pageElement, pageData, playingVerseKey),
+        navigation: pendingAyah
+          ? getAyahHighlightRects(pageElement, pageData, pendingAyah.surahNumber, pendingAyah.ayahNumber)
+          : [],
       });
     };
 
@@ -155,6 +159,8 @@ export function MushafPage({
     savedHighlights,
     selectedAyah?.surahNumber,
     selectedAyah?.ayahNumber,
+    pendingAyah?.surahNumber,
+    pendingAyah?.ayahNumber,
     playingVerseKey,
     settings.fontScale,
   ]);
@@ -338,6 +344,14 @@ export function MushafPage({
             }}
           />
         ))}
+        {highlightRects.navigation.length > 0 && (
+          <svg className="reader-ayah-highlight-shape reader-navigation-highlight-shape" width="100%" height="100%" preserveAspectRatio="none">
+            <path
+              className="reader-ayah-highlight-navigation"
+              d={buildContinuousHighlightPath(highlightRects.navigation)}
+            />
+          </svg>
+        )}
         {highlightRects.recitation.length > 0 && (
           <svg className="reader-ayah-highlight-shape" width="100%" height="100%" preserveAspectRatio="none">
             <path
@@ -382,17 +396,9 @@ export function MushafPage({
             playingWordPosition={playingWordPosition}
             playingWordOccurrenceIndex={playingWordOccurrenceIndex}
             jumped={Boolean(
-              (
-                quarterFlashTarget?.flashMode === 'first-rendered-line' &&
-                quarterFlashTarget?.page === pageData.page &&
-                quarterFlashTarget?.line === line.line
-              ) ||
-              (
-                pendingAyah &&
-                  line.surahNumber === pendingAyah.surahNumber &&
-                  line.ayahStart <= pendingAyah.ayahNumber &&
-                  (!line.ayahEnd || line.ayahEnd >= pendingAyah.ayahNumber)
-              )
+              quarterFlashTarget?.flashMode === 'first-rendered-line' &&
+              quarterFlashTarget?.page === pageData.page &&
+              quarterFlashTarget?.line === line.line
             )}
           />
         );
