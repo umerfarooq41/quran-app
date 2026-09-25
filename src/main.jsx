@@ -24,6 +24,14 @@ document.addEventListener('contextmenu', (event) => {
   event.preventDefault();
 });
 
+let refreshingForServiceWorker = false;
+
+navigator.serviceWorker?.addEventListener('controllerchange', () => {
+  if (refreshingForServiceWorker) return;
+  refreshingForServiceWorker = true;
+  window.location.reload();
+});
+
 const updateSW = registerSW({
   immediate: true,
   onNeedRefresh() {
@@ -32,9 +40,16 @@ const updateSW = registerSW({
   onRegisteredSW(_swUrl, registration) {
     if (!registration) return;
 
-    // Vercel deployments can stay open for a long time. Check periodically so
-    // a newly deployed service worker is discovered without repeated refreshes.
-    window.setInterval(() => registration.update(), 60 * 60 * 1000);
+    const checkForAppUpdate = () => registration.update().catch(() => {});
+    checkForAppUpdate();
+
+    // Discover a deployed build promptly while the installed app stays open.
+    window.setInterval(checkForAppUpdate, 5 * 60 * 1000);
+    window.addEventListener('focus', checkForAppUpdate);
+    window.addEventListener('online', checkForAppUpdate);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') checkForAppUpdate();
+    });
   },
 });
 
