@@ -122,9 +122,10 @@ export function getAyahHighlightRects(pageElement, pageData, surahNumber, ayahNu
 
   return getHighlightRectsFromClientRects(pageElement, renderedRects, {
     horizontalPadding: 2,
-    verticalInsetRatio: 0.22,
-    minVerticalInset: 3,
-    maxVerticalInset: 6,
+    verticalInsetRatio: 0,
+    minVerticalInset: 0,
+    maxVerticalInset: 0,
+    verticalOverlap: 1,
   });
 }
 
@@ -269,8 +270,14 @@ function getHighlightRectsFromClientRects(pageElement, renderedRects, options = 
       );
       const left = Math.max(0, rect.left - pageRect.left - horizontalPadding);
       const right = Math.min(pageRect.width, rect.right - pageRect.left + horizontalPadding);
-      const top = Math.max(0, rect.top - pageRect.top + verticalInset);
-      const bottom = Math.min(pageRect.height, rect.bottom - pageRect.top - verticalInset);
+      const verticalOverlap = Number.isFinite(options.verticalOverlap)
+        ? Math.max(0, options.verticalOverlap)
+        : 0;
+      const top = Math.max(0, rect.top - pageRect.top + verticalInset - verticalOverlap);
+      const bottom = Math.min(
+        pageRect.height,
+        rect.bottom - pageRect.top - verticalInset + verticalOverlap,
+      );
 
       return {
         left,
