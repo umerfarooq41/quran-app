@@ -71,9 +71,7 @@ export default function HomeScreen() {
       </motion.div>
 
       <motion.button
-        onClick={() => lastReadTarget?.surahNumber && lastReadTarget?.ayahNumber
-          ? goAyah(lastReadTarget.surahNumber, lastReadTarget.ayahNumber, lastReadTarget.page || page)
-          : goPage(page)}
+        onClick={() => goPage(lastReadTarget?.page || page)}
         className="home-hero-card"
         whileTap={{ scale: 0.985 }}
         initial={{ opacity: 0, y: 20 }}
