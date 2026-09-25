@@ -423,6 +423,17 @@
   pointer-events: none;
 }
 
+.reader-ayah-highlight-navigation {
+  fill: rgba(218, 174, 82, .16);
+  animation: reader-ayah-navigation-flash .9s cubic-bezier(.4, 0, .2, 1) 2;
+}
+
+@keyframes reader-ayah-navigation-flash {
+  0% { opacity: .45; }
+  42% { opacity: 1; }
+  100% { opacity: .35; }
+}
+
 .reader-ayah-highlight-segment {
   border-radius: 0;
 }
