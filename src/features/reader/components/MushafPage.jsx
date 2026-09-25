@@ -341,7 +341,7 @@ export function MushafPage({
         {highlightRects.recitation.map((rect, index) => (
           <span
             key={`recitation-${rect.top}-${rect.left}-${index}`}
-            className="reader-ayah-highlight-block reader-ayah-highlight-audio"
+            className={`reader-ayah-highlight-block reader-ayah-highlight-audio reader-ayah-highlight-segment ${getHighlightSegmentClass(index, highlightRects.recitation.length)}`}
             style={{
               left: `${rect.left}px`,
               top: `${rect.top}px`,
@@ -353,7 +353,7 @@ export function MushafPage({
         {highlightRects.selection.map((rect, index) => (
           <span
             key={`selection-${rect.top}-${rect.left}-${index}`}
-            className="reader-ayah-highlight-block reader-ayah-highlight-selection"
+            className={`reader-ayah-highlight-block reader-ayah-highlight-selection reader-ayah-highlight-segment ${getHighlightSegmentClass(index, highlightRects.selection.length)}`}
             style={{
               left: `${rect.left}px`,
               top: `${rect.top}px`,
@@ -409,6 +409,14 @@ export function MushafPage({
   );
 }
 
+
+
+function getHighlightSegmentClass(index, total) {
+  if (total <= 1) return 'reader-ayah-highlight-segment--single';
+  if (index === 0) return 'reader-ayah-highlight-segment--first';
+  if (index === total - 1) return 'reader-ayah-highlight-segment--last';
+  return 'reader-ayah-highlight-segment--middle';
+}
 
 function isCombinedHeaderBasmallahLine(line, headerLine) {
   if (!line || !headerLine || headerLine.type !== 'surah_name') return false;
