@@ -408,40 +408,51 @@ function buildContinuousHighlightPath(rects) {
 
   const sorted = [...rects].sort((a, b) => a.top - b.top);
   const radius = 3;
-  const commands = [];
 
-  sorted.forEach((rect, index) => {
+  if (sorted.length === 1) {
+    const rect = sorted[0];
     const x1 = rect.left;
     const x2 = rect.left + rect.width;
     const y1 = rect.top;
     const y2 = rect.top + rect.height;
-    const first = index === 0;
-    const last = index === sorted.length - 1;
-    const single = first && last;
+    return `M ${x1 + radius} ${y1} H ${x2 - radius} Q ${x2} ${y1} ${x2} ${y1 + radius} V ${y2 - radius} Q ${x2} ${y2} ${x2 - radius} ${y2} H ${x1 + radius} Q ${x1} ${y2} ${x1} ${y2 - radius} V ${y1 + radius} Q ${x1} ${y1} ${x1 + radius} ${y1} Z`;
+  }
 
-    if (single) {
-      commands.push(
-        `M ${x1 + radius} ${y1} H ${x2 - radius} Q ${x2} ${y1} ${x2} ${y1 + radius} V ${y2 - radius} Q ${x2} ${y2} ${x2 - radius} ${y2} H ${x1 + radius} Q ${x1} ${y2} ${x1} ${y2 - radius} V ${y1 + radius} Q ${x1} ${y1} ${x1 + radius} ${y1} Z`,
-      );
-      return;
-    }
+  // Build one connected RTL polygon, not one closed rectangle per row.
+  // The path walks around the outside boundary so internal row edges never
+  // exist and cannot create seams or doubled-opacity bands.
+  const first = sorted[0];
+  const last = sorted[sorted.length - 1];
+  const points = [];
 
-    // RTL continuation: first segment's right edge is the true ayah start;
-    // last segment's left edge is the true ayah end. Continuation edges stay square.
-    if (first) {
-      commands.push(
-        `M ${x1} ${y1} H ${x2 - radius} Q ${x2} ${y1} ${x2} ${y1 + radius} V ${y2} H ${x1} Z`,
-      );
-    } else if (last) {
-      commands.push(
-        `M ${x1} ${y1} H ${x2} V ${y2} H ${x1 + radius} Q ${x1} ${y2} ${x1} ${y2 - radius} V ${y1} Z`,
-      );
-    } else {
-      commands.push(`M ${x1} ${y1} H ${x2} V ${y2} H ${x1} Z`);
-    }
-  });
+  // Start at the true ayah start (top-right), round only this outer endpoint.
+  points.push(`M ${first.left} ${first.top}`);
+  points.push(`H ${first.left + first.width - radius}`);
+  points.push(`Q ${first.left + first.width} ${first.top} ${first.left + first.width} ${first.top + radius}`);
+  points.push(`V ${first.top + first.height}`);
 
-  return commands.join(' ');
+  // Descend the right outside boundary through continuation rows.
+  for (let i = 1; i < sorted.length; i += 1) {
+    const rect = sorted[i];
+    const right = rect.left + rect.width;
+    points.push(`H ${right}`);
+    points.push(`V ${rect.top + rect.height}`);
+  }
+
+  // Round only the true ayah end (bottom-left).
+  points.push(`H ${last.left + radius}`);
+  points.push(`Q ${last.left} ${last.top + last.height} ${last.left} ${last.top + last.height - radius}`);
+  points.push(`V ${last.top}`);
+
+  // Ascend the left outside boundary back through the continuation rows.
+  for (let i = sorted.length - 2; i >= 0; i -= 1) {
+    const rect = sorted[i];
+    points.push(`H ${rect.left}`);
+    points.push(`V ${rect.top}`);
+  }
+
+  points.push('Z');
+  return points.join(' ');
 }
 
 function isCombinedHeaderBasmallahLine(line, headerLine) {
