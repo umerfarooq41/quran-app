@@ -2456,30 +2456,36 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
   right: calc(var(--reader-page-x-padding, 1rem) * -1) !important;
   z-index: 1 !important;
   display: block !important;
-  border: 1px solid rgba(14, 165, 233, .28) !important;
+  border: 1px solid rgba(180, 135, 45, .28) !important;
   border-radius: 0 !important;
-  background: rgba(56, 189, 248, .18) !important;
-  box-shadow: inset 0 0 0 1px rgba(14, 165, 233, .20) !important;
+  background: rgba(218, 174, 82, .13) !important;
+  box-shadow: inset 0 0 0 1px rgba(180, 135, 45, .10) !important;
   pointer-events: none !important;
   animation: reader-line-jump-flash .9s cubic-bezier(.4, 0, .2, 1) 2 !important;
 }
 
 @keyframes reader-line-jump-flash {
   0% {
-    opacity: .72;
-    background: rgba(56, 189, 248, .14);
-    box-shadow: inset 0 0 0 1px rgba(14, 165, 233, .18);
+    opacity: .55;
+    background: rgba(218, 174, 82, .08);
+    box-shadow: inset 0 0 0 1px rgba(180, 135, 45, .10);
   }
   42% {
     opacity: 1;
-    background: rgba(56, 189, 248, .30);
-    box-shadow: inset 0 0 0 2px rgba(14, 165, 233, .42);
+    background: rgba(218, 174, 82, .20);
+    box-shadow: inset 0 0 0 1px rgba(180, 135, 45, .25);
   }
   100% {
-    opacity: .70;
-    background: rgba(56, 189, 248, .12);
+    opacity: .45;
+    background: rgba(218, 174, 82, .06);
     box-shadow: inset 0 0 0 1px rgba(14, 165, 233, .16);
   }
+}
+
+[data-theme='dark'] .reader-page .quran-line-jumped::after {
+  border-color: rgba(230, 190, 105, .30) !important;
+  background: rgba(205, 164, 77, .16) !important;
+  box-shadow: inset 0 0 0 1px rgba(230, 190, 105, .12) !important;
 }
 
 [data-theme='dark'] .settings-picker-row {
