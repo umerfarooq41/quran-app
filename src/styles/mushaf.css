@@ -405,12 +405,22 @@
 
 .reader-ayah-highlight-selection {
   background: rgba(218, 174, 82, .20);
+  fill: rgba(218, 174, 82, .20);
   box-shadow: none;
 }
 
 .reader-ayah-highlight-audio {
   background: rgba(45, 110, 94, .13);
+  fill: rgba(45, 110, 94, .13);
   box-shadow: none;
+}
+
+.reader-ayah-highlight-shape {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: visible;
+  pointer-events: none;
 }
 
 .reader-ayah-highlight-segment {
