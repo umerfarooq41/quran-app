@@ -111,22 +111,57 @@ export function getAyahRangeRects(line, textElement, ayahNumber) {
 export function getAyahHighlightRects(pageElement, pageData, surahNumber, ayahNumber) {
   if (!pageElement || !pageData || !surahNumber || !ayahNumber) return [];
 
-  const renderedRects = pageData.lines.flatMap((line) => {
-    if (!lineContainsReference(line, surahNumber, ayahNumber)) return [];
+  const matchingLines = pageData.lines.filter((line) => (
+    lineContainsReference(line, surahNumber, ayahNumber)
+  ));
+  if (!matchingLines.length) return [];
 
-    const textElement = pageElement.querySelector(
-      `[data-quran-line="${line.line}"] .quran-line-text`,
-    );
-    return getAyahRangeRects(line, textElement, ayahNumber);
+  const pageRect = pageElement.getBoundingClientRect();
+  const pageStyle = window.getComputedStyle(pageElement);
+  const contentLeft = parseFloat(pageStyle.paddingLeft) || 0;
+  const contentRight = pageRect.width - (parseFloat(pageStyle.paddingRight) || 0);
+  const segments = matchingLines.flatMap((line) => {
+    const lineElement = pageElement.querySelector(`[data-quran-line="${line.line}"]`);
+    const textElement = lineElement?.querySelector('.quran-line-text');
+    if (!lineElement || !textElement) return [];
+
+    const rangeRects = getAyahRangeRects(line, textElement, ayahNumber);
+    if (!rangeRects.length) return [];
+
+    const merged = mergeRectsByVisualLine(rangeRects);
+    if (!merged.length) return [];
+
+    const ayahOffsets = getAyahOffsets(line, ayahNumber);
+    const startsOnThisLine = ayahOffsets?.start > 0 || Number(line.ayahStart) === Number(ayahNumber);
+    const endsOnThisLine = Number(line.ayahEnd) === Number(ayahNumber);
+    const lineRect = lineElement.getBoundingClientRect();
+    const top = Math.max(0, lineRect.top - pageRect.top);
+    const bottom = Math.min(pageRect.height, lineRect.bottom - pageRect.top);
+
+    return merged.map((rect) => {
+      // RTL continuation geometry:
+      // first segment: exact ayah start -> left content edge
+      // middle segments: right content edge -> left content edge
+      // last segment: right content edge -> exact ayah end marker
+      // single-line ayah: exact start -> exact end.
+      let left = rect.left - pageRect.left - 2;
+      let right = rect.right - pageRect.left + 2;
+
+      if (!startsOnThisLine) right = contentRight;
+      if (!endsOnThisLine) left = contentLeft;
+
+      return {
+        left: Math.max(contentLeft, left),
+        top,
+        width: Math.max(0, Math.min(contentRight, right) - Math.max(contentLeft, left)),
+        height: Math.max(0, bottom - top),
+      };
+    });
   });
 
-  return getHighlightRectsFromClientRects(pageElement, renderedRects, {
-    horizontalPadding: 2,
-    verticalInsetRatio: 0,
-    minVerticalInset: 0,
-    maxVerticalInset: 0,
-    verticalOverlap: 1,
-  });
+  return segments
+    .filter((rect) => rect.width > 0 && rect.height > 0)
+    .sort((a, b) => a.top - b.top || a.left - b.left);
 }
 
 export function getRangeHighlightRects(pageElement, range, options = {}) {
