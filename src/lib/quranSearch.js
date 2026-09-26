@@ -163,6 +163,23 @@ function createAyahResult(ayah, preview, matchType) {
 }
 
 function getSpecialResult(query) {
+  // Parse ayah references before generic normalization strips punctuation.
+  // Supports 2:255, 2.255, 2-255, 2 255 and "Surah 2 Ayah 255".
+  const rawQuery = String(query || '').normalize('NFKD').toLocaleLowerCase().trim();
+  const referenceMatch = rawQuery.match(/^(?:surah|sura|chapter)?\s*(\d{1,3})\s*(?::|\.|-|\s+)\s*(?:ayah|verse)?\s*(\d{1,3})$/);
+  if (referenceMatch) {
+    const surahNumber = Number(referenceMatch[1]);
+    const ayahNumber = Number(referenceMatch[2]);
+    const surah = surahs.find((item) => item.number === surahNumber);
+    if (!surah || ayahNumber < 1 || ayahNumber > surah.verses) return null;
+
+    return createAyahResult(
+      { surahNumber, ayahNumber },
+      `Open ${surah.name}, ayah ${ayahNumber}`,
+      'Reference',
+    );
+  }
+
   const normalized = normalizeLatinSearch(query);
   const pageMatch = normalized.match(/^p(?:age)?\s*(\d+)$/);
   if (pageMatch) {
@@ -175,20 +192,6 @@ function getSpecialResult(query) {
       preview: 'Open Quran page',
       matchType: 'Page',
     };
-  }
-
-  const referenceMatch = normalized.match(/^(\d{1,3})\s*[:.]\s*(\d{1,3})$/);
-  if (referenceMatch) {
-    const surahNumber = Number(referenceMatch[1]);
-    const ayahNumber = Number(referenceMatch[2]);
-    const surah = surahs.find((item) => item.number === surahNumber);
-    if (!surah || ayahNumber < 1 || ayahNumber > surah.verses) return null;
-
-    return createAyahResult(
-      { surahNumber, ayahNumber },
-      `Open ${surah.name}, ayah ${ayahNumber}`,
-      'Reference',
-    );
   }
 
   const juzMatch = normalized.match(/^juz\s*(\d{1,2})$/);
