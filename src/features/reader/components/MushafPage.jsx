@@ -52,10 +52,15 @@ export function MushafPage({
     navigation: [],
   });
   const [quarterMarkerFlashRect, setQuarterMarkerFlashRect] = useState(null);
-  const [quarterMarkerRings, setQuarterMarkerRings] = useState([]);
   const [bookmarkMarkerRings, setBookmarkMarkerRings] = useState([]);
   const supportsTextHighlights = enableTextHighlights && typeof CSS !== 'undefined' && Boolean(CSS.highlights) && typeof Highlight !== 'undefined';
   const juzStartLines = useMemo(() => getJuzStartLineNumbers(pageData), [pageData]);
+  const quarterMarkersForPage = useMemo(
+    () => Object.values(indoPakParaQuarters)
+      .flat()
+      .filter((target) => target.id !== 'start' && Number(target.page) === Number(pageData.page)),
+    [pageData.page],
+  );
 
   useLayoutEffect(() => {
     const pageElement = pageRef.current;
@@ -226,62 +231,6 @@ export function MushafPage({
 
   useLayoutEffect(() => {
     const pageElement = pageRef.current;
-    if (!pageElement) {
-      setQuarterMarkerRings([]);
-      return undefined;
-    }
-
-    let frame = 0;
-    let disposed = false;
-
-    const measureQuarterMarkers = () => {
-      if (disposed) return;
-      const pageRect = pageElement.getBoundingClientRect();
-      const rings = [];
-
-      Object.values(indoPakParaQuarters).forEach((targets) => {
-        targets.forEach((target) => {
-          if (target.id === 'start' || Number(target.page) !== Number(pageData.page)) return;
-          const markerRange = getAyahMarkerRange(pageElement, pageData, target.surah, target.ayah);
-          const markerRect = markerRange?.getBoundingClientRect();
-          if (!markerRect?.width || !markerRect?.height) return;
-          const padding = 3;
-          rings.push({
-            key: `${target.surah}:${target.ayah}:${target.id}`,
-            left: markerRect.left - pageRect.left - padding,
-            top: markerRect.top - pageRect.top - padding,
-            width: markerRect.width + padding * 2,
-            height: markerRect.height + padding * 2,
-          });
-        });
-      });
-
-      setQuarterMarkerRings(rings);
-    };
-
-    const scheduleMeasure = () => {
-      window.cancelAnimationFrame(frame);
-      frame = window.requestAnimationFrame(measureQuarterMarkers);
-    };
-
-    scheduleMeasure();
-    pageElement.addEventListener(LINE_FIT_EVENT, scheduleMeasure);
-    window.addEventListener('resize', scheduleMeasure);
-    window.addEventListener('orientationchange', scheduleMeasure);
-    document.fonts?.addEventListener?.('loadingdone', scheduleMeasure);
-
-    return () => {
-      disposed = true;
-      window.cancelAnimationFrame(frame);
-      pageElement.removeEventListener(LINE_FIT_EVENT, scheduleMeasure);
-      window.removeEventListener('resize', scheduleMeasure);
-      window.removeEventListener('orientationchange', scheduleMeasure);
-      document.fonts?.removeEventListener?.('loadingdone', scheduleMeasure);
-    };
-  }, [pageData, settings.fontScale]);
-
-  useLayoutEffect(() => {
-    const pageElement = pageRef.current;
     if (
       !pageElement ||
       quarterFlashTarget?.flashMode !== 'ayah-marker' ||
@@ -397,18 +346,6 @@ export function MushafPage({
       style={{ '--font-scale': settings.fontScale }}
     >
       <div className="reader-ayah-highlight-layer" aria-hidden="true">
-        {quarterMarkerRings.map((marker) => (
-          <span
-            key={`quarter-marker-${marker.key}`}
-            className="reader-quarter-marker-ring reader-marker-capsule--quarter"
-            style={{
-              left: `${marker.left}px`,
-              top: `${marker.top}px`,
-              width: `${marker.width}px`,
-              height: `${marker.height}px`,
-            }}
-          />
-        ))}
         {bookmarkMarkerRings.map((marker) => (
           <span
             key={`bookmark-marker-${marker.reference}`}
