@@ -246,7 +246,13 @@ export function MushafPage({
       }
 
       const pageRect = pageElement.getBoundingClientRect();
-      const ring = getMarkerRingRect(markerRect, pageRect, 14);
+      const bookmarkRing = getMarkerRingRect(markerRect, pageRect, 8);
+      const pulseSize = bookmarkRing.size + 8;
+      const ring = {
+        left: bookmarkRing.left - 4,
+        top: bookmarkRing.top - 4,
+        size: pulseSize,
+      };
       setQuarterMarkerFlashRect({
         left: ring.left,
         top: ring.top,
