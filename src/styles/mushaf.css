@@ -613,3 +613,27 @@
 .reader-page--starts-with-double-header .surah-banner--double .surah-banner-basmallah {
   padding-top: calc(.9% + 1px);
 }
+
+
+/* Persistent bookmark markers: a category-colored circular ring centered on
+ * the Mushaf ayah marker. The Quran glyph itself remains untouched. */
+.reader-bookmark-marker-ring {
+  position: absolute;
+  z-index: 2;
+  display: block;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  background: color-mix(in srgb, currentColor 8%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, currentColor 10%, transparent);
+  pointer-events: none;
+}
+
+.reader-bookmark-marker-ring--reading { color: #26725f; }
+.reader-bookmark-marker-ring--memorize { color: #a56d05; }
+.reader-bookmark-marker-ring--tadabbur { color: #b83b58; }
+.reader-bookmark-marker-ring--notes { color: #216d91; }
+
+[data-theme='dark'] .reader-bookmark-marker-ring--reading { color: #86d5b2; }
+[data-theme='dark'] .reader-bookmark-marker-ring--memorize { color: #e6bd62; }
+[data-theme='dark'] .reader-bookmark-marker-ring--tadabbur { color: #ee8da2; }
+[data-theme='dark'] .reader-bookmark-marker-ring--notes { color: #82c5e3; }
