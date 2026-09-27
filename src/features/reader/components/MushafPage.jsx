@@ -320,17 +320,19 @@ export function MushafPage({
             }}
           />
         )}
-        {highlightRects.saved.map((item, index) => (
-          <span
-            key={`saved-${item.color}-${item.rect.top}-${item.rect.left}-${index}`}
-            className={`reader-ayah-highlight-block reader-ayah-highlight-saved reader-ayah-highlight-${item.color}`}
-            style={{
-              left: `${item.rect.left}px`,
-              top: `${item.rect.top}px`,
-              width: `${item.rect.width}px`,
-              height: `${item.rect.height}px`,
-            }}
-          />
+        {groupSavedHighlightRects(highlightRects.saved).map((group) => (
+          <svg
+            key={`saved-${group.reference}-${group.color}`}
+            className="reader-ayah-highlight-shape"
+            width="100%"
+            height="100%"
+            preserveAspectRatio="none"
+          >
+            <path
+              className={`reader-ayah-highlight-saved reader-ayah-highlight-${group.color}`}
+              d={buildContinuousHighlightPath(group.rects)}
+            />
+          </svg>
         ))}
         {highlightRects.savedWords.map((item, index) => (
           <span
@@ -538,12 +540,27 @@ function getSavedHighlightRects(pageElement, pageData, savedHighlights) {
 
     const { surahNumber, ayahNumber } = parseReference(reference);
     getAyahHighlightRects(pageElement, pageData, surahNumber, ayahNumber).forEach((rect) => {
-      rects.push({ color, rect });
+      rects.push({ reference, color, rect });
     });
   });
 
   return rects;
 }
+
+function groupSavedHighlightRects(items) {
+  const groups = new Map();
+
+  items.forEach((item) => {
+    const key = `${item.reference}|${item.color}`;
+    if (!groups.has(key)) {
+      groups.set(key, { reference: item.reference, color: item.color, rects: [] });
+    }
+    groups.get(key).rects.push(item.rect);
+  });
+
+  return Array.from(groups.values());
+}
+
 function getSavedWordHighlightRects(pageElement, pageData, savedHighlights) {
   const rects = [];
 
