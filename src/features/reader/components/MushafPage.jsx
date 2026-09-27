@@ -189,8 +189,15 @@ export function MushafPage({
         const markerRect = markerRange?.getBoundingClientRect();
         if (!markerRect?.width || !markerRect?.height) return;
 
-        const ring = getMarkerRingRect(markerRect, pageRect, 2);
-        rings.push({ reference, tone, ...ring });
+        const padding = 3;
+        rings.push({
+          reference,
+          tone,
+          left: markerRect.left - pageRect.left - padding,
+          top: markerRect.top - pageRect.top - padding,
+          width: markerRect.width + padding * 2,
+          height: markerRect.height + padding * 2,
+        });
       });
 
       setBookmarkMarkerRings(rings);
@@ -238,9 +245,13 @@ export function MushafPage({
           const markerRange = getAyahMarkerRange(pageElement, pageData, target.surah, target.ayah);
           const markerRect = markerRange?.getBoundingClientRect();
           if (!markerRect?.width || !markerRect?.height) return;
+          const padding = 3;
           rings.push({
             key: `${target.surah}:${target.ayah}:${target.id}`,
-            ...getMarkerRingRect(markerRect, pageRect, 2),
+            left: markerRect.left - pageRect.left - padding,
+            top: markerRect.top - pageRect.top - padding,
+            width: markerRect.width + padding * 2,
+            height: markerRect.height + padding * 2,
           });
         });
       });
@@ -299,12 +310,12 @@ export function MushafPage({
       }
 
       const pageRect = pageElement.getBoundingClientRect();
-      const ring = getMarkerRingRect(markerRect, pageRect, 2);
+      const padding = 3;
       setQuarterMarkerFlashRect({
-        left: ring.left,
-        top: ring.top,
-        width: ring.size,
-        height: ring.size,
+        left: markerRect.left - pageRect.left - padding,
+        top: markerRect.top - pageRect.top - padding,
+        width: markerRect.width + padding * 2,
+        height: markerRect.height + padding * 2,
       });
     };
 
@@ -393,8 +404,8 @@ export function MushafPage({
             style={{
               left: `${marker.left}px`,
               top: `${marker.top}px`,
-              width: `${marker.size}px`,
-              height: `${marker.size}px`,
+              width: `${marker.width}px`,
+              height: `${marker.height}px`,
             }}
           />
         ))}
@@ -405,8 +416,8 @@ export function MushafPage({
             style={{
               left: `${marker.left}px`,
               top: `${marker.top}px`,
-              width: `${marker.size}px`,
-              height: `${marker.size}px`,
+              width: `${marker.width}px`,
+              height: `${marker.height}px`,
             }}
           />
         ))}
