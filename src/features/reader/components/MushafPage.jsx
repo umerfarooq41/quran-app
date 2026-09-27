@@ -14,8 +14,7 @@ const SAVED_HIGHLIGHTS = ['amber', 'emerald', 'rose', 'sky', 'violet'];
 const BOOKMARK_TONES = ['reading', 'memorize', 'tadabbur', 'notes'];
 const MANAGED_HIGHLIGHTS = [
   ...SAVED_HIGHLIGHTS.map((color) => `reader-highlight-${color}`),
-  ...BOOKMARK_TONES.map((tone) => `reader-bookmark-${tone}`),
-];
+ ];
 const LINE_FIT_EVENT = 'quran-line-fit';
 const MUSHAF_FONT_FAMILY = 'IndopakNastaleeq';
 const MUSHAF_FONT_SAMPLE = 'اللَّهُ';
@@ -53,6 +52,7 @@ export function MushafPage({
     navigation: [],
   });
   const [quarterMarkerFlashRect, setQuarterMarkerFlashRect] = useState(null);
+  const [bookmarkMarkerRings, setBookmarkMarkerRings] = useState([]);
   const supportsTextHighlights = enableTextHighlights && typeof CSS !== 'undefined' && Boolean(CSS.highlights) && typeof Highlight !== 'undefined';
   const juzStartLines = useMemo(() => getJuzStartLineNumbers(pageData), [pageData]);
 
@@ -165,32 +165,62 @@ export function MushafPage({
     settings.fontScale,
   ]);
 
-  useEffect(() => {
-    if (!supportsTextHighlights) return undefined;
+  useLayoutEffect(() => {
+    const pageElement = pageRef.current;
+    if (!pageElement) {
+      setBookmarkMarkerRings([]);
+      return undefined;
+    }
 
-    MANAGED_HIGHLIGHTS.forEach((name) => CSS.highlights.delete(name));
-    if (!pageRef.current) return undefined;
+    let frame = 0;
+    let disposed = false;
 
-    const groupedRanges = new Map();
+    const measureBookmarks = () => {
+      if (disposed) return;
+      const pageRect = pageElement.getBoundingClientRect();
+      const rings = [];
 
-    bookmarkMarkers.forEach((category, reference) => {
-      const tone = getBookmarkTone(category);
-      if (!tone) return;
-      const { surahNumber, ayahNumber } = parseReference(reference);
-      const markerRange = getAyahMarkerRange(pageRef.current, pageData, surahNumber, ayahNumber);
-      addRanges(groupedRanges, `reader-bookmark-${tone}`, markerRange ? [markerRange] : []);
-    });
+      bookmarkMarkers.forEach((category, reference) => {
+        const tone = getBookmarkTone(category);
+        if (!tone) return;
+        const { surahNumber, ayahNumber } = parseReference(reference);
+        const markerRange = getAyahMarkerRange(pageElement, pageData, surahNumber, ayahNumber);
+        const markerRect = markerRange?.getBoundingClientRect();
+        if (!markerRect?.width || !markerRect?.height) return;
 
-    groupedRanges.forEach((ranges, name) => {
-      if (!ranges.length) return;
-      const highlight = new Highlight(...ranges);
-      CSS.highlights.set(name, highlight);
-    });
+        const size = Math.max(markerRect.width, markerRect.height) + 8;
+        rings.push({
+          reference,
+          tone,
+          left: markerRect.left - pageRect.left + markerRect.width / 2 - size / 2,
+          top: markerRect.top - pageRect.top + markerRect.height / 2 - size / 2,
+          size,
+        });
+      });
+
+      setBookmarkMarkerRings(rings);
+    };
+
+    const scheduleMeasure = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(measureBookmarks);
+    };
+
+    scheduleMeasure();
+    pageElement.addEventListener(LINE_FIT_EVENT, scheduleMeasure);
+    window.addEventListener('resize', scheduleMeasure);
+    window.addEventListener('orientationchange', scheduleMeasure);
+    document.fonts?.addEventListener?.('loadingdone', scheduleMeasure);
 
     return () => {
-      MANAGED_HIGHLIGHTS.forEach((name) => CSS.highlights.delete(name));
+      disposed = true;
+      window.cancelAnimationFrame(frame);
+      pageElement.removeEventListener(LINE_FIT_EVENT, scheduleMeasure);
+      window.removeEventListener('resize', scheduleMeasure);
+      window.removeEventListener('orientationchange', scheduleMeasure);
+      document.fonts?.removeEventListener?.('loadingdone', scheduleMeasure);
     };
-  }, [pageData, savedHighlights, bookmarkMarkers, supportsTextHighlights]);
+  }, [pageData, bookmarkMarkers, settings.fontScale]);
 
   useLayoutEffect(() => {
     const pageElement = pageRef.current;
@@ -309,6 +339,18 @@ export function MushafPage({
       style={{ '--font-scale': settings.fontScale }}
     >
       <div className="reader-ayah-highlight-layer" aria-hidden="true">
+        {bookmarkMarkerRings.map((marker) => (
+          <span
+            key={`bookmark-marker-${marker.reference}`}
+            className={`reader-bookmark-marker-ring reader-bookmark-marker-ring--${marker.tone}`}
+            style={{
+              left: `${marker.left}px`,
+              top: `${marker.top}px`,
+              width: `${marker.size}px`,
+              height: `${marker.size}px`,
+            }}
+          />
+        ))}
         {quarterMarkerFlashRect && (
           <span
             className="reader-quarter-marker-flash"
