@@ -627,10 +627,10 @@
   position: absolute;
   z-index: 2;
   display: block;
+  box-sizing: border-box;
   border: 1px solid currentColor;
   border-radius: 999px;
   background: color-mix(in srgb, currentColor 10%, transparent);
-  box-shadow: 0 0 0 1px color-mix(in srgb, currentColor 8%, transparent);
   pointer-events: none;
 }
 
@@ -670,7 +670,7 @@
   color: #a56d05;
   border: 1px solid currentColor;
   border-radius: 999px;
-  background: color-mix(in srgb, currentColor 10%, transparent);
+  background: color-mix(in srgb, currentColor 8%, transparent);
   pointer-events: none;
 }
 
