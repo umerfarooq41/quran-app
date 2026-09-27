@@ -185,11 +185,10 @@ export function MushafPage({
         const tone = getBookmarkTone(category);
         if (!tone) return;
         const { surahNumber, ayahNumber } = parseReference(reference);
-        const markerRange = getAyahMarkerRange(pageElement, pageData, surahNumber, ayahNumber);
-        const markerRect = markerRange?.getBoundingClientRect();
+        const markerRect = getAyahMarkerVisualRect(pageElement, pageData, surahNumber, ayahNumber);
         if (!markerRect?.width || !markerRect?.height) return;
 
-        const ring = getMarkerRingRect(markerRect, pageRect, 2);
+        const ring = getMarkerRingRect(markerRect, pageRect, 0);
         rings.push({ reference, tone, ...ring });
       });
 
@@ -235,12 +234,11 @@ export function MushafPage({
       Object.values(indoPakParaQuarters).forEach((targets) => {
         targets.forEach((target) => {
           if (target.id === 'start' || Number(target.page) !== Number(pageData.page)) return;
-          const markerRange = getAyahMarkerRange(pageElement, pageData, target.surah, target.ayah);
-          const markerRect = markerRange?.getBoundingClientRect();
+          const markerRect = getAyahMarkerVisualRect(pageElement, pageData, target.surah, target.ayah);
           if (!markerRect?.width || !markerRect?.height) return;
           rings.push({
             key: `${target.surah}:${target.ayah}:${target.id}`,
-            ...getMarkerRingRect(markerRect, pageRect, 2),
+            ...getMarkerRingRect(markerRect, pageRect, 0),
           });
         });
       });
@@ -286,20 +284,19 @@ export function MushafPage({
     const measureMarker = () => {
       if (disposed) return;
 
-      const markerRange = getAyahMarkerRange(
+      const markerRect = getAyahMarkerVisualRect(
         pageElement,
         pageData,
         quarterFlashTarget.surahNumber,
         quarterFlashTarget.ayahNumber,
       );
-      const markerRect = markerRange?.getBoundingClientRect();
       if (!markerRect?.width || !markerRect?.height) {
         setQuarterMarkerFlashRect(null);
         return;
       }
 
       const pageRect = pageElement.getBoundingClientRect();
-      const ring = getMarkerRingRect(markerRect, pageRect, 2);
+      const ring = getMarkerRingRect(markerRect, pageRect, 0);
       setQuarterMarkerFlashRect({
         left: ring.left,
         top: ring.top,
@@ -723,6 +720,19 @@ function getAyahMarkerRange(pageElement, pageData, surahNumber, ayahNumber) {
   return null;
 }
 
+function getAyahMarkerVisualRect(pageElement, pageData, surahNumber, ayahNumber) {
+  const markerRange = getAyahMarkerRange(pageElement, pageData, surahNumber, ayahNumber);
+  if (!markerRange) return null;
+
+  const markerNode = markerRange.startContainer?.parentElement;
+  const markerElement = markerNode?.closest?.('.quran-ayah-marker');
+  const glyphElement = markerElement?.querySelector?.('.quran-ayah-marker-glyph');
+  const rect = (glyphElement || markerElement)?.getBoundingClientRect?.();
+
+  if (rect?.width && rect?.height) return rect;
+  return markerRange.getBoundingClientRect();
+}
+
 function getSavedWordRange(
   pageElement,
   pageData,
@@ -820,7 +830,7 @@ function loadMushafFont() {
     .catch(() => undefined);
 }
 
-function getMarkerRingRect(markerRect, pageRect, extraSize = 8) {
+function getMarkerRingRect(markerRect, pageRect, extraSize = 0) {
   const size = Math.max(markerRect.width, markerRect.height) + extraSize;
   const centerX = markerRect.left - pageRect.left + markerRect.width / 2;
   const centerY = markerRect.top - pageRect.top + markerRect.height / 2;
