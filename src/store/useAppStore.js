@@ -494,6 +494,7 @@ export const useAppStore = create((set, get) => ({
             targetSurah: Number(target?.surah) || null,
             targetAyah: Number(target?.ayah) || null,
             markerId,
+            tone: target?.tone || null,
             flashMode: 'ayah-marker',
           },
       navDirection: 'forward',
