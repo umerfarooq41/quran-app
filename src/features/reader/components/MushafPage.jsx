@@ -188,14 +188,8 @@ export function MushafPage({
         const markerRect = markerRange?.getBoundingClientRect();
         if (!markerRect?.width || !markerRect?.height) return;
 
-        const size = Math.max(markerRect.width, markerRect.height) + 8;
-        rings.push({
-          reference,
-          tone,
-          left: markerRect.left - pageRect.left + markerRect.width / 2 - size / 2,
-          top: markerRect.top - pageRect.top + markerRect.height / 2 - size / 2,
-          size,
-        });
+        const ring = getMarkerRingRect(markerRect, pageRect, 8);
+        rings.push({ reference, tone, ...ring });
       });
 
       setBookmarkMarkerRings(rings);
@@ -252,12 +246,12 @@ export function MushafPage({
       }
 
       const pageRect = pageElement.getBoundingClientRect();
-      const padding = 3;
+      const ring = getMarkerRingRect(markerRect, pageRect, 14);
       setQuarterMarkerFlashRect({
-        left: markerRect.left - pageRect.left - padding,
-        top: markerRect.top - pageRect.top - padding,
-        width: markerRect.width + padding * 2,
-        height: markerRect.height + padding * 2,
+        left: ring.left,
+        top: ring.top,
+        width: ring.size,
+        height: ring.size,
       });
     };
 
@@ -759,6 +753,18 @@ function loadMushafFont() {
     .catch(() => undefined)
     .then(() => fontSet.ready)
     .catch(() => undefined);
+}
+
+function getMarkerRingRect(markerRect, pageRect, extraSize = 8) {
+  const size = Math.max(markerRect.width, markerRect.height) + extraSize;
+  const centerX = markerRect.left - pageRect.left + markerRect.width / 2;
+  const centerY = markerRect.top - pageRect.top + markerRect.height / 2;
+
+  return {
+    left: centerX - size / 2,
+    top: centerY - size / 2,
+    size,
+  };
 }
 
 function parseReference(reference) {
