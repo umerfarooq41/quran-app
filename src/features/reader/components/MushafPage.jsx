@@ -185,10 +185,11 @@ export function MushafPage({
         const tone = getBookmarkTone(category);
         if (!tone) return;
         const { surahNumber, ayahNumber } = parseReference(reference);
-        const markerRect = getAyahMarkerVisualRect(pageElement, pageData, surahNumber, ayahNumber);
+        const markerRange = getAyahMarkerRange(pageElement, pageData, surahNumber, ayahNumber);
+        const markerRect = markerRange?.getBoundingClientRect();
         if (!markerRect?.width || !markerRect?.height) return;
 
-        const ring = getMarkerRingRect(markerRect, pageRect, 0);
+        const ring = getMarkerRingRect(markerRect, pageRect, 2);
         rings.push({ reference, tone, ...ring });
       });
 
@@ -234,11 +235,12 @@ export function MushafPage({
       Object.values(indoPakParaQuarters).forEach((targets) => {
         targets.forEach((target) => {
           if (target.id === 'start' || Number(target.page) !== Number(pageData.page)) return;
-          const markerRect = getAyahMarkerVisualRect(pageElement, pageData, target.surah, target.ayah);
+          const markerRange = getAyahMarkerRange(pageElement, pageData, target.surah, target.ayah);
+          const markerRect = markerRange?.getBoundingClientRect();
           if (!markerRect?.width || !markerRect?.height) return;
           rings.push({
             key: `${target.surah}:${target.ayah}:${target.id}`,
-            ...getMarkerRingRect(markerRect, pageRect, 0),
+            ...getMarkerRingRect(markerRect, pageRect, 2),
           });
         });
       });
@@ -284,19 +286,20 @@ export function MushafPage({
     const measureMarker = () => {
       if (disposed) return;
 
-      const markerRect = getAyahMarkerVisualRect(
+      const markerRange = getAyahMarkerRange(
         pageElement,
         pageData,
         quarterFlashTarget.surahNumber,
         quarterFlashTarget.ayahNumber,
       );
+      const markerRect = markerRange?.getBoundingClientRect();
       if (!markerRect?.width || !markerRect?.height) {
         setQuarterMarkerFlashRect(null);
         return;
       }
 
       const pageRect = pageElement.getBoundingClientRect();
-      const ring = getMarkerRingRect(markerRect, pageRect, 0);
+      const ring = getMarkerRingRect(markerRect, pageRect, 2);
       setQuarterMarkerFlashRect({
         left: ring.left,
         top: ring.top,
@@ -386,7 +389,7 @@ export function MushafPage({
         {quarterMarkerRings.map((marker) => (
           <span
             key={`quarter-marker-${marker.key}`}
-            className="reader-quarter-marker-ring"
+            className="reader-quarter-marker-ring reader-marker-capsule--quarter"
             style={{
               left: `${marker.left}px`,
               top: `${marker.top}px`,
@@ -409,7 +412,7 @@ export function MushafPage({
         ))}
         {quarterMarkerFlashRect && (
           <span
-            className="reader-quarter-marker-flash"
+            className={`reader-quarter-marker-flash reader-marker-flash--${quarterFlashTarget?.tone || 'quarter'}`}
             style={{
               left: `${quarterMarkerFlashRect.left}px`,
               top: `${quarterMarkerFlashRect.top}px`,
