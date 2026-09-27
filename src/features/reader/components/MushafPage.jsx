@@ -188,7 +188,7 @@ export function MushafPage({
         const markerRect = markerRange?.getBoundingClientRect();
         if (!markerRect?.width || !markerRect?.height) return;
 
-        const ring = getMarkerRingRect(markerRect, pageRect, 8);
+        const ring = getMarkerRingRect(markerRect, pageRect, 2);
         rings.push({ reference, tone, ...ring });
       });
 
@@ -246,13 +246,7 @@ export function MushafPage({
       }
 
       const pageRect = pageElement.getBoundingClientRect();
-      const bookmarkRing = getMarkerRingRect(markerRect, pageRect, 8);
-      const pulseSize = bookmarkRing.size + 8;
-      const ring = {
-        left: bookmarkRing.left - 4,
-        top: bookmarkRing.top - 4,
-        size: pulseSize,
-      };
+      const ring = getMarkerRingRect(markerRect, pageRect, 2);
       setQuarterMarkerFlashRect({
         left: ring.left,
         top: ring.top,
