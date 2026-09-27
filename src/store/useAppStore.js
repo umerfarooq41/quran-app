@@ -472,7 +472,7 @@ export const useAppStore = create((set, get) => ({
   goQuarterTarget: (target) => set((state) => {
     const markerId = target?.id || 'start';
     const sourcePage = clampPage(target?.page);
-    const nextPage = markerId === 'start'
+    const nextPage = markerId === 'start' || markerId === 'bookmark'
       ? sourcePage
       : clampPage(
           getAyahMarkerPage(target?.surah, target?.ayah) || sourcePage,
