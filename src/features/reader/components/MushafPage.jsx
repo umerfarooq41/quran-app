@@ -372,6 +372,7 @@ export function MushafPage({
           >
             <path
               className={`reader-ayah-highlight-saved reader-ayah-highlight-${group.color}`}
+              fill={getSavedHighlightFill(group.color)}
               d={buildContinuousHighlightPath(group.rects)}
             />
           </svg>
@@ -401,6 +402,7 @@ export function MushafPage({
           <svg className="reader-ayah-highlight-shape" width="100%" height="100%" preserveAspectRatio="none">
             <path
               className="reader-ayah-highlight-audio"
+              fill="rgba(45, 110, 94, 0.13)"
               d={buildContinuousHighlightPath(highlightRects.recitation)}
             />
           </svg>
@@ -409,6 +411,7 @@ export function MushafPage({
           <svg className="reader-ayah-highlight-shape" width="100%" height="100%" preserveAspectRatio="none">
             <path
               className="reader-ayah-highlight-selection"
+              fill="rgba(218, 174, 82, 0.20)"
               d={buildContinuousHighlightPath(highlightRects.selection)}
             />
           </svg>
@@ -587,6 +590,11 @@ function getSavedHighlightRects(pageElement, pageData, savedHighlights) {
   });
 
   return rects;
+}
+
+function getSavedHighlightFill(color) {
+  const fills = {"amber":"rgba(243, 184, 62, 0.24)","emerald":"rgba(34, 125, 104, 0.18)","rose":"rgba(212, 20, 78, 0.15)","sky":"rgba(2, 132, 199, 0.16)","violet":"rgba(124, 58, 237, 0.15)"};
+  return fills[color] || 'transparent';
 }
 
 function groupSavedHighlightRects(items) {
