@@ -277,6 +277,7 @@ export default function ReaderScreen() {
         surahNumber: pendingQuarterFlash.targetSurah,
         ayahNumber: pendingQuarterFlash.targetAyah,
         flashMode: pendingQuarterFlash.flashMode,
+        tone: pendingQuarterFlash.tone || (pendingQuarterFlash.markerId === 'bookmark' ? 'reading' : 'quarter'),
       });
       const flashDuration = pendingQuarterFlash.flashMode === 'ayah-marker'
         ? 1400
