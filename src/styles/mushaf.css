@@ -678,3 +678,14 @@
   border-color: rgba(230, 189, 98, .72);
   background: rgba(230, 189, 98, .07);
 }
+
+
+/* Permanent quarter markers are part of the ayah marker itself. This prevents
+ * a measured overlay from appearing late during ordinary page navigation. */
+.quran-ayah-marker--quarter {
+  position: relative;
+  border-radius: 999px;
+  box-shadow:
+    0 0 0 1px rgba(165, 109, 5, .72),
+    0 0 0 3px rgba(165, 109, 5, .08);
+}
