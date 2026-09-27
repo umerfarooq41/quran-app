@@ -98,6 +98,7 @@ export default function BookmarksScreen() {
       page: itemPage,
       surah: item.surahNumber,
       ayah: item.ayahNumber,
+      tone: normalizeBookmarkCategory(item.category).toLowerCase(),
     });
   }
 
