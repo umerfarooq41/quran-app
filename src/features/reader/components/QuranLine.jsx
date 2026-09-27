@@ -36,6 +36,7 @@ export function QuranLine({
   playingVerseKey = null,
   playingWordPosition = null,
   playingWordOccurrenceIndex = null,
+  quarterMarkers = null,
 }) {
   const lineRef = useRef(null);
   const textRef = useRef(null);
@@ -509,7 +510,7 @@ export function QuranLine({
                 data-word-position={!isMarker ? wordMeta?.position : undefined}
                 data-word-occurrence-index={isRecitedWord ? playingWordOccurrenceIndex : undefined}
               >
-                {renderWordText(token.text, isMarker)}
+                {renderWordText(token.text, isMarker, isMarker ? getQuarterMarkerId(line, token.text, quarterMarkers) : null)}
               </span>
             );
           })}
@@ -519,18 +520,31 @@ export function QuranLine({
   );
 }
 
-function renderWordText(text = '', isMarkerToken = false) {
+function renderWordText(text = '', isMarkerToken = false, quarterMarkerId = null) {
   if (!isMarkerToken) return text;
 
   return (
     <span
-      className="quran-ayah-marker"
+      className={`quran-ayah-marker${quarterMarkerId ? ' quran-ayah-marker--quarter' : ''}`}
+      data-quarter-marker={quarterMarkerId || undefined}
       aria-hidden="true"
       title={text}
     >
       <span className="quran-ayah-marker-glyph">{text}</span>
     </span>
   );
+}
+
+function getQuarterMarkerId(line, markerText, quarterMarkers) {
+  if (!quarterMarkers?.length || !line?.surahNumber) return null;
+  const markerMatch = String(markerText || '').match(/\d+/);
+  const ayahNumber = markerMatch ? Number(markerMatch[0]) : null;
+  if (!ayahNumber) return null;
+  const target = quarterMarkers.find((item) => (
+    Number(item.surah) === Number(line.surahNumber)
+    && Number(item.ayah) === ayahNumber
+  ));
+  return target?.id || null;
 }
 
 function countWordGaps(value = '') {
