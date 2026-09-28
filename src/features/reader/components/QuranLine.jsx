@@ -503,12 +503,6 @@ export function QuranLine({
             const savedColor = typeof savedHighlight === 'string'
               ? savedHighlight
               : savedHighlight?.color || '';
-            const isSavedWord = Boolean(
-              savedColor
-              && typeof savedHighlight === 'object'
-              && Number.isInteger(savedHighlight.wordIndex)
-              && Number(savedHighlight.wordIndex) === Number(token.wordIndex)
-            );
             const isRecitedAyah = Boolean(
               !isMarker
               && wordMeta?.verseKey
@@ -520,8 +514,6 @@ export function QuranLine({
             );
             const className = [
               'quran-word',
-              savedColor ? `quran-word--saved-${savedColor}` : '',
-              isSavedWord ? 'quran-word--saved-word' : '',
               isRecitedAyah ? 'is-recited-ayah' : '',
               isRecitedWord ? 'is-recited-word' : '',
             ].filter(Boolean).join(' ');
