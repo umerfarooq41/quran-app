@@ -262,13 +262,12 @@ export function MushafPage({
       }
 
       const pageRect = pageElement.getBoundingClientRect();
-      const padding = 3;
+      // CSS owns the shared permanent/animated capsule dimensions. JS only
+      // supplies its center so both forms always use the same geometry.
       setQuarterMarkerFlashRect({
         page: pageData.page,
-        left: markerRect.left - pageRect.left - padding,
-        top: markerRect.top - pageRect.top - padding,
-        width: markerRect.width + padding * 2,
-        height: markerRect.height + padding * 2,
+        left: markerRect.left - pageRect.left + markerRect.width / 2,
+        top: markerRect.top - pageRect.top + markerRect.height / 2,
       });
     };
 
@@ -356,8 +355,7 @@ export function MushafPage({
             style={{
               left: `${quarterMarkerFlashRect.left}px`,
               top: `${quarterMarkerFlashRect.top}px`,
-              width: `${quarterMarkerFlashRect.width}px`,
-              height: `${quarterMarkerFlashRect.height}px`,
+              transform: 'translate(-50%, -50%)',
             }}
           />
         )}
