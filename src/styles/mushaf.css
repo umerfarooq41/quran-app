@@ -705,3 +705,61 @@
 [data-theme='dark'] .quran-ayah-marker--bookmark-reading { color: #86d5b2; }
 [data-theme='dark'] .quran-ayah-marker--bookmark-tadabbur { color: #ee8da2; }
 [data-theme='dark'] .quran-ayah-marker--bookmark-notes { color: #82c5e3; }
+
+
+/* Saved annotations are painted by the Quran word nodes themselves. They are
+ * therefore present on the first render and cannot lag behind a page slide. */
+.quran-word--saved-amber { background: rgba(243, 184, 62, .24); }
+.quran-word--saved-emerald { background: rgba(34, 125, 104, .18); }
+.quran-word--saved-rose { background: rgba(212, 20, 78, .15); }
+.quran-word--saved-sky { background: rgba(2, 132, 199, .16); }
+.quran-word--saved-violet { background: rgba(124, 58, 237, .15); }
+
+.quran-word[class*="quran-word--saved-"] {
+  border-radius: 2px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.quran-word--saved-word {
+  border-radius: 5px !important;
+  box-shadow: inset 0 0 0 999px rgba(255, 255, 255, .12);
+}
+
+/* Bookmark and quarter landmarks use the same narrow capsule silhouette.
+ * The ayah glyph remains centered and unchanged; only the capsule tone differs. */
+.quran-ayah-marker--quarter,
+.quran-ayah-marker--bookmark {
+  color: inherit;
+  border-radius: 999px;
+  box-shadow: none;
+}
+
+.quran-ayah-marker--quarter::after,
+.quran-ayah-marker--bookmark::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: 50%;
+  width: 1.12em;
+  height: 1.58em;
+  transform: translate(-50%, -50%) scaleX(var(--quran-marker-scale-x, 1));
+  transform-origin: center;
+  border: 1px solid var(--marker-capsule-color);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--marker-capsule-color) 8%, transparent);
+  pointer-events: none;
+}
+
+.quran-ayah-marker--quarter { --marker-capsule-color: #a56d05; }
+.quran-ayah-marker--bookmark-reading { --marker-capsule-color: #26725f; }
+.quran-ayah-marker--bookmark-memorize { --marker-capsule-color: #a56d05; }
+.quran-ayah-marker--bookmark-tadabbur { --marker-capsule-color: #b83b58; }
+.quran-ayah-marker--bookmark-notes { --marker-capsule-color: #216d91; }
+
+[data-theme='dark'] .quran-ayah-marker--quarter,
+[data-theme='dark'] .quran-ayah-marker--bookmark-memorize { --marker-capsule-color: #e6bd62; }
+[data-theme='dark'] .quran-ayah-marker--bookmark-reading { --marker-capsule-color: #86d5b2; }
+[data-theme='dark'] .quran-ayah-marker--bookmark-tadabbur { --marker-capsule-color: #ee8da2; }
+[data-theme='dark'] .quran-ayah-marker--bookmark-notes { --marker-capsule-color: #82c5e3; }
