@@ -682,10 +682,26 @@
 
 /* Permanent quarter markers are part of the ayah marker itself. This prevents
  * a measured overlay from appearing late during ordinary page navigation. */
-.quran-ayah-marker--quarter {
+/* Permanent marker capsules live on the ayah glyph itself so they are
+ * present on the first paint and move with the Quran text. Quarter landmarks
+ * intentionally use the same geometry as bookmarks, only with the gold tone. */
+.quran-ayah-marker--quarter,
+.quran-ayah-marker--bookmark {
   position: relative;
   border-radius: 999px;
   box-shadow:
-    0 0 0 1px rgba(165, 109, 5, .72),
-    0 0 0 3px rgba(165, 109, 5, .08);
+    0 0 0 1px currentColor,
+    0 0 0 3px color-mix(in srgb, currentColor 8%, transparent);
 }
+
+.quran-ayah-marker--quarter { color: #a56d05; }
+.quran-ayah-marker--bookmark-reading { color: #26725f; }
+.quran-ayah-marker--bookmark-memorize { color: #a56d05; }
+.quran-ayah-marker--bookmark-tadabbur { color: #b83b58; }
+.quran-ayah-marker--bookmark-notes { color: #216d91; }
+
+[data-theme='dark'] .quran-ayah-marker--quarter,
+[data-theme='dark'] .quran-ayah-marker--bookmark-memorize { color: #e6bd62; }
+[data-theme='dark'] .quran-ayah-marker--bookmark-reading { color: #86d5b2; }
+[data-theme='dark'] .quran-ayah-marker--bookmark-tadabbur { color: #ee8da2; }
+[data-theme='dark'] .quran-ayah-marker--bookmark-notes { color: #82c5e3; }
