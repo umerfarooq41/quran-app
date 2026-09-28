@@ -78,8 +78,10 @@ export function MushafPage({
       if (disposed) return;
       setHighlightRects({
         page: pageData.page,
-        saved: getSavedHighlightRects(pageElement, pageData, savedHighlights),
-        savedWords: getSavedWordHighlightRects(pageElement, pageData, savedHighlights),
+        // Saved annotations render inline with QuranLine. Keep this measured
+        // layer for temporary selection/navigation/recitation only.
+        saved: [],
+        savedWords: [],
         selection: selectedAyah
           ? getAyahHighlightRects(
               pageElement,
@@ -444,6 +446,7 @@ export function MushafPage({
             playingWordOccurrenceIndex={playingWordOccurrenceIndex}
             quarterMarkers={quarterMarkersForPage}
             bookmarkMarkers={bookmarkMarkers}
+            savedHighlights={savedHighlights}
             jumped={Boolean(
               quarterFlashTarget?.flashMode === 'first-rendered-line' &&
               quarterFlashTarget?.page === pageData.page &&
