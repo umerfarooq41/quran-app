@@ -7,7 +7,7 @@ import {
   getWordAtRenderedPoint,
 } from '../utils/ayahDomRange';
 import { SurahHeader } from './SurahHeader';
-import { isAyahMarkerToken } from '../../../lib/mushafText';
+import { getAyahEndCluster, isAyahMarkerToken } from '../../../lib/mushafText';
 import { triggerHaptic } from '../../../lib/haptics';
 import { mapRenderedTokensToQuranWords } from '../../../lib/quranWordMap';
 
@@ -536,13 +536,16 @@ function renderWordText(text = '', isMarkerToken = false, quarterMarkerId = null
 }
 
 function getQuarterMarkerId(line, markerText, quarterMarkers) {
-  if (!quarterMarkers?.length || !line?.surahNumber) return null;
-  const markerMatch = String(markerText || '').match(/\d+/);
-  const ayahNumber = markerMatch ? Number(markerMatch[0]) : null;
-  if (!ayahNumber) return null;
+  if (!quarterMarkers?.length || !line?.surahNumber || !markerText) return null;
+
+  // IndoPak ayah numbers are encoded as private-use font glyphs, so their
+  // rendered marker token does not contain ASCII digits. Match the marker's
+  // actual Quran end cluster to the quarter target instead.
   const target = quarterMarkers.find((item) => (
     Number(item.surah) === Number(line.surahNumber)
-    && Number(item.ayah) === ayahNumber
+    && Number(item.ayah) >= Number(line.ayahStart)
+    && Number(item.ayah) <= Number(line.ayahEnd)
+    && getAyahEndCluster(item.surah, item.ayah) === markerText
   ));
   return target?.id || null;
 }
