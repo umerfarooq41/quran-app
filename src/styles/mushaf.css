@@ -793,3 +793,22 @@
   width: var(--quran-marker-capsule-width) !important;
   height: var(--quran-marker-capsule-height) !important;
 }
+
+
+/* Animate the same permanent capsule DOM used by bookmarks/quarter landmarks.
+ * There is no separately measured flash capsule anymore. */
+@keyframes quran-marker-capsule-pulse {
+  0% { opacity: .35; box-shadow: 0 0 0 0 color-mix(in srgb, var(--marker-capsule-color) 30%, transparent); }
+  45% { opacity: 1; box-shadow: 0 0 0 3px color-mix(in srgb, var(--marker-capsule-color) 18%, transparent); }
+  100% { opacity: .55; box-shadow: 0 0 0 7px transparent; }
+}
+
+.quran-ayah-marker--flash::after {
+  animation: quran-marker-capsule-pulse .7s ease-out 2;
+}
+
+.quran-ayah-marker--flash-reading { --marker-capsule-color: #26725f; }
+.quran-ayah-marker--flash-memorize { --marker-capsule-color: #a56d05; }
+.quran-ayah-marker--flash-tadabbur { --marker-capsule-color: #b83b58; }
+.quran-ayah-marker--flash-notes { --marker-capsule-color: #216d91; }
+.quran-ayah-marker--flash-quarter { --marker-capsule-color: #a56d05; }
