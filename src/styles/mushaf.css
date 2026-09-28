@@ -763,3 +763,13 @@
 [data-theme='dark'] .quran-ayah-marker--bookmark-reading { --marker-capsule-color: #86d5b2; }
 [data-theme='dark'] .quran-ayah-marker--bookmark-tadabbur { --marker-capsule-color: #ee8da2; }
 [data-theme='dark'] .quran-ayah-marker--bookmark-notes { --marker-capsule-color: #82c5e3; }
+
+
+/* Marker capsule correction: keep the bookmark/quarter silhouette narrow but
+ * extend it vertically so stacked IndoPak quarter text (for example 1/4)
+ * remains fully enclosed instead of crossing the lower edge. */
+.quran-ayah-marker--quarter::after,
+.quran-ayah-marker--bookmark::after {
+  width: 1.12em;
+  height: 1.92em;
+}
