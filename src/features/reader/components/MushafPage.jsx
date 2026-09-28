@@ -350,18 +350,6 @@ export function MushafPage({
       style={{ '--font-scale': settings.fontScale }}
     >
       <div className="reader-ayah-highlight-layer" aria-hidden="true">
-        {bookmarkMarkerRings.filter((marker) => marker.page === pageData.page).map((marker) => (
-          <span
-            key={`bookmark-marker-${marker.reference}`}
-            className={`reader-bookmark-marker-ring reader-bookmark-marker-ring--${marker.tone}`}
-            style={{
-              left: `${marker.left}px`,
-              top: `${marker.top}px`,
-              width: `${marker.width}px`,
-              height: `${marker.height}px`,
-            }}
-          />
-        ))}
         {quarterMarkerFlashRect?.page === pageData.page && quarterFlashTarget?.page === pageData.page && (
           <span
             className={`reader-quarter-marker-flash reader-marker-flash--${quarterFlashTarget?.tone || 'quarter'}`}
@@ -455,6 +443,7 @@ export function MushafPage({
             playingWordPosition={playingWordPosition}
             playingWordOccurrenceIndex={playingWordOccurrenceIndex}
             quarterMarkers={quarterMarkersForPage}
+            bookmarkMarkers={bookmarkMarkers}
             jumped={Boolean(
               quarterFlashTarget?.flashMode === 'first-rendered-line' &&
               quarterFlashTarget?.page === pageData.page &&
