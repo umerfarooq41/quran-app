@@ -39,6 +39,7 @@ export function QuranLine({
   quarterMarkers = null,
   bookmarkMarkers = null,
   savedHighlights = null,
+  markerFlashTarget = null,
 }) {
   const lineRef = useRef(null);
   const textRef = useRef(null);
@@ -495,6 +496,12 @@ export function QuranLine({
             const quarterMarkerId = isMarker
               ? getQuarterMarkerId(line, token.text, quarterMarkers)
               : null;
+            const markerFlashTone = (
+              markerAyahNumber
+              && markerFlashTarget?.flashMode === 'ayah-marker'
+              && Number(markerFlashTarget.surahNumber) === Number(line.surahNumber)
+              && Number(markerFlashTarget.ayahNumber) === Number(markerAyahNumber)
+            ) ? (markerFlashTarget.tone || 'quarter') : '';
             const wordMeta = wordMetadataByTokenIndex.get(token.wordIndex) || null;
             const verseKey = !isMarker
               ? (wordMeta?.verseKey || '')
@@ -527,7 +534,7 @@ export function QuranLine({
                 data-word-position={!isMarker ? wordMeta?.position : undefined}
                 data-word-occurrence-index={isRecitedWord ? playingWordOccurrenceIndex : undefined}
               >
-                {renderWordText(token.text, isMarker, quarterMarkerId, bookmarkTone)}
+                {renderWordText(token.text, isMarker, quarterMarkerId, bookmarkTone, markerFlashTone)}
               </span>
             );
           })}
@@ -537,7 +544,7 @@ export function QuranLine({
   );
 }
 
-function renderWordText(text = '', isMarkerToken = false, quarterMarkerId = null, bookmarkTone = '') {
+function renderWordText(text = '', isMarkerToken = false, quarterMarkerId = null, bookmarkTone = '', markerFlashTone = '') {
   if (!isMarkerToken) return text;
 
   const markerClasses = [
@@ -545,6 +552,8 @@ function renderWordText(text = '', isMarkerToken = false, quarterMarkerId = null
     quarterMarkerId ? 'quran-ayah-marker--quarter' : '',
     bookmarkTone ? 'quran-ayah-marker--bookmark' : '',
     bookmarkTone ? `quran-ayah-marker--bookmark-${bookmarkTone}` : '',
+    markerFlashTone ? 'quran-ayah-marker--flash' : '',
+    markerFlashTone ? `quran-ayah-marker--flash-${markerFlashTone}` : '',
   ].filter(Boolean).join(' ');
 
   return (
