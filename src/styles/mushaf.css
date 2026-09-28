@@ -773,3 +773,23 @@
   width: 1.12em;
   height: 1.92em;
 }
+
+
+/* Shared Quran marker capsule geometry.
+ * Permanent quarter/bookmark markers and their navigation flash use this
+ * single definition so their silhouette cannot drift apart. */
+.reader-page {
+  --quran-marker-capsule-width: 0.98em;
+  --quran-marker-capsule-height: 2.16em;
+}
+
+.quran-ayah-marker--quarter::after,
+.quran-ayah-marker--bookmark::after {
+  width: var(--quran-marker-capsule-width);
+  height: var(--quran-marker-capsule-height);
+}
+
+.reader-quarter-marker-flash {
+  width: var(--quran-marker-capsule-width) !important;
+  height: var(--quran-marker-capsule-height) !important;
+}
