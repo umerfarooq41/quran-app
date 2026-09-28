@@ -45,6 +45,7 @@ export function MushafPage({
 }) {
   const pageRef = useRef(null);
   const [highlightRects, setHighlightRects] = useState({
+    page: null,
     saved: [],
     savedWords: [],
     selection: [],
@@ -65,7 +66,7 @@ export function MushafPage({
   useLayoutEffect(() => {
     const pageElement = pageRef.current;
     if (!pageElement) {
-      setHighlightRects({ saved: [], savedWords: [], selection: [], recitation: [], navigation: [] });
+      setHighlightRects({ page: null, saved: [], savedWords: [], selection: [], recitation: [], navigation: [] });
       return undefined;
     }
 
@@ -76,6 +77,7 @@ export function MushafPage({
     const measure = () => {
       if (disposed) return;
       setHighlightRects({
+        page: pageData.page,
         saved: getSavedHighlightRects(pageElement, pageData, savedHighlights),
         savedWords: getSavedWordHighlightRects(pageElement, pageData, savedHighlights),
         selection: selectedAyah
@@ -198,6 +200,7 @@ export function MushafPage({
         rings.push({
           reference,
           tone,
+          page: pageData.page,
           left: markerRect.left - pageRect.left - padding,
           top: markerRect.top - pageRect.top - padding,
           width: markerRect.width + padding * 2,
@@ -261,6 +264,7 @@ export function MushafPage({
       const pageRect = pageElement.getBoundingClientRect();
       const padding = 3;
       setQuarterMarkerFlashRect({
+        page: pageData.page,
         left: markerRect.left - pageRect.left - padding,
         top: markerRect.top - pageRect.top - padding,
         width: markerRect.width + padding * 2,
@@ -346,7 +350,7 @@ export function MushafPage({
       style={{ '--font-scale': settings.fontScale }}
     >
       <div className="reader-ayah-highlight-layer" aria-hidden="true">
-        {bookmarkMarkerRings.map((marker) => (
+        {bookmarkMarkerRings.filter((marker) => marker.page === pageData.page).map((marker) => (
           <span
             key={`bookmark-marker-${marker.reference}`}
             className={`reader-bookmark-marker-ring reader-bookmark-marker-ring--${marker.tone}`}
@@ -358,7 +362,7 @@ export function MushafPage({
             }}
           />
         ))}
-        {quarterMarkerFlashRect && (
+        {quarterMarkerFlashRect?.page === pageData.page && quarterFlashTarget?.page === pageData.page && (
           <span
             className={`reader-quarter-marker-flash reader-marker-flash--${quarterFlashTarget?.tone || 'quarter'}`}
             style={{
@@ -369,7 +373,7 @@ export function MushafPage({
             }}
           />
         )}
-        {groupSavedHighlightRects(highlightRects.saved).map((group) => (
+        {groupSavedHighlightRects(highlightRects.page === pageData.page ? highlightRects.saved : []).map((group) => (
           <svg
             key={`saved-${group.reference}-${group.color}`}
             className="reader-ayah-highlight-shape"
@@ -384,7 +388,7 @@ export function MushafPage({
             />
           </svg>
         ))}
-        {highlightRects.savedWords.map((item, index) => (
+        {(highlightRects.page === pageData.page ? highlightRects.savedWords : []).map((item, index) => (
           <span
             key={`saved-word-${item.color}-${item.rect.top}-${item.rect.left}-${index}`}
             className={`reader-ayah-highlight-block reader-word-highlight-block reader-word-highlight-${item.color}`}
@@ -396,7 +400,7 @@ export function MushafPage({
             }}
           />
         ))}
-        {highlightRects.navigation.length > 0 && (
+        {highlightRects.page === pageData.page && highlightRects.navigation.length > 0 && (
           <svg className="reader-ayah-highlight-shape reader-navigation-highlight-shape" width="100%" height="100%" preserveAspectRatio="none">
             <path
               className="reader-ayah-highlight-navigation"
@@ -405,7 +409,7 @@ export function MushafPage({
             />
           </svg>
         )}
-        {highlightRects.recitation.length > 0 && (
+        {highlightRects.page === pageData.page && highlightRects.recitation.length > 0 && (
           <svg className="reader-ayah-highlight-shape" width="100%" height="100%" preserveAspectRatio="none">
             <path
               className="reader-ayah-highlight-audio"
@@ -414,7 +418,7 @@ export function MushafPage({
             />
           </svg>
         )}
-        {highlightRects.selection.length > 0 && (
+        {highlightRects.page === pageData.page && highlightRects.selection.length > 0 && (
           <svg className="reader-ayah-highlight-shape" width="100%" height="100%" preserveAspectRatio="none">
             <path
               className="reader-ayah-highlight-selection"
@@ -450,6 +454,7 @@ export function MushafPage({
             playingVerseKey={playingVerseKey}
             playingWordPosition={playingWordPosition}
             playingWordOccurrenceIndex={playingWordOccurrenceIndex}
+            quarterMarkers={quarterMarkersForPage}
             jumped={Boolean(
               quarterFlashTarget?.flashMode === 'first-rendered-line' &&
               quarterFlashTarget?.page === pageData.page &&
