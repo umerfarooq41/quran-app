@@ -56,11 +56,15 @@ export function MushafPage({
   const [bookmarkMarkerRings, setBookmarkMarkerRings] = useState([]);
   const supportsTextHighlights = enableTextHighlights && typeof CSS !== 'undefined' && Boolean(CSS.highlights) && typeof Highlight !== 'undefined';
   const juzStartLines = useMemo(() => getJuzStartLineNumbers(pageData), [pageData]);
+  // Match permanent quarter landmarks by their authoritative surah/ayah,
+  // not by the cached page number. Page mappings can differ from the rendered
+  // IndoPak dataset; filtering here was the reason some juz quarter markers
+  // disappeared entirely.
   const quarterMarkersForPage = useMemo(
     () => Object.values(indoPakParaQuarters)
       .flat()
-      .filter((target) => target.id !== 'start' && Number(target.page) === Number(pageData.page)),
-    [pageData.page],
+      .filter((target) => target.id !== 'start'),
+    [],
   );
 
   useLayoutEffect(() => {
@@ -232,66 +236,6 @@ export function MushafPage({
     };
   }, [pageData, bookmarkMarkers, settings.fontScale]);
 
-  useLayoutEffect(() => {
-    const pageElement = pageRef.current;
-    if (
-      !pageElement ||
-      quarterFlashTarget?.flashMode !== 'ayah-marker' ||
-      quarterFlashTarget.page !== pageData.page
-    ) {
-      setQuarterMarkerFlashRect(null);
-      return undefined;
-    }
-
-    let frame = 0;
-    let disposed = false;
-
-    const measureMarker = () => {
-      if (disposed) return;
-
-      const markerRange = getAyahMarkerRange(
-        pageElement,
-        pageData,
-        quarterFlashTarget.surahNumber,
-        quarterFlashTarget.ayahNumber,
-      );
-      const markerRect = markerRange?.getBoundingClientRect();
-      if (!markerRect?.width || !markerRect?.height) {
-        setQuarterMarkerFlashRect(null);
-        return;
-      }
-
-      const pageRect = pageElement.getBoundingClientRect();
-      // CSS owns the shared permanent/animated capsule dimensions. JS only
-      // supplies its center so both forms always use the same geometry.
-      setQuarterMarkerFlashRect({
-        page: pageData.page,
-        left: markerRect.left - pageRect.left + markerRect.width / 2,
-        top: markerRect.top - pageRect.top + markerRect.height / 2,
-      });
-    };
-
-    const scheduleMeasure = () => {
-      window.cancelAnimationFrame(frame);
-      frame = window.requestAnimationFrame(measureMarker);
-    };
-
-    scheduleMeasure();
-    pageElement.addEventListener(LINE_FIT_EVENT, scheduleMeasure);
-
-    return () => {
-      disposed = true;
-      window.cancelAnimationFrame(frame);
-      pageElement.removeEventListener(LINE_FIT_EVENT, scheduleMeasure);
-    };
-  }, [
-    pageData,
-    quarterFlashTarget?.page,
-    quarterFlashTarget?.surahNumber,
-    quarterFlashTarget?.ayahNumber,
-    quarterFlashTarget?.flashMode,
-  ]);
-
   const isOpeningMushafPage = pageData.page === 1 || pageData.page === 2;
 
   const renderedLines = useMemo(() => {
@@ -349,16 +293,6 @@ export function MushafPage({
       style={{ '--font-scale': settings.fontScale }}
     >
       <div className="reader-ayah-highlight-layer" aria-hidden="true">
-        {quarterMarkerFlashRect?.page === pageData.page && quarterFlashTarget?.page === pageData.page && (
-          <span
-            className={`reader-quarter-marker-flash reader-marker-flash--${quarterFlashTarget?.tone || 'quarter'}`}
-            style={{
-              left: `${quarterMarkerFlashRect.left}px`,
-              top: `${quarterMarkerFlashRect.top}px`,
-              transform: 'translate(-50%, -50%)',
-            }}
-          />
-        )}
         {groupSavedHighlightRects(highlightRects.page === pageData.page ? highlightRects.saved : []).map((group) => (
           <svg
             key={`saved-${group.reference}-${group.color}`}
@@ -442,6 +376,7 @@ export function MushafPage({
             playingWordOccurrenceIndex={playingWordOccurrenceIndex}
             quarterMarkers={quarterMarkersForPage}
             bookmarkMarkers={bookmarkMarkers}
+            markerFlashTarget={quarterFlashTarget}
             jumped={Boolean(
               quarterFlashTarget?.flashMode === 'first-rendered-line' &&
               quarterFlashTarget?.page === pageData.page &&
