@@ -37,6 +37,7 @@ export function QuranLine({
   playingWordPosition = null,
   playingWordOccurrenceIndex = null,
   quarterMarkers = null,
+  bookmarkMarkers = null,
 }) {
   const lineRef = useRef(null);
   const textRef = useRef(null);
@@ -485,6 +486,14 @@ export function QuranLine({
             }
 
             const isMarker = markerTokens.has(token.text);
+            const markerAyahNumber = isMarker ? getMarkerAyahNumber(line, token.text) : null;
+            const markerReference = markerAyahNumber ? `${line.surahNumber}:${markerAyahNumber}` : '';
+            const bookmarkTone = markerReference
+              ? getBookmarkTone(bookmarkMarkers?.get(markerReference))
+              : '';
+            const quarterMarkerId = isMarker
+              ? getQuarterMarkerId(line, token.text, quarterMarkers)
+              : null;
             const wordMeta = wordMetadataByTokenIndex.get(token.wordIndex) || null;
             const isRecitedAyah = Boolean(
               !isMarker
@@ -510,7 +519,7 @@ export function QuranLine({
                 data-word-position={!isMarker ? wordMeta?.position : undefined}
                 data-word-occurrence-index={isRecitedWord ? playingWordOccurrenceIndex : undefined}
               >
-                {renderWordText(token.text, isMarker, isMarker ? getQuarterMarkerId(line, token.text, quarterMarkers) : null)}
+                {renderWordText(token.text, isMarker, quarterMarkerId, bookmarkTone)}
               </span>
             );
           })}
@@ -520,19 +529,43 @@ export function QuranLine({
   );
 }
 
-function renderWordText(text = '', isMarkerToken = false, quarterMarkerId = null) {
+function renderWordText(text = '', isMarkerToken = false, quarterMarkerId = null, bookmarkTone = '') {
   if (!isMarkerToken) return text;
+
+  const markerClasses = [
+    'quran-ayah-marker',
+    quarterMarkerId ? 'quran-ayah-marker--quarter' : '',
+    bookmarkTone ? 'quran-ayah-marker--bookmark' : '',
+    bookmarkTone ? `quran-ayah-marker--bookmark-${bookmarkTone}` : '',
+  ].filter(Boolean).join(' ');
 
   return (
     <span
-      className={`quran-ayah-marker${quarterMarkerId ? ' quran-ayah-marker--quarter' : ''}`}
+      className={markerClasses}
       data-quarter-marker={quarterMarkerId || undefined}
+      data-bookmark-tone={bookmarkTone || undefined}
       aria-hidden="true"
       title={text}
     >
       <span className="quran-ayah-marker-glyph">{text}</span>
     </span>
   );
+}
+
+function getMarkerAyahNumber(line, markerText) {
+  if (!line?.surahNumber || !markerText) return null;
+  for (let ayah = Number(line.ayahStart); ayah <= Number(line.ayahEnd); ayah += 1) {
+    if (getAyahEndCluster(line.surahNumber, ayah) === markerText) return ayah;
+  }
+  return null;
+}
+
+function getBookmarkTone(category) {
+  if (category === 'Reading' || category === 'Recitation') return 'reading';
+  if (category === 'Memorize') return 'memorize';
+  if (category === 'Tadabbur') return 'tadabbur';
+  if (category === 'Notes') return 'notes';
+  return '';
 }
 
 function getQuarterMarkerId(line, markerText, quarterMarkers) {
