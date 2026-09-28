@@ -15,6 +15,7 @@ import { usePagePersistence } from './hooks/usePagePersistence';
 import { useReaderGestures } from './hooks/useReaderGestures';
 
 const PAGE_SLIDE_SETTLE_MS = 190;
+const EMPTY_ANNOTATIONS = new Map();
 const PAGE_SLIDE_IDLE = {
   active: false,
   settling: false,
@@ -743,8 +744,8 @@ export default function ReaderScreen() {
       <MushafPage
         pageData={renderedPageData}
         settings={settings}
-        savedHighlights={savedHighlights}
-        bookmarkMarkers={bookmarkMarkers}
+        savedHighlights={interactive ? savedHighlights : EMPTY_ANNOTATIONS}
+        bookmarkMarkers={interactive ? bookmarkMarkers : EMPTY_ANNOTATIONS}
         pendingAyah={interactive ? pendingAyah : null}
         quarterFlashTarget={interactive ? quarterFlashTarget : null}
         selectedAyah={interactive ? selectedAyah : null}
