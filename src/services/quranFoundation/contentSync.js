@@ -48,6 +48,13 @@ function getMutations(payload) {
   return [];
 }
 
+const SNAPSHOT_RECORD_TYPES = Object.freeze({
+  translations: 'translation',
+  tafsirs: 'tafsir',
+  word_by_word_translations: 'word_translation',
+  word_by_word_transliterations: 'word_transliteration',
+});
+
 function getSnapshotRecords(payload) {
   if (Array.isArray(payload?.records)) return payload.records;
   if (Array.isArray(payload?.snapshot?.records)) return payload.snapshot.records;
@@ -71,7 +78,7 @@ function makeRowKey(group, resourceId, recordType, recordKey) {
 async function replaceResourceSnapshot(group, resourceId, snapshot, fetchedAt) {
   const records = getSnapshotRecords(snapshot);
   const rows = records.map((record) => {
-    const recordType = String(record?.record_type || record?.type || '');
+    const recordType = String(record?.record_type || record?.type || SNAPSHOT_RECORD_TYPES[group] || '');
     const recordKey = getRecordKey(record);
     if (!recordType || !recordKey) return null;
     return {
@@ -231,15 +238,16 @@ async function performContentSync(resourceFilter, options = {}) {
       appliedMutations += 1;
     }
 
-    if (page?.has_more) {
-      if (!page?.next_page_url) {
+    const syncPage = page?.sync || page;
+    if (syncPage?.has_more) {
+      if (!syncPage?.next_page_url) {
         throw new Error('Content Sync indicated more pages but did not provide a cursor.');
       }
-      page = await getApiPath(page.next_page_url, signal);
+      page = await getApiPath(syncPage.next_page_url, signal);
       continue;
     }
 
-    finalToken = page?.next_sync_token || page?.sync?.next_sync_token || null;
+    finalToken = syncPage?.next_sync_token || null;
     break;
   }
 
