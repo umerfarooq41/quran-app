@@ -48,6 +48,13 @@ db.version(4).stores({
   wordTranslations: '&key, language, surahNumber, ayahNumber, fetchedAt, expiresAt',
   contentSyncRows: '&key, [resourceGroup+resourceId], [resourceGroup+resourceId+recordType], [resourceGroup+resourceId+recordType+verseKey], recordKey',
   contentSyncState: '&id, lastSuccessfulSyncAt',
+}).upgrade(async (transaction) => {
+  // Rebuild Content Sync checkpoints so older cache rows are refreshed from
+  // authoritative snapshots with the stable record-key format.
+  await transaction.table('contentSyncState').clear();
+  await transaction.table('contentSyncRows').toCollection().modify((row) => {
+    row.verseKey = String(row.data?.verse_key || row.data?.group_verse_key_from || '');
+  });
 });
 
 export async function saveLastRead(payload) {
