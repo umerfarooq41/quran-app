@@ -361,6 +361,12 @@ async function loadRemoteTranslationEntry(option, surahNumber, ayahNumber) {
 async function resolveTranslationResourceId(option, signal) {
   if (Number.isFinite(Number(option.resourceId))) return Number(option.resourceId);
   if (translationResourceCache.has(option.id)) return translationResourceCache.get(option.id);
+  const storedMap = await db.settings.get('qfContentSyncResourceMap');
+  const storedId = Number(storedMap?.value?.[option.id]?.translations?.[0]);
+  if (storedId > 0) {
+    translationResourceCache.set(option.id, storedId);
+    return storedId;
+  }
 
   const language = option.apiLanguage || getTranslationLanguageId(option.id);
   const resources = await loadTranslationCatalog(language, signal);
@@ -555,6 +561,12 @@ async function loadMatchingTafsirEntry(option, surahNumber, ayahNumber) {
 
 async function resolveTafsirResourceId(option, signal) {
   if (tafsirResourceCache.has(option.id)) return tafsirResourceCache.get(option.id);
+  const storedMap = await db.settings.get('qfContentSyncResourceMap');
+  const storedId = Number(storedMap?.value?.[option.id]?.tafsirs?.[0]);
+  if (storedId > 0) {
+    tafsirResourceCache.set(option.id, storedId);
+    return storedId;
+  }
 
   const language = option.apiLanguage || getTranslationLanguageId(option.id);
   const resources = await loadTafsirCatalog(language, signal);
