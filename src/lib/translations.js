@@ -493,13 +493,26 @@ function extractRows(payload, rowKeys) {
   return [];
 }
 
+function tafsirRowCoversVerse(data, surahNumber, ayahNumber) {
+  const target = [surahNumber, ayahNumber];
+  const parseKey = (value) => {
+    const match = /^(\\d+):(\\d+)$/.exec(String(value || ''));
+    return match ? [Number(match[1]), Number(match[2])] : null;
+  };
+  const start = parseKey(data?.group_verse_key_from || data?.verse_key);
+  const end = parseKey(data?.group_verse_key_to || data?.verse_key);
+  if (!start || !end) return false;
+  const compare = (left, right) => left[0] - right[0] || left[1] - right[1];
+  return compare(target, start) >= 0 && compare(target, end) <= 0;
+}
+
 async function loadMatchingTafsirEntry(option, surahNumber, ayahNumber) {
   const resourceId = await resolveTafsirResourceId(option);
   if (!resourceId) return null;
   const syncedRows = await getSyncedResourceRows('tafsirs', resourceId, 'tafsir');
   if (syncedRows.length) {
     const syncedEntry = syncedRows.find(({ data }) => (
-      String(data?.verse_key || '') === `${Number(surahNumber)}:${Number(ayahNumber)}`
+      tafsirRowCoversVerse(data, Number(surahNumber), Number(ayahNumber))
     ));
     const syncedText = cleanInlineText(
       syncedEntry?.data?.text || syncedEntry?.data?.tafsir || syncedEntry?.data?.body || '',
