@@ -1,4 +1,6 @@
 import { qfGet } from '../services/quranFoundation/client';
+import { db } from './db';
+import { getSyncedResourceRows } from '../services/quranFoundation/contentSync';
 
 const translationCache = new Map();
 const translationChapterPromiseCache = new Map();
@@ -227,6 +229,49 @@ export async function getTranslation(translationId, surahNumber, ayahNumber) {
   return entry.plainText || '';
 }
 
+export async function getContentSyncResourcesForTranslation(translationId = DEFAULT_TRANSLATION_ID) {
+  const option = getTranslationOption(translationId);
+  const stored = await db.settings.get('qfContentSyncResourceMap');
+  const resourceMap = stored?.value || {};
+  const resolved = {};
+
+  try {
+    if (!option.file) {
+      resolved.translations = [await resolveTranslationResourceId(option)];
+    }
+    if (Array.isArray(option.tafsirAliases) && option.tafsirAliases.length) {
+      const tafsirId = await resolveTafsirResourceId(option);
+      if (tafsirId) resolved.tafsirs = [tafsirId];
+    }
+
+    resourceMap[option.id] = resolved;
+    await db.settings.put({
+      id: 'qfContentSyncResourceMap',
+      value: resourceMap,
+      updatedAt: Date.now(),
+    });
+    return resolved;
+  } catch (error) {
+    const cached = resourceMap[option.id];
+    if (cached && Object.keys(cached).length) return cached;
+    throw error;
+  }
+}
+
+async function loadSyncedTranslationChapter(resourceId, chapterNumber) {
+  const rows = await getSyncedResourceRows('translations', resourceId, 'translation');
+  const entries = new Map();
+  rows.forEach(({ data }) => {
+    const key = String(data?.verse_key || '');
+    if (!key.startsWith(`${chapterNumber}:`)) return;
+    entries.set(key, {
+      t: String(data?.text || ''),
+      f: normalizeRemoteFootnotes(data),
+    });
+  });
+  return entries;
+}
+
 export function getTranslationOption(translationId = DEFAULT_TRANSLATION_ID) {
   return TRANSLATION_OPTIONS.find((option) => option.id === translationId)
     || TRANSLATION_OPTIONS.find((option) => option.id === DEFAULT_TRANSLATION_ID)
@@ -245,6 +290,11 @@ async function loadRawTranslation(option) {
 }
 
 async function loadRemoteTranslationEntry(option, surahNumber, ayahNumber) {
+  const resourceId = await resolveTranslationResourceId(option);
+  const syncedEntries = await loadSyncedTranslationChapter(resourceId, Number(surahNumber));
+  const syncedVerse = syncedEntries.get(`${Number(surahNumber)}:${Number(ayahNumber)}`);
+  if (syncedVerse) return syncedVerse;
+
   const chapterNumber = Number(surahNumber);
   const verseKey = `${chapterNumber}:${Number(ayahNumber)}`;
   const chapterCacheKey = `${option.id}:chapter:${chapterNumber}`;
@@ -256,7 +306,6 @@ async function loadRemoteTranslationEntry(option, surahNumber, ayahNumber) {
 
     if (!chapterRequest) {
       chapterRequest = (async () => {
-        const resourceId = await resolveTranslationResourceId(option);
         const requestParams = {
           chapter_number: chapterNumber,
           foot_notes: true,
@@ -439,11 +488,21 @@ function extractRows(payload, rowKeys) {
 }
 
 async function loadMatchingTafsirEntry(option, surahNumber, ayahNumber) {
-  const chapterNumber = Number(surahNumber);
-  const verseKey = `${chapterNumber}:${Number(ayahNumber)}`;
   const resourceId = await resolveTafsirResourceId(option);
   if (!resourceId) return null;
+  const syncedRows = await getSyncedResourceRows('tafsirs', resourceId, 'tafsir');
+  if (syncedRows.length) {
+    const syncedEntry = syncedRows.find(({ data }) => (
+      String(data?.verse_key || '') === `${Number(surahNumber)}:${Number(ayahNumber)}`
+    ));
+    const syncedText = cleanInlineText(
+      syncedEntry?.data?.text || syncedEntry?.data?.tafsir || syncedEntry?.data?.body || '',
+    );
+    return syncedText || null;
+  }
 
+  const chapterNumber = Number(surahNumber);
+  const verseKey = `${chapterNumber}:${Number(ayahNumber)}`;
   const cacheKey = `${resourceId}:chapter:${chapterNumber}`;
   let chapterEntries = tafsirChapterCache.get(cacheKey);
 
