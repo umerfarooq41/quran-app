@@ -496,7 +496,7 @@ function extractRows(payload, rowKeys) {
 function tafsirRowCoversVerse(data, surahNumber, ayahNumber) {
   const target = [surahNumber, ayahNumber];
   const parseKey = (value) => {
-    const match = /^(\\d+):(\\d+)$/.exec(String(value || ''));
+    const match = /^(\d+):(\d+)$/.exec(String(value || ''));
     return match ? [Number(match[1]), Number(match[2])] : null;
   };
   const start = parseKey(data?.group_verse_key_from || data?.verse_key);
