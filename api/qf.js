@@ -40,14 +40,11 @@ export default async function handler(req, res) {
       upstream.contentType || 'application/json',
     );
 
-    if (upstream.ok) {
-      res.setHeader(
-        'Cache-Control',
-        'public, s-maxage=86400, stale-while-revalidate=604800',
-      );
-    } else {
-      res.setHeader('Cache-Control', 'no-store');
-    }
+    // Quran Foundation content that supports Content Sync must never be
+    // copied from ordinary Content API responses into an offline/edge cache.
+    // Keep all proxy responses private and uncached; Sync snapshots and changes
+    // are obtained through the dedicated Content Sync flow.
+    res.setHeader('Cache-Control', 'no-store');
 
     return res.send(upstream.body);
   } catch (error) {
