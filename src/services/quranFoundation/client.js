@@ -40,11 +40,11 @@ export async function qfGet(path, params = {}, { signal } = {}) {
   }
 
   if (!response.ok) {
-    throw new Error(
-      data?.message
-      || data?.error
-      || `Quran API request failed (${response.status}).`,
-    );
+    const apiError = data?.error;
+    const detail = data?.message
+      || (typeof apiError === 'string' ? apiError : [apiError?.code, apiError?.message].filter(Boolean).join(': '))
+      || data?.type;
+    throw new Error(detail || `Quran API request failed (${response.status}).`);
   }
 
   return data;
