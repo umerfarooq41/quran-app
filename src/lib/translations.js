@@ -1,6 +1,6 @@
 import { qfGet } from '../services/quranFoundation/client';
 import { db } from './db';
-import { getSyncedResourceRows } from '../services/quranFoundation/contentSync';
+import { getSyncedResourceRows, getSyncedResourceRowByVerseKey } from '../services/quranFoundation/contentSync';
 
 const translationCache = new Map();
 const translationChapterPromiseCache = new Map();
@@ -258,18 +258,18 @@ export async function getContentSyncResourcesForTranslation(translationId = DEFA
   }
 }
 
-async function loadSyncedTranslationChapter(resourceId, chapterNumber) {
-  const rows = await getSyncedResourceRows('translations', resourceId, 'translation');
-  const entries = new Map();
-  rows.forEach(({ data }) => {
-    const key = String(data?.verse_key || '');
-    if (!key.startsWith(`${chapterNumber}:`)) return;
-    entries.set(key, {
-      t: String(data?.text || ''),
-      f: normalizeRemoteFootnotes(data),
-    });
-  });
-  return entries;
+async function loadSyncedTranslationEntry(resourceId, verseKey) {
+  const row = await getSyncedResourceRowByVerseKey(
+    'translations',
+    resourceId,
+    'translation',
+    verseKey,
+  );
+  if (!row?.data) return null;
+  return {
+    t: String(row.data.text || ''),
+    f: normalizeRemoteFootnotes(row.data),
+  };
 }
 
 export function getTranslationOption(translationId = DEFAULT_TRANSLATION_ID) {
@@ -291,8 +291,10 @@ async function loadRawTranslation(option) {
 
 async function loadRemoteTranslationEntry(option, surahNumber, ayahNumber) {
   const resourceId = await resolveTranslationResourceId(option);
-  const syncedEntries = await loadSyncedTranslationChapter(resourceId, Number(surahNumber));
-  const syncedVerse = syncedEntries.get(`${Number(surahNumber)}:${Number(ayahNumber)}`);
+  const syncedVerse = await loadSyncedTranslationEntry(
+    resourceId,
+    `${Number(surahNumber)}:${Number(ayahNumber)}`,
+  );
   if (syncedVerse) return syncedVerse;
 
   const chapterNumber = Number(surahNumber);
