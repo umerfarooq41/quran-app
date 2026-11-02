@@ -504,7 +504,7 @@ async function loadMatchingTafsirEntry(option, surahNumber, ayahNumber) {
     const syncedText = cleanInlineText(
       syncedEntry?.data?.text || syncedEntry?.data?.tafsir || syncedEntry?.data?.body || '',
     );
-    return syncedText || null;
+    if (syncedText) return syncedText;
   }
 
   const chapterNumber = Number(surahNumber);
