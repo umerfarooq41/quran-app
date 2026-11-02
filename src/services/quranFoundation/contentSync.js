@@ -177,17 +177,31 @@ export async function syncContentResources(resources, options = {}) {
   }
 
   const signal = options.signal;
-  let page = previousState?.syncToken && !options.bootstrap
-    ? await qfGet('resources/sync', {
-      resources: resourceFilter,
-      sync_token: previousState.syncToken,
-      per_page: PAGE_SIZE,
-    }, { signal })
-    : await qfGet('resources/sync', {
+  let page;
+  if (previousState?.syncToken && !options.bootstrap) {
+    try {
+      page = await qfGet('resources/sync', {
+        resources: resourceFilter,
+        sync_token: previousState.syncToken,
+        per_page: PAGE_SIZE,
+      }, { signal });
+    } catch (error) {
+      // A 410 means the server can no longer continue from this checkpoint.
+      // Rebuild the selected resources from snapshots without deleting user data.
+      if (!/\\b410\\b/.test(String(error?.message || error))) throw error;
+      page = await qfGet('resources/sync', {
+        resources: resourceFilter,
+        bootstrap: true,
+        per_page: PAGE_SIZE,
+      }, { signal });
+    }
+  } else {
+    page = await qfGet('resources/sync', {
       resources: resourceFilter,
       bootstrap: true,
       per_page: PAGE_SIZE,
     }, { signal });
+  }
 
   let finalToken = null;
   let pageCount = 0;
