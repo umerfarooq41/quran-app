@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useShallow } from 'zustand/react/shallow';
 import { getLastRead, getSettings, upsertSetting } from './lib/db';
+import { getContentSyncResourcesForTranslation } from './lib/translations';
+import { syncContentResources } from './services/quranFoundation/contentSync';
 import { OVERLAY_TYPES, sanitizeSettings, useAppStore } from './store/useAppStore';
 import { Shell } from './components/common/AppChrome';
 import { panel } from './components/common/ui';
@@ -201,6 +203,34 @@ export default function App() {
   }, [hydrateLastRead, restoreNavigation, updateSettings]);
 
 
+
+  useEffect(() => {
+    if (!booted) return undefined;
+
+    let active = true;
+    const syncSelectedContent = async () => {
+      if (navigator.onLine === false) return;
+      try {
+        const resources = await getContentSyncResourcesForTranslation(settings.translation);
+        if (!active || !Object.keys(resources).length) return;
+        await syncContentResources(resources);
+      } catch (error) {
+        // Content Sync is best-effort: existing reader behavior and local data
+        // remain available if the network or Quran Foundation is unavailable.
+        console.warn('Quran Foundation Content Sync was deferred:', error);
+      }
+    };
+
+    syncSelectedContent();
+    window.addEventListener('online', syncSelectedContent);
+    const refreshInterval = window.setInterval(syncSelectedContent, 24 * 60 * 60 * 1000);
+
+    return () => {
+      active = false;
+      window.removeEventListener('online', syncSelectedContent);
+      window.clearInterval(refreshInterval);
+    };
+  }, [booted, settings.translation]);
 
   useEffect(() => {
     if (!booted) return undefined;
