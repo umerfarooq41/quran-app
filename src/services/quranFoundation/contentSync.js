@@ -155,12 +155,23 @@ async function applyMutation(mutation, signal) {
  * are never written into this store: rows enter through Content Sync snapshots
  * and mutation events only.
  */
-export async function syncContentResources(resources, options = {}) {
+const inFlightSyncs = new Map();
+
+export function syncContentResources(resources, options = {}) {
+  const resourceFilter = normalizeResourceFilter(resources);
+  if (inFlightSyncs.has(resourceFilter)) return inFlightSyncs.get(resourceFilter);
+
+  const request = performContentSync(resourceFilter, options)
+    .finally(() => inFlightSyncs.delete(resourceFilter));
+  inFlightSyncs.set(resourceFilter, request);
+  return request;
+}
+
+async function performContentSync(resourceFilter, options = {}) {
   if (typeof navigator !== 'undefined' && navigator.onLine === false) {
     return { status: 'offline', synced: false };
   }
 
-  const resourceFilter = normalizeResourceFilter(resources);
   const stateId = resourceFilter;
   const previousState = await db.contentSyncState.get(stateId);
   const now = Date.now();
