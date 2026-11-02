@@ -64,10 +64,10 @@ function getSnapshotRecords(payload) {
 
 function getRecordKey(record) {
   const value = record?.record_key
+    ?? record?.id
     ?? record?.verse_key
     ?? record?.word_key
-    ?? record?.key
-    ?? record?.id;
+    ?? record?.key;
   return value == null ? '' : String(value);
 }
 
@@ -88,6 +88,7 @@ async function replaceResourceSnapshot(group, resourceId, snapshot, fetchedAt) {
       recordType,
       recordKey,
       data: record,
+      verseKey: String(record?.verse_key || record?.group_verse_key_from || ''),
       updatedAt: fetchedAt,
     };
   }).filter(Boolean);
@@ -152,6 +153,7 @@ async function applyMutation(mutation, signal) {
       recordType,
       recordKey,
       data: mutation.data,
+      verseKey: String(mutation.data?.verse_key || mutation.data?.group_verse_key_from || ''),
       updatedAt: Date.now(),
     });
   }
@@ -295,6 +297,13 @@ export async function getSyncedResourceRow(group, resourceId, recordType, record
     String(recordKey),
   );
   return db.contentSyncRows.get(key);
+}
+
+export async function getSyncedResourceRowByVerseKey(group, resourceId, recordType, verseKey) {
+  return db.contentSyncRows
+    .where('[resourceGroup+resourceId+recordType+verseKey]')
+    .equals([String(group), Number(resourceId), String(recordType), String(verseKey)])
+    .first();
 }
 
 export async function getContentSyncStatus(resources) {
