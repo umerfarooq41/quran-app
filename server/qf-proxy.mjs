@@ -19,8 +19,13 @@ createServer(async (req, res) => {
   try {
     const target = req.url.replace(/^\/api\/qf/, '');
     const upstream = await qfRequest(target);
-    const headers = { 'content-type': upstream.contentType };
-    if (upstream.ok) headers['cache-control'] = 'public, max-age=3600';
+    const headers = {
+      'content-type': upstream.contentType,
+      // Keep ordinary Content API responses out of browser and intermediary
+      // caches. Content Sync is the only permitted offline-copy path for
+      // resources that support it.
+      'cache-control': 'no-store',
+    };
     res.writeHead(upstream.status, headers);
     res.end(upstream.body);
   } catch (error) {
