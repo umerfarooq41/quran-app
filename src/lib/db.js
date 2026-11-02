@@ -23,6 +23,20 @@ db.version(2).stores({
   wordTranslations: '&key, language, surahNumber, ayahNumber, fetchedAt, expiresAt',
 });
 
+db.version(3).stores({
+  bookmarks: '++id, category, surahNumber, ayahNumber, page, createdAt',
+  highlights: '++id, color, surahNumber, ayahNumber, page, createdAt',
+  notes: '++id, surahNumber, ayahNumber, page, updatedAt',
+  lastRead: 'id, page, surahNumber, ayahNumber, updatedAt',
+  settings: 'id',
+  recentSearches: '++id, query, createdAt',
+  memorizationProgress: '++id, surahNumber, ayahNumber, status, updatedAt',
+  wordTranslations: '&key, language, surahNumber, ayahNumber, fetchedAt, expiresAt',
+  contentSyncRows: '&key, [resourceGroup+resourceId], [resourceGroup+resourceId+recordType], recordKey',
+  contentSyncState: '&id, lastSuccessfulSyncAt',
+});
+
+
 export async function saveLastRead(payload) {
   await db.lastRead.put({ id: 'current', updatedAt: Date.now(), ...payload });
 }
