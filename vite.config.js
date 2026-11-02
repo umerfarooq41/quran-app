@@ -146,23 +146,13 @@ export default defineConfig({
           // Full-Surah MP3s stay network-streamed. The player relies on byte-range
           // responses for seeking, and runtime caching partial responses would
           // require a separate, user-initiated full-download workflow.
-          {
-            urlPattern: ({ url }) => (
-              url.origin === self.location.origin
-              && url.pathname.startsWith('/api/qf')
-            ),
-            handler: 'StaleWhileRevalidate',
-            options: {
-              cacheName: 'quran-foundation-content',
-              expiration: {
-                maxEntries: 500,
-                maxAgeSeconds: 60 * 60 * 24 * 7,
-              },
-              cacheableResponse: {
-                statuses: [0, 200],
-              },
-            },
-          },
+          //
+          // Quran Foundation Content API responses are deliberately NOT runtime
+          // cached here. Content Sync-supported resources must be obtained and
+          // maintained only through the Content Sync API, never from ordinary
+          // API responses. Until the targeted Content Sync store is implemented,
+          // these requests remain online-only rather than creating a non-compliant
+          // or misleading partial offline copy.
         ],
       },
     }),
