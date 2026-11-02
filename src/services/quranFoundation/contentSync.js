@@ -206,7 +206,7 @@ async function performContentSync(resourceFilter, options = {}) {
     } catch (error) {
       // A 410 means the server can no longer continue from this checkpoint.
       // Rebuild the selected resources from snapshots without deleting user data.
-      if (!/\b410\b/.test(String(error?.message || error))) throw error;
+      if (!/(?:\b410\b|resync_required|sync token is invalid)/i.test(String(error?.message || error))) throw error;
       page = await qfGet('resources/sync', {
         resources: resourceFilter,
         bootstrap: true,
