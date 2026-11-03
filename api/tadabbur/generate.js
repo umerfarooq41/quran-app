@@ -23,9 +23,8 @@ const responseSchema = {
             type: 'object',
             properties: {
               text: { type: 'string' },
-              ayahReferences: { type: 'array', items: { type: 'string' } },
             },
-            required: ['text', 'ayahReferences'],
+            required: ['text'],
           },
         },
       },
