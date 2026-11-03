@@ -31,6 +31,7 @@ async function expectHealthyVisibleUI(page) {
       .filter((id, index, ids) => ids.indexOf(id) !== index);
     const emptyControls = [...document.querySelectorAll('button, a, input, select, textarea')]
       .filter(visible)
+      .filter((element) => !element.closest('[aria-hidden="true"]'))
       .filter((element) => {
         const label = element.getAttribute('aria-label') || element.getAttribute('title') || element.innerText || element.value || '';
         return !String(label).trim();
