@@ -1,7 +1,6 @@
 import { getSurahAyahs, getSurah } from '../../lib/quran';
 import { getTranslationOption, loadTranslationEntry } from '../../lib/translations';
 import { getWordByWordTranslation } from '../quranFoundation/words';
-import { generateTadabburLesson } from './generateTadabburLesson';
 import { saveTadabburLesson } from '../../lib/db';
 
 export const REFLECT_FINAL_QUESTIONS = Object.freeze([
@@ -10,10 +9,16 @@ export const REFLECT_FINAL_QUESTIONS = Object.freeze([
   'What is one thing you want to remember or apply from this lesson?',
 ]);
 
+export const REFLECT_PREPARATION_QUESTIONS = Object.freeze([
+  'What do you already know or understand about the subject of this passage?',
+  'What experiences or questions have shaped the way you think about this subject?',
+  'What would you like to pay attention to as you study this passage?',
+]);
+
 /**
- * Load the user's current Quran sources, generate a lesson, and save a
- * self-contained snapshot locally. Existing lessons never need to be
- * regenerated when Settings change.
+ * Create a source-led Reflect study without AI. The app stores the selected
+ * Quran text and source material as a local snapshot; it does not generate
+ * interpretations, themes, or applications.
  */
 export async function createTadabburLesson({
   surahNumber,
@@ -54,7 +59,7 @@ export async function createTadabburLesson({
   const wordByWordLanguage = appSettings.wordByWordLanguage === 'ur' ? 'ur' : 'en';
 
   const sourceRows = await Promise.all(selectedAyahs.map(async (ayah) => {
-    if (signal?.aborted) throw new DOMException('Generation was cancelled.', 'AbortError');
+    if (signal?.aborted) throw new DOMException('Study creation was cancelled.', 'AbortError');
 
     const ayahNumber = Number(ayah.ayahNumber);
     const translationEntry = await waitForSignal(loadTranslationEntry(
@@ -65,7 +70,7 @@ export async function createTadabburLesson({
     ), signal);
     const translation = String(translationEntry?.plainText || '').trim();
     if (!translation) {
-      throw new Error(`Translation is unavailable for ${surah}:${ayahNumber}. Check your connection and try again.`);
+      throw new Error(`Translation is unavailable for ${surah}:${ayahNumber}. Connect to the internet and try again.`);
     }
 
     const tafsirNotes = (translationEntry?.footnotes || [])
@@ -85,8 +90,6 @@ export async function createTadabburLesson({
           .join('; ');
       } catch (error) {
         if (signal?.aborted) throw error;
-        // Word-by-word data is an optional aid. It must not block a lesson
-        // when the chosen language's word resource is temporarily unavailable.
       }
     }
 
@@ -94,76 +97,50 @@ export async function createTadabburLesson({
       ayahNumber,
       arabic: String(ayah.text || ''),
       translation,
-      tafsir: tafsirNotes.join('\n'),
+      tafsir: tafsirNotes.join('\\n'),
       wordByWord,
-      translationEntry,
     };
   }));
 
-  const tafsirText = sourceRows
-    .filter((row) => row.tafsir)
-    .map((row) => `Ayah ${surah}:${row.ayahNumber}\n${row.tafsir}`)
-    .join('\n\n');
-
-  const wordByWordText = sourceRows
-    .filter((row) => row.wordByWord)
-    .map((row) => `Ayah ${surah}:${row.ayahNumber}\n${row.wordByWord}`)
-    .join('\n\n');
-
-  const generated = await generateTadabburLesson({
-    surahNumber: surah,
-    startAyah: start,
-    endAyah: end,
-    translationName: translationOption.shortName || translationOption.label,
-    tafsirName: tafsirText ? (translationOption.shortName || translationOption.label) : '',
-    outputLanguage,
-    wordByWordLanguage: includeWordByWord ? wordByWordLanguage : null,
-    verses: sourceRows.map(({ ayahNumber, arabic, translation }) => ({
-      ayahNumber,
-      arabic,
-      translation,
-    })),
-    tafsirText,
-    wordByWordText,
-  }, { signal });
-
+  const tafsirIncluded = sourceRows.some((row) => row.tafsir);
   const now = Date.now();
   const lessonId = createLessonId();
+  const surahName = getSurah(surah)?.name || `Surah ${surah}`;
   const record = {
     id: lessonId,
     surahNumber: surah,
-    surahName: getSurah(surah)?.name || '',
+    surahName,
     startAyah: start,
     endAyah: end,
-    title: generated.lesson.title,
-    content: generated.lesson,
+    title: `${surahName} · ${start}–${end}`,
+    content: {
+      mode: 'source-led',
+      prepare: {
+        description: 'Answer these before studying the selected Ayahs.',
+        questions: REFLECT_PREPARATION_QUESTIONS.map((text) => ({ text })),
+      },
+      study: {
+        description: 'Read the selected Arabic and translation. Tafsir is shown only when it is available in the selected source.',
+      },
+    },
     answers: {
       prepare: ['', '', ''],
       final: ['', '', ''],
+      notes: '',
     },
     finalQuestions: [...REFLECT_FINAL_QUESTIONS],
     sourceSnapshot: {
-      verses: sourceRows.map((row) => ({
-        ayahNumber: row.ayahNumber,
-        arabic: row.arabic,
-        translation: row.translation,
-        tafsir: row.tafsir || null,
-        wordByWord: row.wordByWord || null,
-      })),
+      verses: sourceRows,
       translationId,
       translationName: translationOption.shortName || translationOption.label,
-      tafsirIncluded: Boolean(tafsirText),
-      tafsirName: tafsirText ? (translationOption.shortName || translationOption.label) : null,
+      tafsirIncluded,
+      tafsirName: tafsirIncluded ? (translationOption.shortName || translationOption.label) : null,
       outputLanguage,
       wordByWordEnabled: includeWordByWord,
       wordByWordLanguage: includeWordByWord ? wordByWordLanguage : null,
+      capturedAt: now,
     },
-    generation: {
-      provider: 'google-gemini',
-      model: generated.model,
-      generatedAt: generated.generatedAt,
-      promptVersion: 2,
-    },
+    generation: null,
     status: 'in-progress',
     createdAt: now,
     updatedAt: now,
@@ -178,14 +155,13 @@ function createLessonId() {
   return `reflect-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 }
 
-
 function waitForSignal(promise, signal) {
   if (!signal) return promise;
-  if (signal.aborted) return Promise.reject(new DOMException('Generation was cancelled.', 'AbortError'));
+  if (signal.aborted) return Promise.reject(new DOMException('Study creation was cancelled.', 'AbortError'));
   return Promise.race([
     promise,
     new Promise((_, reject) => {
-      signal.addEventListener('abort', () => reject(new DOMException('Generation timed out or was cancelled.', 'AbortError')), { once: true });
+      signal.addEventListener('abort', () => reject(new DOMException('Study creation timed out or was cancelled.', 'AbortError')), { once: true });
     }),
   ]);
 }
