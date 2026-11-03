@@ -7,22 +7,22 @@ const RATE_LIMIT = 5;
 const requestsByIp = new Map();
 
 const responseSchema = {
-  type: 'OBJECT',
+  type: 'object',
   properties: {
-    title: { type: 'STRING' },
+    title: { type: 'string' },
     prepare: {
-      type: 'OBJECT',
+      type: 'object',
       properties: {
-        description: { type: 'STRING' },
+        description: { type: 'string' },
         questions: {
-          type: 'ARRAY',
+          type: 'array',
           minItems: 3,
           maxItems: 3,
           items: {
-            type: 'OBJECT',
+            type: 'object',
             properties: {
-              text: { type: 'STRING' },
-              ayahReferences: { type: 'ARRAY', items: { type: 'STRING' } },
+              text: { type: 'string' },
+              ayahReferences: { type: 'array', items: { type: 'string' } },
             },
             required: ['text', 'ayahReferences'],
           },
@@ -31,17 +31,17 @@ const responseSchema = {
       required: ['description', 'questions'],
     },
     understand: {
-      type: 'OBJECT',
+      type: 'object',
       properties: {
         keyPoints: {
-          type: 'ARRAY',
+          type: 'array',
           minItems: 1,
           maxItems: 4,
           items: {
-            type: 'OBJECT',
+            type: 'object',
             properties: {
-              text: { type: 'STRING' },
-              ayahReferences: { type: 'ARRAY', items: { type: 'STRING' } },
+              text: { type: 'string' },
+              ayahReferences: { type: 'array', items: { type: 'string' } },
             },
             required: ['text', 'ayahReferences'],
           },
@@ -50,18 +50,18 @@ const responseSchema = {
       required: ['keyPoints'],
     },
     themes: {
-      type: 'OBJECT',
+      type: 'object',
       properties: {
-        main: { type: 'ARRAY', minItems: 1, maxItems: 1, items: { type: 'STRING' } },
-        secondary: { type: 'ARRAY', maxItems: 4, items: { type: 'STRING' } },
+        main: { type: 'array', minItems: 1, maxItems: 1, items: { type: 'string' } },
+        secondary: { type: 'array', maxItems: 4, items: { type: 'string' } },
       },
       required: ['main', 'secondary'],
     },
     apply: {
-      type: 'OBJECT',
+      type: 'object',
       properties: {
-        suggestion: { type: 'STRING' },
-        ayahReferences: { type: 'ARRAY', items: { type: 'STRING' } },
+        suggestion: { type: 'string' },
+        ayahReferences: { type: 'array', items: { type: 'string' } },
       },
       required: ['suggestion', 'ayahReferences'],
     },
@@ -216,7 +216,7 @@ export default async function handler(req, res) {
 
 function isSameOriginRequest(req) {
   const origin = req.headers.origin;
-  if (!origin) return true;
+  if (!origin) return false;
   const host = req.headers['x-forwarded-host'] || req.headers.host;
   if (!host) return false;
   try {
