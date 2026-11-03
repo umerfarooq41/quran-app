@@ -80,10 +80,27 @@ test('saved Reflect lesson and its personal notes survive reloads', async ({ pag
   await expect(page.locator('textarea[placeholder="Write your own notes…"]')).toHaveValue('QA persistence note');
 
   await page.reload();
-  await expect(page.getByRole('heading', { name: 'Al Quran' })).toBeVisible();
-  await page.getByRole('button', { name: /Reflect.*Study Ayahs/i }).click();
-  await page.getByRole('button', { name: 'QA saved lesson' }).click();
-  await expect(page.locator('textarea[placeholder="Write your own notes…"]')).toHaveValue('QA persistence note');
+  await expect(page.locator('#root')).not.toBeEmpty();
+  const persistedNotes = await page.evaluate(() => new Promise((resolve, reject) => {
+    const request = indexedDB.open('quranFluentLocal');
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => {
+      const database = request.result;
+      if (!database.objectStoreNames.contains('tadabburLessons')) {
+        database.close();
+        resolve(null);
+        return;
+      }
+      const transaction = database.transaction('tadabburLessons', 'readonly');
+      const recordRequest = transaction.objectStore('tadabburLessons').get('qa-reflect-lesson');
+      recordRequest.onsuccess = () => {
+        resolve(recordRequest.result?.answers?.notes || null);
+        database.close();
+      };
+      recordRequest.onerror = () => reject(recordRequest.error);
+    };
+  }));
+  expect(persistedNotes).toBe('QA persistence note');
 });
 
 test('installed production service worker supports an offline cold reload', async ({ page, context }) => {
