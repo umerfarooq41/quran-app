@@ -888,6 +888,7 @@ export default function ReaderScreen() {
             onPlay={playSelectedAyah}
             onShare={showSharePage}
             onCopied={showCopyToast}
+            onReflect={openReflect}
             onAnnotationsChanged={annotationsChanged}
           />
         )}
