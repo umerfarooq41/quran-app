@@ -3,6 +3,7 @@ import { ArrowLeft, BookOpen, Loader2, Plus } from 'lucide-react';
 import { Screen, Empty } from '../components/common/AppChrome';
 import { useAppStore } from '../store/useAppStore';
 import { getSurah, getSurahAyahs } from '../lib/quran';
+import { getTranslationOption } from '../lib/translations';
 import { getTadabburLessons, updateTadabburLesson, deleteTadabburLesson } from '../lib/db';
 import {
   createTadabburLesson,
@@ -112,6 +113,8 @@ export default function ReflectScreen() {
   const verses = active?.sourceSnapshot?.verses || [];
   const finalQuestions = active?.finalQuestions || REFLECT_FINAL_QUESTIONS;
   const legacyPoints = active?.content?.understand?.keyPoints || [];
+  const translationOption = getTranslationOption(active?.sourceSnapshot?.translationId || settings.translation);
+  const wordLanguage = active?.sourceSnapshot?.wordByWordLanguage || settings.wordByWordLanguage || 'en';
 
   return (
     <Screen className="space-y-4 pb-10">
@@ -206,12 +209,28 @@ export default function ReflectScreen() {
 
         <section className={card}>
           <h3 className="font-semibold">Read the passage</h3>
-          {verses.length ? verses.map((verse) => <article key={verse.ayahNumber} className="border-b border-slate-100 py-4 last:border-0">
+          {verses.length ? verses.map((verse) => <article key={verse.ayahNumber} className="ayah-translation-body reflect-lesson-ayah" data-translation-language={translationOption.language || 'En'}>
             <p className="mb-2 text-center text-xs text-slate-400">{active.surahNumber}:{verse.ayahNumber}</p>
-            <p className="text-center text-2xl leading-[2.1] text-slate-900" dir="rtl" lang="ar">{verse.arabic}</p>
-            <p className="mt-3 text-sm leading-7 text-slate-700">{verse.translation}</p>
-            {verse.wordByWord && <details className="mt-3 text-sm"><summary className="cursor-pointer font-medium text-[#2d6e5e]">Word by word</summary><p className="mt-2 leading-6 text-slate-600">{verse.wordByWord}</p></details>}
-            {verse.tafsir && <details className="mt-3 text-sm"><summary className="cursor-pointer font-medium text-[#2d6e5e]">Tafsir source</summary><p className="mt-2 whitespace-pre-line leading-6 text-slate-600">{verse.tafsir}</p></details>}
+            <p className="ayah-translation-arabic" dir="rtl" lang="ar">{verse.arabic}</p>
+
+            {(verse.wordByWordWords?.length || verse.wordByWord) && <section className={`ayah-word-by-word is-${wordLanguage}`} aria-label="Word-by-word translation">
+              <div className="ayah-word-by-word-heading">Word by word · {wordLanguage === 'ur' ? 'Urdu' : 'English'}</div>
+              {verse.wordByWordWords?.length ? <div className="ayah-word-by-word-list" dir="rtl">
+                {verse.wordByWordWords.map((word, index) => <div className="ayah-word-by-word-item" key={word.id || index}>
+                  <span className="ayah-word-by-word-arabic" lang="ar" dir="rtl">{word.arabic}</span>
+                  <span className="ayah-word-by-word-meaning" dir={wordLanguage === 'ur' ? 'rtl' : 'ltr'}>{word.meaning}</span>
+                </div>)}
+              </div> : <p className="ayah-word-by-word-status">{verse.wordByWord}</p>}
+            </section>}
+
+            <p className="ayah-translation-text" dir={translationOption.direction || 'ltr'}>{verse.translation}</p>
+
+            {(verse.tafsirNotes?.length || verse.tafsir) > 0 && <section className="ayah-translation-footnotes mt-3">
+              {(verse.tafsirNotes?.length ? verse.tafsirNotes : [{ number: '1', text: verse.tafsir }]).map((note, index) => <p key={note.number || index} className="ayah-translation-note-row">
+                <span className="ayah-translation-note-number">{note.number || index + 1}</span>
+                <span className="ayah-translation-note-content">{note.text}</span>
+              </p>)}
+            </section>}
           </article>) : (
             <p className="mt-2 text-sm text-slate-600">This is an earlier saved lesson. Its original source snapshot is not available here.</p>
           )}
