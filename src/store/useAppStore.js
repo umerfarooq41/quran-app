@@ -64,7 +64,6 @@ export const DEFAULT_SETTINGS = Object.freeze({
 export const useAppStore = create((set, get) => ({
   view: VIEWS.HOME,
   reflectTarget: null,
-  reflectTarget: null,
   viewHistory: [],
   navDirection: 'forward',
   overlayStack: [],
