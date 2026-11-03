@@ -15,6 +15,7 @@ const SCREEN_OVERLAY_BY_VIEW = {
   [VIEWS.INDEX]: OVERLAY_TYPES.INDEX,
   [VIEWS.SETTINGS]: OVERLAY_TYPES.SETTINGS,
   [VIEWS.REFLECT]: OVERLAY_TYPES.SETTINGS,
+  [VIEWS.REFLECT]: OVERLAY_TYPES.SETTINGS,
 };
 
 const LOCAL_OVERLAY_TYPES = new Set([
@@ -63,6 +64,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
 
 export const useAppStore = create((set, get) => ({
   view: VIEWS.HOME,
+  reflectTarget: null,
   reflectTarget: null,
   viewHistory: [],
   navDirection: 'forward',
@@ -176,6 +178,7 @@ export const useAppStore = create((set, get) => ({
     controlsVisible: false,
   })),
   openIndex: () => get().navigateTo(VIEWS.INDEX),
+  openReflect: (target = null) => set((state) => ({ ...transitionToView(state, VIEWS.REFLECT), reflectTarget: target })),
   openReflect: (target = null) => set((state) => ({
     ...transitionToView(state, VIEWS.REFLECT),
     reflectTarget: target,
