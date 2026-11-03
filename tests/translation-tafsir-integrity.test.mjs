@@ -16,10 +16,11 @@ const translationFiles = [
 
 test('local translation datasets cover every Quran ayah with non-empty source text', async () => {
   const vite = await createServer({
-    configFile: './vite.config.js',
-    server: { middlewareMode: true },
+    configFile: false,
+    server: { middlewareMode: true, hmr: false },
     appType: 'custom',
-    logLevel: 'error',
+    logLevel: 'silent',
+    optimizeDeps: { noDiscovery: true, include: [] },
   });
 
   try {
