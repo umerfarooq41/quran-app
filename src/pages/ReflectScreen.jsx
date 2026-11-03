@@ -44,9 +44,22 @@ export default function ReflectScreen() {
     if (!validRange || selected.length !== count) return;
     setBusy(true); setError('');
     try {
-      const lesson = await createTadabburLesson({ surahNumber, startAyah, endAyah, settings });
+      const controller = new AbortController();
+      const timeout = window.setTimeout(() => controller.abort(), 75000);
+      let lesson;
+      try {
+        lesson = await createTadabburLesson({
+          surahNumber, startAyah, endAyah, settings, signal: controller.signal,
+        });
+      } finally {
+        window.clearTimeout(timeout);
+      }
       await refresh(); setActive(lesson); setMode('lesson');
-    } catch (e) { setError(e.message || 'Unable to create this lesson.'); }
+    } catch (e) {
+      setError(e.name === 'AbortError'
+        ? 'This is taking too long. Check your connection and try again.'
+        : (e.message || 'Unable to create this lesson.'));
+    }
     finally { setBusy(false); }
   }
 
