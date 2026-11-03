@@ -6,6 +6,7 @@ import { useAppStore } from '../store/useAppStore';
 import { getSurah, getSurahAyahs } from '../lib/quran';
 import { getTadabburLessons, updateTadabburLesson, deleteTadabburLesson } from '../lib/db';
 import { createTadabburLesson, REFLECT_FINAL_QUESTIONS } from '../services/tadabbur/createTadabburLesson';
+import { getReflectRangeCount, isValidReflectRange } from '../features/reflect/reflectRules';
 
 const card = 'rounded-2xl border border-slate-200/70 bg-white/85 p-4 shadow-sm';
 const action = 'rounded-xl bg-[#2d6e5e] px-4 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40';
@@ -26,7 +27,8 @@ export default function ReflectScreen() {
 
   const surah = getSurah(surahNumber);
   const ayahs = useMemo(() => getSurahAyahs(surahNumber), [surahNumber]);
-  const count = endAyah - startAyah + 1;
+  const count = getReflectRangeCount(startAyah, endAyah);
+  const validRange = isValidReflectRange(startAyah, endAyah, ayahs.length);
   const selected = ayahs.filter((a) => a.ayahNumber >= startAyah && a.ayahNumber <= endAyah);
 
   async function refresh() { setLessons(await getTadabburLessons()); }
@@ -39,7 +41,7 @@ export default function ReflectScreen() {
   }
 
   async function generate() {
-    if (count < 3 || count > 15 || selected.length !== count) return;
+    if (!validRange || selected.length !== count) return;
     setBusy(true); setError('');
     try {
       const lesson = await createTadabburLesson({ surahNumber, startAyah, endAyah, settings });
@@ -84,11 +86,11 @@ export default function ReflectScreen() {
         <div className={card}><h2 className="font-semibold">Choose a passage</h2><p className="mt-1 text-sm text-slate-500">Select 3–15 consecutive Ayahs from one Surah.</p>
           <label className="mt-4 block text-xs font-semibold text-slate-600">Surah</label><select className={field+' mt-1'} value={surahNumber} onChange={(e) => { const n=Number(e.target.value); setSurahNumber(n); setStartAyah(1); setEndAyah(3); }}>{Array.from({length:114},(_,i)=>getSurah(i+1)).filter(Boolean).map(s=><option key={s.number} value={s.number}>{s.number}. {s.name}</option>)}</select>
           <div className="mt-3 grid grid-cols-2 gap-3"><label className="text-xs font-semibold text-slate-600">Start Ayah<select className={field+' mt-1'} value={startAyah} onChange={(e)=>{const n=Number(e.target.value);setStartAyah(n);setEndAyah(Math.min(ayahs.length,n+2));}}>{ayahs.map(a=><option key={a.ayahNumber} value={a.ayahNumber}>{a.ayahNumber}</option>)}</select></label><label className="text-xs font-semibold text-slate-600">End Ayah<select className={field+' mt-1'} value={endAyah} onChange={(e)=>setEndAyah(Number(e.target.value))}>{ayahs.filter(a=>a.ayahNumber>=startAyah && a.ayahNumber<=Math.min(ayahs.length,startAyah+14)).map(a=><option key={a.ayahNumber} value={a.ayahNumber}>{a.ayahNumber}</option>)}</select></label></div>
-          <p className={'mt-3 text-sm '+(count>=3&&count<=15?'text-emerald-700':'text-rose-600')}>{count} Ayahs selected · Choose between 3 and 15.</p>
+          <p className={'mt-3 text-sm '+(validRange?'text-emerald-700':'text-rose-600')}>{count} Ayahs selected · Choose between 3 and 15.</p>
         </div>
         <div className={card}><h3 className="font-semibold">{surah?.name} · {startAyah}–{endAyah}</h3><div className="mt-3 space-y-3">{selected.map(a=><p key={a.ayahNumber} className="text-right text-xl leading-loose text-slate-800" dir="rtl">{a.text} <span className="text-xs text-[#2d6e5e]">۞{a.ayahNumber}</span></p>)}</div></div>
         {error && <p role="alert" className="text-sm text-rose-600">{error}</p>}
-        <button type="button" className={action+' w-full'} disabled={busy || count<3 || count>15 || selected.length!==count} onClick={generate}>{busy ? <span className="inline-flex items-center gap-2"><Loader2 size={17} className="animate-spin"/>Generating lesson…</span> : 'Generate Reflect lesson'}</button>
+        <button type="button" className={action+' w-full'} disabled={busy || !validRange || selected.length!==count} onClick={generate}>{busy ? <span className="inline-flex items-center gap-2"><Loader2 size={17} className="animate-spin"/>Generating lesson…</span> : 'Generate Reflect lesson'}</button>
       </>}
 
       {mode === 'lesson' && active && <>
