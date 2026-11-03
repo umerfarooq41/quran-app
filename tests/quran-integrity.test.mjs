@@ -4,10 +4,11 @@ import { createServer } from 'vite';
 
 test('Qur’an dataset has 114 ordered Surahs and intact 16-line Mushaf pages', async () => {
   const vite = await createServer({
-    configFile: './vite.config.js',
-    server: { middlewareMode: true },
+    configFile: false,
+    server: { middlewareMode: true, hmr: false },
     appType: 'custom',
-    logLevel: 'error',
+    logLevel: 'silent',
+    optimizeDeps: { noDiscovery: true, include: [] },
   });
 
   try {
