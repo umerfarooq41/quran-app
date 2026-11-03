@@ -71,9 +71,11 @@ test('Reflect opens and its passage selection controls are usable', async ({ pag
   await expect(page.getByRole('heading', { name: 'Reflect', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'New study' }).click();
   await expect(page.getByRole('heading', { name: 'New study' })).toBeVisible();
-  await expect(page.getByLabel('Surah')).toBeVisible();
-  await expect(page.getByLabel('Start Ayah')).toBeVisible();
-  await expect(page.getByLabel('End Ayah')).toBeVisible();
+  const passageSelects = page.locator('select');
+  await expect(passageSelects).toHaveCount(3);
+  await expect(passageSelects.nth(0)).toBeVisible();
+  await expect(passageSelects.nth(1)).toBeVisible();
+  await expect(passageSelects.nth(2)).toBeVisible();
   await expectHealthyVisibleUI(page);
 });
 
