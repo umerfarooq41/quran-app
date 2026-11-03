@@ -1,5 +1,6 @@
 const MODEL = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
 const MAX_BODY_BYTES = 100 * 1024;
+const MIN_RANGE_LENGTH = 3;
 const MAX_RANGE_LENGTH = 15;
 const MAX_SOURCE_CHARS = 18000;
 const RATE_WINDOW_MS = 60_000;
@@ -70,7 +71,7 @@ const responseSchema = {
 };
 
 const SYSTEM_PROMPT = `
-You create concise, careful content for a Qur'an Tadabbur journal. You are not writing a sermon, article, fatwa, or authoritative Tafsir.
+You create concise, careful content for a Qur'an reflection journal. You are not writing a sermon, article, fatwa, or authoritative Tafsir.
 
 Return content matching the supplied JSON schema. Do not add sections.
 
@@ -126,7 +127,7 @@ export default async function handler(req, res) {
 
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    return res.status(503).json({ error: 'Tadabbur generation is not configured yet.' });
+    return res.status(503).json({ error: 'Reflect generation is not configured yet.' });
   }
 
   const rateResult = checkRateLimit(getClientIp(req));
@@ -293,8 +294,8 @@ function validateInput(body) {
   if (!Number.isInteger(startAyah) || !Number.isInteger(endAyah) || startAyah < 1 || endAyah < startAyah) {
     throw new Error('Invalid Ayah range.');
   }
-  if (endAyah - startAyah + 1 > MAX_RANGE_LENGTH) {
-    throw new Error(`A Tadabbur passage can contain at most ${MAX_RANGE_LENGTH} Ayahs.`);
+  if (endAyah - startAyah + 1 < MIN_RANGE_LENGTH || endAyah - startAyah + 1 > MAX_RANGE_LENGTH) {
+    throw new Error(`A Reflect passage must contain between ${MIN_RANGE_LENGTH} and ${MAX_RANGE_LENGTH} Ayahs.`);
   }
   if (verses.length !== endAyah - startAyah + 1) {
     throw new Error('The supplied Ayahs do not match the selected range.');
@@ -346,7 +347,7 @@ function buildPrompt(input) {
   )).join('\n\n');
 
   return [
-    `Create a Tadabbur lesson for Surah ${input.surahNumber}, Ayahs ${input.startAyah}–${input.endAyah}.`,
+    `Create a Reflect lesson for Surah ${input.surahNumber}, Ayahs ${input.startAyah}–${input.endAyah}.`,
     `Write all generated content in ${input.outputLanguage === 'ur' ? 'Urdu' : 'English'}.`,
     `Selected translation: ${input.translationName}.`,
     `TAFSIR STATUS: ${input.tafsirText ? `Available. Selected source: ${input.tafsirName || 'User-selected Tafsir'}.` : 'No Tafsir was supplied. Use only the Arabic text and translation.'}`,
