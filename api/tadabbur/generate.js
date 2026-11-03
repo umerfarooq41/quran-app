@@ -152,8 +152,12 @@ export default async function handler(req, res) {
           systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
           contents: [{ role: 'user', parts: [{ text: prompt }] }],
           generationConfig: {
-            responseMimeType: 'application/json',
-            responseJsonSchema: responseSchema,
+            responseFormat: {
+              text: {
+                mimeType: 'APPLICATION_JSON',
+                schema: responseSchema,
+              },
+            },
             temperature: 0.45,
             maxOutputTokens: 3500,
           },
