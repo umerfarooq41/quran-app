@@ -12,7 +12,6 @@ import { VIEWS, normalizeView } from './app/routes';
 const NAVIGATION_SNAPSHOT_KEY = 'quran-app-navigation-snapshot-v1';
 import HomeScreen from './pages/HomeScreen';
 import ReflectScreen from './pages/ReflectScreen';
-import ReflectScreen from './pages/ReflectScreen';
 import ReaderScreen from './pages/ReaderScreen';
 import IndexScreen from './pages/IndexScreen';
 import SearchScreen from './pages/SearchScreen';
