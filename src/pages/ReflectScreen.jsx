@@ -56,9 +56,10 @@ export default function ReflectScreen() {
       }
       await refresh(); setActive(lesson); setMode('lesson');
     } catch (e) {
-      setError(e.name === 'AbortError'
+      const providerDetail = e.providerMessage ? `\\nGemini detail: ${e.providerMessage}` : '';
+      setError((e.name === 'AbortError'
         ? 'This is taking too long. Check your connection and try again.'
-        : (e.message || 'Unable to create this lesson.'));
+        : (e.message || 'Unable to create this lesson.')) + providerDetail);
     }
     finally { setBusy(false); }
   }
@@ -101,7 +102,19 @@ export default function ReflectScreen() {
           <div className="mt-3 grid grid-cols-2 gap-3"><label className="text-xs font-semibold text-slate-600">Start Ayah<select className={field+' mt-1'} value={startAyah} onChange={(e)=>{const n=Number(e.target.value);setStartAyah(n);setEndAyah(Math.min(ayahs.length,n+2));}}>{ayahs.map(a=><option key={a.ayahNumber} value={a.ayahNumber}>{a.ayahNumber}</option>)}</select></label><label className="text-xs font-semibold text-slate-600">End Ayah<select className={field+' mt-1'} value={endAyah} onChange={(e)=>setEndAyah(Number(e.target.value))}>{ayahs.filter(a=>a.ayahNumber>=startAyah && a.ayahNumber<=Math.min(ayahs.length,startAyah+14)).map(a=><option key={a.ayahNumber} value={a.ayahNumber}>{a.ayahNumber}</option>)}</select></label></div>
           <p className={'mt-3 text-sm '+(validRange?'text-emerald-700':'text-rose-600')}>{count} Ayahs selected · Choose between 3 and 15.</p>
         </div>
-        <div className={card}><h3 className="font-semibold">{surah?.name} · {startAyah}–{endAyah}</h3><div className="mt-3 space-y-3">{selected.map(a=><p key={a.ayahNumber} className="text-right text-xl leading-loose text-slate-800" dir="rtl">{a.text} <span className="text-xs text-[#2d6e5e]">۞{a.ayahNumber}</span></p>)}</div></div>
+        <section className="overflow-hidden rounded-2xl border border-[#d9e7e1] bg-[#fbfaf6] shadow-sm">
+          <div className="flex items-center justify-between border-b border-[#e5ebe6] px-4 py-3">
+            <div><p className="text-xs font-semibold uppercase tracking-wide text-[#2d6e5e]">Selected passage</p><h3 className="mt-0.5 font-semibold text-slate-800">{surah?.name} <span className="font-normal text-slate-500">· {startAyah}–{endAyah}</span></h3></div>
+            <span className="rounded-full bg-[#e9f2ed] px-3 py-1 text-xs font-semibold text-[#2d6e5e]">{count} Ayahs</span>
+          </div>
+          <div className="divide-y divide-[#e9ece7] px-4">
+            {selected.map((a) => <article key={a.ayahNumber} className="py-5">
+              <div className="mb-3 flex justify-center"><span className="rounded-full border border-[#dce8e0] bg-white px-3 py-1 text-xs font-medium tabular-nums text-[#527567]">{surahNumber}:{a.ayahNumber}</span></div>
+              <p className="text-center text-[1.7rem] leading-[2.15] text-slate-900" dir="rtl" lang="ar">{a.text}</p>
+            </article>)}
+          </div>
+          <p className="border-t border-[#e5ebe6] px-4 py-2 text-center text-xs text-slate-500">Arabic text · {count} consecutive Ayahs</p>
+        </section>
         {error && <p role="alert" className="text-sm text-rose-600">{error}</p>}
         <button type="button" className={action+' w-full'} disabled={busy || !validRange || selected.length!==count} onClick={generate}>{busy ? <span className="inline-flex items-center gap-2"><Loader2 size={17} className="animate-spin"/>Generating lesson…</span> : 'Generate Reflect lesson'}</button>
       </>}
