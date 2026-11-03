@@ -40,7 +40,7 @@ jobs:
         run: npm run build
 
       - name: Install Playwright test runner
-        run: npm install --no-save --package-lock=false @playwright/test
+        run: npm install --no-save --package-lock=false @playwright/test @axe-core/playwright
 
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
