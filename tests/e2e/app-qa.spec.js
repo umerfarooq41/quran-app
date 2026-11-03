@@ -58,9 +58,11 @@ test('home renders the main actions and Reflect card without browser errors', as
   page.on('pageerror', (error) => pageErrors.push(error.message));
 
   await waitForHome(page);
-  for (const name of [/Continue Reading/i, /Index/i, /Search/i, /Library/i, /Settings/i, /Reflect.*Study Ayahs/i]) {
-    await expect(page.getByRole('button', { name })).toBeVisible();
+  await expect(page.getByRole('button', { name: /Continue Reading/i })).toBeVisible();
+  for (const name of ['Index', 'Search', 'Library', 'Settings']) {
+    await expect(page.getByRole('button', { name, exact: true })).toBeVisible();
   }
+  await expect(page.getByRole('button', { name: /Reflect.*Study Ayahs/i })).toBeVisible();
   await expectHealthyVisibleUI(page);
   expect(pageErrors).toEqual([]);
 });
