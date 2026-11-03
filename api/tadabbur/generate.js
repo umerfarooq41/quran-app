@@ -253,7 +253,7 @@ async function generateWithFallback({ apiKey, prompt }) {
     }
 
     // Try the fallback model only when the primary model is unavailable.
-    if (lastResult && lastResult.status !== 503 && lastResult.status < 500) break;
+    if (lastResult && lastResult.status !== 503 && lastResult.status < 500 && !(lastResult.status === 429 && isPerMinuteRateLimit(lastResult.payload))) break;
   }
 
   return lastResult || { ok: false, status: 503, payload: { error: { message: 'No Gemini model was available.' } }, model: MODEL };
