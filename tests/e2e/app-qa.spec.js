@@ -135,3 +135,52 @@ test('mobile, narrow-mobile, tablet and desktop layouts have no horizontal overf
     await expectNoHorizontalOverflow(page);
   }
 });
+
+test('Qur’an dataset has 114 ordered Surahs and intact 16-line Mushaf pages', async ({ page }) => {
+  await page.goto('/');
+  const integrity = await page.evaluate(async () => {
+    const quran = await import('/src/lib/quran.js');
+    const surahChecks = quran.surahs.map((surah) => {
+      const verses = quran.getSurahAyahs(surah.number);
+      return {
+        number: surah.number,
+        expected: surah.verses,
+        actual: verses.length,
+        ordered: verses.every((ayah, index) => ayah.ayahNumber === index + 1),
+      };
+    });
+    const pageChecks = quran.quranPages.map((mushafPage) => ({
+      page: mushafPage.page,
+      lines: mushafPage.lines.length,
+    }));
+    const ayahChecks = quran.quranAyahs.map((ayah) => {
+      const pageNumber = quran.findPageForReference(ayah.surahNumber, ayah.ayahNumber);
+      const resolvedPage = quran.getPage(pageNumber);
+      return {
+        reference: `${ayah.surahNumber}:${ayah.ayahNumber}`,
+        valid: pageNumber >= 1
+          && pageNumber <= quran.totalPages
+          && resolvedPage.lines.some((line) => line.surahNumber === ayah.surahNumber
+            && line.ayahStart !== null
+            && ayah.ayahNumber >= line.ayahStart
+            && ayah.ayahNumber <= line.ayahEnd),
+      };
+    });
+    return {
+      surahCount: quran.surahs.length,
+      uniqueSurahCount: new Set(quran.surahs.map((surah) => surah.number)).size,
+      totalPages: quran.totalPages,
+      pageCount: quran.quranPages.length,
+      surahChecks,
+      pageChecks,
+      ayahChecks,
+    };
+  });
+
+  expect(integrity.surahCount).toBe(114);
+  expect(integrity.uniqueSurahCount).toBe(114);
+  expect(integrity.pageCount).toBe(integrity.totalPages);
+  expect(integrity.surahChecks.filter((surah) => surah.expected !== surah.actual || !surah.ordered)).toEqual([]);
+  expect(integrity.pageChecks.filter((mushafPage) => mushafPage.lines !== 16)).toEqual([]);
+  expect(integrity.ayahChecks.filter((ayah) => !ayah.valid)).toEqual([]);
+});
