@@ -150,7 +150,7 @@ export default async function handler(req, res) {
         error: upstreamStatus === 503
           ? 'Gemini is temporarily overloaded. Please try again in a minute.'
           : upstreamStatus === 429
-            ? 'Gemini quota reached. Please try again later.'
+            ? 'Gemini request limit reached. Please wait for the quota window to reset, or check your Google AI Studio billing tier.'
             : 'Gemini could not generate this lesson. Please try again.',
         code: upstreamStatus === 503 ? 'SERVICE_UNAVAILABLE' : upstreamStatus === 429 ? 'QUOTA_EXCEEDED' : 'GEMINI_ERROR',
         providerMessage: String(payload?.error?.message || payload?.error?.status || '').slice(0, 500),
@@ -240,7 +240,14 @@ async function generateWithFallback({ apiKey, prompt }) {
       if (response.ok) return { ok: true, status: response.status, payload, model };
 
       lastResult = { ok: false, status: response.status, payload, model };
-      // Retry only transient overload/server failures; don't hide auth, input, or quota errors.
+      // A model-specific free-tier RPM limit can be worked around by trying
+      // the fallback model, which has its own per-model quota bucket.
+      if (response.status === 429 && isPerMinuteRateLimit(payload)) {
+        if (model === MODEL) break;
+        return lastResult;
+      }
+
+      // Retry transient overload/server failures; don't hide billing/day quota errors.
       if (response.status !== 503 && response.status < 500) return lastResult;
       if (attempt < attempts - 1) await delay(1500 * (2 ** attempt));
     }
@@ -250,6 +257,15 @@ async function generateWithFallback({ apiKey, prompt }) {
   }
 
   return lastResult || { ok: false, status: 503, payload: { error: { message: 'No Gemini model was available.' } }, model: MODEL };
+}
+
+function isPerMinuteRateLimit(payload) {
+  const message = String(payload?.error?.message || '').toLowerCase();
+  const violations = payload?.error?.details
+    ?.flatMap((detail) => detail?.violations || []) || [];
+  const quotaIds = violations.map((item) => String(item?.quotaId || '').toLowerCase());
+  return quotaIds.some((id) => id.includes('perminute'))
+    || (message.includes('per minute') && message.includes('free tier'));
 }
 
 function delay(ms) {
