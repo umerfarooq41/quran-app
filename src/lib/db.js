@@ -57,6 +57,21 @@ db.version(4).stores({
   });
 });
 
+
+db.version(5).stores({
+  bookmarks: '++id, category, surahNumber, ayahNumber, page, createdAt',
+  highlights: '++id, color, surahNumber, ayahNumber, page, createdAt',
+  notes: '++id, surahNumber, ayahNumber, page, updatedAt',
+  lastRead: 'id, page, surahNumber, ayahNumber, updatedAt',
+  settings: 'id',
+  recentSearches: '++id, query, createdAt',
+  memorizationProgress: '++id, surahNumber, ayahNumber, status, updatedAt',
+  wordTranslations: '&key, language, surahNumber, ayahNumber, fetchedAt, expiresAt',
+  contentSyncRows: '&key, [resourceGroup+resourceId], [resourceGroup+resourceId+recordType], [resourceGroup+resourceId+recordType+verseKey], recordKey',
+  contentSyncState: '&id, lastSuccessfulSyncAt',
+  tadabburLessons: '&id, surahNumber, startAyah, endAyah, status, createdAt, updatedAt',
+});
+
 export async function saveLastRead(payload) {
   await db.lastRead.put({ id: 'current', updatedAt: Date.now(), ...payload });
 }
@@ -350,4 +365,62 @@ export async function getAyahAnnotations(surahNumber, ayahNumber) {
   ]);
 
   return { highlight, bookmarks };
+}
+
+
+export async function saveTadabburLesson(payload) {
+  if (!payload || typeof payload !== 'object') {
+    throw new TypeError('A Tadabbur lesson is required.');
+  }
+
+  const id = String(payload.id || createLocalLessonId());
+  const existing = await db.tadabburLessons.get(id);
+  const now = Date.now();
+  const record = {
+    ...existing,
+    ...payload,
+    id,
+    createdAt: existing?.createdAt || payload.createdAt || now,
+    updatedAt: now,
+  };
+
+  await db.tadabburLessons.put(record);
+  return record;
+}
+
+export async function getTadabburLesson(id) {
+  return db.tadabburLessons.get(String(id));
+}
+
+export async function getTadabburLessons() {
+  return db.tadabburLessons.orderBy('updatedAt').reverse().toArray();
+}
+
+export async function updateTadabburLesson(id, patch) {
+  const lessonId = String(id || '');
+  if (!lessonId || !patch || typeof patch !== 'object') return null;
+
+  return db.transaction('rw', db.tadabburLessons, async () => {
+    const existing = await db.tadabburLessons.get(lessonId);
+    if (!existing) return null;
+
+    const updated = {
+      ...existing,
+      ...patch,
+      id: lessonId,
+      createdAt: existing.createdAt,
+      updatedAt: Date.now(),
+    };
+    await db.tadabburLessons.put(updated);
+    return updated;
+  });
+}
+
+export async function deleteTadabburLesson(id) {
+  return db.tadabburLessons.delete(String(id));
+}
+
+function createLocalLessonId() {
+  if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
+  return `tadabbur-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 }
