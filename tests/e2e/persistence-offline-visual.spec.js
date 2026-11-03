@@ -69,6 +69,7 @@ test('saved Reflect lesson and its personal notes survive reloads', async ({ pag
   await openHome(page);
   await seedLocalRecords(page);
   await page.reload();
+  await expect(page.getByRole('heading', { name: 'Al Quran' })).toBeVisible();
   await page.getByRole('button', { name: /Reflect.*Study Ayahs/i }).click();
 
   await expect(page.getByRole('heading', { name: 'Reflect', exact: true })).toBeVisible();
