@@ -57,12 +57,12 @@ export async function createTadabburLesson({
     if (signal?.aborted) throw new DOMException('Generation was cancelled.', 'AbortError');
 
     const ayahNumber = Number(ayah.ayahNumber);
-    const translationEntry = await loadTranslationEntry(
+    const translationEntry = await waitForSignal(loadTranslationEntry(
       translationId,
       surah,
       ayahNumber,
       { includeTafsir: true, signal },
-    );
+    ), signal);
     const translation = String(translationEntry?.plainText || '').trim();
     if (!translation) {
       throw new Error(`Translation is unavailable for ${surah}:${ayahNumber}. Check your connection and try again.`);
@@ -75,10 +75,10 @@ export async function createTadabburLesson({
     let wordByWord = null;
     if (includeWordByWord) {
       try {
-        const result = await getWordByWordTranslation(surah, ayahNumber, {
+        const result = await waitForSignal(getWordByWordTranslation(surah, ayahNumber, {
           language: wordByWordLanguage,
           signal,
-        });
+        }), signal);
         wordByWord = (result?.words || [])
           .map((word) => [word.arabic, word.meaning].filter(Boolean).join(' — '))
           .filter(Boolean)
@@ -176,4 +176,16 @@ export async function createTadabburLesson({
 function createLessonId() {
   if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
   return `reflect-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
+
+function waitForSignal(promise, signal) {
+  if (!signal) return promise;
+  if (signal.aborted) return Promise.reject(new DOMException('Generation was cancelled.', 'AbortError'));
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => {
+      signal.addEventListener('abort', () => reject(new DOMException('Generation timed out or was cancelled.', 'AbortError')), { once: true });
+    }),
+  ]);
 }
