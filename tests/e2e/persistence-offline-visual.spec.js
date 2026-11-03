@@ -84,14 +84,32 @@ test('saved Reflect lesson and its personal notes survive reloads', async ({ pag
   await expect(page.locator('textarea').last()).toHaveValue('QA persistence note');
 });
 
-test('app remains navigable when remote requests are unavailable', async ({ page, context }) => {
+test('installed production service worker supports an offline cold reload', async ({ page, context }) => {
   await openHome(page);
+
+  const serviceWorkerState = await page.evaluate(async () => {
+    if (!('serviceWorker' in navigator)) return { supported: false, registered: false, controlled: false };
+    const registration = await navigator.serviceWorker.ready;
+    return {
+      supported: true,
+      registered: Boolean(registration.active),
+      controlled: Boolean(navigator.serviceWorker.controller),
+    };
+  });
+  expect(serviceWorkerState.supported).toBe(true);
+  expect(serviceWorkerState.registered).toBe(true);
+
+  await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller))).toBe(true);
+
   await context.setOffline(true);
-  await page.getByRole('button', { name: /Reflect.*Study Ayahs/i }).click();
-  await expect(page.getByRole('heading', { name: 'Reflect' })).toBeVisible();
-  await page.getByRole('button', { name: 'New study' }).click();
-  await expect(page.getByRole('heading', { name: 'New study' })).toBeVisible();
-  await expect(page.getByLabel('Surah')).toBeVisible();
+  await page.reload();
+  await expect(page.getByRole('heading', { name: 'Al Quran' })).toBeVisible({ timeout: 15000 });
+
+  await page.getByRole('button', { name: /Continue Reading/i }).click();
+  await expect(page.locator('.reader-page').first()).toBeVisible();
+  await page.getByRole('button', { name: /Back/i }).first().click();
+  await expect(page.getByRole('heading', { name: 'Al Quran' })).toBeVisible();
+
   await context.setOffline(false);
 });
 
