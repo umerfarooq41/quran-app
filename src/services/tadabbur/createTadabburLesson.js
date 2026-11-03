@@ -55,7 +55,7 @@ export async function createTadabburLesson({
   const outputLanguage = String(translationOption.language || 'En').toLowerCase() === 'ur'
     ? 'ur'
     : 'en';
-  const includeWordByWord = Boolean(appSettings.wordByWordTranslation);
+  const includeWordByWord = true;
   const wordByWordLanguage = appSettings.wordByWordLanguage === 'ur' ? 'ur' : 'en';
 
   const sourceRows = await Promise.all(selectedAyahs.map(async (ayah) => {
@@ -78,13 +78,15 @@ export async function createTadabburLesson({
       .map((note) => String(note.text).trim());
 
     let wordByWord = null;
+    let wordByWordWords = [];
     if (includeWordByWord) {
       try {
         const result = await waitForSignal(getWordByWordTranslation(surah, ayahNumber, {
           language: wordByWordLanguage,
           signal,
         }), signal);
-        wordByWord = (result?.words || [])
+        wordByWordWords = result?.words || [];
+        wordByWord = wordByWordWords
           .map((word) => [word.arabic, word.meaning].filter(Boolean).join(' — '))
           .filter(Boolean)
           .join('; ');
@@ -98,7 +100,14 @@ export async function createTadabburLesson({
       arabic: String(ayah.text || ''),
       translation,
       tafsir: tafsirNotes.join('\\n'),
+      tafsirNotes: (translationEntry?.footnotes || [])
+        .filter((note) => note?.kind === 'tafsir' && String(note.text || '').trim())
+        .map((note, index) => ({
+          number: String(note.number || index + 1),
+          text: String(note.text).trim(),
+        })),
       wordByWord,
+      wordByWordWords,
     };
   }));
 
