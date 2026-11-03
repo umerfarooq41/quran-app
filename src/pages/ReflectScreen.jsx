@@ -167,18 +167,22 @@ export default function ReflectScreen() {
           </div>
           <p className={'mt-3 text-sm '+(validRange?'text-emerald-700':'text-rose-600')}>{count} Ayahs selected · Choose between 3 and 15.</p>
         </div>
-        <section className="overflow-hidden rounded-2xl border border-[#d9e7e1] bg-[#fbfaf6] shadow-sm">
-          <div className="flex items-center justify-between border-b border-[#e5ebe6] px-4 py-3">
-            <div><p className="text-xs font-semibold uppercase tracking-wide text-[#2d6e5e]">Selected passage</p><h3 className="mt-0.5 font-semibold text-slate-800">{surah?.name} <span className="font-normal text-slate-500">· {startAyah}–{endAyah}</span></h3></div>
-            <span className="rounded-full bg-[#e9f2ed] px-3 py-1 text-xs font-semibold text-[#2d6e5e]">{count} Ayahs</span>
+        <section className="tab-card reflect-passage-preview">
+          <div className="tab-card-surface">
+            <div className="tab-card-top">
+              <span className="tab-card-type">
+                <span className="tab-type">Selected passage</span>
+              </span>
+              <span className="tab-surah">{surah?.name} · {surahNumber}:{startAyah}–{endAyah}</span>
+            </div>
+            <p className="tab-saved-date">{count} consecutive Ayahs</p>
+            <div className="mt-3 divide-y divide-slate-100">
+              {selected.map((a) => <article key={a.ayahNumber} className="py-3 first:pt-1 last:pb-1">
+                <p className="mb-2 text-center text-xs font-medium tabular-nums text-slate-400">{surahNumber}:{a.ayahNumber}</p>
+                <p className="tab-arabic reflect-preview-arabic" dir="rtl" lang="ar">{a.text}</p>
+              </article>)}
+            </div>
           </div>
-          <div className="divide-y divide-[#e9ece7] px-4">
-            {selected.map((a) => <article key={a.ayahNumber} className="py-5">
-              <div className="mb-3 flex justify-center"><span className="rounded-full border border-[#dce8e0] bg-white px-3 py-1 text-xs font-medium tabular-nums text-[#527567]">{surahNumber}:{a.ayahNumber}</span></div>
-              <p className="text-center text-[1.7rem] leading-[2.15] text-slate-900" dir="rtl" lang="ar">{a.text}</p>
-            </article>)}
-          </div>
-          <p className="border-t border-[#e5ebe6] px-4 py-2 text-center text-xs text-slate-500">Arabic text · {count} consecutive Ayahs</p>
         </section>
         {error && <p role="alert" className="text-sm text-rose-600">{error}</p>}
         <button type="button" className={action+' w-full'} disabled={busy || !validRange || selected.length!==count} onClick={createStudy}>
