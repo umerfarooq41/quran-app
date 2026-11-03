@@ -140,37 +140,22 @@ export default async function handler(req, res) {
     const input = validateInput(body);
     const prompt = buildPrompt(input);
 
-    const upstream = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-goog-api-key': apiKey,
-        },
-        body: JSON.stringify({
-          systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-          contents: [{ role: 'user', parts: [{ text: prompt }] }],
-          generationConfig: {
-            responseMimeType: 'application/json',
-            responseJsonSchema: responseSchema,
-            temperature: 0.45,
-            maxOutputTokens: 3500,
-          },
-        }),
-      },
-    );
+    const generation = await generateWithFallback({ apiKey, prompt });
+    const { payload, model } = generation;
 
-    const payload = await upstream.json().catch(() => ({}));
-    if (!upstream.ok) {
-      const status = upstream.status === 429 ? 429 : upstream.status >= 500 ? 502 : 400;
+    if (!generation.ok) {
+      const upstreamStatus = generation.status;
+      const status = upstreamStatus === 429 ? 429 : upstreamStatus >= 500 ? 503 : 400;
       return res.status(status).json({
-        error: upstream.status === 429
-          ? 'Gemini quota reached. Please try again later.'
-          : 'Gemini could not generate this lesson. Please try again.',
-        code: upstream.status === 429 ? 'QUOTA_EXCEEDED' : 'GEMINI_ERROR',
+        error: upstreamStatus === 503
+          ? 'Gemini is temporarily overloaded. Please try again in a minute.'
+          : upstreamStatus === 429
+            ? 'Gemini quota reached. Please try again later.'
+            : 'Gemini could not generate this lesson. Please try again.',
+        code: upstreamStatus === 503 ? 'SERVICE_UNAVAILABLE' : upstreamStatus === 429 ? 'QUOTA_EXCEEDED' : 'GEMINI_ERROR',
         providerMessage: String(payload?.error?.message || payload?.error?.status || '').slice(0, 500),
         providerStatus: payload?.error?.status || null,
+        model,
       });
     }
 
@@ -200,7 +185,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       lesson,
-      model: MODEL,
+      model,
       generatedAt: new Date().toISOString(),
       sources: {
         translationName: input.translationName,
@@ -214,6 +199,61 @@ export default async function handler(req, res) {
     const status = error.statusCode || 400;
     return res.status(status).json({ error: error.message || 'Invalid generation request.' });
   }
+}
+
+async function generateWithFallback({ apiKey, prompt }) {
+  const models = [MODEL, 'gemini-3.7-flash'];
+  let lastResult = null;
+
+  for (const model of [...new Set(models)]) {
+    const attempts = model === MODEL ? 3 : 1;
+    for (let attempt = 0; attempt < attempts; attempt += 1) {
+      let response;
+      try {
+        response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-goog-api-key': apiKey,
+            },
+            body: JSON.stringify({
+              systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+              contents: [{ role: 'user', parts: [{ text: prompt }] }],
+              generationConfig: {
+                responseMimeType: 'application/json',
+                responseJsonSchema: responseSchema,
+                temperature: 0.45,
+                maxOutputTokens: 3500,
+              },
+            }),
+          },
+        );
+      } catch (error) {
+        lastResult = { ok: false, status: 503, payload: { error: { message: error.message || 'Network request failed.' } }, model };
+        if (attempt < attempts - 1) await delay(1500 * (2 ** attempt));
+        continue;
+      }
+
+      const payload = await response.json().catch(() => ({}));
+      if (response.ok) return { ok: true, status: response.status, payload, model };
+
+      lastResult = { ok: false, status: response.status, payload, model };
+      // Retry only transient overload/server failures; don't hide auth, input, or quota errors.
+      if (response.status !== 503 && response.status < 500) return lastResult;
+      if (attempt < attempts - 1) await delay(1500 * (2 ** attempt));
+    }
+
+    // Try the fallback model only when the primary model is unavailable.
+    if (lastResult && lastResult.status !== 503 && lastResult.status < 500) break;
+  }
+
+  return lastResult || { ok: false, status: 503, payload: { error: { message: 'No Gemini model was available.' } }, model: MODEL };
+}
+
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function isSameOriginRequest(req) {
