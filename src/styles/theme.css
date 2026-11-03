@@ -4298,3 +4298,29 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
 [data-theme='dark'] .home-reflect-copy small {
   color: var(--theme-muted) !important;
 }
+
+/* Light-theme text contrast refinements from automated WCAG checks. */
+#root .reader-shell .reader-passive-header {
+  color: #6b655d !important;
+}
+#root .home-favorite-copy strong {
+  color: #2d271f !important;
+}
+#root .home-favorite-copy small {
+  color: #6f6254 !important;
+}
+#root .settings-section-heading small,
+#root .settings-row-copy small {
+  color: #626b72 !important;
+}
+[data-theme='dark'] #root .reader-shell .reader-passive-header {
+  color: var(--reader-muted) !important;
+}
+[data-theme='dark'] #root .home-favorite-copy strong {
+  color: var(--theme-text) !important;
+}
+[data-theme='dark'] #root .home-favorite-copy small,
+[data-theme='dark'] #root .settings-section-heading small,
+[data-theme='dark'] #root .settings-row-copy small {
+  color: var(--theme-muted) !important;
+}
