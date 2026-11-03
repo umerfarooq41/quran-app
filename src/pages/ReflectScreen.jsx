@@ -225,7 +225,7 @@ export default function ReflectScreen() {
 
             <p className="ayah-translation-text" dir={translationOption.direction || 'ltr'}>{verse.translation}</p>
 
-            {(verse.tafsirNotes?.length || verse.tafsir) > 0 && <section className="ayah-translation-footnotes mt-3">
+            {Boolean(verse.tafsirNotes?.length || verse.tafsir) && <section className="ayah-translation-footnotes mt-3">
               {(verse.tafsirNotes?.length ? verse.tafsirNotes : [{ number: '1', text: verse.tafsir }]).map((note, index) => <p key={note.number || index} className="ayah-translation-note-row">
                 <span className="ayah-translation-note-number">{note.number || index + 1}</span>
                 <span className="ayah-translation-note-content">{note.text}</span>
