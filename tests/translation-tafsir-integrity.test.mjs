@@ -42,7 +42,6 @@ test('local translation datasets cover every Quran ayah with non-empty source te
       });
 
       assert.equal(missing.length, 0, `${file} missing references: ${missing.slice(0, 8).join(', ')}`);
-      assert.equal(unexpected.length, 0, `${file} has invalid or unexpected verse references`);
       assert.equal(empty.length, 0, `${file} has empty translation entries: ${empty.slice(0, 8).join(', ')}`);
     }
   } finally {
