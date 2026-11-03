@@ -16,6 +16,7 @@ export default function HomeScreen() {
     openSearch,
     openBookmarks,
     openSettings,
+    openReflect,
     favoriteSurahs,
     toggleFavoriteSurah,
     setIndexTab,
@@ -28,6 +29,7 @@ export default function HomeScreen() {
     openSearch: state.openSearch,
     openBookmarks: state.openBookmarks,
     openSettings: state.openSettings,
+    openReflect: state.openReflect,
     favoriteSurahs: state.favoriteSurahs,
     toggleFavoriteSurah: state.toggleFavoriteSurah,
     setIndexTab: state.setIndexTab,
@@ -102,6 +104,23 @@ export default function HomeScreen() {
           </motion.button>
         ))}
       </motion.div>
+
+      <motion.button
+        type="button"
+        onClick={() => openReflect()}
+        className="home-hero-card flex items-center justify-between text-left"
+        whileTap={{ scale: 0.985 }}
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.26 }}
+      >
+        <span className="home-hero-content">
+          <span className="home-hero-label">Quran study</span>
+          <strong className="home-hero-surah">Reflect</strong>
+          <span className="home-hero-meta">Study Ayahs and save your reflections</span>
+        </span>
+        <span className="home-hero-ornament"><BookOpen size={26} /></span>
+      </motion.button>
 
       <motion.section
         className="home-favorites-section"
