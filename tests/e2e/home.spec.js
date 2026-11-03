@@ -23,7 +23,7 @@ test('home screen renders its main actions and study card', async ({ page }) => 
 
   await waitForApp(page);
   await expect(page.getByRole('button', { name: /Continue Reading/i })).toBeVisible();
-  await expect(page.getByRole('button', { name: /Index/i })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Index', exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: /Search/i })).toBeVisible();
   await expect(page.getByRole('button', { name: /Library/i })).toBeVisible();
   await expect(page.getByRole('button', { name: /Settings/i })).toBeVisible();
