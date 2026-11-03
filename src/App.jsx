@@ -12,6 +12,7 @@ import { VIEWS, normalizeView } from './app/routes';
 const NAVIGATION_SNAPSHOT_KEY = 'quran-app-navigation-snapshot-v1';
 import HomeScreen from './pages/HomeScreen';
 import ReflectScreen from './pages/ReflectScreen';
+import ReflectScreen from './pages/ReflectScreen';
 import ReaderScreen from './pages/ReaderScreen';
 import IndexScreen from './pages/IndexScreen';
 import SearchScreen from './pages/SearchScreen';
@@ -414,6 +415,7 @@ export default function App() {
     <Shell>
       <AnimatePresence mode="wait">
         {activeView === VIEWS.HOME && <HomeScreen key="home" />}
+        {activeView === VIEWS.REFLECT && <ReflectScreen key="reflect" />}
         {activeView === VIEWS.REFLECT && <ReflectScreen key="reflect" />}
         {activeView === VIEWS.READER && <ReaderScreen key="reader" />}
         {activeView === VIEWS.INDEX && <IndexScreen key="index" />}
