@@ -76,7 +76,7 @@ test('saved Reflect lesson and its personal notes survive reloads', async ({ pag
   await page.getByRole('button', { name: 'QA saved lesson' }).click();
   await expect(page.getByRole('heading', { name: 'QA saved lesson' })).toBeVisible();
   await expect(page.getByText('In the name of Allah')).toBeVisible();
-  await expect(page.locator('textarea').last()).toHaveValue('QA persistence note');
+  await expect(page.locator('textarea[placeholder="Write your own notes…"]')).toHaveValue('QA persistence note');
 
   await page.reload();
   await page.getByRole('button', { name: /Reflect.*Study Ayahs/i }).click();
