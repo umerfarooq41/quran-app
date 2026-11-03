@@ -495,7 +495,7 @@ function extractRows(payload, rowKeys) {
   return [];
 }
 
-function tafsirRowCoversVerse(data, surahNumber, ayahNumber) {
+export function tafsirRowCoversVerse(data, surahNumber, ayahNumber) {
   const target = [surahNumber, ayahNumber];
   const parseKey = (value) => {
     const match = /^(\d+):(\d+)$/.exec(String(value || ''));
