@@ -76,12 +76,12 @@ test('saved Reflect lesson and its personal notes survive reloads', async ({ pag
   await page.getByRole('button', { name: 'QA saved lesson' }).click();
   await expect(page.getByRole('heading', { name: 'QA saved lesson' })).toBeVisible();
   await expect(page.getByText('In the name of Allah')).toBeVisible();
-  await expect(page.getByText('QA persistence note')).toBeVisible();
+  await expect(page.locator('textarea').last()).toHaveValue('QA persistence note');
 
   await page.reload();
   await page.getByRole('button', { name: /Reflect.*Study Ayahs/i }).click();
   await page.getByRole('button', { name: 'QA saved lesson' }).click();
-  await expect(page.getByText('QA persistence note')).toBeVisible();
+  await expect(page.locator('textarea').last()).toHaveValue('QA persistence note');
 });
 
 test('app remains navigable when remote requests are unavailable', async ({ page, context }) => {
