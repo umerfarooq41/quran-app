@@ -179,7 +179,7 @@ export default function ReflectScreen() {
             <div className="mt-3 divide-y divide-slate-100">
               {selected.map((a) => <article key={a.ayahNumber} className="py-3 first:pt-1 last:pb-1">
                 <p className="mb-2 text-center text-xs font-medium tabular-nums text-slate-400">{surahNumber}:{a.ayahNumber}</p>
-                <p className="tab-arabic reflect-preview-arabic" dir="rtl" lang="ar">{a.text}</p>
+                <p className="tab-arabic reflect-preview-arabic" style={{ whiteSpace: "normal", overflow: "visible", textOverflow: "clip" }} dir="rtl" lang="ar">{a.text}</p>
               </article>)}
             </div>
           </div>
