@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { Bookmark, Copy, Highlighter, Play, Share2 } from 'lucide-react';
+import { Bookmark, Highlighter, Lightbulb, Play, Share2 } from 'lucide-react';
 import {
   getAyahAnnotations,
   removeAyahBookmark,
@@ -21,13 +21,11 @@ const DEFAULT_BOOKMARK = 'Reading';
 const BOOKMARK_TYPES = [
   { category: 'Reading', label: 'Recitation', tone: 'emerald' },
   { category: 'Memorize', label: 'Memorize', tone: 'amber' },
-  { category: 'Tadabbur', label: 'Tadabbur', tone: 'rose' },
 ];
 const BOOKMARK_ICON_COLORS = {
   Reading: '#2f7462',
   Recitation: '#2f7462',
   Memorize: '#a46f09',
-  Tadabbur: '#a9365b',
 };
 const HIGHLIGHT_COLORS = [
   { id: 'amber', label: 'Yellow', value: '#FACC15' },
@@ -43,6 +41,7 @@ export function AyahActionSheet({
   onPlay,
   onShare,
   onCopied,
+  onReflect,
   onAnnotationsChanged,
 }) {
   const [annotations, setAnnotations] = useState({ highlight: null, bookmarks: [] });
@@ -172,22 +171,14 @@ export function AyahActionSheet({
     onShare?.(ayah);
   }
 
-  async function copyAyah() {
-    const copyText = [
-      cleanAyahText(ayah.text),
-      '',
-      `${surah?.name || 'Surah'} ${ayah.surahNumber}:${ayah.ayahNumber}`,
-      `Juz ${getJuzForReference(ayah.surahNumber, ayah.ayahNumber)}`,
-    ].join('\n');
-
-    try {
-      await navigator.clipboard.writeText(copyText);
-      onCopied?.();
-    } catch {
-      // Clipboard may be unavailable in older embedded browsers.
-    }
-
+  function reflectOnAyah() {
     onClose?.();
+    onReflect?.({
+      surahNumber: ayah.surahNumber,
+      startAyah: ayah.ayahNumber,
+      surahName: surah?.name || '',
+      arabic: ayah.text,
+    });
   }
 
   return (
@@ -229,7 +220,7 @@ export function AyahActionSheet({
           />
           <TooltipButton label="Play" icon={Play} onClick={playAyah} filled />
           <TooltipButton label="Share" icon={Share2} onClick={shareAyah} />
-          <TooltipButton label="Copy" icon={Copy} onClick={copyAyah} />
+          <TooltipButton label="Reflect" icon={Lightbulb} onClick={reflectOnAyah} />
         </div>
 
         {highlightPaletteOpen && !annotations.highlight && (
