@@ -4,7 +4,7 @@ import { getWordByWordTranslation } from '../quranFoundation/words';
 import { generateTadabburLesson } from './generateTadabburLesson';
 import { saveTadabburLesson } from '../../lib/db';
 
-export const TADABBUR_FINAL_QUESTIONS = Object.freeze([
+export const REFLECT_FINAL_QUESTIONS = Object.freeze([
   'What is the most important thing you learned from these Ayahs?',
   'What did these Ayahs make you reflect on about yourself?',
   'What is one thing you want to remember or apply from this lesson?',
@@ -33,8 +33,8 @@ export async function createTadabburLesson({
   if (!Number.isInteger(start) || !Number.isInteger(end) || start < 1 || end < start) {
     throw new Error('Select a valid Ayah range.');
   }
-  if (end - start + 1 > 15) {
-    throw new Error('A Tadabbur lesson can contain at most 15 Ayahs.');
+  if (end - start + 1 < 3 || end - start + 1 > 15) {
+    throw new Error('A Reflect passage must contain between 3 and 15 Ayahs.');
   }
 
   const surahAyahs = getSurahAyahs(surah);
@@ -141,7 +141,7 @@ export async function createTadabburLesson({
       prepare: ['', '', ''],
       final: ['', '', ''],
     },
-    finalQuestions: [...TADABBUR_FINAL_QUESTIONS],
+    finalQuestions: [...REFLECT_FINAL_QUESTIONS],
     sourceSnapshot: {
       verses: sourceRows.map((row) => ({
         ayahNumber: row.ayahNumber,
@@ -175,5 +175,5 @@ export async function createTadabburLesson({
 
 function createLessonId() {
   if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
-  return `tadabbur-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+  return `reflect-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 }
