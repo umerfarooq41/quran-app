@@ -80,9 +80,10 @@ test('saved Reflect lesson and its personal notes survive reloads', async ({ pag
   await expect(page.locator('textarea[placeholder="Write your own notes…"]')).toHaveValue('QA persistence note');
 
   await page.reload();
+  await expect(page.getByRole('heading', { name: 'Al Quran' })).toBeVisible();
   await page.getByRole('button', { name: /Reflect.*Study Ayahs/i }).click();
   await page.getByRole('button', { name: 'QA saved lesson' }).click();
-  await expect(page.locator('textarea').last()).toHaveValue('QA persistence note');
+  await expect(page.locator('textarea[placeholder="Write your own notes…"]')).toHaveValue('QA persistence note');
 });
 
 test('installed production service worker supports an offline cold reload', async ({ page, context }) => {
