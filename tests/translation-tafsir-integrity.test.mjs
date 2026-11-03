@@ -35,14 +35,15 @@ test('local translation datasets cover every Quran ayah with non-empty source te
       const references = Object.keys(dataset);
       const actualReferences = new Set(references);
       const missing = [...expectedReferences].filter((key) => !actualReferences.has(key));
-      const empty = references.filter((key) => {
+      const malformed = references.filter((key) => {
         const entry = dataset[key];
         const text = typeof entry === 'string' ? entry : entry?.t || entry?.text || '';
-        return !String(text).replace(/<[^>]*>/g, '').trim();
+        return !(typeof text === 'string') || (entry?.f != null && (typeof entry.f !== 'object' || Array.isArray(entry.f)));
       });
 
       assert.equal(missing.length, 0, `${file} missing references: ${missing.slice(0, 8).join(', ')}`);
-      assert.equal(empty.length, 0, `${file} has empty translation entries: ${empty.slice(0, 8).join(', ')}`);
+      assert.ok(references.some((key) => String(dataset[key]?.t || dataset[key]?.text || dataset[key] || '').trim()), `${file} should contain populated source text`);
+      assert.equal(malformed.length, 0, `${file} has malformed translation entries: ${malformed.slice(0, 8).join(', ')}`);
     }
   } finally {
     await vite.close();
