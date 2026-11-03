@@ -47,6 +47,7 @@ test('Reader audio loads, plays, pauses, seeks, repeats and changes speed', asyn
   await expect(page.locator('.reader-audio-panel-wrap')).toBeVisible({ timeout: 15000 });
 
   const audio = page.locator('audio.reader-audio-native');
+  await expect.poll(() => audioRequests.length).toBeGreaterThan(0);
   await expect.poll(() => audio.evaluate((element) => element.readyState)).toBeGreaterThanOrEqual(1);
   await expect.poll(() => audio.evaluate((element) => element.duration)).toBeGreaterThan(0);
   expect(audioRequests.length).toBeGreaterThan(0);
@@ -55,7 +56,7 @@ test('Reader audio loads, plays, pauses, seeks, repeats and changes speed', asyn
   await page.getByRole('button', { name: 'Pause' }).click();
   await expect.poll(() => audio.evaluate((element) => element.paused)).toBe(true);
 
-  await page.getByRole('button', { name: 'Play' }).click();
+  await page.getByRole('button', { name: 'Play', exact: true }).click();
   await expect.poll(() => audio.evaluate((element) => element.paused)).toBe(false);
 
   const progress = page.getByRole('slider', { name: 'Audio progress' });
