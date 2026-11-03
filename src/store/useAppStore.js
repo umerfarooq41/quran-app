@@ -177,7 +177,6 @@ export const useAppStore = create((set, get) => ({
     controlsVisible: false,
   })),
   openIndex: () => get().navigateTo(VIEWS.INDEX),
-  openReflect: (target = null) => set((state) => ({ ...transitionToView(state, VIEWS.REFLECT), reflectTarget: target })),
   openReflect: (target = null) => set((state) => ({
     ...transitionToView(state, VIEWS.REFLECT),
     reflectTarget: target,
