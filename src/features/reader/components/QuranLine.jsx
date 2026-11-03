@@ -460,7 +460,7 @@ export function QuranLine({
         }
       }}
       className={`quran-line quran-line-${isBasmallah ? 'basmallah' : line.type} ${marked ? 'quran-line-marked' : ''} ${jumped ? 'quran-line-jumped' : ''} ${isJuzStartLine ? 'quran-line--juz-start' : ''} ${line.type === 'spacer' ? 'opacity-0' : ''} ${coveredByCombinedHeader ? 'quran-line--combined-header-covered' : ''} ${centered ? 'quran-line-centered' : 'quran-line-normal'}`}
-      aria-label={line.type === 'spacer' ? 'Blank line' : text}
+      aria-label={line.type === 'spacer' ? 'Blank line' : undefined}
       tabIndex={line.type === 'spacer' ? -1 : 0}
     >
       {coveredByCombinedHeader ? null : line.type === 'surah_name' ? (
