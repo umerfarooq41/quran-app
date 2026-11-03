@@ -32,6 +32,7 @@
 
 .settings-section-heading small,
 .settings-row-copy small {
+  color: #626b72 !important;
   color: #626b72;
   font-size: .73rem;
   line-height: 1.42;
