@@ -11,7 +11,7 @@
   justify-content: space-between;
   height: calc(env(safe-area-inset-top, 0px) + 58px);
   padding: calc(env(safe-area-inset-top, 0px) + 18px) 20px 0;
-  color: var(--reader-meta, rgba(62, 57, 49, .58));
+  color: var(--reader-meta, #6b655d);
   font-size: clamp(1.05rem, 3.75vw, 1.22rem);
   font-weight: 600;
   line-height: 1;
@@ -104,7 +104,7 @@
   align-items: center;
   justify-content: space-between;
   padding-inline: 26px;
-  color: var(--reader-meta, rgba(62, 57, 49, .58));
+  color: var(--reader-meta, #6b655d);
   font-size: clamp(1.05rem, 3.75vw, 1.22rem);
   font-weight: 600;
   line-height: 1;
