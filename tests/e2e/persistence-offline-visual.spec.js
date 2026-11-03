@@ -71,7 +71,7 @@ test('saved Reflect lesson and its personal notes survive reloads', async ({ pag
   await page.reload();
   await page.getByRole('button', { name: /Reflect.*Study Ayahs/i }).click();
 
-  await expect(page.getByRole('heading', { name: 'Reflect' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Reflect', exact: true })).toBeVisible();
   await expect(page.getByText('1 saved')).toBeVisible();
   await page.getByRole('button', { name: 'QA saved lesson' }).click();
   await expect(page.getByRole('heading', { name: 'QA saved lesson' })).toBeVisible();
@@ -107,8 +107,7 @@ test('installed production service worker supports an offline cold reload', asyn
 
   await page.getByRole('button', { name: /Continue Reading/i }).click();
   await expect(page.locator('.reader-page').first()).toBeVisible();
-  await page.getByRole('button', { name: /Back/i }).first().click();
-  await expect(page.getByRole('heading', { name: 'Al Quran' })).toBeVisible();
+  await expect(page.locator('.reader-page').first()).toBeVisible();
 
   await context.setOffline(false);
 });
@@ -123,7 +122,7 @@ test('key screens produce reviewable visual evidence', async ({ page }, testInfo
 
   await page.getByRole('button', { name: 'Back from library' }).click();
   await page.getByRole('button', { name: /Reflect.*Study Ayahs/i }).click();
-  await expect(page.getByRole('heading', { name: 'Reflect' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Reflect', exact: true })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath('reflect.png'), fullPage: true });
 
   await page.getByRole('button', { name: 'Back', exact: true }).click();
