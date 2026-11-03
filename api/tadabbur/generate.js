@@ -368,7 +368,8 @@ function validateLesson(lesson, input) {
   const allowedRefs = new Set(input.verses.map((verse) => `${input.surahNumber}:${verse.ayahNumber}`));
   const allQuestions = lesson.prepare.questions;
   const allPoints = lesson.understand.keyPoints;
-  for (const item of [...allQuestions, ...allPoints]) {
+  if (allQuestions.some((item) => !isShortText(item?.text, 360))) return { valid: false };
+  for (const item of allPoints) {
     if (!isShortText(item?.text, 360) || !Array.isArray(item.ayahReferences) || item.ayahReferences.length < 1) return { valid: false };
     if (item.ayahReferences.some((ref) => !allowedRefs.has(String(ref)))) return { valid: false };
   }
