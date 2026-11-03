@@ -235,7 +235,7 @@
 [data-theme='dark'] .settings-section-heading small,
 [data-theme='dark'] .settings-row-copy small,
 [data-theme='dark'] .settings-rendering-lock p {
-  color: var(--theme-muted);
+  color: var(--theme-muted) !important;
 }
 
 [data-theme='dark'] .tabs-filter-row button.active {
