@@ -21,11 +21,14 @@ const DEFAULT_BOOKMARK = 'Reading';
 const BOOKMARK_TYPES = [
   { category: 'Reading', label: 'Recitation', tone: 'emerald' },
   { category: 'Memorize', label: 'Memorize', tone: 'amber' },
+  { category: 'Reflect', label: 'Reflect', tone: 'rose' },
 ];
 const BOOKMARK_ICON_COLORS = {
   Reading: '#2f7462',
   Recitation: '#2f7462',
   Memorize: '#a46f09',
+  Reflect: '#a9365b',
+  Tadabbur: '#a9365b',
 };
 const HIGHLIGHT_COLORS = [
   { id: 'amber', label: 'Yellow', value: '#FACC15' },
