@@ -12,7 +12,6 @@ export const VIEWS = {
   ABOUT: 'about',
   SHARE_QURAN: 'shareQuran',
   REFLECT: 'reflect',
-  REFLECT: 'reflect',
 };
 
 export const VALID_VIEWS = new Set(Object.values(VIEWS));
