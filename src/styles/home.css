@@ -235,6 +235,7 @@
 }
 
 .home-favorite-copy strong {
+  color: #2d271f !important;
   overflow: hidden;
   color: #2d271f;
   font-size: 1.02rem;
@@ -245,6 +246,7 @@
 }
 
 .home-favorite-copy small {
+  color: #6f6254 !important;
   overflow: hidden;
   color: #6f6254;
   font-size: .73rem;
