@@ -348,3 +348,67 @@
     padding-bottom: 10px;
   }
 }
+
+
+/* Reflect uses the same section heading and compact row language as Favorites. */
+.home-reflect-section {
+  gap: 12px;
+}
+
+.home-reflect-card {
+  width: 100%;
+  min-width: 0;
+  min-height: 74px;
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+  border: 1px solid rgba(255,255,255,.88);
+  border-radius: 18px;
+  background: #fff;
+  padding: 11px 18px;
+  color: #30291f;
+  text-align: left;
+  box-shadow: 0 7px 22px rgba(38, 52, 45, .07);
+}
+
+.home-reflect-icon {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border: 1.5px solid rgba(184, 136, 42, .38);
+  border-radius: 50%;
+  color: #8d671f;
+  background: rgba(184, 136, 42, .06);
+}
+
+.home-reflect-copy {
+  gap: 4px;
+}
+
+.home-reflect-copy strong {
+  color: #2d271f;
+  font-size: 1.02rem;
+  font-weight: 730;
+  letter-spacing: -.025em;
+}
+
+.home-reflect-copy small {
+  color: #807567;
+  font-size: .73rem;
+  font-weight: 560;
+  line-height: 1.35;
+  white-space: normal;
+}
+
+@media (max-width: 370px) {
+  .home-reflect-card {
+    min-height: 70px;
+    padding: 10px 15px;
+  }
+  .home-reflect-icon {
+    width: 42px;
+    height: 42px;
+  }
+}
