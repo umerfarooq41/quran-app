@@ -35,7 +35,6 @@ test('local translation datasets cover every Quran ayah with non-empty source te
       const references = Object.keys(dataset);
       const actualReferences = new Set(references);
       const missing = [...expectedReferences].filter((key) => !actualReferences.has(key));
-      const unexpected = references.filter((key) => !/^\\d+:\\d+$/.test(key) || !expectedReferences.has(key));
       const empty = references.filter((key) => {
         const entry = dataset[key];
         const text = typeof entry === 'string' ? entry : entry?.t || entry?.text || '';
@@ -53,10 +52,11 @@ test('local translation datasets cover every Quran ayah with non-empty source te
 
 test('Tafsir grouped verse ranges match only references inside the source range', async () => {
   const vite = await createServer({
-    configFile: './vite.config.js',
-    server: { middlewareMode: true },
+    configFile: false,
+    server: { middlewareMode: true, hmr: false },
     appType: 'custom',
-    logLevel: 'error',
+    logLevel: 'silent',
+    optimizeDeps: { noDiscovery: true, include: [] },
   });
 
   try {
