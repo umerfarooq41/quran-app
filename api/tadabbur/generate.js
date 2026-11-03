@@ -153,7 +153,7 @@ export default async function handler(req, res) {
           contents: [{ role: 'user', parts: [{ text: prompt }] }],
           generationConfig: {
             responseMimeType: 'application/json',
-            responseSchema,
+            responseJsonSchema: responseSchema,
             temperature: 0.45,
             maxOutputTokens: 3500,
           },
@@ -169,7 +169,8 @@ export default async function handler(req, res) {
           ? 'Gemini quota reached. Please try again later.'
           : 'Gemini could not generate this lesson. Please try again.',
         code: upstream.status === 429 ? 'QUOTA_EXCEEDED' : 'GEMINI_ERROR',
-        providerMessage: String(payload?.error?.message || '').slice(0, 500),
+        providerMessage: String(payload?.error?.message || payload?.error?.status || '').slice(0, 500),
+        providerStatus: payload?.error?.status || null,
       });
     }
 
