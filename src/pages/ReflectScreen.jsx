@@ -301,6 +301,31 @@ export default function ReflectScreen() {
             </div>
           </div>
         </section>
+        <section className={card}>
+          <h3 className="font-semibold">My Questions</h3>
+          <p className="mt-1 text-xs text-slate-500">Save questions to investigate with reliable sources.</p>
+          {(active.studyQuestions || []).map(q => <div key={q.id} className="mt-3 rounded-xl border border-slate-200 p-3">
+            <textarea className={field} aria-label="Study question" rows={2} value={q.text} onChange={e => saveStudyMeta({studyQuestions: active.studyQuestions.map(item => item.id === q.id ? {...item, text:e.target.value} : item)})}/>
+            <label className="mt-2 block text-xs font-medium">Answer and source (optional)<textarea className={field+' mt-1'} rows={2} value={q.answer || ''} onChange={e => saveStudyMeta({studyQuestions: active.studyQuestions.map(item => item.id === q.id ? {...item, answer:e.target.value} : item)})}/></label>
+            <div className="mt-2 flex items-center justify-between"><label className="flex items-center gap-2 text-xs"><input type="checkbox" checked={Boolean(q.answered)} onChange={e => saveStudyMeta({studyQuestions: active.studyQuestions.map(item => item.id === q.id ? {...item, answered:e.target.checked} : item)})}/> Answered</label><button type="button" className="text-xs text-rose-600" onClick={() => saveStudyMeta({studyQuestions: active.studyQuestions.filter(item => item.id !== q.id)})}>Remove</button></div>
+          </div>)}
+          <div className="mt-3 flex gap-2"><input className={field} aria-label="New question" placeholder="What would I like to understand better?" value={newQuestion} onChange={e => setNewQuestion(e.target.value)}/><button type="button" className={action} disabled={!newQuestion.trim()} onClick={() => {saveStudyMeta({studyQuestions:[...(active.studyQuestions || []),{id:String(Date.now())+Math.random().toString(36).slice(2),text:newQuestion.trim(),answer:'',answered:false}]});setNewQuestion('');}}>Add</button></div>
+        </section>
+        <section className={card}>
+          <h3 className="font-semibold">Themes</h3>
+          <p className="mt-1 text-xs text-slate-500">Personal study tags, not Tafsir classifications.</p>
+          <label className="mt-3 block text-sm font-medium">Main theme<select className={field+' mt-2'} value={active.studyThemes?.main || ''} onChange={e => saveStudyMeta({studyThemes:{...active.studyThemes,main:e.target.value,sub:[]}})}><option value="">Select a theme</option>{Object.keys(themeGroups).map(group=><option key={group} value={group}>{group}</option>)}</select></label>
+          {active.studyThemes?.main && <div className="mt-3"><p className="text-sm font-medium">Subthemes</p><div className="mt-2 flex flex-wrap gap-2">{(themeGroups[active.studyThemes.main] || []).map(tag=><button key={tag} type="button" aria-pressed={(active.studyThemes?.sub || []).includes(tag)} className={'rounded-full border px-3 py-2 text-xs '+((active.studyThemes?.sub || []).includes(tag) ? 'border-emerald-600 bg-emerald-50' : 'border-slate-200')} onClick={() => {const sub=active.studyThemes?.sub || [];saveStudyMeta({studyThemes:{...active.studyThemes,sub:sub.includes(tag)?sub.filter(t=>t!==tag):[...sub,tag]}});}}>{tag}</button>)}</div></div>}
+          <label className="mt-3 block text-sm font-medium">Custom theme</label>
+          <div className="mt-2 flex gap-2"><input className={field} value={customTheme} onChange={e=>setCustomTheme(e.target.value)} placeholder="Add your own theme"/><button type="button" className={action} disabled={!customTheme.trim()} onClick={()=>{saveStudyMeta({studyThemes:{...active.studyThemes,custom:[...new Set([...(active.studyThemes?.custom || []),customTheme.trim()])]}});setCustomTheme('');}}>Add</button></div>
+          {(active.studyThemes?.custom || []).map(tag=><button key={tag} type="button" className="mr-2 mt-2 rounded-full bg-slate-100 px-3 py-2 text-xs" onClick={()=>saveStudyMeta({studyThemes:{...active.studyThemes,custom:active.studyThemes.custom.filter(t=>t!==tag)}})}>{tag} ×</button>)}
+        </section>
+        <section className={card}>
+          <h3 className="font-semibold">Finish &amp; Revisit</h3>
+          <p className="mt-1 text-xs text-slate-500">Review your learning and practical commitment. No additional answers required.</p>
+          <div className="mt-3 rounded-xl bg-slate-50 p-3"><p className="text-xs font-semibold text-[#2d6e5e]">{active.surahName || 'Surah '+active.surahNumber} · {active.startAyah}–{active.endAyah}</p><p className="mt-3 text-xs font-semibold">What I learned</p><p className="mt-1 whitespace-pre-wrap text-sm">{active.answers?.final?.[1] || 'Not written yet'}</p><p className="mt-3 text-xs font-semibold">My commitment</p><p className="mt-1 whitespace-pre-wrap text-sm">{active.answers?.tadabbur?.commitment || active.answers?.tadabbur?.plan || 'Not written yet'}</p></div>
+          {active.status === 'completed' && <div className="mt-4"><p className="text-sm font-semibold">How is your commitment going?</p>{[['done','I practised it'],['progress',"I'm working on it"],['not-yet',"I haven't started yet"]].map(([value,label])=><label key={value} className="mt-2 flex items-center gap-2 text-sm"><input type="radio" name="commitment-review" checked={active.commitmentReview?.status === value} onChange={()=>saveStudyMeta({commitmentReview:{...active.commitmentReview,status:value}})}/>{label}</label>)}<textarea className={field+' mt-3'} rows={2} aria-label="Commitment review notes" placeholder="What did I notice? (optional)" value={active.commitmentReview?.notes || ''} onChange={e=>saveStudyMeta({commitmentReview:{...active.commitmentReview,notes:e.target.value}})}/></div>}
+        </section>
         {error && <p role="alert" className="text-sm text-rose-600">{error}</p>}
         <button type="button" className={action+' w-full'} disabled={busy || !validRange || selected.length!==count} onClick={createStudy}>
           {busy ? <span className="inline-flex items-center gap-2"><Loader2 size={17} className="animate-spin"/>Preparing study…</span> : 'Start Reflect study'}
