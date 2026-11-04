@@ -22,16 +22,6 @@ export default function ReflectScreen() {
   const settings = useAppStore((s) => s.settings);
   const [lessons, setLessons] = useState([]);
   const [mode, setMode] = useState(target?.surahNumber ? 'new' : 'hub');
-  useEffect(() => {
-    if (!target?.surahNumber) return;
-    const n = Number(target.surahNumber);
-    const first = Math.max(1, Math.min(Number(target.startAyah) || 1, Math.max(1, getSurahAyahs(n).length - 2)));
-    setSurahNumber(n);
-    setStartAyah(first);
-    setEndAyah(Math.min(getSurahAyahs(n).length, first + 2));
-    setActive(null);
-    setMode('new');
-  }, [target]);
   const [surahNumber, setSurahNumber] = useState(Number(target?.surahNumber) || 1);
   const [startAyah, setStartAyah] = useState(Number(target?.startAyah) || 1);
   const [endAyah, setEndAyah] = useState(Math.min(15, Number(target?.startAyah || 1) + 2));
@@ -105,9 +95,11 @@ export default function ReflectScreen() {
     setActive(null);
     setError('');
     setMode('new');
-    setSurahNumber(1);
-    setStartAyah(1);
-    setEndAyah(3);
+    if (!target?.surahNumber) {
+      setSurahNumber(1);
+      setStartAyah(1);
+      setEndAyah(3);
+    }
   }
 
   async function createStudy() {
@@ -244,7 +236,6 @@ export default function ReflectScreen() {
       <header className="flex items-center gap-3 py-2">
         <button type="button" onClick={() => { flushAnswers(); if (mode === 'hub') goBack(); else { setMode('hub'); setActive(null); } }} className="rounded-full bg-white p-3 shadow-sm" aria-label="Back"><ArrowLeft size={19}/></button>
         <div className="min-w-0 flex-1">
-
           <h1 className="text-xl font-bold text-slate-900">{mode === 'hub' ? 'Reflect' : mode === 'new' ? 'New study' : active ? `${active.surahName || getSurah(active.surahNumber)?.name || `Surah ${active.surahNumber}`} · ${active.startAyah}–${active.endAyah}` : 'Reflect study'}</h1>
         </div>
         {mode === 'hub' && <button type="button" onClick={beginNew} className="rounded-full bg-[#2d6e5e] p-3 text-white" aria-label="New study"><Plus size={19}/></button>}
@@ -252,11 +243,7 @@ export default function ReflectScreen() {
 
       {mode === 'hub' && <>
         <div className={card}>
-          <div className="flex items-center gap-3">
-            <span className="rounded-xl bg-emerald-50 p-3 text-[#2d6e5e]"><BookOpen size={22}/></span>
-            <div><h2 className="font-semibold">Your Reflect library</h2><p className="text-sm text-slate-500">Your Quran studies, reflections and questions in one place.</p></div>
-          </div>
-
+          <div className="flex items-center gap-3"><span className="rounded-xl bg-emerald-50 p-3 text-[#2d6e5e]"><BookOpen size={22}/></span><div><h2 className="font-semibold">My Quran Studies</h2><p className="text-sm text-slate-500">Read, reflect and revisit your lessons.</p></div></div>
         </div>
         <div className="flex gap-2 overflow-x-auto" role="tablist" aria-label="Reflect library">
           {['Studies', 'Questions', 'Themes', 'Progress'].map(tab => <button key={tab} type="button" role="tab" aria-selected={hubTab === tab} onClick={() => setHubTab(tab)} className={'rounded-xl px-3 py-2 text-sm font-medium ' + (hubTab === tab ? 'bg-[#2d6e5e] text-white' : 'bg-white text-slate-600')}>{tab}</button>)}
@@ -438,133 +425,30 @@ export default function ReflectScreen() {
             </label>
           ))}
         </section>
-        {error && <p role="alert" className="text-sm text-rose-600">{error}</p>}
-        {active.status !== 'completed' && <button type="button" className={action+' w-full'} disabled={busy} onClick={finishLesson}>{busy ? 'Saving…' : 'Mark as finished'}</button>}
-        {active.status === 'completed' && <p role="status" className="text-sm text-emerald-700">Lesson completed</p>}
-        <button type="button" className={action+' w-full'} onClick={()=>{ flushAnswers(); setMode('hub'); refresh().catch(()=>{}); }}>Back to studies</button>
-      </>}
-    </Screen>
-  );
-}        {error && <p role="alert" className="text-sm text-rose-600">{error}</p>}
-        <button type="button" className={action+' w-full'} disabled={busy || !validRange || selected.length!==count} onClick={createStudy}>
-          {busy ? <span className="inline-flex items-center gap-2"><Loader2 size={17} className="animate-spin"/>Preparing study…</span> : 'Start Reflect study'}
-        </button>
-      </>}
-
-      {mode === 'lesson' && active && <>
-        <div className={card}>
-          <p className="text-xs font-semibold text-[#2d6e5e]">SURAH {active.surahNumber} · AYAH {active.startAyah}–{active.endAyah}</p>
-          <h2 className="mt-1 text-lg font-bold">{active.surahName || getSurah(active.surahNumber)?.name || `Surah ${active.surahNumber}`} · {active.startAyah}–{active.endAyah}</h2>
-          <p className="mt-2 text-xs text-slate-500">Source-led study · Saved on this device</p>
-          {active.sourceSnapshot?.translationName && <p className="mt-1 text-xs text-slate-500">Translation: {active.sourceSnapshot.translationName}</p>}
-        </div>
-
         <section className={card}>
-          <button type="button" className="flex w-full items-center justify-between gap-3 text-left" aria-expanded={introOpen} onClick={() => setIntroOpen((value) => !value)}>
-            <span className="font-semibold">Surah Introduction</span>
-            <span className="text-sm text-[#2d6e5e]">{introOpen ? 'Hide' : 'Show'}</span>
-          </button>
-          {introOpen && <>
-            <div className="mt-4 flex gap-2" role="group" aria-label="Surah introduction language">
-              {['ur', 'en'].map((language) => <button key={language} type="button" aria-pressed={displayedIntroLanguage === language} onClick={() => setIntroLanguage(language)} className={`rounded-lg px-4 py-2 text-sm font-semibold ${displayedIntroLanguage === language ? 'bg-[#2d6e5e] text-white' : 'bg-slate-100 text-slate-700'}`}>{language === 'ur' ? 'اردو' : 'English'}</button>)}
-            </div>
-            {surahIntro ? <div className={`surah-info-html is-${displayedIntroLanguage} mt-4`} lang={displayedIntroLanguage} dir={displayedIntroLanguage === 'ur' ? 'rtl' : 'ltr'} dangerouslySetInnerHTML={{ __html: surahIntro }} /> : <p className="mt-4 text-sm text-slate-500">Surah introduction is unavailable in this language.</p>}
-          </>}
+          <h3 className="font-semibold">My Questions</h3>
+          <p className="mt-1 text-xs text-slate-500">Save questions to investigate with reliable sources.</p>
+          {(active.studyQuestions || []).map(q => <div key={q.id} className="mt-3 rounded-xl border border-slate-200 p-3">
+            <textarea className={field} aria-label="Study question" rows={2} value={q.text} onChange={e => saveStudyMeta({studyQuestions: active.studyQuestions.map(item => item.id === q.id ? {...item, text:e.target.value} : item)})}/>
+            <label className="mt-2 block text-xs font-medium">Answer and source (optional)<textarea className={field+' mt-1'} rows={2} value={q.answer || ''} onChange={e => saveStudyMeta({studyQuestions: active.studyQuestions.map(item => item.id === q.id ? {...item, answer:e.target.value} : item)})}/></label>
+            <div className="mt-2 flex items-center justify-between"><label className="flex items-center gap-2 text-xs"><input type="checkbox" checked={Boolean(q.answered)} onChange={e => saveStudyMeta({studyQuestions: active.studyQuestions.map(item => item.id === q.id ? {...item, answered:e.target.checked} : item)})}/> Answered</label><button type="button" className="text-xs text-rose-600" onClick={() => saveStudyMeta({studyQuestions: active.studyQuestions.filter(item => item.id !== q.id)})}>Remove</button></div>
+          </div>)}
+          <div className="mt-3 flex gap-2"><input className={field} aria-label="New question" placeholder="What would I like to understand better?" value={newQuestion} onChange={e => setNewQuestion(e.target.value)}/><button type="button" className={action} disabled={!newQuestion.trim()} onClick={() => {saveStudyMeta({studyQuestions:[...(active.studyQuestions || []),{id:String(Date.now())+Math.random().toString(36).slice(2),text:newQuestion.trim(),answer:'',answered:false}]});setNewQuestion('');}}>Add</button></div>
         </section>
         <section className={card}>
-          <h3 className="font-semibold">Read the passage</h3>
-          <p className="mt-1 text-xs text-slate-500">Each Ayah is followed by its word-by-word meanings, selected translation, and available Tafsir.</p>
-          {verses.length ? <div className="mt-4 divide-y divide-slate-200">
-            {verses.map((verse) => (
-              <article key={verse.ayahNumber} className="ayah-translation-body reflect-lesson-ayah py-5 first:pt-0 last:pb-0" data-translation-language={translationOption.language || 'En'}>
-                <p className="mb-3 text-sm font-semibold text-[#2d6e5e]">Ayah {verse.ayahNumber} · {active.surahNumber}:{verse.ayahNumber}</p>
-                <p className="ayah-translation-arabic" dir="rtl" lang="ar">{verse.arabic}</p>
-
-                {showWordByWord && (verse.wordByWordWords?.length > 0 || verse.wordByWord) && (
-                  <section className={`ayah-word-by-word is-${wordLanguage} mt-4`} aria-label={`Ayah ${verse.ayahNumber} word-by-word translation`}>
-                    <div className="ayah-word-by-word-heading">Word by word · {wordLanguage === 'ur' ? 'Urdu' : 'English'}</div>
-                    {verse.wordByWordWords?.length > 0 ? (
-                      <div className="ayah-word-by-word-list" dir="rtl">
-                        {verse.wordByWordWords.map((word, index) => (
-                          <button type="button" className={`ayah-word-by-word-item rounded-lg px-1 py-2 ${(active.keywords || []).some((item) => item.key === verse.ayahNumber + ':' + index) ? 'bg-emerald-100 ring-1 ring-emerald-600' : ''}`} key={word.id || index} aria-pressed={(active.keywords || []).some((item) => item.key === verse.ayahNumber + ':' + index)} aria-label={`Toggle keyword ${word.arabic || ''}`} onClick={() => toggleKeyword(verse.ayahNumber, word, index)}>
-                            <span className="ayah-word-by-word-arabic" dir="rtl" lang="ar">{word.arabic}</span>
-                            <span className="ayah-word-by-word-meaning" dir={wordLanguage === 'ur' ? 'rtl' : 'ltr'} lang={wordLanguage}>{word.meaning}</span>
-                          </button>
-                        ))}
-                      </div>
-                    ) : <p className="ayah-word-by-word-status">{verse.wordByWord}</p>}
-                  </section>
-                )}
-
-                <section className="mt-4" aria-label={`Ayah ${verse.ayahNumber} translation`}>
-                  <h4 className="mb-2 text-sm font-semibold">Translation</h4>
-                  <p className="ayah-translation-text" dir={translationOption.direction || 'ltr'}>{verse.translation}</p>
-                </section>
-
-                {Boolean(verse.tafsirNotes?.length || verse.tafsir) && (
-                  <section className="ayah-translation-footnotes mt-4" aria-label={`Ayah ${verse.ayahNumber} Tafsir`} dir={translationOption.direction || 'ltr'}>
-                    <h4 className="mb-2 text-sm font-semibold">Tafsir</h4>
-                    {(verse.tafsirNotes?.length ? verse.tafsirNotes : [{ number: '1', text: verse.tafsir }]).map((note, index) => (
-                      <p key={note.number || index} className="ayah-translation-note-row">
-                        <span className="ayah-translation-note-number">{verse.ayahNumber}.{note.number || index + 1}</span>
-                        <span className="ayah-translation-note-content">{note.text}</span>
-                      </p>
-                    ))}
-                  </section>
-                )}
-              </article>
-            ))}
-          </div> : (
-            <p className="mt-2 text-sm text-slate-600">This earlier saved lesson has no available source snapshot.</p>
-          )}
-        </section>
-
-        <section className={card}>
-          <h3 className="font-semibold">Reading Guidance</h3>
-          <p className="mt-1 text-xs text-slate-500">Study the selected passage before recording personal reflections.</p>
-          {[
-            ['Read attentively', 'Read or listen slowly and repeat ayahs worth considering.'],
-            ['Understand the words', 'Read the translation and word-by-word meanings; select keywords above.'],
-            ['Study the explanation', 'Consult available Tafsir and consider the audience, context and surrounding ayahs.'],
-            ['Consider the message', 'Notice teachings, commands, warnings and promises actually present in the passage.'],
-          ].map(([heading, detail], i) => <div key={heading} className="mt-3 border-t border-slate-100 pt-3"><p className="text-sm font-semibold">{i + 1}. {heading}</p><p className="mt-1 text-sm text-slate-600">{detail}</p></div>)}
-          <p className="mt-3 text-xs text-slate-500">Passage-specific explanations are shown only when supported by the selected source.</p>
+          <h3 className="font-semibold">Themes</h3>
+          <p className="mt-1 text-xs text-slate-500">Personal study tags, not Tafsir classifications.</p>
+          <label className="mt-3 block text-sm font-medium">Main theme<select className={field+' mt-2'} value={active.studyThemes?.main || ''} onChange={e => saveStudyMeta({studyThemes:{...active.studyThemes,main:e.target.value,sub:[]}})}><option value="">Select a theme</option>{Object.keys(themeGroups).map(group=><option key={group} value={group}>{group}</option>)}</select></label>
+          {active.studyThemes?.main && <div className="mt-3"><p className="text-sm font-medium">Subthemes</p><div className="mt-2 flex flex-wrap gap-2">{(themeGroups[active.studyThemes.main] || []).map(tag=><button key={tag} type="button" aria-pressed={(active.studyThemes?.sub || []).includes(tag)} className={'rounded-full border px-3 py-2 text-xs '+((active.studyThemes?.sub || []).includes(tag) ? 'border-emerald-600 bg-emerald-50' : 'border-slate-200')} onClick={() => {const sub=active.studyThemes?.sub || [];saveStudyMeta({studyThemes:{...active.studyThemes,sub:sub.includes(tag)?sub.filter(t=>t!==tag):[...sub,tag]}});}}>{tag}</button>)}</div></div>}
+          <label className="mt-3 block text-sm font-medium">Custom theme</label>
+          <div className="mt-2 flex gap-2"><input className={field} value={customTheme} onChange={e=>setCustomTheme(e.target.value)} placeholder="Add your own theme"/><button type="button" className={action} disabled={!customTheme.trim()} onClick={()=>{saveStudyMeta({studyThemes:{...active.studyThemes,custom:[...new Set([...(active.studyThemes?.custom || []),customTheme.trim()])]}});setCustomTheme('');}}>Add</button></div>
+          {(active.studyThemes?.custom || []).map(tag=><button key={tag} type="button" className="mr-2 mt-2 rounded-full bg-slate-100 px-3 py-2 text-xs" onClick={()=>saveStudyMeta({studyThemes:{...active.studyThemes,custom:active.studyThemes.custom.filter(t=>t!==tag)}})}>{tag} ×</button>)}
         </section>
         <section className={card}>
-          <h3 className="font-semibold">Keywords</h3>
-          <p className="mt-1 text-xs text-slate-500">Tap a word above to save or remove it from this lesson.</p>
-          {(active.keywords || []).length ? <div className="mt-3 flex flex-wrap gap-2">
-            {active.keywords.map((keyword) => <button type="button" key={keyword.key} className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm" onClick={() => toggleKeyword(keyword.ayahNumber, keyword, Number(keyword.key.split(':')[1]))} aria-label={`Remove keyword ${keyword.arabic}`}>
-              <span lang="ar" dir="rtl" className="font-semibold">{keyword.arabic}</span>
-              <span className="mx-2 text-slate-500">{keyword.meaning}</span>
-              <span aria-hidden="true">×</span>
-            </button>)}
-          </div> : <p className="mt-3 text-sm text-slate-500">No keywords selected yet.</p>}
-        </section>
-        {legacyPoints.length > 0 && <section className={card}>
-          <h3 className="font-semibold">Previously saved study notes</h3>
-          {legacyPoints.map((point,i)=><p key={i} className="mt-3 text-sm leading-6">{point.text}</p>)}
-        </section>}
-
-        <section className={card}>
-          <h3 className="font-semibold">My Reflection</h3>\n          <p className="mt-1 text-xs text-slate-500">Write your personal reflections after reading. These are not Tafsir.</p>
-          {finalQuestions.map((q,i)=><label key={i} className="mt-4 block text-sm font-medium">{q}<textarea className={field+' mt-2 min-h-20'} value={active.answers?.final?.[i]||''} onChange={e=>saveAnswer('final',i,e.target.value)} onBlur={flushAnswers}/></label>)}
-        </section>
-        <section className={card}>
-          <h3 className="font-semibold">Tadabbur &amp; Tadhakkur</h3>
-          <p className="mt-1 text-sm text-slate-500">Personal contemplation, remembrance, and a practical commitment. These are your own reflections, not Tafsir.</p>
-          {[
-            ['imagine', 'Imagine & Feel', 'What in these ayahs should I pause and contemplate?'],
-            ['dua', 'Dua', 'What would I like to ask Allah after reading these ayahs?'],
-            ['evaluate', 'Evaluate', 'Where do my actions or attitudes need to improve in light of this guidance?'],
-            ['commitment', 'Plan · My Commitment', 'What one specific action will I take because of this lesson?'],
-          ].map(([key, label, prompt]) => (
-            <label key={key} className="mt-4 block text-sm font-medium">
-              {label}
-              <span className="mt-1 block text-xs font-normal text-slate-500">{prompt}</span>
-              <textarea className={field+' mt-2 min-h-20'} value={active.answers?.tadabbur?.[key] ?? (key === 'commitment' ? active.answers?.tadabbur?.plan || '' : '')} onChange={(event) => saveTadabburField(key, event.target.value)} onBlur={flushAnswers} />
-            </label>
-          ))}
+          <h3 className="font-semibold">Finish &amp; Revisit</h3>
+          <p className="mt-1 text-xs text-slate-500">Review your learning and practical commitment. No additional answers required.</p>
+          <div className="mt-3 rounded-xl bg-slate-50 p-3"><p className="text-xs font-semibold text-[#2d6e5e]">{active.surahName || 'Surah '+active.surahNumber} · {active.startAyah}–{active.endAyah}</p><p className="mt-3 text-xs font-semibold">What I learned</p><p className="mt-1 whitespace-pre-wrap text-sm">{active.answers?.final?.[1] || 'Not written yet'}</p><p className="mt-3 text-xs font-semibold">My commitment</p><p className="mt-1 whitespace-pre-wrap text-sm">{active.answers?.tadabbur?.commitment || active.answers?.tadabbur?.plan || 'Not written yet'}</p></div>
+          {active.status === 'completed' && <div className="mt-4"><p className="text-sm font-semibold">How is your commitment going?</p>{[['done','I practised it'],['progress',"I'm working on it"],['not-yet',"I haven't started yet"]].map(([value,label])=><label key={value} className="mt-2 flex items-center gap-2 text-sm"><input type="radio" name="commitment-review" checked={active.commitmentReview?.status === value} onChange={()=>saveStudyMeta({commitmentReview:{...active.commitmentReview,status:value}})}/>{label}</label>)}<textarea className={field+' mt-3'} rows={2} aria-label="Commitment review notes" placeholder="What did I notice? (optional)" value={active.commitmentReview?.notes || ''} onChange={e=>saveStudyMeta({commitmentReview:{...active.commitmentReview,notes:e.target.value}})}/></div>}
         </section>
         {error && <p role="alert" className="text-sm text-rose-600">{error}</p>}
         {active.status !== 'completed' && <button type="button" className={action+' w-full'} disabled={busy} onClick={finishLesson}>{busy ? 'Saving…' : 'Mark as finished'}</button>}
