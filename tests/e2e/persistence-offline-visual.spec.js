@@ -75,7 +75,7 @@ test('saved Reflect lesson and its personal notes survive reloads', async ({ pag
   await expect(page.getByRole('heading', { name: 'Reflect', exact: true })).toBeVisible();
   await expect(page.getByText('1 saved')).toBeVisible();
   await page.getByRole('button', { name: 'QA saved lesson' }).click();
-  await expect(page.getByRole('heading', { name: 'QA saved lesson', exact: true }).first()).toBeVisible();
+  await expect(page.locator('h1').filter({ hasText: 'QA saved lesson' })).toBeVisible();
   await expect(page.getByText('In the name of Allah')).toBeVisible();
   await expect(page.locator('textarea[placeholder="Write your own notes…"]')).toHaveValue('QA persistence note');
 
