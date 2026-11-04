@@ -129,33 +129,19 @@ async function getLocalWords(surah, ayah, language, signal) {
   const verse = quranWordsByVerse.get(verseKey);
   const rawWords = Array.isArray(verse?.words) ? verse.words : [];
 
-  // 2:181 is segmented differently in the Arabic and Urdu datasets:
-  // Arabic positions 3+4 are one Urdu unit (بَعْدَ مَا), while Urdu
-  // position 11 duplicates the meaning of إِنَّ. Align explicitly rather
-  // than shifting every subsequent meaning by position.
-  const specialUrdu2181 = language === 'ur' && verseKey === '2:181';
-  const correctedMeanings = wordMeanings;
-  const displayWords = specialUrdu2181
+  // The Mushaf may split an Arabic display unit differently from the WBW
+  // source. Only the display grouping is handled here; all meanings come
+  // directly from the language-specific JSON file.
+  const displayWords = language === 'ur' && verseKey === '2:181'
     ? rawWords.filter((_, index) => index !== 3).map((word) => {
-      if (Number(word.word) !== 3 && word.location !== '2:181:3') return word;
-      const next = rawWords[3];
-      return { ...word, text: [word.text, next?.text].filter(Boolean).join(' ') };
+      if (word.location !== '2:181:3') return word;
+      return { ...word, text: [word.text, rawWords[3]?.text].filter(Boolean).join(' ') };
     })
     : rawWords;
-  const urdu2181MeaningKey = (position) => {
-    if (position <= 3) return position;
-    if (position === 5) return null; // سَمِعَهُ: supplied separately below
-    if (position >= 6 && position <= 11) return position - 1;
-    return position; // Skip duplicate Urdu key 11 for إِنَّ at Arabic 11
-  };
   const locations = displayWords.map((word, index) => word.location || `${verseKey}:${index + 1}`);
-  const missingLocations = locations.filter((location) => {
-    if (specialUrdu2181 && location === '2:181:5') return false;
-    const sourceKey = specialUrdu2181 ? `${verseKey}:${urdu2181MeaningKey(Number(location.split(':')[2]))}` : location;
-    return !Object.prototype.hasOwnProperty.call(correctedMeanings, sourceKey);
-  });
+  const missingLocations = locations.filter((location) => !Object.prototype.hasOwnProperty.call(wordMeanings, location));
   const alignmentFallback = missingLocations.length > 0;
-  const orderedMeanings = Object.entries(correctedMeanings)
+  const orderedMeanings = Object.entries(wordMeanings)
     .filter(([key]) => key.startsWith(`${verseKey}:`))
     .sort(([a], [b]) => Number(a.split(':')[2]) - Number(b.split(':')[2]))
     .map(([, value]) => htmlToPlainText(value))
@@ -164,13 +150,8 @@ async function getLocalWords(surah, ayah, language, signal) {
   const words = displayWords
     .map((word, index) => {
       const location = word.location || `${verseKey}:${index + 1}`;
-      const position = Number(location.split(':')[2]);
-      const meaningKey = specialUrdu2181 ? urdu2181MeaningKey(position) : position;
-      const sourceLocation = `${verseKey}:${meaningKey}`;
-      const rawMeaning = specialUrdu2181 && position === 5
-        ? 'اس کو سنا'
-        : correctedMeanings[sourceLocation] || '';
-      const meaningHtml = alignmentFallback ? '' : language === 'en'
+      const rawMeaning = wordMeanings[location] || '';
+      const meaningHtml = language === 'en'
         ? sanitizeEnglishMeaningHtml(rawMeaning)
         : escapeHtml(rawMeaning);
       const meaning = htmlToPlainText(meaningHtml);
