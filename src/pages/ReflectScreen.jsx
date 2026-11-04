@@ -31,6 +31,7 @@ export default function ReflectScreen() {
   const [studyMenu, setStudyMenu] = useState(null);
   const [pendingDelete, setPendingDelete] = useState(null);
   const [guidanceOpen, setGuidanceOpen] = useState(false);
+  const [rangePicker, setRangePicker] = useState(null);
   const [introLanguage, setIntroLanguage] = useState(null);
   const [error, setError] = useState('');
   const [newQuestion, setNewQuestion] = useState('');
@@ -100,6 +101,7 @@ export default function ReflectScreen() {
   function beginNew() {
     setActive(null);
     setError('');
+    setRangePicker(null);
     setMode('new');
     if (!target?.surahNumber) {
       setSurahNumber(1);
@@ -242,7 +244,7 @@ export default function ReflectScreen() {
     <Screen className="tabs-screen app-page-shell bg-fluent reflect-screen">
       <div className="app-fixed-header">
         <Header
-          title={mode === 'hub' ? 'Reflect' : mode === 'new' ? 'New Study' : 'Reflect Study'}
+          title={mode === 'hub' ? 'Reflect' : mode === 'new' ? 'Select Passage' : 'Study'}
           onBack={() => { flushAnswers(); if (mode === 'hub') goBack(); else { setMode('hub'); setActive(null); } }}
           backLabel="Back from Reflect"
         />
@@ -297,39 +299,33 @@ export default function ReflectScreen() {
       </div>}
 
       {mode === 'new' && <>
-        <div className={card}>
-          <h2 className="font-semibold">Choose a passage</h2>
-          <p className="mt-1 text-sm text-slate-500">Select 3–15 consecutive Ayahs from one Surah.</p>
-          <label className="mt-4 block text-xs font-semibold text-slate-600">Surah</label>
-          <select className={field+' mt-1'} value={surahNumber} onChange={(e) => { const n=Number(e.target.value); setSurahNumber(n); setStartAyah(1); setEndAyah(3); }}>
-            {Array.from({length:114},(_,i)=>getSurah(i+1)).filter(Boolean).map(s=><option key={s.number} value={s.number}>{s.number}. {s.name}</option>)}
-          </select>
-          <div className="mt-3 grid grid-cols-2 gap-3">
-            <label className="text-xs font-semibold text-slate-600">Start Ayah
-              <select className={field+' mt-1'} value={startAyah} onChange={(e)=>{const n=Number(e.target.value);setStartAyah(n);setEndAyah(Math.min(ayahs.length,n+2));}}>
-                {ayahs.map(a=><option key={a.ayahNumber} value={a.ayahNumber}>{a.ayahNumber}</option>)}
-              </select>
-            </label>
-            <label className="text-xs font-semibold text-slate-600">End Ayah
-              <select className={field+' mt-1'} value={endAyah} onChange={(e)=>setEndAyah(Number(e.target.value))}>
-                {ayahs.filter(a=>a.ayahNumber>=startAyah && a.ayahNumber<=Math.min(ayahs.length,startAyah+14)).map(a=><option key={a.ayahNumber} value={a.ayahNumber}>{a.ayahNumber}</option>)}
-              </select>
-            </label>
+
+        <div className={card + ' reflect-passage-selector'}>
+          <div className="reflect-passage-heading">
+            <h2 className="font-semibold">Passage</h2>
+            <span className="reflect-passage-limit">3–15 ayahs</span>
           </div>
-          <p className={'mt-3 text-sm '+(validRange?'text-emerald-700':'text-rose-600')}>{count} Ayahs selected · Choose between 3 and 15.</p>
+          <ReflectRangePicker label="Surah" value={surahNumber} display={surahNumber + '. ' + (surah?.name || '')}
+            options={Array.from({length:114},(_,i)=>getSurah(i+1)).filter(Boolean).map(item=>({value:item.number,label:item.number+'. '+item.name}))}
+            open={rangePicker==='surah'} onToggle={()=>setRangePicker(current=>current==='surah'?null:'surah')}
+            onSelect={value=>{setSurahNumber(value);setStartAyah(1);setEndAyah(Math.min(3,getSurahAyahs(value).length));setRangePicker(null);}}/>
+          <div className="reflect-passage-range">
+            <ReflectRangePicker label="From" value={startAyah} options={ayahs.map(item=>({value:item.ayahNumber,label:String(item.ayahNumber)}))}
+              open={rangePicker==='from'} onToggle={()=>setRangePicker(current=>current==='from'?null:'from')}
+              onSelect={value=>{setStartAyah(value);setEndAyah(Math.min(ayahs.length,value+2));setRangePicker(null);}}/>
+            <span className="reflect-passage-to">to</span>
+            <ReflectRangePicker label="To" value={endAyah} options={ayahs.filter(item=>item.ayahNumber>=startAyah&&item.ayahNumber<=startAyah+14).map(item=>({value:item.ayahNumber,label:String(item.ayahNumber)}))}
+              open={rangePicker==='to'} onToggle={()=>setRangePicker(current=>current==='to'?null:'to')}
+              onSelect={value=>{setEndAyah(value);setRangePicker(null);}}/>
+          </div>
+          <p className={'reflect-passage-status '+(validRange?'is-valid':'is-invalid')}>{validRange ? count+' ayahs selected' : 'Select 3–15 ayahs'}</p>
           <div className="reflect-preview-divider" aria-hidden="true" />
           <div className="reflect-preview-content">
-            <div className="tab-card-top">
-              <span className="tab-card-type">
-                <span className="tab-type">Selected passage</span>
-              </span>
-              <span className="tab-surah">{surah?.name} · {surahNumber}:{startAyah}–{endAyah}</span>
-            </div>
-            <p className="tab-saved-date">{count} consecutive Ayahs</p>
-            <div className="mt-3 divide-y divide-slate-100">
-              {selected.map((a) => <article key={a.ayahNumber} className="py-3 first:pt-1 last:pb-1">
+            <div className="reflect-preview-heading">Preview</div>
+            <div className="divide-y divide-slate-100">
+              {selected.map(a=><article key={a.ayahNumber} className="py-3 first:pt-1 last:pb-1">
                 <p className="mb-2 text-center text-xs font-medium tabular-nums text-slate-400">{surahNumber}:{a.ayahNumber}</p>
-                <p className="tab-arabic reflect-preview-arabic" style={{ whiteSpace: "normal", overflow: "visible", textOverflow: "clip" }} dir="rtl" lang="ar">{a.text}</p>
+                <p className="tab-arabic reflect-preview-arabic" style={{whiteSpace:'normal',overflow:'visible',textOverflow:'clip'}} dir="rtl" lang="ar">{a.text}</p>
               </article>)}
             </div>
           </div>
@@ -505,4 +501,19 @@ function renderReflectTranslation(value, notes, onToggle, selectedNumber) {
       dir="ltr" lang="en" aria-pressed={selectedNumber === number} aria-label={"Toggle Tafsir footnote " + number}
       onClick={() => onToggle(number)}>{number}</button>;
   });
+}
+
+function ReflectRangePicker({label,value,display,options,open,onToggle,onSelect}) {
+  return <div className="reflect-range-field">
+    <span className="reflect-range-label">{label}</span>
+    <button type="button" className="reflect-range-trigger" aria-expanded={open} aria-label={label+': '+(display||value)} onClick={onToggle}>
+      <span>{display || value}</span><ChevronDown size={18} aria-hidden="true"/>
+    </button>
+    {open && <div className="reflect-range-options" role="listbox" aria-label={label}>
+      {options.map(option=><button key={option.value} type="button" role="option" aria-selected={Number(value)===option.value}
+        className={Number(value)===option.value?'is-selected':''} onClick={()=>onSelect(option.value)}>
+        {option.label}{Number(value)===option.value && <span aria-hidden="true">✓</span>}
+      </button>)}
+    </div>}
+  </div>;
 }
