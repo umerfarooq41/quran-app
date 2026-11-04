@@ -803,3 +803,20 @@
   line-height: 1.5;
   color: #64748b;
 }
+
+/* Surah introduction accordion */
+.reflect-screen .reflect-intro-chevron {
+  flex-shrink: 0;
+  color: #64748b;
+  transition: transform 180ms ease;
+}
+.reflect-screen .reflect-intro-chevron.is-open { transform: rotate(180deg); }
+.reflect-screen .reflect-intro-content { animation: reflect-intro-reveal 180ms ease-out both; }
+@keyframes reflect-intro-reveal {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reflect-screen .reflect-intro-chevron { transition: none; }
+  .reflect-screen .reflect-intro-content { animation: none; }
+}
