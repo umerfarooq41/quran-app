@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowLeft, BookOpen, Loader2, Plus } from 'lucide-react';
 import { Screen, Empty } from '../components/common/AppChrome';
 import { useAppStore } from '../store/useAppStore';
 import { getSurah, getSurahAyahs } from '../lib/quran';
 import { getTranslationOption } from '../lib/translations';
-import { getTadabburLessons, updateTadabburLesson, deleteTadabburLesson } from '../lib/db';
+import { getTadabburLessons, updateTadabburLesson, deleteTadabburLesson, saveReflectAnswerField } from '../lib/db';
 import {
   createTadabburLesson,
   REFLECT_FINAL_QUESTIONS,
@@ -27,6 +27,49 @@ export default function ReflectScreen() {
   const [active, setActive] = useState(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const pendingFields = useRef(new Map());
+  const saveQueue = useRef(Promise.resolve());
+
+  function flushAnswers() {
+    const pending = [...pendingFields.current.values()];
+    pendingFields.current.clear();
+    for (const item of pending) {
+      window.clearTimeout(item.timer);
+      saveQueue.current = saveQueue.current
+        .catch(() => {})
+        .then(() => saveReflectAnswerField(item.lessonId, item.group, item.index, item.value))
+        .catch(() => setError('Unable to save a Reflect answer. Please check device storage.'));
+    }
+    return saveQueue.current;
+  }
+
+  function queueAnswer(lessonId, group, index, value) {
+    const key = lessonId + ':' + group + ':' + index;
+    const previous = pendingFields.current.get(key);
+    if (previous) window.clearTimeout(previous.timer);
+    const item = { lessonId, group, index, value, timer: null };
+    item.timer = window.setTimeout(() => {
+      if (pendingFields.current.get(key) !== item) return;
+      pendingFields.current.delete(key);
+      saveQueue.current = saveQueue.current
+        .catch(() => {})
+        .then(() => saveReflectAnswerField(lessonId, group, index, value))
+        .catch(() => setError('Unable to save a Reflect answer. Please check device storage.'));
+    }, 300);
+    pendingFields.current.set(key, item);
+  }
+
+  useEffect(() => {
+    const onVisibility = () => {
+      if (document.visibilityState === 'hidden') flushAnswers();
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibility);
+      flushAnswers();
+    };
+  }, []);
+
 
   const surah = getSurah(surahNumber);
   const ayahs = useMemo(() => getSurahAyahs(surahNumber), [surahNumber]);
@@ -80,28 +123,28 @@ export default function ReflectScreen() {
     }
   }
 
-  async function saveAnswer(group, index, value) {
+  function saveAnswer(group, index, value) {
     if (!active) return;
-    const nextAnswers = {
-      ...active.answers,
-      [group]: Array.isArray(active.answers?.[group])
-        ? active.answers[group].map((answer, i) => i === index ? value : answer)
-        : active.answers?.[group],
-    };
-    const next = { ...active, answers: nextAnswers };
-    setActive(next);
-    await updateTadabburLesson(active.id, { answers: nextAnswers });
+    setActive((current) => {
+      if (!current || current.id !== active.id) return current;
+      const values = [...(current.answers?.[group] || [])];
+      values[index] = value;
+      return { ...current, answers: { ...current.answers, [group]: values } };
+    });
+    queueAnswer(active.id, group, index, value);
   }
 
-  async function saveNotes(value) {
+  function saveNotes(value) {
     if (!active) return;
-    const answers = { ...active.answers, notes: value };
-    setActive({ ...active, answers });
-    await updateTadabburLesson(active.id, { answers });
+    setActive((current) => current?.id === active.id
+      ? { ...current, answers: { ...current.answers, notes: value } }
+      : current);
+    queueAnswer(active.id, 'notes', null, value);
   }
 
   async function finishLesson() {
     if (!active || busy) return;
+    await flushAnswers();
     setBusy(true);
     setError('');
     try {
@@ -117,6 +160,7 @@ export default function ReflectScreen() {
   }
 
   async function removeLesson(id) {
+    await flushAnswers();
     await deleteTadabburLesson(id);
     setLessons((rows) => rows.filter((row) => row.id !== id));
     if (active?.id === id) {
@@ -135,7 +179,7 @@ export default function ReflectScreen() {
   return (
     <Screen className="space-y-4 pb-10">
       <header className="flex items-center gap-3 py-2">
-        <button type="button" onClick={() => mode === 'hub' ? goBack() : (setMode('hub'), setActive(null))} className="rounded-full bg-white p-3 shadow-sm" aria-label="Back"><ArrowLeft size={19}/></button>
+        <button type="button" onClick={() => { flushAnswers(); if (mode === 'hub') goBack(); else { setMode('hub'); setActive(null); } }} className="rounded-full bg-white p-3 shadow-sm" aria-label="Back"><ArrowLeft size={19}/></button>
         <div className="min-w-0 flex-1">
           <p className="text-xs font-semibold uppercase tracking-wider text-[#2d6e5e]">Quran study</p>
           <h1 className="text-xl font-bold text-slate-900">{mode === 'hub' ? 'Reflect' : mode === 'new' ? 'New study' : active?.title || 'Reflect study'}</h1>
@@ -154,7 +198,7 @@ export default function ReflectScreen() {
         <div className="flex items-center justify-between"><h2 className="font-semibold">Studies</h2><span className="text-xs text-slate-500">{lessons.length} saved</span></div>
         {lessons.length ? lessons.map((lesson) => (
           <article key={lesson.id} className={card}>
-            <button type="button" className="w-full text-left" onClick={() => { setActive(lesson); setMode('lesson'); }}>
+            <button type="button" className="w-full text-left" onClick={() => { flushAnswers(); setActive(lesson); setMode('lesson'); }}>
               <p className="text-xs text-[#2d6e5e]">Surah {lesson.surahNumber} · Ayahs {lesson.startAyah}–{lesson.endAyah}</p>
               <h3 className="mt-1 font-semibold">{lesson.title}</h3>
               <p className="mt-1 text-xs text-slate-500">{lesson.status === "completed" ? "Completed" : "In progress"} · {new Date(lesson.updatedAt).toLocaleDateString()}</p>
@@ -220,7 +264,7 @@ export default function ReflectScreen() {
         {questions.length > 0 && <section className={card}>
           <h3 className="font-semibold">Before you read</h3>
           <p className="mt-1 text-sm text-slate-500">Answer from what you already know or have experienced, before studying the passage.</p>
-          {questions.map((q,i)=><label key={i} className="mt-4 block text-sm font-medium">{q.text}<textarea className={field+' mt-2 min-h-20'} value={active.answers?.prepare?.[i]||''} onChange={e=>saveAnswer('prepare',i,e.target.value)}/></label>)}
+          {questions.map((q,i)=><label key={i} className="mt-4 block text-sm font-medium">{q.text}<textarea className={field+' mt-2 min-h-20'} value={active.answers?.prepare?.[i]||''} onChange={e=>saveAnswer('prepare',i,e.target.value)} onBlur={flushAnswers}/></label>)}
         </section>}
 
         <section className={card}>
@@ -261,17 +305,17 @@ export default function ReflectScreen() {
         <section className={card}>
           <h3 className="font-semibold">Your observations</h3>
           <p className="mt-1 text-sm text-slate-500">Write what you notice in the passage or questions you want to explore.</p>
-          <textarea className={field+' mt-3 min-h-28'} placeholder="Write your own notes…" value={active.answers?.notes||''} onChange={e=>saveNotes(e.target.value)}/>
+          <textarea className={field+' mt-3 min-h-28'} placeholder="Write your own notes…" value={active.answers?.notes||''} onChange={e=>saveNotes(e.target.value)} onBlur={flushAnswers}/>
         </section>
 
         <section className={card}>
           <h3 className="font-semibold">Reflect on what you learned</h3>
-          {finalQuestions.map((q,i)=><label key={i} className="mt-4 block text-sm font-medium">{q}<textarea className={field+' mt-2 min-h-20'} value={active.answers?.final?.[i]||''} onChange={e=>saveAnswer('final',i,e.target.value)}/></label>)}
+          {finalQuestions.map((q,i)=><label key={i} className="mt-4 block text-sm font-medium">{q}<textarea className={field+' mt-2 min-h-20'} value={active.answers?.final?.[i]||''} onChange={e=>saveAnswer('final',i,e.target.value)} onBlur={flushAnswers}/></label>)}
         </section>
         {error && <p role="alert" className="text-sm text-rose-600">{error}</p>}
         {active.status !== 'completed' && <button type="button" className={action+' w-full'} disabled={busy} onClick={finishLesson}>{busy ? 'Saving…' : 'Mark as finished'}</button>}
         {active.status === 'completed' && <p role="status" className="text-sm text-emerald-700">Lesson completed</p>}
-        <button type="button" className={action+' w-full'} onClick={()=>{ setMode('hub'); refresh().catch(()=>{}); }}>Back to studies</button>
+        <button type="button" className={action+' w-full'} onClick={()=>{ flushAnswers(); setMode('hub'); refresh().catch(()=>{}); }}>Back to studies</button>
       </>}
     </Screen>
   );
