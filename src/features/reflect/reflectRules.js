@@ -1,4 +1,4 @@
-export const REFLECT_MIN_AYAHS = 3;
+export const REFLECT_MIN_AYAHS = 1;
 export const REFLECT_MAX_AYAHS = 15;
 
 export function getReflectRangeCount(startAyah, endAyah) {
