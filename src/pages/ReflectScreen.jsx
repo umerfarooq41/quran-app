@@ -269,32 +269,50 @@ export default function ReflectScreen() {
 
         <section className={card}>
           <h3 className="font-semibold">Read the passage</h3>
-          {verses.length ? verses.map((verse) => <article key={verse.ayahNumber} className="ayah-translation-body reflect-lesson-ayah" data-translation-language={translationOption.language || 'En'}>
-            <p className="mb-2 text-center text-xs text-slate-400">{active.surahNumber}:{verse.ayahNumber}</p>
-            <p className="ayah-translation-arabic" dir="rtl" lang="ar">{verse.arabic}</p>
+          <p className="mt-1 text-xs text-slate-500">Each Ayah is followed by its word-by-word meanings, selected translation, and available Tafsir.</p>
+          {verses.length ? <div className="mt-4 divide-y divide-slate-200">
+            {verses.map((verse) => (
+              <article key={verse.ayahNumber} className="ayah-translation-body reflect-lesson-ayah py-5 first:pt-0 last:pb-0" data-translation-language={translationOption.language || 'En'}>
+                <p className="mb-3 text-sm font-semibold text-[#2d6e5e]">Ayah {verse.ayahNumber} · {active.surahNumber}:{verse.ayahNumber}</p>
+                <p className="ayah-translation-arabic" dir="rtl" lang="ar">{verse.arabic}</p>
 
-            {(verse.wordByWordWords?.length || verse.wordByWord) && <section className={`ayah-word-by-word is-${wordLanguage}`} aria-label="Word-by-word translation">
-              <div className="ayah-word-by-word-heading">Word by word · {wordLanguage === 'ur' ? 'Urdu' : 'English'}</div>
-              {verse.wordByWordWords?.length ? <div className="ayah-word-by-word-list" dir="rtl">
-                {verse.wordByWordWords.map((word, index) => <div className="ayah-word-by-word-item" key={word.id || index}>
-                  <span className="ayah-word-by-word-arabic" lang="ar" dir="rtl">{word.arabic}</span>
-                  <span className="ayah-word-by-word-meaning" dir={wordLanguage === 'ur' ? 'rtl' : 'ltr'}>{word.meaning}</span>
-                </div>)}
-              </div> : <p className="ayah-word-by-word-status">{verse.wordByWord}</p>}
-            </section>}
+                {(verse.wordByWordWords?.length > 0 || verse.wordByWord) && (
+                  <section className={`ayah-word-by-word is-${wordLanguage} mt-4`} aria-label={`Ayah ${verse.ayahNumber} word-by-word translation`}>
+                    <div className="ayah-word-by-word-heading">Word by word · {wordLanguage === 'ur' ? 'Urdu' : 'English'}</div>
+                    {verse.wordByWordWords?.length > 0 ? (
+                      <div className="ayah-word-by-word-list" dir="rtl">
+                        {verse.wordByWordWords.map((word, index) => (
+                          <div className="ayah-word-by-word-item" key={word.id || index}>
+                            <span className="ayah-word-by-word-arabic" dir="rtl" lang="ar">{word.arabic}</span>
+                            <span className="ayah-word-by-word-meaning" dir={wordLanguage === 'ur' ? 'rtl' : 'ltr'} lang={wordLanguage}>{word.meaning}</span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : <p className="ayah-word-by-word-status">{verse.wordByWord}</p>}
+                  </section>
+                )}
 
-            <p className="ayah-translation-text" dir={translationOption.direction || 'ltr'}>{verse.translation}</p>
+                <section className="mt-4" aria-label={`Ayah ${verse.ayahNumber} translation`}>
+                  <h4 className="mb-2 text-sm font-semibold">Translation</h4>
+                  <p className="ayah-translation-text" dir={translationOption.direction || 'ltr'}>{verse.translation}</p>
+                </section>
 
-            {Boolean(verse.tafsirNotes?.length || verse.tafsir) && <section className="ayah-translation-footnotes mt-3">
-              {(verse.tafsirNotes?.length ? verse.tafsirNotes : [{ number: '1', text: verse.tafsir }]).map((note, index) => <p key={note.number || index} className="ayah-translation-note-row">
-                <span className="ayah-translation-note-number">{note.number || index + 1}</span>
-                <span className="ayah-translation-note-content">{note.text}</span>
-              </p>)}
-            </section>}
-          </article>) : (
-            <p className="mt-2 text-sm text-slate-600">This is an earlier saved lesson. Its original source snapshot is not available here.</p>
+                {Boolean(verse.tafsirNotes?.length || verse.tafsir) && (
+                  <section className="ayah-translation-footnotes mt-4" aria-label={`Ayah ${verse.ayahNumber} Tafsir`} dir={translationOption.direction || 'ltr'}>
+                    <h4 className="mb-2 text-sm font-semibold">Tafsir</h4>
+                    {(verse.tafsirNotes?.length ? verse.tafsirNotes : [{ number: '1', text: verse.tafsir }]).map((note, index) => (
+                      <p key={note.number || index} className="ayah-translation-note-row">
+                        <span className="ayah-translation-note-number">{verse.ayahNumber}.{note.number || index + 1}</span>
+                        <span className="ayah-translation-note-content">{note.text}</span>
+                      </p>
+                    ))}
+                  </section>
+                )}
+              </article>
+            ))}
+          </div> : (
+            <p className="mt-2 text-sm text-slate-600">This earlier saved lesson has no available source snapshot.</p>
           )}
-          <p className="mt-2 text-xs text-slate-400">The app displays the selected source text without generating or adding an interpretation.</p>
         </section>
 
         {legacyPoints.length > 0 && <section className={card}>
