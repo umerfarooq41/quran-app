@@ -917,3 +917,27 @@
 .reflect-screen .reflect-keyword-arabic{font-size:23px;line-height:1.8;text-align:right}
 .reflect-screen .reflect-keyword-refs{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:8px}
 .reflect-screen .reflect-keyword-refs button{font-size:12px;color:#64748b;text-align:left;text-decoration:underline;text-underline-offset:3px}
+
+/* Discover: independent keyword entries and hierarchical theme index. */
+.reflect-screen .reflect-keyword-link{display:block;width:100%;text-align:left;color:inherit;border:0}
+.reflect-screen .reflect-keyword-refs{justify-content:space-between;align-items:center;color:#64748b}
+.reflect-screen .reflect-keyword-arrow{transform:rotate(-90deg);flex-shrink:0}
+.reflect-screen .reflect-theme-group{background:white;border-radius:16px;overflow:hidden;border:1px solid #e5e7eb}
+.reflect-screen .reflect-theme-heading{width:100%;display:flex;justify-content:space-between;align-items:center;text-align:left;padding:15px 16px;gap:10px}
+.reflect-screen .reflect-theme-heading strong{display:block;font-size:15px;font-weight:600}
+.reflect-screen .reflect-theme-heading small{display:block;margin-top:4px;color:#64748b;font-size:12px}
+.reflect-screen .reflect-theme-chevron{flex-shrink:0;transition:transform .18s ease}
+.reflect-screen .reflect-theme-chevron.is-open{transform:rotate(180deg)}
+.reflect-screen .reflect-theme-children{border-top:1px solid #edf0f2;padding:0 14px 10px}
+.reflect-screen .reflect-subtheme{border-bottom:1px solid #edf0f2}
+.reflect-screen .reflect-subtheme:last-child{border-bottom:0}
+.reflect-screen .reflect-subtheme-heading{display:flex;align-items:center;width:100%;gap:8px;padding:13px 0;text-align:left;font-size:14px}
+.reflect-screen .reflect-subtheme-heading>span:first-child{flex:1}
+.reflect-screen .reflect-subtheme-count{font-size:12px;color:#64748b}
+.reflect-screen .reflect-theme-studies{padding:0 0 10px 12px}
+.reflect-screen .reflect-theme-study{display:flex;flex-direction:column;align-items:flex-start;gap:4px;width:100%;padding:11px 12px;margin:5px 0;border-radius:10px;background:#f6f8f7;text-align:left}
+.reflect-screen .reflect-theme-study strong{font-size:13px;font-weight:600}
+.reflect-screen .reflect-theme-study small{font-size:12px;color:#64748b}
+.reflect-screen .reflect-theme-empty{padding:4px 0 12px;color:#64748b;font-size:12px}
+.reflect-screen .reflect-theme-custom-label{font-size:12px;font-weight:600;color:#64748b;margin:12px 0 6px}
+@media(prefers-reduced-motion:reduce){.reflect-screen .reflect-theme-chevron{transition:none}}
