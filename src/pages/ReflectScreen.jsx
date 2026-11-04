@@ -322,11 +322,11 @@ export default function ReflectScreen() {
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <h2 className="text-lg font-semibold">{active.surahName || getSurah(active.surahNumber)?.name || ("Surah " + active.surahNumber)}</h2>
-              <p className="mt-1 text-sm text-slate-600">Ayahs {active.startAyah}–{active.endAyah} · {active.endAyah - active.startAyah + 1} consecutive ayahs</p>
+              <p className="mt-1 text-sm text-slate-600">Ayahs {active.startAyah}–{active.endAyah}</p>
             </div>
             <button type="button" className="reflect-guidance-trigger" aria-label="Reading guidance" aria-expanded={guidanceOpen} aria-controls="reflect-reading-guidance" onClick={() => setGuidanceOpen(value => !value)}><Info size={21} aria-hidden="true"/></button>
           </div>
-          {active.sourceSnapshot?.translationName && <p className="mt-3 text-xs text-slate-500">Translation · {active.sourceSnapshot.translationName}</p>}
+          {active.sourceSnapshot?.translationName && <div className="reflect-study-translation"><BookOpen size={15} aria-hidden="true"/><span>{active.sourceSnapshot.translationName}</span></div>}
           {guidanceOpen && <div id="reflect-reading-guidance" className="reflect-guidance-panel">
             <h3 className="text-sm font-semibold">Reading Guidance</h3>
             <p className="mt-1 text-xs text-slate-500">Study the selected passage before recording personal reflections.</p>
