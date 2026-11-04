@@ -883,3 +883,14 @@
 .reflect-screen .reflect-passage-status.is-valid{color:#2d6e5e}
 .reflect-screen .reflect-passage-status.is-invalid{color:#b42318}
 .reflect-screen .reflect-preview-heading{font-size:14px;font-weight:600;margin-bottom:10px}
+
+/* Compact Reflect study cards: match Library spacing, avoid double padding. */
+.reflect-screen .tab-card-surface:has(.reflect-study-card-inner){padding:0}
+.reflect-screen .reflect-study-card-inner{padding:14px 16px 15px}
+.reflect-screen .reflect-study-card-heading{margin-bottom:8px;min-height:32px}
+.reflect-screen .reflect-study-open{font-size:16px;line-height:1.35}
+.reflect-screen .reflect-study-menu-trigger{width:32px;height:32px}
+.reflect-screen .reflect-study-card-inner .tab-type{display:inline-flex;margin:0}
+.reflect-screen .reflect-study-card-inner .tab-saved-date{margin:7px 0 0;font-size:12px;line-height:1.4}
+.reflect-screen .reflect-study-card-inner .reflect-study-card-meta{margin:6px 0 0;font-size:12px;line-height:1.4}
+.reflect-screen .reflect-passage-selector .reflect-preview-content{margin-top:0}
