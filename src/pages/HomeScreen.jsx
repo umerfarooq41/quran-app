@@ -112,7 +112,7 @@ export default function HomeScreen() {
         transition={{ delay: 0.26 }}
       >
         <div className="home-section-heading">
-          <h2>Quran Study</h2>
+          <h2>Reflect</h2>
         </div>
         <motion.button
           type="button"
@@ -122,7 +122,7 @@ export default function HomeScreen() {
         >
           <span className="home-reflect-icon"><BookOpen size={21} /></span>
           <span className="home-favorite-copy home-reflect-copy">
-            <strong>Reflect</strong>
+            <strong>My Quran Studies</strong>
             <small>Read, understand and reflect on the Quran</small>
           </span>
         </motion.button>
