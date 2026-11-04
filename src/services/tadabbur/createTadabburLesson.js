@@ -38,8 +38,8 @@ export async function createTadabburLesson({
   if (!Number.isInteger(start) || !Number.isInteger(end) || start < 1 || end < start) {
     throw new Error('Select a valid Ayah range.');
   }
-  if (end - start + 1 < 3 || end - start + 1 > 15) {
-    throw new Error('A Reflect passage must contain between 3 and 15 Ayahs.');
+  if (end - start + 1 < 1 || end - start + 1 > 15) {
+    throw new Error('A Reflect passage must contain between 1 and 15 Ayahs.');
   }
 
   const surahAyahs = getSurahAyahs(surah);
