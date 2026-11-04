@@ -32,6 +32,7 @@ export default function ReflectScreen() {
   const [error, setError] = useState('');
   const [newQuestion, setNewQuestion] = useState('');
   const [customTheme, setCustomTheme] = useState('');
+  const [hubTab, setHubTab] = useState('Studies');
   const pendingFields = useRef(new Map());
   const saveQueue = useRef(Promise.resolve());
 
@@ -249,6 +250,13 @@ export default function ReflectScreen() {
           </div>
           <p className="mt-3 text-xs text-slate-500">No AI-generated explanations. You study the selected sources and write your own reflections.</p>
         </div>
+        <div className="flex gap-2 overflow-x-auto" role="tablist" aria-label="Reflect library">
+          {['Studies', 'Questions', 'Themes', 'Progress'].map(tab => <button key={tab} type="button" role="tab" aria-selected={hubTab === tab} onClick={() => setHubTab(tab)} className={'rounded-xl px-3 py-2 text-sm font-medium ' + (hubTab === tab ? 'bg-[#2d6e5e] text-white' : 'bg-white text-slate-600')}>{tab}</button>)}
+        </div>
+        {hubTab === 'Questions' && <div className={card}><h2 className="font-semibold">My Questions</h2>{lessons.flatMap(l => (l.studyQuestions || []).map(q => ({...q, lesson:l}))).length ? lessons.flatMap(l => (l.studyQuestions || []).map(q => ({...q, lesson:l}))).map(q => <button key={q.lesson.id + q.id} type="button" className="mt-3 block w-full border-t pt-3 text-left text-sm" onClick={() => { setActive(q.lesson); setMode('lesson'); }}><span className="font-medium">{q.text}</span><span className="mt-1 block text-xs text-slate-500">{q.lesson.surahName} {q.lesson.startAyah}–{q.lesson.endAyah} · {q.answered ? 'Answered' : 'Open'}</span></button>) : <p className="mt-2 text-sm text-slate-500">No questions saved yet.</p>}</div>}
+        {hubTab === 'Themes' && <div className={card}><h2 className="font-semibold">Themes</h2>{lessons.filter(l => l.studyThemes?.main || l.studyThemes?.custom?.length).length ? lessons.filter(l => l.studyThemes?.main || l.studyThemes?.custom?.length).map(l => <button key={l.id} type="button" className="mt-3 block w-full border-t pt-3 text-left text-sm" onClick={() => { setActive(l); setMode('lesson'); }}><span className="font-medium">{l.studyThemes?.main || l.studyThemes?.custom?.join(', ')}</span><span className="block text-xs text-slate-500">{l.surahName} {l.startAyah}–{l.endAyah}</span></button>) : <p className="mt-2 text-sm text-slate-500">No themes saved yet.</p>}</div>}
+        {hubTab === 'Progress' && <div className={card}><h2 className="font-semibold">Study Progress</h2><p className="mt-2 text-sm">{lessons.filter(l => l.status === 'completed').length} completed studies</p><p className="mt-1 text-sm">{new Set(lessons.filter(l => l.status === 'completed').flatMap(l => Array.from({length:l.endAyah-l.startAyah+1},(_,i)=>l.surahNumber+':'+(l.startAyah+i)))).size} unique ayahs studied</p><p className="mt-1 text-sm">{lessons.flatMap(l => l.studyQuestions || []).filter(q => !q.answered).length} open questions</p></div>}
+        {hubTab === 'Studies' && <>
         <div className="flex items-center justify-between"><h2 className="font-semibold">Studies</h2><span className="text-xs text-slate-500">{lessons.length} saved</span></div>
         {lessons.length ? lessons.map((lesson) => (
           <article key={lesson.id} className={card}>
@@ -259,7 +267,7 @@ export default function ReflectScreen() {
             </button>
             <button type="button" className="mt-3 text-xs text-rose-600" onClick={() => removeLesson(lesson.id)}>Delete study</button>
           </article>
-        )) : <Empty text="Your saved Reflect studies will appear here."/>}
+        )) : <Empty text="Your saved Reflect studies will appear here."/>}</>}
       </>}
 
       {mode === 'new' && <>
