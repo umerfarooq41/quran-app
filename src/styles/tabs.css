@@ -820,3 +820,33 @@
   .reflect-screen .reflect-intro-chevron { transition: none; }
   .reflect-screen .reflect-intro-content { animation: none; }
 }
+
+/* Reflect hub: force four equal tabs on narrow mobile viewports. */
+.reflect-screen .reflect-tabs.library-tabs.share-like-segment {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  height: auto;
+  min-height: 48px;
+  overflow: visible;
+}
+.reflect-screen .reflect-tabs > button {
+  display: flex; align-items: center; justify-content: center;
+  min-width: 0; width: 100%; padding: 12px 2px;
+  font-size: clamp(11px, 2.8vw, 14px);
+  white-space: nowrap;
+}
+.reflect-screen .reflect-study-card-meta {
+  margin-top: 12px; font-size: 13px; color: #64748b;
+}
+.reflect-screen .reflect-keyword-selected {
+  background: color-mix(in srgb, var(--accent-color, #2d6e5e) 12%, transparent);
+  outline: 1px solid var(--accent-color, #2d6e5e);
+  outline-offset: -1px;
+}
+.reflect-screen .reflect-keyword-chip {
+  background: color-mix(in srgb, var(--accent-color, #2d6e5e) 9%, white);
+  border-color: color-mix(in srgb, var(--accent-color, #2d6e5e) 28%, transparent);
+}
