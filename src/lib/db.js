@@ -485,6 +485,26 @@ export async function saveReflectAnswerField(id, group, index, value) {
   });
 }
 
+export async function saveReflectKeywords(id, keywords) {
+  if (!Array.isArray(keywords)) throw new Error('Invalid keywords.');
+  return db.transaction('rw', db.tadabburLessons, async () => {
+    const existing = await db.tadabburLessons.get(String(id));
+    if (!existing) throw new Error('Reflect study not found.');
+    const updated = {
+      ...existing,
+      keywords: keywords.map((word) => ({
+        key: String(word.key),
+        ayahNumber: Number(word.ayahNumber),
+        arabic: String(word.arabic || ''),
+        meaning: String(word.meaning || ''),
+      })),
+      updatedAt: Date.now(),
+    };
+    await db.tadabburLessons.put(updated);
+    return updated;
+  });
+}
+
 export async function deleteTadabburLesson(id) {
   return db.tadabburLessons.delete(String(id));
 }
