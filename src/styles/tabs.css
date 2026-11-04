@@ -902,3 +902,18 @@
 .reflect-screen .reflect-study-summary .tab-type{margin:0}
 .reflect-screen .reflect-study-summary .reflect-study-card-meta{margin:0;font-size:13px;line-height:1.4;color:#666}
 .reflect-screen .reflect-study-card-inner .tab-saved-date{margin:9px 0 0;font-size:12px;line-height:1.4}
+
+/* Discover: secondary Keywords / Themes navigation and Library-style keyword cards */
+.reflect-screen .reflect-discover{display:flex;flex-direction:column;gap:18px}
+.reflect-screen .reflect-discover-tabs{width:100%}
+.reflect-screen .reflect-discover-tabs button{flex:1;min-width:0}
+.reflect-screen .reflect-discover-content{display:flex;flex-direction:column;gap:12px}
+.reflect-screen .reflect-discover-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.reflect-screen .reflect-discover-heading h2{font-size:16px;font-weight:600}
+.reflect-screen .reflect-discover-heading span{font-size:12px;color:#64748b}
+.reflect-screen .reflect-keyword-list{display:flex;flex-direction:column;gap:12px}
+.reflect-screen .reflect-keyword-card{border-radius:18px;background:white;padding:16px;box-shadow:0 2px 12px #0000000a}
+.reflect-screen .reflect-keyword-row{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:15px}
+.reflect-screen .reflect-keyword-arabic{font-size:23px;line-height:1.8;text-align:right}
+.reflect-screen .reflect-keyword-refs{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:8px}
+.reflect-screen .reflect-keyword-refs button{font-size:12px;color:#64748b;text-align:left;text-decoration:underline;text-underline-offset:3px}
