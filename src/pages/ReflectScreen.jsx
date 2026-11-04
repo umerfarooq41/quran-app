@@ -371,7 +371,6 @@ export default function ReflectScreen() {
 
   const verses = active?.sourceSnapshot?.verses || [];
   const finalQuestions = REFLECT_FINAL_QUESTIONS;
-  const legacyPoints = active?.content?.understand?.keyPoints || [];
   const translationOption = getTranslationOption(active?.sourceSnapshot?.translationId || settings.translation);
   const wordLanguage = settings.wordByWordLanguage || 'en';
   const showWordByWord = Boolean(settings.wordByWordTranslation);
@@ -714,10 +713,6 @@ export default function ReflectScreen() {
             </button>)}
           </div> : <p className="mt-3 text-sm text-slate-500">No keywords selected yet.</p>}
         </section>
-        {legacyPoints.length > 0 && <section className={card}>
-          <h3 className="font-semibold">Previously saved study notes</h3>
-          {legacyPoints.map((point,i)=><p key={i} className="mt-3 text-sm leading-6">{point.text}</p>)}
-        </section>}
 
         <section className={card}>
           <h3 className="font-semibold">My Reflection</h3>
