@@ -752,3 +752,10 @@
   direction: ltr;
   unicode-bidi: isolate;
 }
+
+/* Shared RTL Tafsir layout for Reader and Reflect. */
+.ayah-translation-footnote-wrap {width:100%;max-width:none;min-width:0;margin:14px 0 0;padding:0}
+.ayah-translation-footnotes {box-sizing:border-box;width:100%;max-width:none;min-width:0;padding:14px 16px;border-radius:18px}
+.ayah-translation-note-row {display:flex;flex-direction:row;direction:rtl;align-items:flex-start;justify-content:flex-start;gap:10px;width:100%;margin:0;text-align:start}
+.ayah-translation-note-number {flex:0 0 24px;width:24px;height:24px;align-self:flex-start;margin-top:.35em}
+.ayah-translation-note-content {flex:1 1 0%;min-width:0;text-align:start}
