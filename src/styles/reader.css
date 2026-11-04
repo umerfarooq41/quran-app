@@ -5489,3 +5489,51 @@ body {
   font-size: calc(.52rem * var(--share-text-scale, 1)) !important;
   font-weight: 500 !important;
 }
+
+/* Shared Tafsir references: circular, centered and stable in Urdu RTL layout. */
+.ayah-translation-inline-footnote {
+  display: inline-flex;
+  box-sizing: border-box;
+  inline-size: 1.45em;
+  block-size: 1.45em;
+  min-inline-size: 1.45em;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin-inline: .14em;
+  border-radius: 50%;
+  font-family: Arial, sans-serif;
+  font-size: .62em;
+  font-weight: 600;
+  line-height: 1;
+  direction: ltr;
+  unicode-bidi: isolate;
+  vertical-align: middle;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.ayah-translation-note-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.ayah-translation-note-number {
+  display: inline-flex;
+  box-sizing: border-box;
+  flex: 0 0 24px;
+  inline-size: 24px;
+  block-size: 24px;
+  min-inline-size: 24px;
+  min-block-size: 24px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 50%;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.ayah-translation-note-content { flex: 1 1 0%; }
