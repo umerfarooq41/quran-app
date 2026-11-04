@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { BookOpen, ChevronDown, Info, Loader2, Plus, Trash2 } from 'lucide-react';
+import { BookOpen, ChevronDown, Info, Loader2, Plus, MoreVertical, Trash2 } from 'lucide-react';
 import { Screen, Empty, Header } from '../components/common/AppChrome';
 import { useAppStore } from '../store/useAppStore';
 import { getSurah, getSurahAyahs, getSurahInfo } from '../lib/quran';
@@ -28,6 +28,8 @@ export default function ReflectScreen() {
   const [active, setActive] = useState(null);
   const [busy, setBusy] = useState(false);
   const [introOpen, setIntroOpen] = useState(false);
+  const [studyMenu, setStudyMenu] = useState(null);
+  const [pendingDelete, setPendingDelete] = useState(null);
   const [guidanceOpen, setGuidanceOpen] = useState(false);
   const [introLanguage, setIntroLanguage] = useState(null);
   const [error, setError] = useState('');
@@ -261,19 +263,38 @@ export default function ReflectScreen() {
           const keywordCount = lesson.keywords?.length || 0;
           const questionCount = lesson.studyQuestions?.length || 0;
           return <article key={lesson.id} className={'tab-card ' + (isSwiped ? 'is-swiped' : '')}>
-            <button type="button" className="tab-card-remove" onClick={() => { removeLesson(lesson.id); setSwipedStudy(null); }}><Trash2 size={19}/>Remove</button>
+            <button type="button" className="tab-card-remove" onClick={() => { setPendingDelete(lesson.id); setSwipedStudy(null); }}><Trash2 size={19}/>Remove</button>
             <div className="tab-card-surface"
               onTouchStart={e => {const t=e.touches[0]; swipeStart.current=t?{x:t.clientX,y:t.clientY,id:lesson.id}:null;}}
               onTouchEnd={e => {const t=e.changedTouches[0],start=swipeStart.current;swipeStart.current=null;if(!t||!start||start.id!==lesson.id)return;const dx=t.clientX-start.x,dy=t.clientY-start.y;if(Math.abs(dx)>44&&Math.abs(dx)>Math.abs(dy))setSwipedStudy(dx<0?lesson.id:null);}}>
-              <button type="button" className="tab-card-hit" onClick={() => {if(isSwiped){setSwipedStudy(null);return;}flushAnswers();setActive(lesson);setMode('lesson');}}>
-                <div className="tab-card-top"><span className="tab-card-type"><span className="tab-type">{lesson.status === 'completed' ? 'Completed' : 'In progress'}</span></span><span className="tab-surah">{lesson.surahName || getSurah(lesson.surahNumber)?.name} {lesson.surahNumber}:{lesson.startAyah}–{lesson.endAyah}</span></div>
-                <p className="tab-saved-date">{lesson.status === 'completed' ? 'Completed' : 'Last saved'}: {new Date(lesson.updatedAt || lesson.createdAt).toLocaleDateString()}</p>
-                <p className="reflect-study-card-meta">{keywordCount} keywords saved · {questionCount} questions</p>
-              </button>
+              <div className="reflect-study-card-inner">
+                <div className="reflect-study-card-heading">
+                  <button type="button" className="reflect-study-open" onClick={() => { if(isSwiped){setSwipedStudy(null);return;}flushAnswers();setActive(lesson);setMode("lesson"); }}>
+                    <BookOpen size={19} aria-hidden="true" />
+                    <span>{lesson.surahName || getSurah(lesson.surahNumber)?.name} {lesson.surahNumber}:{lesson.startAyah}–{lesson.endAyah}</span>
+                  </button>
+                  <button type="button" className="reflect-study-menu-trigger" aria-label="Lesson options" aria-expanded={studyMenu===lesson.id} onClick={() => setStudyMenu(current => current===lesson.id ? null : lesson.id)}><MoreVertical size={21}/></button>
+                </div>
+                {studyMenu===lesson.id && <div className="reflect-study-menu"><button type="button" onClick={() => {setPendingDelete(lesson.id);setStudyMenu(null);}}><Trash2 size={16}/>Remove lesson</button></div>}
+                <span className="tab-type">{lesson.status === "completed" ? "Completed" : "In progress"}</span>
+                <p className="tab-saved-date">Saved: {new Date(lesson.updatedAt || lesson.createdAt).toLocaleDateString("en-GB", {day:"numeric",month:"short",year:"numeric"})}</p>
+                <p className="reflect-study-card-meta">{keywordCount} keywords · {questionCount} questions</p>
+              </div>
             </div>
           </article>;
         })}</div> : <Empty text="Your saved Reflect studies will appear here."/>}</>}
       </>}
+
+      {pendingDelete !== null && <div className="reflect-delete-backdrop" role="presentation">
+        <div className="reflect-delete-dialog" role="alertdialog" aria-modal="true" aria-labelledby="reflect-delete-title" aria-describedby="reflect-delete-description">
+          <h2 id="reflect-delete-title">Remove lesson?</h2>
+          <p id="reflect-delete-description">This will permanently remove the saved lesson and its reflections.</p>
+          <div className="reflect-delete-actions">
+            <button type="button" onClick={() => setPendingDelete(null)}>Cancel</button>
+            <button type="button" className="reflect-delete-confirm" onClick={async () => {const id=pendingDelete;setPendingDelete(null);await removeLesson(id);}}>Remove</button>
+          </div>
+        </div>
+      </div>}
 
       {mode === 'new' && <>
         <div className={card}>
