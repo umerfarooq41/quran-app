@@ -30,6 +30,8 @@ export default function ReflectScreen() {
   const [introOpen, setIntroOpen] = useState(false);
   const [introLanguage, setIntroLanguage] = useState(null);
   const [error, setError] = useState('');
+  const [newQuestion, setNewQuestion] = useState('');
+  const [customTheme, setCustomTheme] = useState('');
   const pendingFields = useRef(new Map());
   const saveQueue = useRef(Promise.resolve());
 
@@ -171,9 +173,25 @@ export default function ReflectScreen() {
     await saveQueue.current;
   }
 
+  function saveStudyMeta(patch) {
+    if (!active) return;
+    const id = active.id;
+    setActive(current => current?.id === id ? {...current, ...patch} : current);
+    saveQueue.current = saveQueue.current.catch(() => {}).then(() => updateTadabburLesson(id, patch)).catch(() => setError('Unable to save study details.'));
+  }
+
+  const themeGroups = {
+    'Faith & Theology': ['Tawheed', 'Attributes of Allah', 'Hereafter', 'The Unseen'],
+    'Prophets & History': ['Stories of the Prophets', 'Past Nations', 'Trials & Resilience'],
+    'Worship & Ethics': ['Prayer & Worship', 'Justice', 'Family & Relationships', 'Honesty'],
+    'Heart Purification': ['Patience', 'Gratitude', 'Repentance & Hope', 'Trust in Allah', 'Humility'],
+    'Paradise & Hell': ['Paradise', 'Hellfire', 'Accountability'],
+  };
+
   async function finishLesson() {
     if (!active || busy) return;
     await flushAnswers();
+    await saveQueue.current;
     setBusy(true);
     setError('');
     try {
@@ -358,6 +376,17 @@ export default function ReflectScreen() {
         </section>
 
         <section className={card}>
+          <h3 className="font-semibold">Reading Guidance</h3>
+          <p className="mt-1 text-xs text-slate-500">Study the selected passage before recording personal reflections.</p>
+          {[
+            ['Read attentively', 'Read or listen slowly and repeat ayahs worth considering.'],
+            ['Understand the words', 'Read the translation and word-by-word meanings; select keywords above.'],
+            ['Study the explanation', 'Consult available Tafsir and consider the audience, context and surrounding ayahs.'],
+            ['Consider the message', 'Notice teachings, commands, warnings and promises actually present in the passage.'],
+          ].map(([heading, detail], i) => <div key={heading} className="mt-3 border-t border-slate-100 pt-3"><p className="text-sm font-semibold">{i + 1}. {heading}</p><p className="mt-1 text-sm text-slate-600">{detail}</p></div>)}
+          <p className="mt-3 text-xs text-slate-500">Passage-specific explanations are shown only when supported by the selected source.</p>
+        </section>
+        <section className={card}>
           <h3 className="font-semibold">Keywords</h3>
           <p className="mt-1 text-xs text-slate-500">Tap a word above to save or remove it from this lesson.</p>
           {(active.keywords || []).length ? <div className="mt-3 flex flex-wrap gap-2">
@@ -392,13 +421,6 @@ export default function ReflectScreen() {
               <textarea className={field+' mt-2 min-h-20'} value={active.answers?.tadabbur?.[key] ?? (key === 'commitment' ? active.answers?.tadabbur?.plan || '' : '')} onChange={(event) => saveTadabburField(key, event.target.value)} onBlur={flushAnswers} />
             </label>
           ))}
-          <label className="mt-4 block text-sm font-medium">When will I start?
-            <select className={field+' mt-2'} value={active.answers?.tadabbur?.startWhen || 'today'} onChange={(event) => { saveTadabburField('startWhen', event.target.value); flushAnswers(); }}>
-              <option value="today">Today</option>
-              <option value="tomorrow">Tomorrow</option>
-              <option value="later">Later</option>
-            </select>
-          </label>
         </section>
         {error && <p role="alert" className="text-sm text-rose-600">{error}</p>}
         {active.status !== 'completed' && <button type="button" className={action+' w-full'} disabled={busy} onClick={finishLesson}>{busy ? 'Saving…' : 'Mark as finished'}</button>}
