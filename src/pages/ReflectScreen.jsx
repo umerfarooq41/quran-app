@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { BookOpen, Loader2, Plus, Trash2 } from 'lucide-react';
+import { BookOpen, Info, Loader2, Plus, Trash2 } from 'lucide-react';
 import { Screen, Empty, Header } from '../components/common/AppChrome';
 import { useAppStore } from '../store/useAppStore';
 import { getSurah, getSurahAyahs, getSurahInfo } from '../lib/quran';
@@ -28,6 +28,7 @@ export default function ReflectScreen() {
   const [active, setActive] = useState(null);
   const [busy, setBusy] = useState(false);
   const [introOpen, setIntroOpen] = useState(false);
+  const [guidanceOpen, setGuidanceOpen] = useState(false);
   const [introLanguage, setIntroLanguage] = useState(null);
   const [error, setError] = useState('');
   const [newQuestion, setNewQuestion] = useState('');
@@ -238,7 +239,7 @@ export default function ReflectScreen() {
     <Screen className="tabs-screen app-page-shell bg-fluent reflect-screen">
       <div className="app-fixed-header">
         <Header
-          title={mode === 'hub' ? 'Reflect' : mode === 'new' ? 'New Study' : active ? (active.surahName || getSurah(active.surahNumber)?.name || 'Reflect') : 'Reflect'}
+          title={mode === 'hub' ? 'Reflect' : mode === 'new' ? 'New Study' : 'Reflect Study'}
           onBack={() => { flushAnswers(); if (mode === 'hub') goBack(); else { setMode('hub'); setActive(null); } }}
           backLabel="Back from Reflect"
         />
@@ -317,11 +318,26 @@ export default function ReflectScreen() {
       </>}
 
       {mode === 'lesson' && active && <>
-        <div className={card}>
-          <p className="text-xs font-semibold text-[#2d6e5e]">SURAH {active.surahNumber} · AYAH {active.startAyah}–{active.endAyah}</p>
-          <h2 className="mt-1 text-lg font-bold">{active.surahName || getSurah(active.surahNumber)?.name || `Surah ${active.surahNumber}`} · {active.startAyah}–{active.endAyah}</h2>
-          <p className="mt-2 text-xs text-slate-500">Source-led study · Saved on this device</p>
-          {active.sourceSnapshot?.translationName && <p className="mt-1 text-xs text-slate-500">Translation: {active.sourceSnapshot.translationName}</p>}
+        <div className={card + " reflect-study-summary"}>
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <h2 className="text-lg font-semibold">{active.surahName || getSurah(active.surahNumber)?.name || ("Surah " + active.surahNumber)}</h2>
+              <p className="mt-1 text-sm text-slate-600">Ayahs {active.startAyah}–{active.endAyah} · {active.endAyah - active.startAyah + 1} consecutive ayahs</p>
+            </div>
+            <button type="button" className="reflect-guidance-trigger" aria-label="Reading guidance" aria-expanded={guidanceOpen} aria-controls="reflect-reading-guidance" onClick={() => setGuidanceOpen(value => !value)}><Info size={21} aria-hidden="true"/></button>
+          </div>
+          {active.sourceSnapshot?.translationName && <p className="mt-3 text-xs text-slate-500">Translation · {active.sourceSnapshot.translationName}</p>}
+          {guidanceOpen && <div id="reflect-reading-guidance" className="reflect-guidance-panel">
+            <h3 className="text-sm font-semibold">Reading Guidance</h3>
+            <p className="mt-1 text-xs text-slate-500">Study the selected passage before recording personal reflections.</p>
+            {[
+              ['Read attentively', 'Read or listen slowly and repeat ayahs worth considering.'],
+              ['Understand the words', 'Read the translation and word-by-word meanings; select keywords above.'],
+              ['Study the explanation', 'Consult available Tafsir and consider the audience, context and surrounding ayahs.'],
+              ['Consider the message', 'Notice teachings, commands, warnings and promises actually present in the passage.'],
+            ].map(([heading, detail], i) => <div key={heading} className="mt-3 border-t border-slate-100 pt-3"><p className="text-sm font-semibold">{i + 1}. {heading}</p><p className="mt-1 text-sm text-slate-600">{detail}</p></div>)}
+            <p className="mt-3 text-xs text-slate-500">Passage-specific explanations are shown only when supported by the selected source.</p>
+          </div>}
         </div>
 
         <section className={card}>
@@ -382,17 +398,6 @@ export default function ReflectScreen() {
           )}
         </section>
 
-        <section className={card}>
-          <h3 className="font-semibold">Reading Guidance</h3>
-          <p className="mt-1 text-xs text-slate-500">Study the selected passage before recording personal reflections.</p>
-          {[
-            ['Read attentively', 'Read or listen slowly and repeat ayahs worth considering.'],
-            ['Understand the words', 'Read the translation and word-by-word meanings; select keywords above.'],
-            ['Study the explanation', 'Consult available Tafsir and consider the audience, context and surrounding ayahs.'],
-            ['Consider the message', 'Notice teachings, commands, warnings and promises actually present in the passage.'],
-          ].map(([heading, detail], i) => <div key={heading} className="mt-3 border-t border-slate-100 pt-3"><p className="text-sm font-semibold">{i + 1}. {heading}</p><p className="mt-1 text-sm text-slate-600">{detail}</p></div>)}
-          <p className="mt-3 text-xs text-slate-500">Passage-specific explanations are shown only when supported by the selected source.</p>
-        </section>
         <section className={card}>
           <h3 className="font-semibold">Keywords</h3>
           <p className="mt-1 text-xs text-slate-500">Tap a word above to save or remove it from this lesson.</p>
