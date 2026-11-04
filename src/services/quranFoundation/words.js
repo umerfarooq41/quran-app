@@ -26,46 +26,23 @@ const quranWordsByVerse = new Map(
 const wordCache = new Map();
 const wordPromiseCache = new Map();
 
-const ENGLISH_WBW_URL = '/data/translations/wbw-translation-en.json';
-let englishWordMeaningsPromise = null;
+const LOCAL_WBW_URLS = { en: '/data/translations/wbw-translation-en.json', ur: '/data/translations/wbw-translation-ur.json' };
+const localMeaningsPromises = new Map();
 
-async function loadEnglishWordMeanings(signal) {
-  if (!englishWordMeaningsPromise) {
-    englishWordMeaningsPromise = fetch(ENGLISH_WBW_URL, {
-      method: 'GET',
-      headers: { Accept: 'application/json' },
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          throw new Error(
-            `Unable to load English word meanings (${response.status}).`,
-          );
-        }
-
-        return response.json();
-      })
-      .catch((error) => {
-        englishWordMeaningsPromise = null;
-        throw error;
-      });
+async function loadLocalWordMeanings(language, signal) {
+  if (!localMeaningsPromises.has(language)) {
+    const request = fetch(LOCAL_WBW_URLS[language], {
+      method: 'GET', headers: { Accept: 'application/json' },
+    }).then(response => {
+      if (!response.ok) throw new Error(`Unable to load ${language} word meanings (${response.status}).`);
+      return response.json();
+    }).catch(error => {
+      localMeaningsPromises.delete(language);
+      throw error;
+    });
+    localMeaningsPromises.set(language, request);
   }
-
-  if (!signal) return englishWordMeaningsPromise;
-
-  if (signal.aborted) {
-    throw new DOMException('The request was aborted.', 'AbortError');
-  }
-
-  return Promise.race([
-    englishWordMeaningsPromise,
-    new Promise((_, reject) => {
-      signal.addEventListener(
-        'abort',
-        () => reject(new DOMException('The request was aborted.', 'AbortError')),
-        { once: true },
-      );
-    }),
-  ]);
+  return waitForWordRequest(localMeaningsPromises.get(language), signal);
 }
 
 export async function getWordByWordTranslation(surah, ayah, options = {}) {
@@ -83,10 +60,7 @@ export async function getWordByWordTranslation(surah, ayah, options = {}) {
     // The shared request is intentionally not tied to a component AbortSignal.
     // Closing or changing an ayah must not cancel data that the next ayah/card
     // instance can reuse from cache.
-    request = (language === 'en'
-      ? getLocalEnglishWords(surahNumber, ayahNumber)
-      : getApiWords(surahNumber, ayahNumber, language)
-    )
+    request = getLocalWords(surahNumber, ayahNumber, language)
       .then((result) => {
         wordCache.set(cacheKey, result);
         return result;
@@ -128,6 +102,7 @@ export function normalizeWordLanguage(language) {
 export function clearWordTranslationCache() {
   wordCache.clear();
   wordPromiseCache.clear();
+  localMeaningsPromises.clear();
 }
 
 function waitForWordRequest(request, signal) {
@@ -148,8 +123,8 @@ function waitForWordRequest(request, signal) {
   ]);
 }
 
-async function getLocalEnglishWords(surah, ayah, signal) {
-  const englishWordMeanings = await loadEnglishWordMeanings(signal);
+async function getLocalWords(surah, ayah, language, signal) {
+  const wordMeanings = await loadLocalWordMeanings(language, signal);
   const verseKey = `${surah}:${ayah}`;
   const verse = quranWordsByVerse.get(verseKey);
   const rawWords = Array.isArray(verse?.words) ? verse.words : [];
@@ -157,9 +132,9 @@ async function getLocalEnglishWords(surah, ayah, signal) {
   const words = rawWords
     .map((word, index) => {
       const location = word.location || `${verseKey}:${index + 1}`;
-      const meaningHtml = sanitizeEnglishMeaningHtml(
-        englishWordMeanings[location] || '',
-      );
+      const meaningHtml = language === 'en'
+        ? sanitizeEnglishMeaningHtml(wordMeanings[location] || '')
+        : escapeHtml(wordMeanings[location] || '');
       const meaning = htmlToPlainText(meaningHtml);
       const grammarClass = getPrimaryGrammarClass(meaningHtml);
       const arabic = String(word.text || '');
@@ -176,15 +151,14 @@ async function getLocalEnglishWords(surah, ayah, signal) {
         meaning,
         meaningHtml,
         transliteration: '',
-        language: 'en',
+        language,
       };
-    })
-    .filter((word) => word.meaningHtml || word.meaning);
+    });
 
   return {
     verseKey,
-    language: 'en',
-    direction: 'ltr',
+    language,
+    direction: getWordLanguage(language).direction,
     source: 'local-public-json',
     words,
   };
