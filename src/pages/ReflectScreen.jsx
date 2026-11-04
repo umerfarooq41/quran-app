@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { BookOpen, Info, Loader2, Plus, Trash2 } from 'lucide-react';
+import { BookOpen, ChevronDown, Info, Loader2, Plus, Trash2 } from 'lucide-react';
 import { Screen, Empty, Header } from '../components/common/AppChrome';
 import { useAppStore } from '../store/useAppStore';
 import { getSurah, getSurahAyahs, getSurahInfo } from '../lib/quran';
@@ -341,16 +341,16 @@ export default function ReflectScreen() {
         </div>
 
         <section className={card}>
-          <button type="button" className="flex w-full items-center justify-between gap-3 text-left" aria-expanded={introOpen} onClick={() => setIntroOpen((value) => !value)}>
+          <button type="button" className="flex w-full items-center justify-between gap-3 text-left" aria-expanded={introOpen} aria-controls="reflect-surah-introduction" onClick={() => setIntroOpen((value) => !value)}>
             <span className="font-semibold">Surah Introduction</span>
-            <span className="text-sm text-[#2d6e5e]">{introOpen ? 'Hide' : 'Show'}</span>
+            <ChevronDown size={20} aria-hidden="true" className={`reflect-intro-chevron ${introOpen ? "is-open" : ""}`} />
           </button>
-          {introOpen && <>
+          {introOpen && <div id="reflect-surah-introduction" className="reflect-intro-content">
             <div className="mt-4 flex gap-2" role="group" aria-label="Surah introduction language">
               {['ur', 'en'].map((language) => <button key={language} type="button" aria-pressed={displayedIntroLanguage === language} onClick={() => setIntroLanguage(language)} className={`rounded-lg px-4 py-2 text-sm font-semibold ${displayedIntroLanguage === language ? 'bg-[#2d6e5e] text-white' : 'bg-slate-100 text-slate-700'}`}>{language === 'ur' ? 'اردو' : 'English'}</button>)}
             </div>
             {surahIntro ? <div className={`surah-info-html is-${displayedIntroLanguage} mt-4`} lang={displayedIntroLanguage} dir={displayedIntroLanguage === 'ur' ? 'rtl' : 'ltr'} dangerouslySetInnerHTML={{ __html: surahIntro }} /> : <p className="mt-4 text-sm text-slate-500">Surah introduction is unavailable in this language.</p>}
-          </>}
+          </div>}
         </section>
         <section className={card}>
           <h3 className="font-semibold">Read the passage</h3>
