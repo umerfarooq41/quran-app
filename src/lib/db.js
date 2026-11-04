@@ -72,6 +72,46 @@ db.version(5).stores({
   tadabburLessons: '&id, surahNumber, startAyah, endAyah, status, createdAt, updatedAt',
 });
 
+
+// Normalize legacy Reflect/Tadabbur bookmark categories without dropping saved
+// bookmarks. Keep the oldest record when both labels exist for the same ayah.
+db.version(6).stores({
+  bookmarks: '++id, category, surahNumber, ayahNumber, page, createdAt',
+  highlights: '++id, color, surahNumber, ayahNumber, page, createdAt',
+  notes: '++id, surahNumber, ayahNumber, page, updatedAt',
+  lastRead: 'id, page, surahNumber, ayahNumber, updatedAt',
+  settings: 'id',
+  recentSearches: '++id, query, createdAt',
+  memorizationProgress: '++id, surahNumber, ayahNumber, status, updatedAt',
+  wordTranslations: '&key, language, surahNumber, ayahNumber, fetchedAt, expiresAt',
+  contentSyncRows: '&key, [resourceGroup+resourceId], [resourceGroup+resourceId+recordType], [resourceGroup+resourceId+recordType+verseKey], recordKey',
+  contentSyncState: '&id, lastSuccessfulSyncAt',
+  tadabburLessons: '&id, surahNumber, startAyah, endAyah, status, createdAt, updatedAt',
+}).upgrade(async (tx) => {
+  const table = tx.table('bookmarks');
+  const rows = await table.toArray();
+  const seen = new Map();
+  for (const row of rows) {
+    if (row.category !== 'Reflect' && row.category !== 'Tadabbur') continue;
+    const key = String(row.surahNumber) + ':' + String(row.ayahNumber);
+    const existing = seen.get(key);
+    if (existing) {
+      const merged = {
+        ...existing,
+        note: existing.note || row.note || '',
+        preview: existing.preview || row.preview || '',
+        updatedAt: Math.max(existing.updatedAt || 0, row.updatedAt || 0),
+      };
+      await table.put(merged);
+      await table.delete(row.id);
+    } else {
+      const normalized = { ...row, category: 'Reflect' };
+      await table.put(normalized);
+      seen.set(key, normalized);
+    }
+  }
+});
+
 export async function saveLastRead(payload) {
   await db.lastRead.put({ id: 'current', updatedAt: Date.now(), ...payload });
 }
@@ -195,7 +235,7 @@ export async function saveAyahHighlight(payload) {
 export async function saveAyahBookmark(payload) {
   const surahNumber = Number(payload.surahNumber);
   const ayahNumber = Number(payload.ayahNumber);
-  const category = payload.category || 'Reading';
+  const category = payload.category === 'Tadabbur' ? 'Reflect' : (payload.category || 'Reading');
 
   return db.transaction('rw', db.bookmarks, db.notes, async () => {
     const matches = await db.bookmarks
@@ -270,7 +310,7 @@ export async function removeAyahBookmark(id) {
 }
 
 export async function changeAyahBookmarkType(id, category) {
-  const nextCategory = category || 'Reading';
+  const nextCategory = category === 'Tadabbur' ? 'Reflect' : (category || 'Reading');
 
   return db.transaction('rw', db.bookmarks, db.notes, async () => {
     const bookmark = await db.bookmarks.get(id);
