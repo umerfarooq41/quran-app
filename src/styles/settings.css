@@ -32,8 +32,7 @@
 
 .settings-section-heading small,
 .settings-row-copy small {
-  color: #626b72 !important;
-  color: #626b72;
+  color: #596168 !important;
   font-size: .73rem;
   line-height: 1.42;
 }
@@ -332,7 +331,7 @@
 }
 
 .settings-row-copy small {
-  color: var(--text-muted, #8a9096);
+  color: #596168;
   font-weight: 450;
 }
 
