@@ -555,7 +555,7 @@ export default function ReflectScreen() {
                 <div className="reflect-study-card-heading">
                   <button type="button" className="reflect-study-open" onClick={() => { if(isSwiped){setSwipedStudy(null);return;}flushAnswers();setActive(lesson);setMode("lesson"); }}>
                     <BookOpen size={19} aria-hidden="true" />
-                    <span>{lesson.surahName || getSurah(lesson.surahNumber)?.name} {lesson.surahNumber}:{lesson.startAyah}–{lesson.endAyah}</span>
+                    <span className="min-w-0 text-left"><span className="block truncate font-semibold">{studyDisplayTitle(lesson)}</span><span className="block text-xs font-normal text-slate-500">{lesson.surahName || getSurah(lesson.surahNumber)?.name} · Ayahs {lesson.startAyah}–{lesson.endAyah}</span></span>
                   </button>
                   <button type="button" className="reflect-study-menu-trigger" aria-label="Lesson options" aria-expanded={studyMenu===lesson.id} onClick={() => setStudyMenu(current => current===lesson.id ? null : lesson.id)}><MoreVertical size={21}/></button>
                 </div>
