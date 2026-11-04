@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowLeft, BookOpen, Loader2, Plus } from 'lucide-react';
 import { Screen, Empty } from '../components/common/AppChrome';
 import { useAppStore } from '../store/useAppStore';
-import { getSurah, getSurahAyahs } from '../lib/quran';
+import { getSurah, getSurahAyahs, getSurahInfo } from '../lib/quran';
+import { sanitizeSurahHtml } from '../lib/sanitizeHtml';
 import { getTranslationOption } from '../lib/translations';
 import { getTadabburLessons, updateTadabburLesson, deleteTadabburLesson, saveReflectAnswerField } from '../lib/db';
 import {
@@ -26,6 +27,8 @@ export default function ReflectScreen() {
   const [endAyah, setEndAyah] = useState(Math.min(15, Number(target?.startAyah || 1) + 2));
   const [active, setActive] = useState(null);
   const [busy, setBusy] = useState(false);
+  const [introOpen, setIntroOpen] = useState(false);
+  const [introLanguage, setIntroLanguage] = useState(null);
   const [error, setError] = useState('');
   const pendingFields = useRef(new Map());
   const saveQueue = useRef(Promise.resolve());
@@ -174,7 +177,15 @@ export default function ReflectScreen() {
   const finalQuestions = active?.finalQuestions || REFLECT_FINAL_QUESTIONS;
   const legacyPoints = active?.content?.understand?.keyPoints || [];
   const translationOption = getTranslationOption(active?.sourceSnapshot?.translationId || settings.translation);
-  const wordLanguage = active?.sourceSnapshot?.wordByWordLanguage || settings.wordByWordLanguage || 'en';
+  const wordLanguage = settings.wordByWordLanguage || 'en';
+  const showWordByWord = Boolean(settings.wordByWordTranslation);
+  const preferredIntroLanguage = String(translationOption.language || 'En').toLowerCase() === 'ur' ? 'ur' : 'en';
+  const displayedIntroLanguage = introLanguage || preferredIntroLanguage;
+  const surahIntro = useMemo(() => {
+    if (!active?.surahNumber) return '';
+    return sanitizeSurahHtml(getSurahInfo(active.surahNumber, displayedIntroLanguage)?.text || '');
+  }, [active?.surahNumber, displayedIntroLanguage]);
+
 
   return (
     <Screen className="space-y-4 pb-10">
@@ -268,6 +279,18 @@ export default function ReflectScreen() {
         </section>}
 
         <section className={card}>
+          <button type="button" className="flex w-full items-center justify-between gap-3 text-left" aria-expanded={introOpen} onClick={() => setIntroOpen((value) => !value)}>
+            <span className="font-semibold">Surah Introduction</span>
+            <span className="text-sm text-[#2d6e5e]">{introOpen ? 'Hide' : 'Show'}</span>
+          </button>
+          {introOpen && <>
+            <div className="mt-4 flex gap-2" role="group" aria-label="Surah introduction language">
+              {['ur', 'en'].map((language) => <button key={language} type="button" aria-pressed={displayedIntroLanguage === language} onClick={() => setIntroLanguage(language)} className={`rounded-lg px-4 py-2 text-sm font-semibold ${displayedIntroLanguage === language ? 'bg-[#2d6e5e] text-white' : 'bg-slate-100 text-slate-700'}`}>{language === 'ur' ? 'اردو' : 'English'}</button>)}
+            </div>
+            {surahIntro ? <div className={`surah-info-html is-${displayedIntroLanguage} mt-4`} lang={displayedIntroLanguage} dir={displayedIntroLanguage === 'ur' ? 'rtl' : 'ltr'} dangerouslySetInnerHTML={{ __html: surahIntro }} /> : <p className="mt-4 text-sm text-slate-500">Surah introduction is unavailable in this language.</p>}
+          </>}
+        </section>
+        <section className={card}>
           <h3 className="font-semibold">Read the passage</h3>
           <p className="mt-1 text-xs text-slate-500">Each Ayah is followed by its word-by-word meanings, selected translation, and available Tafsir.</p>
           {verses.length ? <div className="mt-4 divide-y divide-slate-200">
@@ -276,7 +299,7 @@ export default function ReflectScreen() {
                 <p className="mb-3 text-sm font-semibold text-[#2d6e5e]">Ayah {verse.ayahNumber} · {active.surahNumber}:{verse.ayahNumber}</p>
                 <p className="ayah-translation-arabic" dir="rtl" lang="ar">{verse.arabic}</p>
 
-                {(verse.wordByWordWords?.length > 0 || verse.wordByWord) && (
+                {showWordByWord && (verse.wordByWordWords?.length > 0 || verse.wordByWord) && (
                   <section className={`ayah-word-by-word is-${wordLanguage} mt-4`} aria-label={`Ayah ${verse.ayahNumber} word-by-word translation`}>
                     <div className="ayah-word-by-word-heading">Word by word · {wordLanguage === 'ur' ? 'Urdu' : 'English'}</div>
                     {verse.wordByWordWords?.length > 0 ? (
