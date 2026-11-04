@@ -4,15 +4,9 @@ import { getWordByWordTranslation } from '../quranFoundation/words';
 import { saveTadabburLesson } from '../../lib/db';
 
 export const REFLECT_FINAL_QUESTIONS = Object.freeze([
-  'What is the most important thing you learned from these Ayahs?',
-  'What did these Ayahs make you reflect on about yourself?',
-  'What is one thing you want to remember or apply from this lesson?',
-]);
-
-export const REFLECT_PREPARATION_QUESTIONS = Object.freeze([
-  'What do you already know or understand about the subject of this passage?',
-  'What experiences or questions have shaped the way you think about this subject?',
-  'What would you like to pay attention to as you study this passage?',
+  'What stood out to me?',
+  'What did I learn from the translation and Tafsir?',
+  'How does this guidance relate to my life?',
 ]);
 
 /**
@@ -124,16 +118,11 @@ export async function createTadabburLesson({
     title: `${surahName} · ${start}–${end}`,
     content: {
       mode: 'source-led',
-      prepare: {
-        description: 'Answer these before studying the selected Ayahs.',
-        questions: REFLECT_PREPARATION_QUESTIONS.map((text) => ({ text })),
-      },
       study: {
         description: 'Read the selected Arabic and translation. Tafsir is shown only when it is available in the selected source.',
       },
     },
     answers: {
-      prepare: ['', '', ''],
       final: ['', '', ''],
       notes: '',
     },
