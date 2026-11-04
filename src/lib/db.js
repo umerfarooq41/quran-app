@@ -456,6 +456,35 @@ export async function updateTadabburLesson(id, patch) {
   });
 }
 
+/**
+ * Persist a single Reflect answer field without overwriting other fields.
+ * The read/modify/write is serialized by Dexie's transaction.
+ */
+export async function saveReflectAnswerField(id, group, index, value) {
+  const lessonId = String(id || '');
+  if (!lessonId || !['prepare', 'final', 'notes'].includes(group)) {
+    throw new Error('Invalid Reflect answer field.');
+  }
+  if (group !== 'notes' && (!Number.isInteger(index) || index < 0)) {
+    throw new Error('Invalid Reflect question index.');
+  }
+  return db.transaction('rw', db.tadabburLessons, async () => {
+    const existing = await db.tadabburLessons.get(lessonId);
+    if (!existing) throw new Error('Reflect study not found.');
+    const answers = { ...(existing.answers || {}) };
+    if (group === 'notes') {
+      answers.notes = String(value ?? '');
+    } else {
+      const entries = [...(Array.isArray(answers[group]) ? answers[group] : [])];
+      entries[index] = String(value ?? '');
+      answers[group] = entries;
+    }
+    const updated = { ...existing, answers, updatedAt: Date.now() };
+    await db.tadabburLessons.put(updated);
+    return updated;
+  });
+}
+
 export async function deleteTadabburLesson(id) {
   return db.tadabburLessons.delete(String(id));
 }
