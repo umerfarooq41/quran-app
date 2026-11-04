@@ -5,7 +5,7 @@ import { useAppStore } from '../store/useAppStore';
 import { getSurah, getSurahAyahs, getSurahInfo } from '../lib/quran';
 import { sanitizeSurahHtml } from '../lib/sanitizeHtml';
 import { getTranslationOption } from '../lib/translations';
-import { getTadabburLessons, updateTadabburLesson, deleteTadabburLesson, saveReflectAnswerField } from '../lib/db';
+import { getTadabburLessons, updateTadabburLesson, deleteTadabburLesson, saveReflectAnswerField, saveReflectKeywords } from '../lib/db';
 import {
   createTadabburLesson,
   REFLECT_FINAL_QUESTIONS,
@@ -143,6 +143,27 @@ export default function ReflectScreen() {
       ? { ...current, answers: { ...current.answers, notes: value } }
       : current);
     queueAnswer(active.id, 'notes', null, value);
+  }
+
+  async function toggleKeyword(ayahNumber, word, index) {
+    if (!active) return;
+    const lessonId = active.id;
+    const key = ayahNumber + ':' + index;
+    const current = Array.isArray(active.keywords) ? active.keywords : [];
+    const keywords = current.some((item) => item.key === key)
+      ? current.filter((item) => item.key !== key)
+      : [...current, {
+          key,
+          ayahNumber,
+          arabic: word.arabic || '',
+          meaning: word.meaning || '',
+        }];
+    setActive((lesson) => lesson?.id === lessonId ? { ...lesson, keywords } : lesson);
+    saveQueue.current = saveQueue.current
+      .catch(() => {})
+      .then(() => saveReflectKeywords(lessonId, keywords))
+      .catch(() => setError('Unable to save selected keywords.'));
+    await saveQueue.current;
   }
 
   async function finishLesson() {
@@ -305,10 +326,10 @@ export default function ReflectScreen() {
                     {verse.wordByWordWords?.length > 0 ? (
                       <div className="ayah-word-by-word-list" dir="rtl">
                         {verse.wordByWordWords.map((word, index) => (
-                          <div className="ayah-word-by-word-item" key={word.id || index}>
+                          <button type="button" className={`ayah-word-by-word-item rounded-lg px-1 py-2 ${(active.keywords || []).some((item) => item.key === verse.ayahNumber + ':' + index) ? 'bg-emerald-100 ring-1 ring-emerald-600' : ''}`} key={word.id || index} aria-pressed={(active.keywords || []).some((item) => item.key === verse.ayahNumber + ':' + index)} aria-label={`Toggle keyword ${word.arabic || ''}`} onClick={() => toggleKeyword(verse.ayahNumber, word, index)}>
                             <span className="ayah-word-by-word-arabic" dir="rtl" lang="ar">{word.arabic}</span>
                             <span className="ayah-word-by-word-meaning" dir={wordLanguage === 'ur' ? 'rtl' : 'ltr'} lang={wordLanguage}>{word.meaning}</span>
-                          </div>
+                          </button>
                         ))}
                       </div>
                     ) : <p className="ayah-word-by-word-status">{verse.wordByWord}</p>}
@@ -338,6 +359,17 @@ export default function ReflectScreen() {
           )}
         </section>
 
+        <section className={card}>
+          <h3 className="font-semibold">Keywords</h3>
+          <p className="mt-1 text-xs text-slate-500">Tap a word above to save or remove it from this lesson.</p>
+          {(active.keywords || []).length ? <div className="mt-3 flex flex-wrap gap-2">
+            {active.keywords.map((keyword) => <button type="button" key={keyword.key} className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm" onClick={() => toggleKeyword(keyword.ayahNumber, keyword, Number(keyword.key.split(':')[1]))} aria-label={`Remove keyword ${keyword.arabic}`}>
+              <span lang="ar" dir="rtl" className="font-semibold">{keyword.arabic}</span>
+              <span className="mx-2 text-slate-500">{keyword.meaning}</span>
+              <span aria-hidden="true">×</span>
+            </button>)}
+          </div> : <p className="mt-3 text-sm text-slate-500">No keywords selected yet.</p>}
+        </section>
         {legacyPoints.length > 0 && <section className={card}>
           <h3 className="font-semibold">Previously saved study notes</h3>
           {legacyPoints.map((point,i)=><p key={i} className="mt-3 text-sm leading-6">{point.text}</p>)}
