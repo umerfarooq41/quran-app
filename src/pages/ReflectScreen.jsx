@@ -137,14 +137,6 @@ export default function ReflectScreen() {
     queueAnswer(active.id, group, index, value);
   }
 
-  function saveNotes(value) {
-    if (!active) return;
-    setActive((current) => current?.id === active.id
-      ? { ...current, answers: { ...current.answers, notes: value } }
-      : current);
-    queueAnswer(active.id, 'notes', null, value);
-  }
-
   function saveTadabburField(name, value) {
     if (!active) return;
     const lessonId = active.id;
@@ -206,7 +198,6 @@ export default function ReflectScreen() {
     }
   }
 
-  const questions = active?.content?.prepare?.questions || [];
   const verses = active?.sourceSnapshot?.verses || [];
   const finalQuestions = active?.finalQuestions || REFLECT_FINAL_QUESTIONS;
   const legacyPoints = active?.content?.understand?.keyPoints || [];
@@ -306,12 +297,6 @@ export default function ReflectScreen() {
           {active.sourceSnapshot?.translationName && <p className="mt-1 text-xs text-slate-500">Translation: {active.sourceSnapshot.translationName}</p>}
         </div>
 
-        {questions.length > 0 && <section className={card}>
-          <h3 className="font-semibold">Before you read</h3>
-          <p className="mt-1 text-sm text-slate-500">Answer from what you already know or have experienced, before studying the passage.</p>
-          {questions.map((q,i)=><label key={i} className="mt-4 block text-sm font-medium">{q.text}<textarea className={field+' mt-2 min-h-20'} value={active.answers?.prepare?.[i]||''} onChange={e=>saveAnswer('prepare',i,e.target.value)} onBlur={flushAnswers}/></label>)}
-        </section>}
-
         <section className={card}>
           <button type="button" className="flex w-full items-center justify-between gap-3 text-left" aria-expanded={introOpen} onClick={() => setIntroOpen((value) => !value)}>
             <span className="font-semibold">Surah Introduction</span>
@@ -389,13 +374,7 @@ export default function ReflectScreen() {
         </section>}
 
         <section className={card}>
-          <h3 className="font-semibold">Your observations</h3>
-          <p className="mt-1 text-sm text-slate-500">Write what you notice in the passage or questions you want to explore.</p>
-          <textarea className={field+' mt-3 min-h-28'} placeholder="Write your own notes…" value={active.answers?.notes||''} onChange={e=>saveNotes(e.target.value)} onBlur={flushAnswers}/>
-        </section>
-
-        <section className={card}>
-          <h3 className="font-semibold">Reflect on what you learned</h3>
+          <h3 className="font-semibold">Reflect</h3>
           {finalQuestions.map((q,i)=><label key={i} className="mt-4 block text-sm font-medium">{q}<textarea className={field+' mt-2 min-h-20'} value={active.answers?.final?.[i]||''} onChange={e=>saveAnswer('final',i,e.target.value)} onBlur={flushAnswers}/></label>)}
         </section>
         <section className={card}>
