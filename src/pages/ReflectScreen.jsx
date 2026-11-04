@@ -145,6 +145,19 @@ export default function ReflectScreen() {
     queueAnswer(active.id, 'notes', null, value);
   }
 
+  function saveTadabburField(name, value) {
+    if (!active) return;
+    const lessonId = active.id;
+    setActive((current) => current?.id === lessonId ? {
+      ...current,
+      answers: {
+        ...current.answers,
+        tadabbur: { ...current.answers?.tadabbur, [name]: value },
+      },
+    } : current);
+    queueAnswer(lessonId, 'tadabbur', name, value);
+  }
+
   async function toggleKeyword(ayahNumber, word, index) {
     if (!active) return;
     const lessonId = active.id;
@@ -384,6 +397,29 @@ export default function ReflectScreen() {
         <section className={card}>
           <h3 className="font-semibold">Reflect on what you learned</h3>
           {finalQuestions.map((q,i)=><label key={i} className="mt-4 block text-sm font-medium">{q}<textarea className={field+' mt-2 min-h-20'} value={active.answers?.final?.[i]||''} onChange={e=>saveAnswer('final',i,e.target.value)} onBlur={flushAnswers}/></label>)}
+        </section>
+        <section className={card}>
+          <h3 className="font-semibold">Tadabbur &amp; Tadhakkur</h3>
+          <p className="mt-1 text-sm text-slate-500">Personal contemplation, remembrance, and a practical commitment. These are your own reflections, not Tafsir.</p>
+          {[
+            ['imagine', 'Imagine & Feel', 'What do these ayahs make me imagine or feel?'],
+            ['dua', 'Dua', 'What would I like to ask Allah after reading these ayahs?'],
+            ['evaluate', 'Evaluate', 'How does my behavior compare with what I have learned?'],
+            ['commitment', 'My Commitment', 'What one specific change will I make?'],
+          ].map(([key, label, prompt]) => (
+            <label key={key} className="mt-4 block text-sm font-medium">
+              {label}
+              <span className="mt-1 block text-xs font-normal text-slate-500">{prompt}</span>
+              <textarea className={field+' mt-2 min-h-20'} value={active.answers?.tadabbur?.[key] ?? (key === 'commitment' ? active.answers?.tadabbur?.plan || '' : '')} onChange={(event) => saveTadabburField(key, event.target.value)} onBlur={flushAnswers} />
+            </label>
+          ))}
+          <label className="mt-4 block text-sm font-medium">When will I start?
+            <select className={field+' mt-2'} value={active.answers?.tadabbur?.startWhen || 'today'} onChange={(event) => { saveTadabburField('startWhen', event.target.value); flushAnswers(); }}>
+              <option value="today">Today</option>
+              <option value="tomorrow">Tomorrow</option>
+              <option value="later">Later</option>
+            </select>
+          </label>
         </section>
         {error && <p role="alert" className="text-sm text-rose-600">{error}</p>}
         {active.status !== 'completed' && <button type="button" className={action+' w-full'} disabled={busy} onClick={finishLesson}>{busy ? 'Saving…' : 'Mark as finished'}</button>}
