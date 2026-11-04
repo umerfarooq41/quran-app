@@ -462,10 +462,10 @@ export async function updateTadabburLesson(id, patch) {
  */
 export async function saveReflectAnswerField(id, group, index, value) {
   const lessonId = String(id || '');
-  if (!lessonId || !['prepare', 'final', 'notes'].includes(group)) {
+  if (!lessonId || !['prepare', 'final', 'notes', 'tadabbur'].includes(group)) {
     throw new Error('Invalid Reflect answer field.');
   }
-  if (group !== 'notes' && (!Number.isInteger(index) || index < 0)) {
+  if (group !== 'notes' && group !== 'tadabbur' && (!Number.isInteger(index) || index < 0)) {
     throw new Error('Invalid Reflect question index.');
   }
   return db.transaction('rw', db.tadabburLessons, async () => {
@@ -474,6 +474,10 @@ export async function saveReflectAnswerField(id, group, index, value) {
     const answers = { ...(existing.answers || {}) };
     if (group === 'notes') {
       answers.notes = String(value ?? '');
+    } else if (group === 'tadabbur') {
+      const allowed = ['imagine', 'dua', 'evaluate', 'plan'];
+      if (!allowed.includes(index)) throw new Error('Invalid reflection field.');
+      answers.tadabbur = { ...(answers.tadabbur || {}), [index]: String(value ?? '') };
     } else {
       const entries = [...(Array.isArray(answers[group]) ? answers[group] : [])];
       entries[index] = String(value ?? '');
