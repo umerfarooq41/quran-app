@@ -37,6 +37,7 @@ export default function ReflectScreen() {
   const [newQuestion, setNewQuestion] = useState('');
   const [customTheme, setCustomTheme] = useState('');
   const [hubTab, setHubTab] = useState('Studies');
+  const [discoverTab, setDiscoverTab] = useState('Keywords');
   const [swipedStudy, setSwipedStudy] = useState(null);
   const [expandedTafsir, setExpandedTafsir] = useState({});
   const swipeStart = useRef(null);
@@ -266,10 +267,36 @@ export default function ReflectScreen() {
       <div className="app-scroll-content reflect-content">
       {mode === 'hub' && <>
         <div className="library-tabs share-like-segment reflect-tabs" role="tablist" aria-label="Reflect library">
-          {['Studies', 'Questions', 'Themes', 'Progress'].map(tab => <button key={tab} type="button" role="tab" aria-selected={hubTab === tab} onClick={() => setHubTab(tab)} className={hubTab === tab ? 'is-active' : ''}>{tab}</button>)}
+          {['Studies', 'Questions', 'Discover', 'Progress'].map(tab => <button key={tab} type="button" role="tab" aria-selected={hubTab === tab} onClick={() => setHubTab(tab)} className={hubTab === tab ? 'is-active' : ''}>{tab}</button>)}
         </div>
         {hubTab === 'Questions' && <div className={card}><h2 className="font-semibold">My Questions</h2>{lessons.flatMap(l => (l.studyQuestions || []).map(q => ({...q, lesson:l}))).length ? lessons.flatMap(l => (l.studyQuestions || []).map(q => ({...q, lesson:l}))).map(q => <button key={q.lesson.id + q.id} type="button" className="mt-3 block w-full border-t pt-3 text-left text-sm" onClick={() => { setActive(q.lesson); setMode('lesson'); }}><span className="font-medium">{q.text}</span><span className="mt-1 block text-xs text-slate-500">{q.lesson.surahName} {q.lesson.startAyah}–{q.lesson.endAyah} · {q.answered ? 'Answered' : 'Open'}</span></button>) : <p className="mt-2 text-sm text-slate-500">No questions saved yet.</p>}</div>}
-        {hubTab === 'Themes' && <div className={card}><h2 className="font-semibold">Themes</h2>{lessons.filter(l => l.studyThemes?.main || l.studyThemes?.custom?.length).length ? lessons.filter(l => l.studyThemes?.main || l.studyThemes?.custom?.length).map(l => <button key={l.id} type="button" className="mt-3 block w-full border-t pt-3 text-left text-sm" onClick={() => { setActive(l); setMode('lesson'); }}><span className="font-medium">{l.studyThemes?.main || l.studyThemes?.custom?.join(', ')}</span><span className="block text-xs text-slate-500">{l.surahName} {l.startAyah}–{l.endAyah}</span></button>) : <p className="mt-2 text-sm text-slate-500">No themes saved yet.</p>}</div>}
+        {hubTab === 'Discover' && <div className="reflect-discover">
+          <div className="library-tabs share-like-segment reflect-discover-tabs" role="tablist" aria-label="Discover sections">
+            {['Keywords','Themes'].map(tab => <button key={tab} type="button" role="tab" aria-selected={discoverTab === tab} className={discoverTab === tab ? 'is-active' : ''} onClick={() => setDiscoverTab(tab)}>{tab}</button>)}
+          </div>
+          {discoverTab === 'Keywords' && (() => {
+            const words = new Map();
+            lessons.forEach(lesson => (lesson.keywords || []).forEach(word => {
+              const arabic = (word.arabic || '').trim();
+              const meaning = (word.meaning || '').trim();
+              if (!arabic) return;
+              const key = arabic.normalize('NFC');
+              if (!words.has(key)) words.set(key,{arabic,meaning,refs:[]});
+              const entry = words.get(key);
+              const ref = lesson.surahNumber + ':' + word.ayahNumber;
+              if (!entry.refs.some(r => r.ref === ref && r.lesson.id === lesson.id)) entry.refs.push({ref,lesson});
+            }));
+            const saved = [...words.values()];
+            return <div className="reflect-discover-content">
+              <div className="reflect-discover-heading"><h2>Saved Keywords</h2><span>{saved.length} saved</span></div>
+              {saved.length ? <div className="reflect-keyword-list">{saved.map(word => <article key={word.arabic} className="reflect-keyword-card">
+                <div className="reflect-keyword-row"><span>{word.meaning}</span><span lang="ar" dir="rtl" className="reflect-keyword-arabic">{word.arabic}</span></div>
+                <div className="reflect-keyword-refs">{word.refs.map(({ref,lesson}) => <button type="button" key={lesson.id+':'+ref} onClick={() => {setActive(lesson);setMode('lesson');}}>{lesson.surahName || getSurah(lesson.surahNumber)?.name} {ref}</button>)}</div>
+              </article>)}</div> : <Empty text="Tap words in a Reflect lesson to save them here."/>}
+            </div>;
+          })()}
+          {discoverTab === 'Themes' && <div className={card}><h2 className="font-semibold">Themes</h2>{lessons.filter(l => l.studyThemes?.main || l.studyThemes?.custom?.length).length ? lessons.filter(l => l.studyThemes?.main || l.studyThemes?.custom?.length).map(l => <button key={l.id} type="button" className="mt-3 block w-full border-t pt-3 text-left text-sm" onClick={() => { setActive(l); setMode('lesson'); }}><span className="font-medium">{l.studyThemes?.main || l.studyThemes?.custom?.join(', ')}</span><span className="block text-xs text-slate-500">{l.surahName} {l.startAyah}–{l.endAyah}</span></button>) : <p className="mt-2 text-sm text-slate-500">No themes saved yet.</p>}</div>}
+        </div>}
         {hubTab === 'Progress' && <div className={card}><h2 className="font-semibold">Study Progress</h2><p className="mt-2 text-sm">{lessons.filter(l => l.status === 'completed').length} completed studies</p><p className="mt-1 text-sm">{new Set(lessons.filter(l => l.status === 'completed').flatMap(l => Array.from({length:l.endAyah-l.startAyah+1},(_,i)=>l.surahNumber+':'+(l.startAyah+i)))).size} unique ayahs studied</p><p className="mt-1 text-sm">{lessons.flatMap(l => l.studyQuestions || []).filter(q => !q.answered).length} open questions</p></div>}
         {hubTab === 'Studies' && <>
         <div className="flex items-center justify-between"><h2 className="font-semibold">Studies</h2><span className="text-xs text-slate-500">{lessons.length} saved</span></div>
