@@ -68,7 +68,7 @@ export async function createTadabburLesson({
     }
 
     const tafsirNotes = (translationEntry?.footnotes || [])
-      .filter((note) => note?.kind === 'tafsir' && String(note.text || '').trim())
+      .filter((note) => String(note?.text || '').trim())
       .map((note) => String(note.text).trim());
 
     let wordByWord = null;
@@ -95,7 +95,7 @@ export async function createTadabburLesson({
       translation,
       tafsir: tafsirNotes.join('\\n'),
       tafsirNotes: (translationEntry?.footnotes || [])
-        .filter((note) => note?.kind === 'tafsir' && String(note.text || '').trim())
+        .filter((note) => String(note?.text || '').trim())
         .map((note, index) => ({
           number: String(note.number || index + 1),
           text: String(note.text).trim(),
