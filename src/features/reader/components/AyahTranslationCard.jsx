@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { getSurah, getSurahAyahs, surahs } from '../../../lib/quran';
 import {
   getTranslationOption,
@@ -18,7 +18,7 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
   const [activeTarget, setActiveTarget] = useState(() => normalizeTarget(target));
   const [translation, setTranslation] = useState({ plainText: '', parts: [], footnotes: [] });
   const [translationLoaded, setTranslationLoaded] = useState(false);
-  const [footnotesOpen, setFootnotesOpen] = useState(false);
+  const [openFootnote, setOpenFootnote] = useState(null);
   const bodyRef = useRef(null);
   const ayah = useMemo(() => getAyah(activeTarget), [
     activeTarget?.surahNumber,
@@ -51,7 +51,7 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
     const { surahNumber, ayahNumber } = activeTarget;
     setTranslation({ plainText: '', parts: [], footnotes: [] });
     setTranslationLoaded(false);
-    setFootnotesOpen(false);
+    setOpenFootnote(null);
 
     // Show the selected translation as soon as it is ready. Matching tafsir is
     // loaded in parallel and merged later, so optional tafsir never blocks the
@@ -125,7 +125,7 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
       bodyRef.current.scrollTop = 0;
       bodyRef.current.scrollLeft = 0;
     }
-    setFootnotesOpen(false);
+    setOpenFootnote(null);
     setActiveTarget(nextTarget);
   }
 
@@ -165,7 +165,7 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
 
           <p className="ayah-translation-text" dir={translationOption.direction || 'ltr'}>
             {translationLoaded
-              ? renderTranslationText(translation, () => setFootnotesOpen(true))
+              ? renderTranslationText(translation, (number) => setOpenFootnote(current => current === Number(number) ? null : Number(number)), openFootnote)
               : ''}
           </p>
 
@@ -175,32 +175,18 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
             </p>
           )}
 
-          {translationLoaded && translation.footnotes?.length > 0 && (
+          {translationLoaded && openFootnote !== null && translation.footnotes?.some(note => Number(note.number) === openFootnote) && (
             <div className="ayah-translation-footnote-wrap" dir={translationOption.direction || 'ltr'}>
-              <button
-                type="button"
-                className="ayah-translation-footnote-toggle"
-                aria-expanded={footnotesOpen}
-                onClick={() => setFootnotesOpen((open) => !open)}
-              >
-                <span>{footnotesOpen ? 'Hide Tafsir' : getNotesButtonLabel()}</span>
-                <ChevronDown size={16} aria-hidden="true" />
-              </button>
-
-              {footnotesOpen && (
-                <div className="ayah-translation-footnotes">
-                  {translation.footnotes?.length > 0 && (
-                    <section className="ayah-translation-note-section">
-                      {translation.footnotes.map((footnote) => (
-                        <p key={footnote.id} className="ayah-translation-note-row">
-                          <span className="ayah-translation-note-number">{footnote.number}</span>
-                          <span className="ayah-translation-note-content">{footnote.text}</span>
-                        </p>
-                      ))}
-                    </section>
-                  )}
-               </div>
-              )}
+              <div className="ayah-translation-footnotes">
+                <section className="ayah-translation-note-section">
+                  {translation.footnotes.filter(note => Number(note.number) === openFootnote).map(note => (
+                    <p key={note.id || note.number} className="ayah-translation-note-row">
+                      <span className="ayah-translation-note-number" dir="ltr" lang="en">{note.number}</span>
+                      <span className="ayah-translation-note-content">{note.text}</span>
+                    </p>
+                  ))}
+                </section>
+              </div>
             </div>
           )}
         </div>
@@ -229,7 +215,7 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
 }
 
 
-function renderTranslationText(translation, onFootnoteOpen) {
+function renderTranslationText(translation, onFootnoteOpen, openFootnote) {
   const parts = Array.isArray(translation?.parts) ? translation.parts : [];
 
   if (!parts.length) return translation?.plainText || MISSING_TRANSLATION;
@@ -240,9 +226,10 @@ function renderTranslationText(translation, onFootnoteOpen) {
         <button
           type="button"
           key={`${part.id || 'footnote'}-${index}`}
-          className="ayah-translation-inline-footnote"
+          className={`ayah-translation-inline-footnote ${openFootnote === Number(part.number) ? 'is-active' : ''}`}
+          aria-pressed={openFootnote === Number(part.number)}
           aria-label={`Open footnote ${part.number}`}
-          onClick={onFootnoteOpen}
+          onClick={() => onFootnoteOpen(part.number)}
         >
           {part.number}
         </button>
