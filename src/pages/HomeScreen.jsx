@@ -123,7 +123,7 @@ export default function HomeScreen() {
           <span className="home-reflect-icon"><BookOpen size={21} /></span>
           <span className="home-favorite-copy home-reflect-copy">
             <strong>Reflect</strong>
-            <small>Study Ayahs and save your reflections</small>
+            <small>Read, understand and reflect on the Quran</small>
           </span>
         </motion.button>
       </motion.section>
