@@ -96,7 +96,7 @@ test('Index, Search, Library and Settings screens open and remain responsive', a
   await expect(page.getByRole('heading', { name: 'Search' })).toBeVisible();
   await expectHealthyVisibleUI(page);
 
-  await page.getByRole('button', { name: /Back/i }).first().click();
+  await page.getByRole('button', { name: 'Back from search' }).click();
   await expect(page.getByRole('heading', { name: 'Al Quran' })).toBeVisible();
 
   await page.getByRole('button', { name: 'Library', exact: true }).click();
