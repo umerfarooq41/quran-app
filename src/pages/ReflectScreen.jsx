@@ -293,9 +293,8 @@ export default function ReflectScreen() {
             </label>
           </div>
           <p className={'mt-3 text-sm '+(validRange?'text-emerald-700':'text-rose-600')}>{count} Ayahs selected · Choose between 3 and 15.</p>
-        </div>
-        <section className="tab-card reflect-passage-preview">
-          <div className="tab-card-surface">
+          <div className="reflect-preview-divider" aria-hidden="true" />
+          <div className="reflect-preview-content">
             <div className="tab-card-top">
               <span className="tab-card-type">
                 <span className="tab-type">Selected passage</span>
@@ -310,7 +309,7 @@ export default function ReflectScreen() {
               </article>)}
             </div>
           </div>
-        </section>
+        </div>
         {error && <p role="alert" className="text-sm text-rose-600">{error}</p>}
         <button type="button" className={action+' w-full'} disabled={busy || !validRange || selected.length!==count} onClick={createStudy}>
           {busy ? <span className="inline-flex items-center gap-2"><Loader2 size={17} className="animate-spin"/>Preparing study…</span> : 'Start Reflect study'}
@@ -373,7 +372,7 @@ export default function ReflectScreen() {
                       <span>{expandedTafsir[verse.ayahNumber] ? 'Hide Tafsir' : 'Show Tafsir'}</span><ChevronDown size={16} aria-hidden="true"/>
                     </button>
                     {expandedTafsir[verse.ayahNumber] && <div className="ayah-translation-footnotes"><section className="ayah-translation-note-section">
-                      {(verse.tafsirNotes?.length ? verse.tafsirNotes : [{number:1,text:verse.tafsir}]).map((note,index) => <p key={note.number || index} className="ayah-translation-note-row"><span className="ayah-translation-note-number">{note.number || index+1}</span><span className="ayah-translation-note-content">{note.text}</span></p>)}
+                      {(verse.tafsirNotes?.length ? verse.tafsirNotes : [{number:1,text:verse.tafsir}]).map((note,index) => <p key={note.number || index} className="ayah-translation-note-row"><span className="ayah-translation-note-number" dir="ltr" lang="en">{note.number || index+1}</span><span className="ayah-translation-note-content">{note.text}</span></p>)}
                     </section></div>}
                   </div>
                 )}
