@@ -363,7 +363,7 @@ export default function ReflectScreen() {
 
                 <section className="mt-4" aria-label={`Ayah ${verse.ayahNumber} translation`}>
                   
-                  <p className="ayah-translation-text" dir={translationOption.direction || 'ltr'}>{verse.translation}</p>
+                  <p className="ayah-translation-text" dir={translationOption.direction || 'ltr'}>{renderReflectTranslation(verse.translation, verse.tafsirNotes, () => setExpandedTafsir(prev => ({...prev,[verse.ayahNumber]:true})))}</p>
                 </section>
 
                 {Boolean(verse.tafsirNotes?.length || verse.tafsir) && (
@@ -464,4 +464,19 @@ export default function ReflectScreen() {
       </div>
     </Screen>
   );
+}
+
+/** Match the Reader's tappable inline Tafsir references in saved lesson text. */
+function renderReflectTranslation(value, notes, openTafsir) {
+  const text = String(value || '');
+  const known = new Set((notes || []).map(note => Number(note.number)).filter(Number.isFinite));
+  return text.split(/(\\[\\d+\\])/g).map((part, index) => {
+    const match = /^\\[(\\d+)\\]$/.exec(part);
+    if (!match || (known.size && !known.has(Number(match[1])))) {
+      return <React.Fragment key={index}>{part}</React.Fragment>;
+    }
+    return <button key={index} type="button" className="ayah-translation-inline-footnote"
+      dir="ltr" lang="en" aria-label={`Show Tafsir footnote ${match[1]}`}
+      onClick={openTafsir}>{match[1]}</button>;
+  });
 }
