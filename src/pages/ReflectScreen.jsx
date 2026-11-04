@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { BookOpen, Loader2, Plus, Trash2, ChevronDown } from 'lucide-react';
+import { BookOpen, Loader2, Plus, Trash2 } from 'lucide-react';
 import { Screen, Empty, Header } from '../components/common/AppChrome';
 import { useAppStore } from '../store/useAppStore';
 import { getSurah, getSurahAyahs, getSurahInfo } from '../lib/quran';
@@ -361,21 +361,20 @@ export default function ReflectScreen() {
                   </section>
                 )}
 
-                <section className="mt-4" aria-label={`Ayah ${verse.ayahNumber} translation`}>
-                  
-                  <p className="ayah-translation-text" dir={translationOption.direction || 'ltr'}>{renderReflectTranslation(verse.translation, verse.tafsirNotes, () => setExpandedTafsir(prev => ({...prev,[verse.ayahNumber]:true})))}</p>
+                <section className="mt-4" aria-label={"Ayah " + verse.ayahNumber + " translation"}>
+                  <p className="ayah-translation-text" dir={translationOption.direction || "ltr"}>
+                    {renderReflectTranslation(verse.translation, verse.tafsirNotes?.length ? verse.tafsirNotes : (verse.tafsir ? [{number:1,text:verse.tafsir}] : []),
+                      (number) => setExpandedTafsir(previous => ({...previous, [verse.ayahNumber]: previous[verse.ayahNumber] === number ? null : number})), expandedTafsir[verse.ayahNumber])}
+                  </p>
                 </section>
-
-                {Boolean(verse.tafsirNotes?.length || verse.tafsir) && (
-                  <div className="ayah-translation-footnote-wrap" dir={translationOption.direction || 'ltr'}>
-                    <button type="button" className="ayah-translation-footnote-toggle" aria-expanded={Boolean(expandedTafsir[verse.ayahNumber])} onClick={() => setExpandedTafsir(prev => ({...prev,[verse.ayahNumber]:!prev[verse.ayahNumber]}))}>
-                      <span>{expandedTafsir[verse.ayahNumber] ? 'Hide Tafsir' : 'Show Tafsir'}</span><ChevronDown size={16} aria-hidden="true"/>
-                    </button>
-                    {expandedTafsir[verse.ayahNumber] && <div className="ayah-translation-footnotes"><section className="ayah-translation-note-section">
-                      {(verse.tafsirNotes?.length ? verse.tafsirNotes : [{number:1,text:verse.tafsir}]).map((note,index) => <p key={note.number || index} className="ayah-translation-note-row"><span className="ayah-translation-note-number" dir="ltr" lang="en">{note.number || index+1}</span><span className="ayah-translation-note-content">{note.text}</span></p>)}
-                    </section></div>}
-                  </div>
-                )}
+                {(() => {
+                  const notes = verse.tafsirNotes?.length ? verse.tafsirNotes : (verse.tafsir ? [{number:1,text:verse.tafsir}] : []);
+                  const note = notes.find(item => Number(item.number) === expandedTafsir[verse.ayahNumber]);
+                  return note ? <div className="ayah-translation-footnote-wrap reflect-selected-tafsir" dir={translationOption.direction || "ltr"}>
+                    <div className="ayah-translation-footnotes"><section className="ayah-translation-note-section">
+                      <p className="ayah-translation-note-row"><span className="ayah-translation-note-number" dir="ltr" lang="en">{note.number}</span><span className="ayah-translation-note-content">{note.text}</span></p>
+                    </section></div></div> : null;
+                })()}
               </article>
             ))}
           </div> : (
@@ -466,17 +465,16 @@ export default function ReflectScreen() {
   );
 }
 
-/** Match the Reader's tappable inline Tafsir references in saved lesson text. */
-function renderReflectTranslation(value, notes, openTafsir) {
-  const text = String(value || '');
-  const known = new Set((notes || []).map(note => Number(note.number)).filter(Number.isFinite));
+/** Reader-style inline references, each toggling only its own Tafsir note. */
+function renderReflectTranslation(value, notes, onToggle, selectedNumber) {
+  const text = String(value || "");
+  const available = new Set((notes || []).map(note => Number(note.number)).filter(Number.isFinite));
   return text.split(/(\[\d+\])/g).map((part, index) => {
     const match = /^\[(\d+)\]$/.exec(part);
-    if (!match || (known.size && !known.has(Number(match[1])))) {
-      return <React.Fragment key={index}>{part}</React.Fragment>;
-    }
-    return <button key={index} type="button" className="ayah-translation-inline-footnote"
-      dir="ltr" lang="en" aria-label={`Show Tafsir footnote ${match[1]}`}
-      onClick={openTafsir}>{match[1]}</button>;
+    if (!match || !available.has(Number(match[1]))) return <React.Fragment key={index}>{part}</React.Fragment>;
+    const number = Number(match[1]);
+    return <button key={index} type="button" className={"ayah-translation-inline-footnote" + (selectedNumber === number ? " is-active" : "")}
+      dir="ltr" lang="en" aria-pressed={selectedNumber === number} aria-label={"Toggle Tafsir footnote " + number}
+      onClick={() => onToggle(number)}>{number}</button>;
   });
 }
