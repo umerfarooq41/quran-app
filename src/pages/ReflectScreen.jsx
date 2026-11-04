@@ -38,6 +38,8 @@ export default function ReflectScreen() {
   const [customTheme, setCustomTheme] = useState('');
   const [hubTab, setHubTab] = useState('Studies');
   const [discoverTab, setDiscoverTab] = useState('Keywords');
+  const [expandedTheme, setExpandedTheme] = useState(null);
+  const [expandedSubtheme, setExpandedSubtheme] = useState(null);
   const [swipedStudy, setSwipedStudy] = useState(null);
   const [expandedTafsir, setExpandedTafsir] = useState({});
   const swipeStart = useRef(null);
@@ -274,28 +276,67 @@ export default function ReflectScreen() {
           <div className="library-tabs share-like-segment reflect-discover-tabs" role="tablist" aria-label="Discover sections">
             {['Keywords','Themes'].map(tab => <button key={tab} type="button" role="tab" aria-selected={discoverTab === tab} className={discoverTab === tab ? 'is-active' : ''} onClick={() => setDiscoverTab(tab)}>{tab}</button>)}
           </div>
+
           {discoverTab === 'Keywords' && (() => {
-            const words = new Map();
-            lessons.forEach(lesson => (lesson.keywords || []).forEach(word => {
-              const arabic = (word.arabic || '').trim();
-              const meaning = (word.meaning || '').trim();
-              if (!arabic) return;
-              const key = arabic.normalize('NFC');
-              if (!words.has(key)) words.set(key,{arabic,meaning,refs:[]});
-              const entry = words.get(key);
-              const ref = lesson.surahNumber + ':' + word.ayahNumber;
-              if (!entry.refs.some(r => r.ref === ref && r.lesson.id === lesson.id)) entry.refs.push({ref,lesson});
-            }));
-            const saved = [...words.values()];
+            const saved = lessons.flatMap(lesson => (lesson.keywords || []).filter(word => (word.arabic || '').trim()).map((word,index) => ({
+              ...word, lesson, index, ref: lesson.surahNumber + ':' + word.ayahNumber,
+            })));
             return <div className="reflect-discover-content">
               <div className="reflect-discover-heading"><h2>Saved Keywords</h2><span>{saved.length} saved</span></div>
-              {saved.length ? <div className="reflect-keyword-list">{saved.map(word => <article key={word.arabic} className="reflect-keyword-card">
-                <div className="reflect-keyword-row"><span>{word.meaning}</span><span lang="ar" dir="rtl" className="reflect-keyword-arabic">{word.arabic}</span></div>
-                <div className="reflect-keyword-refs">{word.refs.map(({ref,lesson}) => <button type="button" key={lesson.id+':'+ref} onClick={() => {setActive(lesson);setMode('lesson');}}>{lesson.surahName || getSurah(lesson.surahNumber)?.name} {ref}</button>)}</div>
-              </article>)}</div> : <Empty text="Tap words in a Reflect lesson to save them here."/>}
+              {saved.length ? <div className="reflect-keyword-list">{saved.map(word =>
+                <button type="button" key={word.lesson.id + ':' + (word.key ?? word.ayahNumber + ':' + word.index)}
+                  className="reflect-keyword-card reflect-keyword-link" onClick={() => {setActive(word.lesson);setMode('lesson');}}>
+                  <div className="reflect-keyword-row"><span>{word.meaning}</span><span lang="ar" dir="rtl" className="reflect-keyword-arabic">{word.arabic}</span></div>
+                  <div className="reflect-keyword-refs"><span>{word.lesson.surahName || getSurah(word.lesson.surahNumber)?.name} {word.ref}</span><ChevronDown size={15} className="reflect-keyword-arrow" aria-hidden="true"/></div>
+                </button>)}</div> : <Empty text="Tap words in a Reflect lesson to save them here."/>}
             </div>;
           })()}
-          {discoverTab === 'Themes' && <div className={card}><h2 className="font-semibold">Themes</h2>{lessons.filter(l => l.studyThemes?.main || l.studyThemes?.custom?.length).length ? lessons.filter(l => l.studyThemes?.main || l.studyThemes?.custom?.length).map(l => <button key={l.id} type="button" className="mt-3 block w-full border-t pt-3 text-left text-sm" onClick={() => { setActive(l); setMode('lesson'); }}><span className="font-medium">{l.studyThemes?.main || l.studyThemes?.custom?.join(', ')}</span><span className="block text-xs text-slate-500">{l.surahName} {l.startAyah}–{l.endAyah}</span></button>) : <p className="mt-2 text-sm text-slate-500">No themes saved yet.</p>}</div>}
+          {discoverTab === 'Themes' && <div className="reflect-discover-content">
+            <div className="reflect-discover-heading"><h2>Qur'anic Themes</h2><span>{Object.keys(themeGroups).length} main themes</span></div>
+            {Object.entries(themeGroups).map(([main,subs]) => {
+              const mainLessons = lessons.filter(lesson => lesson.studyThemes?.main === main);
+              const isOpen = expandedTheme === main;
+              return <section key={main} className="reflect-theme-group">
+                <button type="button" className="reflect-theme-heading" aria-expanded={isOpen} onClick={() => {setExpandedTheme(isOpen?null:main);setExpandedSubtheme(null);}}>
+                  <span><strong>{main}</strong><small>{subs.length} subthemes · {mainLessons.length} studies</small></span>
+                  <ChevronDown size={19} className={isOpen?'reflect-theme-chevron is-open':'reflect-theme-chevron'} aria-hidden="true"/>
+                </button>
+                {isOpen && <div className="reflect-theme-children">
+                  {subs.map(sub => {
+                    const matched = mainLessons.filter(lesson => (lesson.studyThemes?.sub || []).includes(sub));
+                    const subKey = main+':'+sub;
+                    const subOpen = expandedSubtheme === subKey;
+                    return <div key={sub} className="reflect-subtheme">
+                      <button type="button" className="reflect-subtheme-heading" aria-expanded={subOpen} onClick={() => setExpandedSubtheme(subOpen?null:subKey)}>
+                        <span>{sub}</span><span className="reflect-subtheme-count">{matched.length} {matched.length===1?'study':'studies'}</span>
+                        <ChevronDown size={16} className={subOpen?'reflect-theme-chevron is-open':'reflect-theme-chevron'} aria-hidden="true"/>
+                      </button>
+                      {subOpen && <div className="reflect-theme-studies">
+                        {matched.length ? matched.map(lesson => <button key={lesson.id} type="button" className="reflect-theme-study" onClick={() => {setActive(lesson);setMode('lesson');}}>
+                          <strong>{lesson.surahName || getSurah(lesson.surahNumber)?.name} {lesson.surahNumber}:{lesson.startAyah}–{lesson.endAyah}</strong>
+                          <small>{lesson.status==='completed'?'Completed':'In progress'}</small>
+                        </button>) : <p className="reflect-theme-empty">No saved studies in this subtheme yet.</p>}
+                      </div>}
+                    </div>;
+                  })}
+                  {mainLessons.some(lesson => (lesson.studyThemes?.custom || []).length) && <div className="reflect-subtheme">
+                    <p className="reflect-theme-custom-label">Custom themes</p>
+                    {mainLessons.flatMap(lesson => (lesson.studyThemes?.custom || []).map(tag => ({lesson,tag}))).map(({lesson,tag}) =>
+                      <button key={lesson.id+':'+tag} type="button" className="reflect-theme-study" onClick={() => {setActive(lesson);setMode('lesson');}}>
+                        <strong>{tag}</strong><small>{lesson.surahName || getSurah(lesson.surahNumber)?.name} {lesson.surahNumber}:{lesson.startAyah}–{lesson.endAyah}</small>
+                      </button>)}
+                  </div>}
+                </div>}
+              </section>;
+            })}
+            {lessons.filter(lesson => !lesson.studyThemes?.main && (lesson.studyThemes?.custom || []).length).length > 0 &&
+              <section className="reflect-theme-group"><div className="reflect-theme-heading"><strong>Other saved themes</strong></div>
+                <div className="reflect-theme-children">{lessons.filter(lesson => !lesson.studyThemes?.main).flatMap(lesson => (lesson.studyThemes?.custom || []).map(tag => ({lesson,tag}))).map(({lesson,tag}) =>
+                  <button key={lesson.id+':'+tag} type="button" className="reflect-theme-study" onClick={() => {setActive(lesson);setMode('lesson');}}>
+                    <strong>{tag}</strong><small>{lesson.surahName || getSurah(lesson.surahNumber)?.name} {lesson.surahNumber}:{lesson.startAyah}–{lesson.endAyah}</small>
+                  </button>)}</div></section>}
+          </div>}
+
         </div>}
         {hubTab === 'Progress' && <div className={card}><h2 className="font-semibold">Study Progress</h2><p className="mt-2 text-sm">{lessons.filter(l => l.status === 'completed').length} completed studies</p><p className="mt-1 text-sm">{new Set(lessons.filter(l => l.status === 'completed').flatMap(l => Array.from({length:l.endAyah-l.startAyah+1},(_,i)=>l.surahNumber+':'+(l.startAyah+i)))).size} unique ayahs studied</p><p className="mt-1 text-sm">{lessons.flatMap(l => l.studyQuestions || []).filter(q => !q.answered).length} open questions</p></div>}
         {hubTab === 'Studies' && <>
