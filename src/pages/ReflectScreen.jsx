@@ -105,11 +105,9 @@ export default function ReflectScreen() {
     setActive(null);
     setError('');
     setMode('new');
-    if (!target?.surahNumber) {
-      setSurahNumber(1);
-      setStartAyah(1);
-      setEndAyah(3);
-    }
+    setSurahNumber(1);
+    setStartAyah(1);
+    setEndAyah(3);
   }
 
   async function createStudy() {
