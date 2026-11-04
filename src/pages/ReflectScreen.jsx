@@ -100,6 +100,22 @@ export default function ReflectScreen() {
     await updateTadabburLesson(active.id, { answers });
   }
 
+  async function finishLesson() {
+    if (!active || busy) return;
+    setBusy(true);
+    setError('');
+    try {
+      const updated = await updateTadabburLesson(active.id, { status: 'completed', completedAt: active.completedAt || Date.now() });
+      if (!updated) throw new Error('Study not found.');
+      setActive(updated);
+      await refresh();
+    } catch (cause) {
+      setError(cause?.message || 'Unable to finish lesson.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function removeLesson(id) {
     await deleteTadabburLesson(id);
     setLessons((rows) => rows.filter((row) => row.id !== id));
@@ -141,7 +157,7 @@ export default function ReflectScreen() {
             <button type="button" className="w-full text-left" onClick={() => { setActive(lesson); setMode('lesson'); }}>
               <p className="text-xs text-[#2d6e5e]">Surah {lesson.surahNumber} · Ayahs {lesson.startAyah}–{lesson.endAyah}</p>
               <h3 className="mt-1 font-semibold">{lesson.title}</h3>
-              <p className="mt-1 text-xs text-slate-500">{new Date(lesson.updatedAt).toLocaleDateString()}</p>
+              <p className="mt-1 text-xs text-slate-500">{lesson.status === "completed" ? "Completed" : "In progress"} · {new Date(lesson.updatedAt).toLocaleDateString()}</p>
             </button>
             <button type="button" className="mt-3 text-xs text-rose-600" onClick={() => removeLesson(lesson.id)}>Delete study</button>
           </article>
@@ -151,7 +167,7 @@ export default function ReflectScreen() {
       {mode === 'new' && <>
         <div className={card}>
           <h2 className="font-semibold">Choose a passage</h2>
-          <p className="mt-1 text-sm text-slate-500">Select 1–15 consecutive Ayahs from one Surah. 1–5 is a good size to begin with.</p>
+          <p className="mt-1 text-sm text-slate-500">Select 3–15 consecutive Ayahs from one Surah.</p>
           <label className="mt-4 block text-xs font-semibold text-slate-600">Surah</label>
           <select className={field+' mt-1'} value={surahNumber} onChange={(e) => { const n=Number(e.target.value); setSurahNumber(n); setStartAyah(1); setEndAyah(3); }}>
             {Array.from({length:114},(_,i)=>getSurah(i+1)).filter(Boolean).map(s=><option key={s.number} value={s.number}>{s.number}. {s.name}</option>)}
@@ -168,7 +184,7 @@ export default function ReflectScreen() {
               </select>
             </label>
           </div>
-          <p className={'mt-3 text-sm '+(validRange?'text-emerald-700':'text-rose-600')}>{count} Ayahs selected · Choose between 1 and 15.</p>
+          <p className={'mt-3 text-sm '+(validRange?'text-emerald-700':'text-rose-600')}>{count} Ayahs selected · Choose between 3 and 15.</p>
         </div>
         <section className="tab-card reflect-passage-preview">
           <div className="tab-card-surface">
@@ -252,7 +268,10 @@ export default function ReflectScreen() {
           <h3 className="font-semibold">Reflect on what you learned</h3>
           {finalQuestions.map((q,i)=><label key={i} className="mt-4 block text-sm font-medium">{q}<textarea className={field+' mt-2 min-h-20'} value={active.answers?.final?.[i]||''} onChange={e=>saveAnswer('final',i,e.target.value)}/></label>)}
         </section>
-        <button type="button" className={action+' w-full'} onClick={()=>setMode('hub')}>Back to studies</button>
+        {error && <p role="alert" className="text-sm text-rose-600">{error}</p>}
+        {active.status !== 'completed' && <button type="button" className={action+' w-full'} disabled={busy} onClick={finishLesson}>{busy ? 'Saving…' : 'Mark as finished'}</button>}
+        {active.status === 'completed' && <p role="status" className="text-sm text-emerald-700">Lesson completed</p>}
+        <button type="button" className={action+' w-full'} onClick={()=>{ setMode('hub'); refresh().catch(()=>{}); }}>Back to studies</button>
       </>}
     </Screen>
   );
