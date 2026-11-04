@@ -292,9 +292,11 @@ export default function ReflectScreen() {
                   <button type="button" className="reflect-study-menu-trigger" aria-label="Lesson options" aria-expanded={studyMenu===lesson.id} onClick={() => setStudyMenu(current => current===lesson.id ? null : lesson.id)}><MoreVertical size={21}/></button>
                 </div>
                 {studyMenu===lesson.id && <div className="reflect-study-menu"><button type="button" onClick={() => {setPendingDelete(lesson.id);setStudyMenu(null);}}><Trash2 size={16}/>Remove lesson</button></div>}
-                <span className="tab-type">{lesson.status === "completed" ? "Completed" : "In progress"}</span>
+                <div className="reflect-study-summary">
+                  <span className="tab-type">{lesson.status === "completed" ? "Completed" : "In progress"}</span>
+                  <span className="reflect-study-card-meta">{keywordCount} keywords · {questionCount} questions</span>
+                </div>
                 <p className="tab-saved-date">Saved: {new Date(lesson.updatedAt || lesson.createdAt).toLocaleDateString("en-GB", {day:"numeric",month:"short",year:"numeric"})}</p>
-                <p className="reflect-study-card-meta">{keywordCount} keywords · {questionCount} questions</p>
               </div>
             </div>
           </article>;
