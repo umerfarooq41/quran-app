@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, BookOpen, Loader2, Plus } from 'lucide-react';
-import { Screen, Empty } from '../components/common/AppChrome';
+import { BookOpen, Loader2, Plus, Trash2, ChevronDown } from 'lucide-react';
+import { Screen, Empty, Header } from '../components/common/AppChrome';
 import { useAppStore } from '../store/useAppStore';
 import { getSurah, getSurahAyahs, getSurahInfo } from '../lib/quran';
 import { sanitizeSurahHtml } from '../lib/sanitizeHtml';
@@ -33,6 +33,9 @@ export default function ReflectScreen() {
   const [newQuestion, setNewQuestion] = useState('');
   const [customTheme, setCustomTheme] = useState('');
   const [hubTab, setHubTab] = useState('Studies');
+  const [swipedStudy, setSwipedStudy] = useState(null);
+  const [expandedTafsir, setExpandedTafsir] = useState({});
+  const swipeStart = useRef(null);
   const pendingFields = useRef(new Map());
   const saveQueue = useRef(Promise.resolve());
 
@@ -232,37 +235,41 @@ export default function ReflectScreen() {
 
 
   return (
-    <Screen className="space-y-4 pb-10">
-      <header className="flex items-center gap-3 py-2">
-        <button type="button" onClick={() => { flushAnswers(); if (mode === 'hub') goBack(); else { setMode('hub'); setActive(null); } }} className="rounded-full bg-white p-3 shadow-sm" aria-label="Back"><ArrowLeft size={19}/></button>
-        <div className="min-w-0 flex-1">
-          <h1 className="text-xl font-bold text-slate-900">{mode === 'hub' ? 'Reflect' : mode === 'new' ? 'New study' : active ? `${active.surahName || getSurah(active.surahNumber)?.name || `Surah ${active.surahNumber}`} · ${active.startAyah}–${active.endAyah}` : 'Reflect study'}</h1>
-        </div>
-        {mode === 'hub' && <button type="button" onClick={beginNew} className="rounded-full bg-[#2d6e5e] p-3 text-white" aria-label="New study"><Plus size={19}/></button>}
-      </header>
-
+    <Screen className="tabs-screen app-page-shell bg-fluent reflect-screen">
+      <div className="app-fixed-header">
+        <Header
+          title={mode === 'hub' ? 'Reflect' : mode === 'new' ? 'New Study' : active ? (active.surahName || getSurah(active.surahNumber)?.name || 'Reflect') : 'Reflect'}
+          onBack={() => { flushAnswers(); if (mode === 'hub') goBack(); else { setMode('hub'); setActive(null); } }}
+          backLabel="Back from Reflect"
+        />
+        {mode === 'hub' && <button type="button" onClick={beginNew} className="reflect-header-add" aria-label="New study"><Plus size={22}/></button>}
+      </div>
+      <div className="app-scroll-content reflect-content">
       {mode === 'hub' && <>
-        <div className={card}>
-          <div className="flex items-center gap-3"><span className="rounded-xl bg-emerald-50 p-3 text-[#2d6e5e]"><BookOpen size={22}/></span><div><h2 className="font-semibold">My Quran Studies</h2><p className="text-sm text-slate-500">Read, reflect and revisit your lessons.</p></div></div>
-        </div>
-        <div className="flex gap-2 overflow-x-auto" role="tablist" aria-label="Reflect library">
-          {['Studies', 'Questions', 'Themes', 'Progress'].map(tab => <button key={tab} type="button" role="tab" aria-selected={hubTab === tab} onClick={() => setHubTab(tab)} className={'rounded-xl px-3 py-2 text-sm font-medium ' + (hubTab === tab ? 'bg-[#2d6e5e] text-white' : 'bg-white text-slate-600')}>{tab}</button>)}
+        <div className="library-tabs share-like-segment reflect-tabs" role="tablist" aria-label="Reflect library">
+          {['Studies', 'Questions', 'Themes', 'Progress'].map(tab => <button key={tab} type="button" role="tab" aria-selected={hubTab === tab} onClick={() => setHubTab(tab)} className={hubTab === tab ? 'is-active' : ''}>{tab}</button>)}
         </div>
         {hubTab === 'Questions' && <div className={card}><h2 className="font-semibold">My Questions</h2>{lessons.flatMap(l => (l.studyQuestions || []).map(q => ({...q, lesson:l}))).length ? lessons.flatMap(l => (l.studyQuestions || []).map(q => ({...q, lesson:l}))).map(q => <button key={q.lesson.id + q.id} type="button" className="mt-3 block w-full border-t pt-3 text-left text-sm" onClick={() => { setActive(q.lesson); setMode('lesson'); }}><span className="font-medium">{q.text}</span><span className="mt-1 block text-xs text-slate-500">{q.lesson.surahName} {q.lesson.startAyah}–{q.lesson.endAyah} · {q.answered ? 'Answered' : 'Open'}</span></button>) : <p className="mt-2 text-sm text-slate-500">No questions saved yet.</p>}</div>}
         {hubTab === 'Themes' && <div className={card}><h2 className="font-semibold">Themes</h2>{lessons.filter(l => l.studyThemes?.main || l.studyThemes?.custom?.length).length ? lessons.filter(l => l.studyThemes?.main || l.studyThemes?.custom?.length).map(l => <button key={l.id} type="button" className="mt-3 block w-full border-t pt-3 text-left text-sm" onClick={() => { setActive(l); setMode('lesson'); }}><span className="font-medium">{l.studyThemes?.main || l.studyThemes?.custom?.join(', ')}</span><span className="block text-xs text-slate-500">{l.surahName} {l.startAyah}–{l.endAyah}</span></button>) : <p className="mt-2 text-sm text-slate-500">No themes saved yet.</p>}</div>}
         {hubTab === 'Progress' && <div className={card}><h2 className="font-semibold">Study Progress</h2><p className="mt-2 text-sm">{lessons.filter(l => l.status === 'completed').length} completed studies</p><p className="mt-1 text-sm">{new Set(lessons.filter(l => l.status === 'completed').flatMap(l => Array.from({length:l.endAyah-l.startAyah+1},(_,i)=>l.surahNumber+':'+(l.startAyah+i)))).size} unique ayahs studied</p><p className="mt-1 text-sm">{lessons.flatMap(l => l.studyQuestions || []).filter(q => !q.answered).length} open questions</p></div>}
         {hubTab === 'Studies' && <>
         <div className="flex items-center justify-between"><h2 className="font-semibold">Studies</h2><span className="text-xs text-slate-500">{lessons.length} saved</span></div>
-        {lessons.length ? lessons.map((lesson) => (
-          <article key={lesson.id} className={card}>
-            <button type="button" className="w-full text-left" onClick={() => { flushAnswers(); setActive(lesson); setMode('lesson'); }}>
-              <p className="text-xs text-[#2d6e5e]">Surah {lesson.surahNumber} · Ayahs {lesson.startAyah}–{lesson.endAyah}</p>
-              <h3 className="mt-1 font-semibold">{lesson.surahName || getSurah(lesson.surahNumber)?.name || `Surah ${lesson.surahNumber}`} · {lesson.startAyah}–{lesson.endAyah}</h3>
-              <p className="mt-1 text-xs text-slate-500">{lesson.status === "completed" ? "Completed" : "In progress"} · {new Date(lesson.updatedAt).toLocaleDateString()}</p>
-            </button>
-            <button type="button" className="mt-3 text-xs text-rose-600" onClick={() => removeLesson(lesson.id)}>Delete study</button>
-          </article>
-        )) : <Empty text="Your saved Reflect studies will appear here."/>}</>}
+        {lessons.length ? <div className="tabs-list">{lessons.map((lesson) => {
+          const isSwiped = swipedStudy === lesson.id;
+          const preview = getSurahAyahs(lesson.surahNumber)?.find(ayah => ayah.ayahNumber === lesson.startAyah)?.text || '';
+          return <article key={lesson.id} className={'tab-card ' + (isSwiped ? 'is-swiped' : '')}>
+            <button type="button" className="tab-card-remove" onClick={() => { removeLesson(lesson.id); setSwipedStudy(null); }}><Trash2 size={19}/>Remove</button>
+            <div className="tab-card-surface"
+              onTouchStart={e => {const t=e.touches[0]; swipeStart.current=t?{x:t.clientX,y:t.clientY,id:lesson.id}:null;}}
+              onTouchEnd={e => {const t=e.changedTouches[0],start=swipeStart.current;swipeStart.current=null;if(!t||!start||start.id!==lesson.id)return;const dx=t.clientX-start.x,dy=t.clientY-start.y;if(Math.abs(dx)>44&&Math.abs(dx)>Math.abs(dy))setSwipedStudy(dx<0?lesson.id:null);}}>
+              <button type="button" className="tab-card-hit" onClick={() => {if(isSwiped){setSwipedStudy(null);return;}flushAnswers();setActive(lesson);setMode('lesson');}}>
+                <div className="tab-card-top"><span className="tab-card-type"><span className="tab-type">{lesson.status === 'completed' ? 'Completed' : 'In progress'}</span></span><span className="tab-surah">{lesson.surahName || getSurah(lesson.surahNumber)?.name} {lesson.surahNumber}:{lesson.startAyah}–{lesson.endAyah}</span></div>
+                <p className="tab-saved-date">Saved: {new Date(lesson.updatedAt || lesson.createdAt).toLocaleDateString()}</p>
+                {preview && <p dir="rtl" lang="ar" className="tab-arabic">{preview}</p>}
+              </button>
+            </div>
+          </article>;
+        })}</div> : <Empty text="Your saved Reflect studies will appear here."/>}</>}
       </>}
 
       {mode === 'new' && <>
@@ -332,7 +339,7 @@ export default function ReflectScreen() {
         </section>
         <section className={card}>
           <h3 className="font-semibold">Read the passage</h3>
-          <p className="mt-1 text-xs text-slate-500">Each Ayah is followed by its word-by-word meanings, selected translation, and available Tafsir.</p>
+
           {verses.length ? <div className="mt-4 divide-y divide-slate-200">
             {verses.map((verse) => (
               <article key={verse.ayahNumber} className="ayah-translation-body reflect-lesson-ayah py-5 first:pt-0 last:pb-0" data-translation-language={translationOption.language || 'En'}>
@@ -356,20 +363,19 @@ export default function ReflectScreen() {
                 )}
 
                 <section className="mt-4" aria-label={`Ayah ${verse.ayahNumber} translation`}>
-                  <h4 className="mb-2 text-sm font-semibold">Translation</h4>
+                  
                   <p className="ayah-translation-text" dir={translationOption.direction || 'ltr'}>{verse.translation}</p>
                 </section>
 
                 {Boolean(verse.tafsirNotes?.length || verse.tafsir) && (
-                  <section className="ayah-translation-footnotes mt-4" aria-label={`Ayah ${verse.ayahNumber} Tafsir`} dir={translationOption.direction || 'ltr'}>
-                    <h4 className="mb-2 text-sm font-semibold">Tafsir</h4>
-                    {(verse.tafsirNotes?.length ? verse.tafsirNotes : [{ number: '1', text: verse.tafsir }]).map((note, index) => (
-                      <p key={note.number || index} className="ayah-translation-note-row">
-                        <span className="ayah-translation-note-number">{verse.ayahNumber}.{note.number || index + 1}</span>
-                        <span className="ayah-translation-note-content">{note.text}</span>
-                      </p>
-                    ))}
-                  </section>
+                  <div className="ayah-translation-footnote-wrap" dir={translationOption.direction || 'ltr'}>
+                    <button type="button" className="ayah-translation-footnote-toggle" aria-expanded={Boolean(expandedTafsir[verse.ayahNumber])} onClick={() => setExpandedTafsir(prev => ({...prev,[verse.ayahNumber]:!prev[verse.ayahNumber]}))}>
+                      <span>{expandedTafsir[verse.ayahNumber] ? 'Hide Tafsir' : 'Show Tafsir'}</span><ChevronDown size={16} aria-hidden="true"/>
+                    </button>
+                    {expandedTafsir[verse.ayahNumber] && <div className="ayah-translation-footnotes"><section className="ayah-translation-note-section">
+                      {(verse.tafsirNotes?.length ? verse.tafsirNotes : [{number:1,text:verse.tafsir}]).map((note,index) => <p key={note.number || index} className="ayah-translation-note-row"><span className="ayah-translation-note-number">{note.number || index+1}</span><span className="ayah-translation-note-content">{note.text}</span></p>)}
+                    </section></div>}
+                  </div>
                 )}
               </article>
             ))}
@@ -406,7 +412,8 @@ export default function ReflectScreen() {
         </section>}
 
         <section className={card}>
-          <h3 className="font-semibold">My Reflection</h3>\n          <p className="mt-1 text-xs text-slate-500">Write your personal reflections after reading. These are not Tafsir.</p>
+          <h3 className="font-semibold">My Reflection</h3>
+          <p className="mt-1 text-xs text-slate-500">Write your personal reflections after reading. These are not Tafsir.</p>
           {finalQuestions.map((q,i)=><label key={i} className="mt-4 block text-sm font-medium">{q}<textarea className={field+' mt-2 min-h-20'} value={active.answers?.final?.[i]||''} onChange={e=>saveAnswer('final',i,e.target.value)} onBlur={flushAnswers}/></label>)}
         </section>
         <section className={card}>
@@ -455,6 +462,7 @@ export default function ReflectScreen() {
         {active.status === 'completed' && <p role="status" className="text-sm text-emerald-700">Lesson completed</p>}
         <button type="button" className={action+' w-full'} onClick={()=>{ flushAnswers(); setMode('hub'); refresh().catch(()=>{}); }}>Back to studies</button>
       </>}
+      </div>
     </Screen>
   );
 }
