@@ -151,7 +151,7 @@ export default function ReflectScreen() {
       {mode === 'new' && <>
         <div className={card}>
           <h2 className="font-semibold">Choose a passage</h2>
-          <p className="mt-1 text-sm text-slate-500">Select 3–15 consecutive Ayahs from one Surah.</p>
+          <p className="mt-1 text-sm text-slate-500">Select 1–15 consecutive Ayahs from one Surah. 1–5 is a good size to begin with.</p>
           <label className="mt-4 block text-xs font-semibold text-slate-600">Surah</label>
           <select className={field+' mt-1'} value={surahNumber} onChange={(e) => { const n=Number(e.target.value); setSurahNumber(n); setStartAyah(1); setEndAyah(3); }}>
             {Array.from({length:114},(_,i)=>getSurah(i+1)).filter(Boolean).map(s=><option key={s.number} value={s.number}>{s.number}. {s.name}</option>)}
@@ -168,7 +168,7 @@ export default function ReflectScreen() {
               </select>
             </label>
           </div>
-          <p className={'mt-3 text-sm '+(validRange?'text-emerald-700':'text-rose-600')}>{count} Ayahs selected · Choose between 3 and 15.</p>
+          <p className={'mt-3 text-sm '+(validRange?'text-emerald-700':'text-rose-600')}>{count} Ayahs selected · Choose between 1 and 15.</p>
         </div>
         <section className="tab-card reflect-passage-preview">
           <div className="tab-card-surface">
