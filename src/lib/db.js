@@ -475,7 +475,7 @@ export async function saveReflectAnswerField(id, group, index, value) {
     if (group === 'notes') {
       answers.notes = String(value ?? '');
     } else if (group === 'tadabbur') {
-      const allowed = ['imagine', 'dua', 'evaluate', 'plan'];
+      const allowed = ['imagine', 'dua', 'evaluate', 'commitment', 'startWhen', 'plan'];
       if (!allowed.includes(index)) throw new Error('Invalid reflection field.');
       answers.tadabbur = { ...(answers.tadabbur || {}), [index]: String(value ?? '') };
     } else {
