@@ -51,6 +51,17 @@ export default function ReflectScreen() {
   const [introLanguage, setIntroLanguage] = useState(null);
   const [error, setError] = useState('');
   const [newQuestion, setNewQuestion] = useState('');
+  const [questionIndex,setQuestionIndex]=useState(0);
+  const [questionJump,setQuestionJump]=useState(null);
+  const [questionAdd,setQuestionAdd]=useState(false);
+  const [questionEdit,setQuestionEdit]=useState(false);
+  const [questionDraft,setQuestionDraft]=useState('');
+  const [questionMenu,setQuestionMenu]=useState(false);
+  const [questionSearch,setQuestionSearch]=useState('');
+  const [questionFilter,setQuestionFilter]=useState('All');
+  const [questionExpanded,setQuestionExpanded]=useState(null);
+  const [questionSwiped,setQuestionSwiped]=useState(null);
+  const questionTouch=useRef(null);
   const [themeGroups, setThemeGroups] = useState(DEFAULT_THEMES);
   const [themeSheet, setThemeSheet] = useState(false);
   const [themeSearch, setThemeSearch] = useState('');
@@ -282,8 +293,23 @@ export default function ReflectScreen() {
     if (!active) return;
     const id = active.id;
     setActive(current => current?.id === id ? {...current, ...patch} : current);
+    setLessons(rows=>rows.map(l=>l.id===id?{...l,...patch}:l));
     saveQueue.current = saveQueue.current.catch(() => {}).then(() => updateTadabburLesson(id, patch)).catch(() => setError('Unable to save study details.'));
   }
+
+  function removeQuestion(lesson,id) {
+    const studyQuestions=(lesson.studyQuestions||[]).filter(q=>q.id!==id);
+    setLessons(rows=>rows.map(l=>l.id===lesson.id?{...l,studyQuestions}:l));
+    setActive(l=>l?.id===lesson.id?{...l,studyQuestions}:l);
+    saveQueue.current=saveQueue.current.catch(()=>{}).then(()=>updateTadabburLesson(lesson.id,{studyQuestions})).catch(()=>setError('Unable to remove question.'));
+    setQuestionSwiped(null);setQuestionExpanded(null);
+  }
+  useEffect(()=>{
+    if(mode!=='lesson'||!questionJump||active?.id!==questionJump.lessonId)return;
+    const i=(active.studyQuestions||[]).findIndex(q=>q.id===questionJump.questionId);
+    if(i>=0){setQuestionIndex(i);setQuestionEdit(false);lessonScrollRef.current?.querySelector('[data-reflect-questions]')?.scrollIntoView({behavior:'smooth',block:'center'});}
+    setQuestionJump(null);
+  },[mode,active?.id,questionJump]);
 
   async function finishLesson() {
     if (!active || busy) return;
@@ -353,7 +379,26 @@ export default function ReflectScreen() {
         <div className="library-tabs share-like-segment reflect-tabs" role="tablist" aria-label="Reflect library">
           {['Studies', 'Questions', 'Discover', 'Progress'].map(tab => <button key={tab} type="button" role="tab" aria-selected={hubTab === tab} onClick={() => setHubTab(tab)} className={hubTab === tab ? 'is-active' : ''}>{tab}</button>)}
         </div>
-        {hubTab === 'Questions' && <div className={card}><h2 className="font-semibold">My Questions</h2>{lessons.flatMap(l => (l.studyQuestions || []).map(q => ({...q, lesson:l}))).length ? lessons.flatMap(l => (l.studyQuestions || []).map(q => ({...q, lesson:l}))).map(q => <button key={q.lesson.id + q.id} type="button" className="mt-3 block w-full border-t pt-3 text-left text-sm" onClick={() => { setActive(q.lesson); setMode('lesson'); }}><span className="font-medium">{q.text}</span><span className="mt-1 block text-xs text-slate-500">{q.lesson.surahName} {q.lesson.startAyah}–{q.lesson.endAyah} · {q.answered ? 'Answered' : 'Open'}</span></button>) : <p className="mt-2 text-sm text-slate-500">No questions saved yet.</p>}</div>}
+        {hubTab === 'Questions' && (() => {
+          const all=lessons.flatMap(lesson=>(lesson.studyQuestions||[]).map(q=>({...q,lesson})));
+          const visible=all.filter(q=>(questionFilter==='All'||(questionFilter==='Answered'?!!q.answer?.trim():!q.answer?.trim()))&&(q.text+' '+(q.lesson.title||'')+' '+q.lesson.surahName).toLowerCase().includes(questionSearch.toLowerCase()));
+          return <div className="space-y-3">
+            <div className="flex items-center justify-between"><h2 className="font-semibold">My Questions</h2><span className="text-xs text-slate-500">{all.length} saved</span></div>
+            <input className={field} aria-label="Search questions" placeholder="Search questions…" value={questionSearch} onChange={e=>setQuestionSearch(e.target.value)}/>
+            <div className="library-tabs share-like-segment" role="tablist">{['All','Open','Answered'].map(t=><button key={t} type="button" role="tab" aria-selected={questionFilter===t} className={questionFilter===t?'is-active':''} onClick={()=>setQuestionFilter(t)}>{t}</button>)}</div>
+            {visible.length?visible.map(q=>{
+              const key=q.lesson.id+':'+q.id,expanded=questionExpanded===key,swiped=questionSwiped===key;
+              return <div key={key} className="overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-sm" onTouchStart={e=>{questionTouch.current={key,x:e.touches[0].clientX,y:e.touches[0].clientY};}} onTouchEnd={e=>{const t=questionTouch.current;if(!t||t.key!==key)return;const dx=e.changedTouches[0].clientX-t.x,dy=e.changedTouches[0].clientY-t.y;if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.3){setQuestionSwiped(dx<0?key:null);setQuestionExpanded(null);}questionTouch.current=null;}}>
+                {swiped&&<div className="flex justify-end bg-rose-50 px-3 py-2"><button type="button" className="flex items-center gap-1 text-sm text-rose-700" onClick={()=>removeQuestion(q.lesson,q.id)}><Trash2 size={15}/> Remove</button></div>}
+                <div className="flex items-stretch"><button type="button" className="min-w-0 flex-1 px-4 py-3 text-left" onClick={()=>{if(swiped){setQuestionSwiped(null);return;}setQuestionJump({lessonId:q.lesson.id,questionId:q.id});setActive(q.lesson);setMode('lesson');}}>
+                  <div className="flex items-center justify-between gap-2 text-xs text-slate-500"><span>{q.lesson.surahName} · {q.lesson.surahNumber}:{q.lesson.startAyah}–{q.lesson.endAyah}</span><span className={q.answer?.trim()?'text-emerald-700':''}>{q.answer?.trim()?'Answered':'Open'}</span></div>
+                  <p className="mt-2 text-sm font-medium">{q.text}</p><p className="mt-2 truncate text-xs text-slate-500">{q.lesson.title||q.lesson.surahName}</p>
+                </button><button type="button" aria-label={expanded?'Hide answer':'Show answer'} aria-expanded={expanded} className="shrink-0 px-3 text-slate-500" onClick={()=>{setQuestionExpanded(expanded?null:key);setQuestionSwiped(null);}}><ChevronDown size={18} className={expanded?'rotate-180':''}/></button></div>
+                {expanded&&<div className="border-t border-slate-100 bg-slate-50 px-4 py-3 text-sm">{q.answer?.trim()||'Not answered yet. Open the lesson to write your answer.'}</div>}
+              </div>;
+            }):<div className={card}><p className="text-sm text-slate-500">{all.length?'No matching questions.':'No questions saved yet.'}</p></div>}
+          </div>;
+        })()}
         {hubTab === 'Discover' && <div className="reflect-discover">
           <div className="library-tabs share-like-segment reflect-discover-tabs" role="tablist" aria-label="Discover sections">
             {['Keywords','Themes'].map(tab => <button key={tab} type="button" role="tab" aria-selected={discoverTab === tab} className={discoverTab === tab ? 'is-active' : ''} onClick={() => setDiscoverTab(tab)}>{tab}</button>)}
@@ -613,15 +658,19 @@ export default function ReflectScreen() {
             </label>
           ))}
         </section>
-        <section className={card}>
-          <h3 className="font-semibold">My Questions</h3>
-          <p className="mt-1 text-xs text-slate-500">Save questions to investigate with reliable sources.</p>
-          {(active.studyQuestions || []).map(q => <div key={q.id} className="mt-3 rounded-xl border border-slate-200 p-3">
-            <textarea className={field} aria-label="Study question" rows={2} value={q.text} onChange={e => saveStudyMeta({studyQuestions: active.studyQuestions.map(item => item.id === q.id ? {...item, text:e.target.value} : item)})}/>
-            <label className="mt-2 block text-xs font-medium">Answer and source (optional)<textarea className={field+' mt-1'} rows={2} value={q.answer || ''} onChange={e => saveStudyMeta({studyQuestions: active.studyQuestions.map(item => item.id === q.id ? {...item, answer:e.target.value} : item)})}/></label>
-            <div className="mt-2 flex items-center justify-between"><label className="flex items-center gap-2 text-xs"><input type="checkbox" checked={Boolean(q.answered)} onChange={e => saveStudyMeta({studyQuestions: active.studyQuestions.map(item => item.id === q.id ? {...item, answered:e.target.checked} : item)})}/> Answered</label><button type="button" className="text-xs text-rose-600" onClick={() => saveStudyMeta({studyQuestions: active.studyQuestions.filter(item => item.id !== q.id)})}>Remove</button></div>
-          </div>)}
-          <div className="mt-3 flex gap-2"><input className={field} aria-label="New question" placeholder="What would I like to understand better?" value={newQuestion} onChange={e => setNewQuestion(e.target.value)}/><button type="button" className={action} disabled={!newQuestion.trim()} onClick={() => {saveStudyMeta({studyQuestions:[...(active.studyQuestions || []),{id:String(Date.now())+Math.random().toString(36).slice(2),text:newQuestion.trim(),answer:'',answered:false}]});setNewQuestion('');}}>Add</button></div>
+        <section className={card} data-reflect-questions>
+          <div className="flex items-center justify-between gap-3"><h3 className="font-semibold">Questions</h3><button type="button" className="inline-flex items-center gap-1 text-sm font-medium text-[#2d6e5e]" onClick={()=>{setQuestionAdd(true);setQuestionEdit(false);}}><Plus size={15}/> Add Question</button></div>
+          {questionAdd&&<div className="mt-3 rounded-xl bg-slate-50 p-3"><textarea className={field} rows={2} aria-label="New question" placeholder="Write your question…" value={newQuestion} onChange={e=>setNewQuestion(e.target.value)}/><div className="mt-2 flex justify-end gap-2"><button type="button" className="px-3 py-2 text-sm" onClick={()=>setQuestionAdd(false)}>Cancel</button><button type="button" className={action} disabled={!newQuestion.trim()} onClick={()=>{saveStudyMeta({studyQuestions:[...(active.studyQuestions||[]),{id:String(Date.now())+Math.random().toString(36).slice(2),text:newQuestion.trim(),answer:'',answered:false}]});setQuestionIndex((active.studyQuestions||[]).length);setNewQuestion('');setQuestionAdd(false);}}>Add</button></div></div>}
+          {(active.studyQuestions||[]).length?(()=>{
+            const count=active.studyQuestions.length,index=Math.min(questionIndex,count-1),q=active.studyQuestions[index];
+            return <div className="mt-3">
+              <div className="flex items-center justify-between"><span className="text-xs text-slate-500">Question {index+1} of {count}</span><div className="relative"><button type="button" aria-label="Question options" className="rounded-lg p-2 text-slate-500" onClick={()=>setQuestionMenu(v=>!v)}><MoreVertical size={18}/></button>{questionMenu&&<div className="absolute right-0 top-full z-10 min-w-40 rounded-xl border border-slate-200 bg-white p-1 shadow-lg"><button type="button" className="block w-full px-3 py-2 text-left text-sm" onClick={()=>{setQuestionDraft(q.text);setQuestionEdit(true);setQuestionMenu(false);}}>Edit Question</button><button type="button" className="block w-full px-3 py-2 text-left text-sm text-rose-600" onClick={()=>{removeQuestion(active,q.id);setQuestionIndex(Math.max(0,Math.min(index,count-2)));setQuestionEdit(false);setQuestionMenu(false);}}>Remove Question</button></div>}</div></div>
+              <div className="mt-2 rounded-xl bg-slate-50 p-3">{questionEdit?<div><textarea className={field} rows={2} value={questionDraft} onChange={e=>setQuestionDraft(e.target.value)} aria-label="Edit question"/><div className="mt-2 flex justify-end gap-2"><button type="button" className="px-3 py-2 text-sm" onClick={()=>setQuestionEdit(false)}>Cancel</button><button type="button" className={action} disabled={!questionDraft.trim()} onClick={()=>{saveStudyMeta({studyQuestions:active.studyQuestions.map(item=>item.id===q.id?{...item,text:questionDraft.trim()}:item)});setQuestionEdit(false);}}>Save</button></div></div>:<p className="text-sm font-medium">{q.text}</p>}
+                <div className="mt-3 border-t border-slate-200 pt-3"><textarea key={q.id} className="min-h-20 w-full resize-y bg-transparent text-sm outline-none placeholder:text-slate-400" aria-label="Answer question" placeholder="Tap to write your answer…" rows={3} value={q.answer||''} onChange={e=>{const answer=e.target.value;saveStudyMeta({studyQuestions:active.studyQuestions.map(item=>item.id===q.id?{...item,answer,answered:!!answer.trim()}:item)});}}/></div>
+              </div>
+              <div className="mt-3 flex items-center justify-between gap-2"><button type="button" className="rounded-xl border border-slate-200 px-3 py-2 text-sm disabled:opacity-40" disabled={index===0} onClick={()=>{setQuestionIndex(index-1);setQuestionEdit(false);setQuestionMenu(false);}}>‹ Previous</button><div className="flex max-w-[35%] flex-wrap justify-center gap-1.5">{active.studyQuestions.map((item,i)=><button key={item.id} type="button" aria-label={'Question '+(i+1)} className={'h-2.5 w-2.5 rounded-full '+(i===index?'bg-[#2d6e5e]':'bg-slate-200')} onClick={()=>{setQuestionIndex(i);setQuestionEdit(false);setQuestionMenu(false);}}/>)}</div><button type="button" className="rounded-xl border border-slate-200 px-3 py-2 text-sm disabled:opacity-40" disabled={index===count-1} onClick={()=>{setQuestionIndex(index+1);setQuestionEdit(false);setQuestionMenu(false);}}>Next ›</button></div>
+            </div>;
+          })():!questionAdd&&<button type="button" className="mt-3 w-full rounded-xl border border-dashed border-slate-200 px-3 py-5 text-sm text-slate-500" onClick={()=>setQuestionAdd(true)}>No questions added yet. Tap to add a question.</button>}
         </section>
         <section className={card}>
           <div className="flex items-center justify-between gap-3"><h3 className="font-semibold">Themes</h3><button type="button" className="inline-flex items-center gap-1 text-sm font-medium text-[#2d6e5e]" onClick={openThemeSheet}><Plus size={15}/> Add Theme</button></div>
