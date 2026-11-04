@@ -199,7 +199,7 @@ export default function ReflectScreen() {
   }
 
   const verses = active?.sourceSnapshot?.verses || [];
-  const finalQuestions = active?.finalQuestions || REFLECT_FINAL_QUESTIONS;
+  const finalQuestions = REFLECT_FINAL_QUESTIONS;
   const legacyPoints = active?.content?.understand?.keyPoints || [];
   const translationOption = getTranslationOption(active?.sourceSnapshot?.translationId || settings.translation);
   const wordLanguage = settings.wordByWordLanguage || 'en';
@@ -218,7 +218,7 @@ export default function ReflectScreen() {
         <button type="button" onClick={() => { flushAnswers(); if (mode === 'hub') goBack(); else { setMode('hub'); setActive(null); } }} className="rounded-full bg-white p-3 shadow-sm" aria-label="Back"><ArrowLeft size={19}/></button>
         <div className="min-w-0 flex-1">
           <p className="text-xs font-semibold uppercase tracking-wider text-[#2d6e5e]">Quran study</p>
-          <h1 className="text-xl font-bold text-slate-900">{mode === 'hub' ? 'Reflect' : mode === 'new' ? 'New study' : active?.title || 'Reflect study'}</h1>
+          <h1 className="text-xl font-bold text-slate-900">{mode === 'hub' ? 'Reflect' : mode === 'new' ? 'New study' : active ? `${active.surahName || getSurah(active.surahNumber)?.name || `Surah ${active.surahNumber}`} · ${active.startAyah}–${active.endAyah}` : 'Reflect study'}</h1>
         </div>
         {mode === 'hub' && <button type="button" onClick={beginNew} className="rounded-full bg-[#2d6e5e] p-3 text-white" aria-label="New study"><Plus size={19}/></button>}
       </header>
@@ -236,7 +236,7 @@ export default function ReflectScreen() {
           <article key={lesson.id} className={card}>
             <button type="button" className="w-full text-left" onClick={() => { flushAnswers(); setActive(lesson); setMode('lesson'); }}>
               <p className="text-xs text-[#2d6e5e]">Surah {lesson.surahNumber} · Ayahs {lesson.startAyah}–{lesson.endAyah}</p>
-              <h3 className="mt-1 font-semibold">{lesson.title}</h3>
+              <h3 className="mt-1 font-semibold">{lesson.surahName || getSurah(lesson.surahNumber)?.name || `Surah ${lesson.surahNumber}`} · {lesson.startAyah}–{lesson.endAyah}</h3>
               <p className="mt-1 text-xs text-slate-500">{lesson.status === "completed" ? "Completed" : "In progress"} · {new Date(lesson.updatedAt).toLocaleDateString()}</p>
             </button>
             <button type="button" className="mt-3 text-xs text-rose-600" onClick={() => removeLesson(lesson.id)}>Delete study</button>
@@ -292,7 +292,7 @@ export default function ReflectScreen() {
       {mode === 'lesson' && active && <>
         <div className={card}>
           <p className="text-xs font-semibold text-[#2d6e5e]">SURAH {active.surahNumber} · AYAH {active.startAyah}–{active.endAyah}</p>
-          <h2 className="mt-1 text-lg font-bold">{active.title}</h2>
+          <h2 className="mt-1 text-lg font-bold">{active.surahName || getSurah(active.surahNumber)?.name || `Surah ${active.surahNumber}`} · {active.startAyah}–{active.endAyah}</h2>
           <p className="mt-2 text-xs text-slate-500">Source-led study · Saved on this device</p>
           {active.sourceSnapshot?.translationName && <p className="mt-1 text-xs text-slate-500">Translation: {active.sourceSnapshot.translationName}</p>}
         </div>
@@ -374,17 +374,17 @@ export default function ReflectScreen() {
         </section>}
 
         <section className={card}>
-          <h3 className="font-semibold">Reflect</h3>
+          <h3 className="font-semibold">My Reflection</h3>\n          <p className="mt-1 text-xs text-slate-500">Write your personal reflections after reading. These are not Tafsir.</p>
           {finalQuestions.map((q,i)=><label key={i} className="mt-4 block text-sm font-medium">{q}<textarea className={field+' mt-2 min-h-20'} value={active.answers?.final?.[i]||''} onChange={e=>saveAnswer('final',i,e.target.value)} onBlur={flushAnswers}/></label>)}
         </section>
         <section className={card}>
           <h3 className="font-semibold">Tadabbur &amp; Tadhakkur</h3>
           <p className="mt-1 text-sm text-slate-500">Personal contemplation, remembrance, and a practical commitment. These are your own reflections, not Tafsir.</p>
           {[
-            ['imagine', 'Imagine & Feel', 'What do these ayahs make me imagine or feel?'],
+            ['imagine', 'Imagine & Feel', 'What in these ayahs should I pause and contemplate?'],
             ['dua', 'Dua', 'What would I like to ask Allah after reading these ayahs?'],
-            ['evaluate', 'Evaluate', 'How does my behavior compare with what I have learned?'],
-            ['commitment', 'My Commitment', 'What one specific change will I make?'],
+            ['evaluate', 'Evaluate', 'Where do my actions or attitudes need to improve in light of this guidance?'],
+            ['commitment', 'Plan · My Commitment', 'What one specific action will I take because of this lesson?'],
           ].map(([key, label, prompt]) => (
             <label key={key} className="mt-4 block text-sm font-medium">
               {label}
