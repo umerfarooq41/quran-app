@@ -707,3 +707,48 @@
 .reflect-screen .reflect-content { padding-bottom: calc(36px + env(safe-area-inset-bottom, 0px)); }
 .reflect-screen .reflect-content > .tabs-list { margin-top: 10px; }
 .reflect-screen .reflect-lesson-ayah .ayah-translation-footnote-wrap { margin-top: 14px; }
+
+/* Reflect: use a single vertical scroll surface for long passages and tafsir. */
+.reflect-screen { min-height: 0; }
+.reflect-screen .reflect-content {
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+}
+.reflect-screen .reflect-content .reflect-preview-content,
+.reflect-screen .reflect-content .reflect-lesson-ayah,
+.reflect-screen .reflect-content .ayah-translation-footnotes,
+.reflect-screen .reflect-content .ayah-translation-note-section {
+  height: auto;
+  max-height: none;
+  overflow: visible;
+  touch-action: pan-y;
+}
+.reflect-screen .reflect-preview-divider {
+  height: 1px;
+  background: rgba(100,116,139,.16);
+  margin: 20px 0 16px;
+}
+.reflect-screen .reflect-preview-content .tab-arabic {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+.reflect-screen .ayah-translation-note-number {
+  flex: 0 0 22px;
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  min-height: 22px;
+  border-radius: 50%;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  font-variant-numeric: lining-nums tabular-nums;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
