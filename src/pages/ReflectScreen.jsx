@@ -175,6 +175,7 @@ export default function ReflectScreen() {
       .catch(() => {})
       .then(() => saveReflectKeywords(lessonId, keywords))
       .catch(() => setError('Unable to save selected keywords.'));
+    // Keyword changes persist immediately; finishing the lesson is not required.
     await saveQueue.current;
   }
 
@@ -257,7 +258,8 @@ export default function ReflectScreen() {
         <div className="flex items-center justify-between"><h2 className="font-semibold">Studies</h2><span className="text-xs text-slate-500">{lessons.length} saved</span></div>
         {lessons.length ? <div className="tabs-list">{lessons.map((lesson) => {
           const isSwiped = swipedStudy === lesson.id;
-          const preview = getSurahAyahs(lesson.surahNumber)?.find(ayah => ayah.ayahNumber === lesson.startAyah)?.text || '';
+          const keywordCount = lesson.keywords?.length || 0;
+          const questionCount = lesson.studyQuestions?.length || 0;
           return <article key={lesson.id} className={'tab-card ' + (isSwiped ? 'is-swiped' : '')}>
             <button type="button" className="tab-card-remove" onClick={() => { removeLesson(lesson.id); setSwipedStudy(null); }}><Trash2 size={19}/>Remove</button>
             <div className="tab-card-surface"
@@ -265,8 +267,8 @@ export default function ReflectScreen() {
               onTouchEnd={e => {const t=e.changedTouches[0],start=swipeStart.current;swipeStart.current=null;if(!t||!start||start.id!==lesson.id)return;const dx=t.clientX-start.x,dy=t.clientY-start.y;if(Math.abs(dx)>44&&Math.abs(dx)>Math.abs(dy))setSwipedStudy(dx<0?lesson.id:null);}}>
               <button type="button" className="tab-card-hit" onClick={() => {if(isSwiped){setSwipedStudy(null);return;}flushAnswers();setActive(lesson);setMode('lesson');}}>
                 <div className="tab-card-top"><span className="tab-card-type"><span className="tab-type">{lesson.status === 'completed' ? 'Completed' : 'In progress'}</span></span><span className="tab-surah">{lesson.surahName || getSurah(lesson.surahNumber)?.name} {lesson.surahNumber}:{lesson.startAyah}–{lesson.endAyah}</span></div>
-                <p className="tab-saved-date">Saved: {new Date(lesson.updatedAt || lesson.createdAt).toLocaleDateString()}</p>
-                {preview && <p dir="rtl" lang="ar" className="tab-arabic">{preview}</p>}
+                <p className="tab-saved-date">{lesson.status === 'completed' ? 'Completed' : 'Last saved'}: {new Date(lesson.updatedAt || lesson.createdAt).toLocaleDateString()}</p>
+                <p className="reflect-study-card-meta">{keywordCount} keywords saved · {questionCount} questions</p>
               </button>
             </div>
           </article>;
@@ -367,7 +369,7 @@ export default function ReflectScreen() {
                     {verse.wordByWordWords?.length > 0 ? (
                       <div className="ayah-word-by-word-list" dir="rtl">
                         {verse.wordByWordWords.map((word, index) => (
-                          <button type="button" className={`ayah-word-by-word-item rounded-lg px-1 py-2 ${(active.keywords || []).some((item) => item.key === verse.ayahNumber + ':' + index) ? 'bg-emerald-100 ring-1 ring-emerald-600' : ''}`} key={word.id || index} aria-pressed={(active.keywords || []).some((item) => item.key === verse.ayahNumber + ':' + index)} aria-label={`Toggle keyword ${word.arabic || ''}`} onClick={() => toggleKeyword(verse.ayahNumber, word, index)}>
+                          <button type="button" className={`ayah-word-by-word-item rounded-lg px-1 py-2 ${(active.keywords || []).some((item) => item.key === verse.ayahNumber + ':' + index) ? 'reflect-keyword-selected' : ''}`} key={word.id || index} aria-pressed={(active.keywords || []).some((item) => item.key === verse.ayahNumber + ':' + index)} aria-label={`Toggle keyword ${word.arabic || ''}`} onClick={() => toggleKeyword(verse.ayahNumber, word, index)}>
                             <span className="ayah-word-by-word-arabic" dir="rtl" lang="ar">{word.arabic}</span>
                             <span className="ayah-word-by-word-meaning" dir={wordLanguage === 'ur' ? 'rtl' : 'ltr'} lang={wordLanguage}>{word.meaning}</span>
                           </button>
@@ -402,7 +404,7 @@ export default function ReflectScreen() {
           <h3 className="font-semibold">Keywords</h3>
           <p className="mt-1 text-xs text-slate-500">Tap a word above to save or remove it from this lesson.</p>
           {(active.keywords || []).length ? <div className="mt-3 flex flex-wrap gap-2">
-            {active.keywords.map((keyword) => <button type="button" key={keyword.key} className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm" onClick={() => toggleKeyword(keyword.ayahNumber, keyword, Number(keyword.key.split(':')[1]))} aria-label={`Remove keyword ${keyword.arabic}`}>
+            {active.keywords.map((keyword) => <button type="button" key={keyword.key} className="reflect-keyword-chip rounded-xl border px-3 py-2 text-sm" onClick={() => toggleKeyword(keyword.ayahNumber, keyword, Number(keyword.key.split(':')[1]))} aria-label={`Remove keyword ${keyword.arabic}`}>
               <span lang="ar" dir="rtl" className="font-semibold">{keyword.arabic}</span>
               <span className="mx-2 text-slate-500">{keyword.meaning}</span>
               <span aria-hidden="true">×</span>
