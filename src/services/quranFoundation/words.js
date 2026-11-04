@@ -129,10 +129,16 @@ async function getLocalWords(surah, ayah, language, signal) {
   const verse = quranWordsByVerse.get(verseKey);
   const rawWords = Array.isArray(verse?.words) ? verse.words : [];
 
+  // The Urdu source omits 2:181:4 (سَمِعَهُ). Keep the source intact and
+  // supply the verified meaning at its exact location, without shifting any
+  // following word. بَعْدَ مَا remains a single display unit.
+  const correctedMeanings = language === 'ur' && verseKey === '2:181'
+    ? { ...wordMeanings, '2:181:4': 'اس کو سنا' }
+    : wordMeanings;
   const locations = rawWords.map((word, index) => word.location || `${verseKey}:${index + 1}`);
-  const missingLocations = locations.filter((location) => !Object.prototype.hasOwnProperty.call(wordMeanings, location));
+  const missingLocations = locations.filter((location) => !Object.prototype.hasOwnProperty.call(correctedMeanings, location));
   const alignmentFallback = missingLocations.length > 0;
-  const orderedMeanings = Object.entries(wordMeanings)
+  const orderedMeanings = Object.entries(correctedMeanings)
     .filter(([key]) => key.startsWith(`${verseKey}:`))
     .sort(([a], [b]) => Number(a.split(':')[2]) - Number(b.split(':')[2]))
     .map(([, value]) => htmlToPlainText(value))
@@ -142,7 +148,7 @@ async function getLocalWords(surah, ayah, language, signal) {
     .map((word, index) => {
       const location = word.location || `${verseKey}:${index + 1}`;
       const meaningHtml = alignmentFallback ? '' : language === 'en'
-        ? sanitizeEnglishMeaningHtml(wordMeanings[location] || '')
+        ? sanitizeEnglishMeaningHtml(correctedMeanings[location] || '')
         : escapeHtml(wordMeanings[location] || '');
       const meaning = htmlToPlainText(meaningHtml);
       const grammarClass = getPrimaryGrammarClass(meaningHtml);
