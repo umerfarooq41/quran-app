@@ -866,3 +866,20 @@
 .reflect-screen .reflect-delete-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:24px}
 .reflect-screen .reflect-delete-actions button{padding:10px 16px;border-radius:10px}
 .reflect-screen .reflect-delete-confirm{background:#b42318;color:white}
+
+/* Reflect passage selection uses Share's compact From / To picker pattern. */
+.reflect-screen .reflect-passage-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.reflect-screen .reflect-passage-limit{font-size:12px;color:#64748b}
+.reflect-screen .reflect-passage-range{display:grid;grid-template-columns:minmax(0,1fr) 20px minmax(0,1fr);align-items:end;gap:8px;margin-top:12px}
+.reflect-screen .reflect-passage-to{text-align:center;padding-bottom:13px;font-size:13px;color:#64748b}
+.reflect-screen .reflect-range-field{position:relative;min-width:0}
+.reflect-screen .reflect-range-label{display:block;font-size:13px;font-weight:600;color:#64748b;margin-bottom:6px}
+.reflect-screen .reflect-range-trigger{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-width:0;min-height:46px;padding:10px 12px;border:1px solid #d9dfe3;border-radius:12px;background:white;text-align:left;font-size:14px;color:#252525}
+.reflect-screen .reflect-range-trigger span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.reflect-screen .reflect-range-options{position:absolute;z-index:30;top:calc(100% + 5px);left:0;right:0;max-height:min(45vh,300px);overflow-y:auto;overscroll-behavior:contain;background:white;border:1px solid #d9dfe3;border-radius:12px;box-shadow:0 8px 24px #0002}
+.reflect-screen .reflect-range-options button{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;padding:12px;text-align:left;font-size:14px;border-bottom:1px solid #f1f2f4}
+.reflect-screen .reflect-range-options button.is-selected{color:#2d6e5e;font-weight:600;background:#edf5f1}
+.reflect-screen .reflect-passage-status{margin-top:12px;font-size:13px}
+.reflect-screen .reflect-passage-status.is-valid{color:#2d6e5e}
+.reflect-screen .reflect-passage-status.is-invalid{color:#b42318}
+.reflect-screen .reflect-preview-heading{font-size:14px;font-weight:600;margin-bottom:10px}
