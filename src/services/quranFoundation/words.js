@@ -129,10 +129,19 @@ async function getLocalWords(surah, ayah, language, signal) {
   const verse = quranWordsByVerse.get(verseKey);
   const rawWords = Array.isArray(verse?.words) ? verse.words : [];
 
+  const locations = rawWords.map((word, index) => word.location || `${verseKey}:${index + 1}`);
+  const missingLocations = locations.filter((location) => !Object.prototype.hasOwnProperty.call(wordMeanings, location));
+  const alignmentFallback = missingLocations.length > 0;
+  const orderedMeanings = Object.entries(wordMeanings)
+    .filter(([key]) => key.startsWith(`${verseKey}:`))
+    .sort(([a], [b]) => Number(a.split(':')[2]) - Number(b.split(':')[2]))
+    .map(([, value]) => htmlToPlainText(value))
+    .filter(Boolean);
+
   const words = rawWords
     .map((word, index) => {
       const location = word.location || `${verseKey}:${index + 1}`;
-      const meaningHtml = language === 'en'
+      const meaningHtml = alignmentFallback ? '' : language === 'en'
         ? sanitizeEnglishMeaningHtml(wordMeanings[location] || '')
         : escapeHtml(wordMeanings[location] || '');
       const meaning = htmlToPlainText(meaningHtml);
@@ -160,6 +169,10 @@ async function getLocalWords(surah, ayah, language, signal) {
     language,
     direction: getWordLanguage(language).direction,
     source: 'local-public-json',
+    alignmentFallback,
+    alignmentNotice: alignmentFallback ? 'Meanings for this ayah are not split word for word.' : null,
+    meaningsLine: alignmentFallback ? orderedMeanings.join(' ') : null,
+    missingLocations,
     words,
   };
 }
