@@ -894,3 +894,11 @@
 .reflect-screen .reflect-study-card-inner .tab-saved-date{margin:7px 0 0;font-size:12px;line-height:1.4}
 .reflect-screen .reflect-study-card-inner .reflect-study-card-meta{margin:6px 0 0;font-size:12px;line-height:1.4}
 .reflect-screen .reflect-passage-selector .reflect-preview-content{margin-top:0}
+
+/* Reflect study summary follows the approved Library bookmark card hierarchy. */
+.reflect-screen .reflect-study-card-inner{padding:16px}
+.reflect-screen .reflect-study-card-heading{margin-bottom:10px}
+.reflect-screen .reflect-study-summary{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px}
+.reflect-screen .reflect-study-summary .tab-type{margin:0}
+.reflect-screen .reflect-study-summary .reflect-study-card-meta{margin:0;font-size:13px;line-height:1.4;color:#666}
+.reflect-screen .reflect-study-card-inner .tab-saved-date{margin:9px 0 0;font-size:12px;line-height:1.4}
