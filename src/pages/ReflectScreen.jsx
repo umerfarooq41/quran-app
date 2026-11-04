@@ -470,8 +470,8 @@ export default function ReflectScreen() {
 function renderReflectTranslation(value, notes, openTafsir) {
   const text = String(value || '');
   const known = new Set((notes || []).map(note => Number(note.number)).filter(Number.isFinite));
-  return text.split(/(\\[\\d+\\])/g).map((part, index) => {
-    const match = /^\\[(\\d+)\\]$/.exec(part);
+  return text.split(/(\[\d+\])/g).map((part, index) => {
+    const match = /^\[(\d+)\]$/.exec(part);
     if (!match || (known.size && !known.has(Number(match[1])))) {
       return <React.Fragment key={index}>{part}</React.Fragment>;
     }
