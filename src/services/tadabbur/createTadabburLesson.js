@@ -115,7 +115,7 @@ export async function createTadabburLesson({
     surahName,
     startAyah: start,
     endAyah: end,
-    title: `${surahName} · ${start}–${end}`,
+    title: '',
     content: {
       mode: 'source-led',
       study: {
