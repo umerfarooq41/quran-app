@@ -42,8 +42,7 @@ test('Reader audio loads, plays, pauses, seeks, repeats and changes speed', asyn
   await page.getByRole('button', { name: /Continue Reading/i }).click();
   await expect(page.locator('.reader-page').first()).toBeVisible();
 
-  await page.locator('.reader-top-hit-zone').click({ force: true });
-  await page.getByRole('button', { name: 'Listen to the Holy Qur\'an' }).click();
+  await page.getByRole('button', { name: /Listen to the Holy Qur'an/i }).click({ force: true });
   await expect(page.locator('.reader-audio-panel-wrap')).toBeVisible({ timeout: 15000 });
 
   const audio = page.locator('audio.reader-audio-native');
