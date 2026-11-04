@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { BookOpen, ChevronDown, Info, Loader2, Plus, MoreVertical, Trash2 } from 'lucide-react';
+import { BookOpen, ChevronDown, Info, Loader2, Plus, MoreVertical, Trash2, X } from 'lucide-react';
 import { Screen, Empty, Header } from '../components/common/AppChrome';
 import { useAppStore } from '../store/useAppStore';
 import { getSurah, getSurahAyahs, getSurahInfo } from '../lib/quran';
 import { sanitizeSurahHtml } from '../lib/sanitizeHtml';
 import { getTranslationOption } from '../lib/translations';
-import { getTadabburLessons, updateTadabburLesson, deleteTadabburLesson, saveReflectAnswerField, saveReflectKeywords } from '../lib/db';
+import { db, getTadabburLessons, updateTadabburLesson, deleteTadabburLesson, saveReflectAnswerField, saveReflectKeywords } from '../lib/db';
 import {
   createTadabburLesson,
   REFLECT_FINAL_QUESTIONS,
@@ -15,6 +15,22 @@ import { getReflectRangeCount, isValidReflectRange } from '../features/reflect/r
 const card = 'rounded-2xl border border-slate-200/70 bg-white/85 p-4 shadow-sm';
 const action = 'rounded-xl bg-[#2d6e5e] px-4 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40';
 const field = 'w-full rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm text-slate-800 outline-none focus:border-[#2d6e5e]';
+const DEFAULT_THEMES = {
+  'Faith & Theology': ['Tawheed', 'Attributes of Allah', 'Hereafter', 'The Unseen'],
+  'Prophets & History': ['Stories of the Prophets', 'Past Nations', 'Trials & Resilience'],
+  'Worship & Ethics': ['Prayer & Worship', 'Justice', 'Family & Relationships', 'Honesty'],
+  'Heart Purification': ['Patience', 'Gratitude', 'Repentance & Hope', 'Trust in Allah', 'Humility'],
+  'Paradise & Hell': ['Paradise', 'Hellfire', 'Accountability'],
+};
+const assignmentsFor = (studyThemes = {}) => {
+  if (Array.isArray(studyThemes.assignments)) return studyThemes.assignments;
+  const legacy = studyThemes.main ? [{main: studyThemes.main, sub: studyThemes.sub || []}] : [];
+  return legacy;
+};
+const themeStudyButton = (lesson, open) => <button key={lesson.id} type="button" className="reflect-theme-study" onClick={() => open(lesson)}>
+  <strong>{lesson.surahName || getSurah(lesson.surahNumber)?.name} {lesson.surahNumber}:{lesson.startAyah}–{lesson.endAyah}</strong>
+  <small>{lesson.status === 'completed' ? 'Completed' : 'In progress'}</small>
+</button>;
 
 export default function ReflectScreen() {
   const goBack = useAppStore((s) => s.goBack);
@@ -35,7 +51,12 @@ export default function ReflectScreen() {
   const [introLanguage, setIntroLanguage] = useState(null);
   const [error, setError] = useState('');
   const [newQuestion, setNewQuestion] = useState('');
-  const [customTheme, setCustomTheme] = useState('');
+  const [themeGroups, setThemeGroups] = useState(DEFAULT_THEMES);
+  const [themeSheet, setThemeSheet] = useState(false);
+  const [themeSearch, setThemeSearch] = useState('');
+  const [themeCreation, setThemeCreation] = useState(null);
+  const [newThemeName, setNewThemeName] = useState('');
+  const [draftThemes, setDraftThemes] = useState([]);
   const [hubTab, setHubTab] = useState('Studies');
   const [discoverTab, setDiscoverTab] = useState('Keywords');
   const [expandedTheme, setExpandedTheme] = useState(null);
@@ -201,20 +222,68 @@ export default function ReflectScreen() {
     setMode('hub');
   }
 
+  useEffect(() => {
+    let mounted = true;
+    db.settings.get('reflect-theme-catalog').then(row => {
+      if (mounted && row?.themes) setThemeGroups({...DEFAULT_THEMES, ...row.themes});
+    }).catch(() => setError('Unable to load saved themes.'));
+    return () => { mounted = false; };
+  }, []);
+
+  function openThemeSheet() {
+    setDraftThemes(assignmentsFor(active?.studyThemes).map(item => ({main:item.main, sub:[...(item.sub || [])]})));
+    setThemeSearch('');
+    setThemeCreation(null);
+    setThemeSheet(true);
+  }
+  function toggleThemeMain(main) {
+    setDraftThemes(old => old.some(item => item.main === main) ? old.filter(item => item.main !== main) : [...old,{main,sub:[]}]);
+  }
+  function toggleThemeSub(main, sub) {
+    setDraftThemes(old => {
+      const entry = old.find(item => item.main === main);
+      if (!entry) return [...old,{main,sub:[sub]}];
+      const next = entry.sub.includes(sub) ? entry.sub.filter(value => value !== sub) : [...entry.sub,sub];
+      return old.map(item => item.main === main ? {...item,sub:next} : item);
+    });
+  }
+  async function createTheme() {
+    const value = newThemeName.trim();
+    if (!value || !themeCreation) return;
+    const {type, parent} = themeCreation;
+    if (type === 'main' ? Object.keys(themeGroups).some(main => main.toLowerCase() === value.toLowerCase()) : (themeGroups[parent] || []).some(sub => sub.toLowerCase() === value.toLowerCase())) {
+      setError('That theme already exists.');
+      return;
+    }
+    const updated = type === 'main' ? {...themeGroups,[value]:[]} : {...themeGroups,[parent]:[...themeGroups[parent],value]};
+    try {
+      await db.settings.put({id:'reflect-theme-catalog',themes:updated});
+      setThemeGroups(updated);
+      if (type === 'main') {
+        setDraftThemes(old => [...old,{main:value,sub:[]}]);
+        setExpandedTheme(value);
+      } else {
+        toggleThemeSub(parent,value);
+        setExpandedTheme(parent);
+      }
+      setThemeCreation(null);
+      setNewThemeName('');
+      setThemeSearch('');
+    } catch {
+      setError('Unable to save new theme.');
+    }
+  }
+  function finishThemeEditing() {
+    saveStudyMeta({studyThemes:{...active.studyThemes,assignments:draftThemes}});
+    setThemeSheet(false);
+  }
+
   function saveStudyMeta(patch) {
     if (!active) return;
     const id = active.id;
     setActive(current => current?.id === id ? {...current, ...patch} : current);
     saveQueue.current = saveQueue.current.catch(() => {}).then(() => updateTadabburLesson(id, patch)).catch(() => setError('Unable to save study details.'));
   }
-
-  const themeGroups = {
-    'Faith & Theology': ['Tawheed', 'Attributes of Allah', 'Hereafter', 'The Unseen'],
-    'Prophets & History': ['Stories of the Prophets', 'Past Nations', 'Trials & Resilience'],
-    'Worship & Ethics': ['Prayer & Worship', 'Justice', 'Family & Relationships', 'Honesty'],
-    'Heart Purification': ['Patience', 'Gratitude', 'Repentance & Hope', 'Trust in Allah', 'Humility'],
-    'Paradise & Hell': ['Paradise', 'Hellfire', 'Accountability'],
-  };
 
   async function finishLesson() {
     if (!active || busy) return;
@@ -307,47 +376,40 @@ export default function ReflectScreen() {
           {discoverTab === 'Themes' && <div className="reflect-discover-content">
             <div className="reflect-discover-heading"><h2>Qur'anic Themes</h2><span>{Object.keys(themeGroups).length} main themes</span></div>
             {Object.entries(themeGroups).map(([main,subs]) => {
-              const mainLessons = lessons.filter(lesson => lesson.studyThemes?.main === main);
+              const mainLessons = lessons.filter(lesson => assignmentsFor(lesson.studyThemes).some(item => item.main === main));
+              const directLessons = mainLessons.filter(lesson => {
+                const assignment = assignmentsFor(lesson.studyThemes).find(item => item.main === main);
+                return assignment && !(assignment.sub || []).length;
+              });
               const isOpen = expandedTheme === main;
               return <section key={main} className="reflect-theme-group">
                 <button type="button" className="reflect-theme-heading" aria-expanded={isOpen} onClick={() => {setExpandedTheme(isOpen?null:main);setExpandedSubtheme(null);}}>
-                  <span><strong>{main}</strong><small>{subs.length} subthemes · {mainLessons.length} studies</small></span>
+                  <span><strong>{main}</strong><small>{mainLessons.length} {mainLessons.length === 1 ? 'study' : 'studies'}</small></span>
                   <ChevronDown size={19} className={isOpen?'reflect-theme-chevron is-open':'reflect-theme-chevron'} aria-hidden="true"/>
                 </button>
                 {isOpen && <div className="reflect-theme-children">
                   {subs.map(sub => {
-                    const matched = mainLessons.filter(lesson => (lesson.studyThemes?.sub || []).includes(sub));
+                    const matched = mainLessons.filter(lesson => assignmentsFor(lesson.studyThemes).some(item => item.main === main && (item.sub || []).includes(sub)));
                     const subKey = main+':'+sub;
                     const subOpen = expandedSubtheme === subKey;
                     return <div key={sub} className="reflect-subtheme">
                       <button type="button" className="reflect-subtheme-heading" aria-expanded={subOpen} onClick={() => setExpandedSubtheme(subOpen?null:subKey)}>
-                        <span>{sub}</span><span className="reflect-subtheme-count">{matched.length} {matched.length===1?'study':'studies'}</span>
+                        <span>{sub}</span><span className="reflect-subtheme-count">{matched.length}</span>
                         <ChevronDown size={16} className={subOpen?'reflect-theme-chevron is-open':'reflect-theme-chevron'} aria-hidden="true"/>
                       </button>
-                      {subOpen && <div className="reflect-theme-studies">
-                        {matched.length ? matched.map(lesson => <button key={lesson.id} type="button" className="reflect-theme-study" onClick={() => {setActive(lesson);setMode('lesson');}}>
-                          <strong>{lesson.surahName || getSurah(lesson.surahNumber)?.name} {lesson.surahNumber}:{lesson.startAyah}–{lesson.endAyah}</strong>
-                          <small>{lesson.status==='completed'?'Completed':'In progress'}</small>
-                        </button>) : <p className="reflect-theme-empty">No saved studies in this subtheme yet.</p>}
-                      </div>}
+                      {subOpen && <div className="reflect-theme-studies">{matched.length ? matched.map(lesson => themeStudyButton(lesson, lesson => {setActive(lesson);setMode('lesson');})) : <p className="reflect-theme-empty">No saved studies yet.</p>}</div>}
                     </div>;
                   })}
-                  {mainLessons.some(lesson => (lesson.studyThemes?.custom || []).length) && <div className="reflect-subtheme">
-                    <p className="reflect-theme-custom-label">Custom themes</p>
-                    {mainLessons.flatMap(lesson => (lesson.studyThemes?.custom || []).map(tag => ({lesson,tag}))).map(({lesson,tag}) =>
-                      <button key={lesson.id+':'+tag} type="button" className="reflect-theme-study" onClick={() => {setActive(lesson);setMode('lesson');}}>
-                        <strong>{tag}</strong><small>{lesson.surahName || getSurah(lesson.surahNumber)?.name} {lesson.surahNumber}:{lesson.startAyah}–{lesson.endAyah}</small>
-                      </button>)}
+                  {directLessons.length > 0 && <div className="reflect-subtheme">
+                    <button type="button" className="reflect-subtheme-heading" aria-expanded={expandedSubtheme === main+':other'} onClick={() => setExpandedSubtheme(expandedSubtheme === main+':other'?null:main+':other')}>
+                      <span>Other Studies</span><span className="reflect-subtheme-count">{directLessons.length}</span>
+                      <ChevronDown size={16} className={expandedSubtheme === main+':other'?'reflect-theme-chevron is-open':'reflect-theme-chevron'} aria-hidden="true"/>
+                    </button>
+                    {expandedSubtheme === main+':other' && <div className="reflect-theme-studies">{directLessons.map(lesson => themeStudyButton(lesson, lesson => {setActive(lesson);setMode('lesson');}))}</div>}
                   </div>}
                 </div>}
               </section>;
             })}
-            {lessons.filter(lesson => !lesson.studyThemes?.main && (lesson.studyThemes?.custom || []).length).length > 0 &&
-              <section className="reflect-theme-group"><div className="reflect-theme-heading"><strong>Other saved themes</strong></div>
-                <div className="reflect-theme-children">{lessons.filter(lesson => !lesson.studyThemes?.main).flatMap(lesson => (lesson.studyThemes?.custom || []).map(tag => ({lesson,tag}))).map(({lesson,tag}) =>
-                  <button key={lesson.id+':'+tag} type="button" className="reflect-theme-study" onClick={() => {setActive(lesson);setMode('lesson');}}>
-                    <strong>{tag}</strong><small>{lesson.surahName || getSurah(lesson.surahNumber)?.name} {lesson.surahNumber}:{lesson.startAyah}–{lesson.endAyah}</small>
-                  </button>)}</div></section>}
           </div>}
 
         </div>}
@@ -562,14 +624,30 @@ export default function ReflectScreen() {
           <div className="mt-3 flex gap-2"><input className={field} aria-label="New question" placeholder="What would I like to understand better?" value={newQuestion} onChange={e => setNewQuestion(e.target.value)}/><button type="button" className={action} disabled={!newQuestion.trim()} onClick={() => {saveStudyMeta({studyQuestions:[...(active.studyQuestions || []),{id:String(Date.now())+Math.random().toString(36).slice(2),text:newQuestion.trim(),answer:'',answered:false}]});setNewQuestion('');}}>Add</button></div>
         </section>
         <section className={card}>
-          <h3 className="font-semibold">Themes</h3>
-          <p className="mt-1 text-xs text-slate-500">Personal study tags, not Tafsir classifications.</p>
-          <label className="mt-3 block text-sm font-medium">Main theme<select className={field+' mt-2'} value={active.studyThemes?.main || ''} onChange={e => saveStudyMeta({studyThemes:{...active.studyThemes,main:e.target.value,sub:[]}})}><option value="">Select a theme</option>{Object.keys(themeGroups).map(group=><option key={group} value={group}>{group}</option>)}</select></label>
-          {active.studyThemes?.main && <div className="mt-3"><p className="text-sm font-medium">Subthemes</p><div className="mt-2 flex flex-wrap gap-2">{(themeGroups[active.studyThemes.main] || []).map(tag=><button key={tag} type="button" aria-pressed={(active.studyThemes?.sub || []).includes(tag)} className={'rounded-full border px-3 py-2 text-xs '+((active.studyThemes?.sub || []).includes(tag) ? 'border-emerald-600 bg-emerald-50' : 'border-slate-200')} onClick={() => {const sub=active.studyThemes?.sub || [];saveStudyMeta({studyThemes:{...active.studyThemes,sub:sub.includes(tag)?sub.filter(t=>t!==tag):[...sub,tag]}});}}>{tag}</button>)}</div></div>}
-          <label className="mt-3 block text-sm font-medium">Custom theme</label>
-          <div className="mt-2 flex gap-2"><input className={field} value={customTheme} onChange={e=>setCustomTheme(e.target.value)} placeholder="Add your own theme"/><button type="button" className={action} disabled={!customTheme.trim()} onClick={()=>{saveStudyMeta({studyThemes:{...active.studyThemes,custom:[...new Set([...(active.studyThemes?.custom || []),customTheme.trim()])]}});setCustomTheme('');}}>Add</button></div>
-          {(active.studyThemes?.custom || []).map(tag=><button key={tag} type="button" className="mr-2 mt-2 rounded-full bg-slate-100 px-3 py-2 text-xs" onClick={()=>saveStudyMeta({studyThemes:{...active.studyThemes,custom:active.studyThemes.custom.filter(t=>t!==tag)}})}>{tag} ×</button>)}
+          <div className="flex items-center justify-between gap-3"><h3 className="font-semibold">Themes</h3><button type="button" className="inline-flex items-center gap-1 text-sm font-medium text-[#2d6e5e]" onClick={openThemeSheet}><Plus size={15}/> Add Theme</button></div>
+          {assignmentsFor(active.studyThemes).length === 0 ? <button type="button" className="mt-3 flex w-full flex-col items-center gap-1 rounded-xl border border-dashed border-slate-200 px-3 py-5 text-center text-sm text-slate-500" onClick={openThemeSheet}><span>No themes added yet</span><small>Tap Add Theme to organize this study</small></button> : <div className="mt-3 space-y-3">{assignmentsFor(active.studyThemes).map((item,index) => <div key={item.main}>{index > 0 && <div className="mb-3 border-t border-slate-100"/>}<p className="text-sm font-semibold">{item.main}</p>{item.sub?.length > 0 && <div className="mt-2 flex flex-wrap gap-1.5">{item.sub.map(sub => <span key={sub} className="rounded-full bg-slate-100 px-2.5 py-1 text-xs">{sub}</span>)}</div>}</div>)}</div>}
         </section>
+        {themeSheet && <div className="fixed inset-0 z-[100] flex items-end bg-black/40" role="presentation" onMouseDown={e => {if(e.target===e.currentTarget)setThemeSheet(false);}}>
+          <div className="flex max-h-[85dvh] w-full flex-col rounded-t-2xl bg-white shadow-xl" role="dialog" aria-modal="true" aria-label="Edit themes">
+            <div className="mx-auto mt-2 h-1 w-9 shrink-0 rounded-full bg-slate-300"/>
+            {themeCreation ? <div className="flex flex-col gap-4 p-4">
+              <div className="flex items-center justify-between"><h3 className="font-semibold">{themeCreation.type === 'main' ? 'New Main Theme' : 'New Subtheme'}</h3><button type="button" aria-label="Back to themes" onClick={()=>setThemeCreation(null)}><X size={20}/></button></div>
+              {themeCreation.type === 'sub' && <p className="text-sm text-slate-500">Under {themeCreation.parent}</p>}
+              <input className={field} autoFocus aria-label="Theme name" placeholder="Theme name" value={newThemeName} onChange={e=>setNewThemeName(e.target.value)}/>
+              <button type="button" className={action} disabled={!newThemeName.trim()} onClick={createTheme}>Create {themeCreation.type === 'main' ? 'Main Theme' : 'Subtheme'}</button>
+            </div> : <>
+              <div className="flex shrink-0 items-center justify-between gap-2 px-4 py-3"><h3 className="font-semibold">Themes</h3><div className="flex items-center gap-3"><button type="button" className="inline-flex items-center gap-1 text-xs font-semibold text-[#2d6e5e]" onClick={()=>{setThemeCreation({type:'main'});setNewThemeName('');}}><Plus size={14}/> Main Theme</button><button type="button" aria-label="Close themes" onClick={()=>setThemeSheet(false)}><X size={20}/></button></div></div>
+              <div className="shrink-0 px-4 pb-3"><input className={field} value={themeSearch} onChange={e=>setThemeSearch(e.target.value)} placeholder="Search themes…" aria-label="Search themes"/></div>
+              <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-3">
+                <div className="overflow-hidden rounded-xl border border-slate-200">{Object.entries(themeGroups).filter(([main,subs])=>main.toLowerCase().includes(themeSearch.toLowerCase())||subs.some(sub=>sub.toLowerCase().includes(themeSearch.toLowerCase()))).map(([main,subs])=><div key={main} className="border-b border-slate-100 last:border-0">
+                  <button type="button" className="flex w-full items-center justify-between px-3 py-3 text-left text-sm font-semibold" aria-expanded={expandedTheme===main} onClick={()=>setExpandedTheme(expandedTheme===main?null:main)}>{main}<ChevronDown size={17} className={expandedTheme===main?'rotate-180 text-slate-500':'text-slate-500'}/></button>
+                  {(expandedTheme===main||themeSearch.trim()) && <div className="px-3 pb-3"><div className="flex flex-wrap gap-2">{subs.filter(sub=>!themeSearch||main.toLowerCase().includes(themeSearch.toLowerCase())||sub.toLowerCase().includes(themeSearch.toLowerCase())).map(sub=><button key={sub} type="button" aria-pressed={draftThemes.some(item=>item.main===main&&item.sub.includes(sub))} className={'rounded-full px-3 py-2 text-xs '+(draftThemes.some(item=>item.main===main&&item.sub.includes(sub))?'bg-[#2d6e5e] text-white':'bg-slate-100 text-slate-700')} onClick={()=>toggleThemeSub(main,sub)}>{sub}</button>)}<button type="button" className="inline-flex items-center gap-1 rounded-full border border-slate-200 px-3 py-2 text-xs" onClick={()=>{setThemeCreation({type:'sub',parent:main});setNewThemeName('');}}><Plus size={13}/> New</button></div><button type="button" className="mt-3 text-xs text-slate-500" onClick={()=>toggleThemeMain(main)}>{draftThemes.some(item=>item.main===main)?'Remove main theme':'Select main theme only'}</button></div>}
+                </div>)}</div>
+              </div>
+              <div className="flex shrink-0 items-center justify-between border-t border-slate-100 bg-white px-4 py-3 pb-[max(12px,env(safe-area-inset-bottom))]"><span className="text-xs text-slate-500">{draftThemes.length} themes selected</span><button type="button" className={action} onClick={finishThemeEditing}>Done</button></div>
+            </>}
+          </div>
+        </div>}
         <section className={card}>
           <h3 className="font-semibold">Finish &amp; Revisit</h3>
           <p className="mt-1 text-xs text-slate-500">Review your learning and practical commitment. No additional answers required.</p>
