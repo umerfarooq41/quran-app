@@ -40,6 +40,8 @@ export default function ReflectScreen() {
   const [discoverTab, setDiscoverTab] = useState('Keywords');
   const [expandedTheme, setExpandedTheme] = useState(null);
   const [expandedSubtheme, setExpandedSubtheme] = useState(null);
+  const [keywordJump, setKeywordJump] = useState(null);
+  const lessonScrollRef = useRef(null);
   const [swipedStudy, setSwipedStudy] = useState(null);
   const [expandedTafsir, setExpandedTafsir] = useState({});
   const swipeStart = useRef(null);
@@ -242,6 +244,17 @@ export default function ReflectScreen() {
     }
   }
 
+  useEffect(() => {
+    if (mode !== 'lesson' || !keywordJump || active?.id !== keywordJump.lessonId) return;
+    const container = lessonScrollRef.current;
+    const ayah = container?.querySelector('[data-reflect-ayah="' + keywordJump.ayahNumber + '"]');
+    if (!ayah) return;
+    const selected = ayah.querySelector('[data-keyword-key="' + keywordJump.key + '"]');
+    const target = selected || ayah;
+    target.scrollIntoView({behavior: 'smooth', block: 'center'});
+    setKeywordJump(null);
+  }, [mode, active?.id, keywordJump]);
+
   const verses = active?.sourceSnapshot?.verses || [];
   const finalQuestions = REFLECT_FINAL_QUESTIONS;
   const legacyPoints = active?.content?.understand?.keyPoints || [];
@@ -266,7 +279,7 @@ export default function ReflectScreen() {
         />
         {mode === 'hub' && <button type="button" onClick={beginNew} className="reflect-header-add" aria-label="New study"><Plus size={22}/></button>}
       </div>
-      <div className="app-scroll-content reflect-content">
+      <div className="app-scroll-content reflect-content" ref={lessonScrollRef}>
       {mode === 'hub' && <>
         <div className="library-tabs share-like-segment reflect-tabs" role="tablist" aria-label="Reflect library">
           {['Studies', 'Questions', 'Discover', 'Progress'].map(tab => <button key={tab} type="button" role="tab" aria-selected={hubTab === tab} onClick={() => setHubTab(tab)} className={hubTab === tab ? 'is-active' : ''}>{tab}</button>)}
@@ -285,7 +298,7 @@ export default function ReflectScreen() {
               <div className="reflect-discover-heading"><h2>Saved Keywords</h2><span>{saved.length} saved</span></div>
               {saved.length ? <div className="reflect-keyword-list">{saved.map(word =>
                 <button type="button" key={word.lesson.id + ':' + (word.key ?? word.ayahNumber + ':' + word.index)}
-                  className="reflect-keyword-card reflect-keyword-link" onClick={() => {setActive(word.lesson);setMode('lesson');}}>
+                  className="reflect-keyword-card reflect-keyword-link" onClick={() => {setKeywordJump({lessonId:word.lesson.id,ayahNumber:word.ayahNumber,key:word.key || ''});setActive(word.lesson);setMode('lesson');}}>
                   <div className="reflect-keyword-row"><span>{word.meaning}</span><span lang="ar" dir="rtl" className="reflect-keyword-arabic">{word.arabic}</span></div>
                   <div className="reflect-keyword-refs"><span>{word.lesson.surahName || getSurah(word.lesson.surahNumber)?.name} {word.ref}</span><ChevronDown size={15} className="reflect-keyword-arrow" aria-hidden="true"/></div>
                 </button>)}</div> : <Empty text="Tap words in a Reflect lesson to save them here."/>}
@@ -460,7 +473,7 @@ export default function ReflectScreen() {
 
           {verses.length ? <div className="mt-4 divide-y divide-slate-200">
             {verses.map((verse) => (
-              <article key={verse.ayahNumber} className="ayah-translation-body reflect-lesson-ayah py-5 first:pt-0 last:pb-0" data-translation-language={translationOption.language || 'En'}>
+              <article key={verse.ayahNumber} data-reflect-ayah={verse.ayahNumber} className="ayah-translation-body reflect-lesson-ayah py-5 first:pt-0 last:pb-0" data-translation-language={translationOption.language || 'En'}>
                 <p className="mb-3 text-sm font-semibold text-[#2d6e5e]">Ayah {verse.ayahNumber} · {active.surahNumber}:{verse.ayahNumber}</p>
                 <p className="ayah-translation-arabic" dir="rtl" lang="ar">{verse.arabic}</p>
 
@@ -470,7 +483,7 @@ export default function ReflectScreen() {
                     {verse.wordByWordWords?.length > 0 ? (
                       <div className="ayah-word-by-word-list" dir="rtl">
                         {verse.wordByWordWords.map((word, index) => (
-                          <button type="button" className={`ayah-word-by-word-item rounded-lg px-1 py-2 ${(active.keywords || []).some((item) => item.key === verse.ayahNumber + ':' + index) ? 'reflect-keyword-selected' : ''}`} key={word.id || index} aria-pressed={(active.keywords || []).some((item) => item.key === verse.ayahNumber + ':' + index)} aria-label={`Toggle keyword ${word.arabic || ''}`} onClick={() => toggleKeyword(verse.ayahNumber, word, index)}>
+                          <button type="button" data-keyword-key={verse.ayahNumber + ':' + index} className={`ayah-word-by-word-item rounded-lg px-1 py-2 ${(active.keywords || []).some((item) => item.key === verse.ayahNumber + ':' + index) ? 'reflect-keyword-selected' : ''}`} key={word.id || index} aria-pressed={(active.keywords || []).some((item) => item.key === verse.ayahNumber + ':' + index)} aria-label={`Toggle keyword ${word.arabic || ''}`} onClick={() => toggleKeyword(verse.ayahNumber, word, index)}>
                             <span className="ayah-word-by-word-arabic" dir="rtl" lang="ar">{word.arabic}</span>
                             <span className="ayah-word-by-word-meaning" dir={wordLanguage === 'ur' ? 'rtl' : 'ltr'} lang={wordLanguage}>{word.meaning}</span>
                           </button>
