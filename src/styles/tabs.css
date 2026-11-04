@@ -686,3 +686,24 @@
   background: var(--theme-accent, #2f7d68) !important;
   color: #fff !important;
 }
+
+/* Reflect uses the same fixed header, full-width segmented control and swipe cards as Library. */
+.reflect-screen .app-fixed-header { position: relative; }
+.reflect-screen .reflect-header-add {
+  position: absolute; right: 18px; top: 50%; transform: translateY(-50%);
+  display: grid; place-items: center; width: 42px; height: 42px;
+  border-radius: 50%; background: #2d6e5e; color: #fff;
+}
+.reflect-screen .reflect-tabs {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: 100%; height: 52px; margin-bottom: 16px;
+  padding: 4px; border-radius: 26px;
+}
+.reflect-screen .reflect-tabs button {
+  min-width: 0; padding: 0 2px; font-size: clamp(.7rem, 3vw, .9rem);
+  border-radius: 22px;
+}
+.reflect-screen .reflect-tabs button.is-active { background: #2d6e5e; }
+.reflect-screen .reflect-content { padding-bottom: calc(36px + env(safe-area-inset-bottom, 0px)); }
+.reflect-screen .reflect-content > .tabs-list { margin-top: 10px; }
+.reflect-screen .reflect-lesson-ayah .ayah-translation-footnote-wrap { margin-top: 14px; }
