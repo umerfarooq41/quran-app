@@ -183,6 +183,19 @@ export default function ReflectScreen() {
     await saveQueue.current;
   }
 
+  async function returnToStudies() {
+    await flushAnswers();
+    await saveQueue.current.catch(() => {});
+    try {
+      await refresh();
+    } catch {
+      setError('Unable to refresh saved studies.');
+    }
+    setHubTab('Studies');
+    setActive(null);
+    setMode('hub');
+  }
+
   function saveStudyMeta(patch) {
     if (!active) return;
     const id = active.id;
@@ -245,7 +258,7 @@ export default function ReflectScreen() {
       <div className="app-fixed-header">
         <Header
           title={mode === 'hub' ? 'Reflect' : mode === 'new' ? 'Select Passage' : 'Study'}
-          onBack={() => { flushAnswers(); if (mode === 'hub') goBack(); else { setMode('hub'); setActive(null); } }}
+          onBack={() => { if (mode === 'hub') { void flushAnswers(); goBack(); } else { void returnToStudies(); } }}
           backLabel="Back from Reflect"
         />
         {mode === 'hub' && <button type="button" onClick={beginNew} className="reflect-header-add" aria-label="New study"><Plus size={22}/></button>}
@@ -267,6 +280,7 @@ export default function ReflectScreen() {
           return <article key={lesson.id} className={'tab-card ' + (isSwiped ? 'is-swiped' : '')}>
             <button type="button" className="tab-card-remove" onClick={() => { setPendingDelete(lesson.id); setSwipedStudy(null); }}><Trash2 size={19}/>Remove</button>
             <div className="tab-card-surface"
+              onClick={e => { if (e.target.closest("button")) return; if (isSwiped) { setSwipedStudy(null); return; } setStudyMenu(null); setActive(lesson); setMode("lesson"); }}
               onTouchStart={e => {const t=e.touches[0]; swipeStart.current=t?{x:t.clientX,y:t.clientY,id:lesson.id}:null;}}
               onTouchEnd={e => {const t=e.changedTouches[0],start=swipeStart.current;swipeStart.current=null;if(!t||!start||start.id!==lesson.id)return;const dx=t.clientX-start.x,dy=t.clientY-start.y;if(Math.abs(dx)>44&&Math.abs(dx)>Math.abs(dy))setSwipedStudy(dx<0?lesson.id:null);}}>
               <div className="reflect-study-card-inner">
