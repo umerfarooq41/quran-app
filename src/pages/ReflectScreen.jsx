@@ -12,6 +12,7 @@ import {
 } from '../services/tadabbur/createTadabburLesson';
 import { getReflectRangeCount, isValidReflectRange } from '../features/reflect/reflectRules';
 
+const studyDisplayTitle = (lesson) => lesson.title?.trim() || `${lesson.surahName || getSurah(lesson.surahNumber)?.name || 'Surah ' + lesson.surahNumber} ${lesson.surahNumber}:${lesson.startAyah}–${lesson.endAyah}`;
 const card = 'rounded-2xl border border-slate-200/70 bg-white/85 p-4 shadow-sm';
 const action = 'rounded-xl bg-[#2d6e5e] px-4 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40';
 const field = 'w-full rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm text-slate-800 outline-none focus:border-[#2d6e5e]';
@@ -532,7 +533,7 @@ export default function ReflectScreen() {
               <div className="flex items-center justify-between gap-2"><h3 className="text-sm font-semibold">Recent Studies</h3><button type="button" className="text-xs font-semibold text-[#2d6e5e]" onClick={()=>{setHubTab('Studies');setProgressCommitment(null);}}>View all →</button></div>
               {recent.length ? <div className="mt-2 divide-y divide-slate-100">{recent.map(lesson=><button key={lesson.id} type="button" className="flex w-full items-center gap-3 py-3 text-left" onClick={()=>openProgressLesson(lesson)}>
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-[#2d6e5e]">{lesson.status==='completed'?'✓':<BookOpen size={17}/>}</span>
-                <span className="min-w-0 flex-1"><span className="block truncate text-sm font-semibold text-slate-800">{lesson.title || lesson.surahName || getSurah(lesson.surahNumber)?.name || 'Reflect study'}</span><span className="mt-0.5 block text-xs text-slate-500">{lesson.surahNumber}:{lesson.startAyah}–{lesson.endAyah} · {lesson.status==='completed'?'Completed':'In progress'}</span></span>
+                <span className="min-w-0 flex-1"><span className="block truncate text-sm font-semibold text-slate-800">{studyDisplayTitle(lesson)}</span><span className="mt-0.5 block text-xs text-slate-500">{lesson.surahNumber}:{lesson.startAyah}–{lesson.endAyah} · {lesson.status==='completed'?'Completed':'In progress'}</span></span>
                 <span className="text-slate-400" aria-hidden="true">›</span>
               </button>)}</div> : <p className="mt-3 text-sm text-slate-500">No studies in this period.</p>}
             </section>
@@ -623,8 +624,10 @@ export default function ReflectScreen() {
         <div className={card + " reflect-study-summary"}>
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <h2 className="text-lg font-semibold">{active.surahName || getSurah(active.surahNumber)?.name || ("Surah " + active.surahNumber)}</h2>
-              <p className="mt-1 text-sm text-slate-600">Ayahs {active.startAyah}–{active.endAyah}</p>
+              <label htmlFor="reflect-lesson-title" className="block text-xs font-semibold text-slate-600">Lesson Title</label>
+              <input id="reflect-lesson-title" className="mt-1 w-full min-w-0 rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-base font-semibold text-slate-900 outline-none focus:border-[#2d6e5e]" value={active.title || ''} placeholder="Give your study a title" onChange={e=>saveStudyMeta({title:e.target.value})} />
+              <h2 className="mt-3 text-lg font-bold leading-snug text-slate-900">{active.surahName || getSurah(active.surahNumber)?.name || ("Surah " + active.surahNumber)}</h2>
+              <p className="mt-1 text-base font-semibold text-[#2d6e5e]">Ayahs {active.startAyah}–{active.endAyah} <span className="font-normal text-slate-500">· {active.surahNumber}:{active.startAyah}–{active.endAyah}</span></p>
             </div>
             <button type="button" className="reflect-guidance-trigger" aria-label="Reading guidance" aria-expanded={guidanceOpen} aria-controls="reflect-reading-guidance" onClick={() => setGuidanceOpen(value => !value)}><Info size={21} aria-hidden="true"/></button>
           </div>
