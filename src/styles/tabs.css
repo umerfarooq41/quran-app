@@ -759,3 +759,20 @@
 .ayah-translation-note-row {display:flex;flex-direction:row;direction:rtl;align-items:flex-start;justify-content:flex-start;gap:10px;width:100%;margin:0;text-align:start}
 .ayah-translation-note-number {flex:0 0 24px;width:24px;height:24px;align-self:flex-start;margin-top:.35em}
 .ayah-translation-note-content {flex:1 1 0%;min-width:0;text-align:start}
+
+/* Reflect lesson summary: concise metadata and discoverable reading guidance. */
+.reflect-screen .reflect-study-summary { position: relative; }
+.reflect-screen .reflect-guidance-trigger {
+  display: inline-flex; flex: 0 0 38px; width: 38px; height: 38px;
+  align-items: center; justify-content: center;
+  border: 1px solid rgba(45,110,94,.20); border-radius: 50%;
+  background: rgba(45,110,94,.07); color: #2d6e5e;
+  touch-action: manipulation;
+}
+.reflect-screen .reflect-guidance-trigger[aria-expanded="true"] {
+  background: #2d6e5e; color: #fff;
+}
+.reflect-screen .reflect-guidance-panel {
+  margin-top: 16px; padding-top: 14px;
+  border-top: 1px solid rgba(100,116,139,.16);
+}
