@@ -11,6 +11,7 @@ import ThemeEditorSheet from '../features/reflect/components/ThemeEditorSheet';
 import PassageSelector from '../features/reflect/components/PassageSelector';
 import LessonReader from '../features/reflect/components/LessonReader';
 import LessonIntroduction from '../features/reflect/components/LessonIntroduction';
+import ContemplationAndRemembrance from '../features/reflect/components/ContemplationAndRemembrance';
 import ThemeStudyButton from '../features/reflect/components/ThemeStudyButton';
 import { getReflectProgress } from '../features/reflect/reflectProgress';
 import { reflectCardClass as card, reflectActionClass as action, reflectFieldClass as field, studyDisplayTitle, DEFAULT_THEMES, assignmentsFor } from '../features/reflect/reflectPresentation';
@@ -538,36 +539,7 @@ export default function ReflectScreen() {
         <LessonIntroduction active={active} saveStudyMeta={saveStudyMeta} guidanceOpen={guidanceOpen} setGuidanceOpen={setGuidanceOpen} introOpen={introOpen} setIntroOpen={setIntroOpen} displayedIntroLanguage={displayedIntroLanguage} setIntroLanguage={setIntroLanguage} surahIntro={surahIntro} />
         <LessonReader active={active} verses={verses} translationOption={translationOption} showWordByWord={showWordByWord} wordLanguage={wordLanguage} toggleKeyword={toggleKeyword} expandedTafsir={expandedTafsir} setExpandedTafsir={setExpandedTafsir} />
         <MyReflection active={active} finalQuestions={finalQuestions} reflectionOpen={reflectionOpen} setReflectionOpen={setReflectionOpen} reflectionIndex={reflectionIndex} setReflectionIndex={setReflectionIndex} saveAnswer={saveAnswer} flushAnswers={flushAnswers} />
-        {[
-          {title:'Contemplation',arabic:'Tadabbur',open:contemplationOpen,setOpen:setContemplationOpen,index:contemplationIndex,setIndex:setContemplationIndex,items:[
-            {key:'imagine',label:'Imagine & Feel',prompt:'What scene, warning, or promise in these ayahs should I pause and contemplate?',placeholder:'Describe what you imagine or feel…'},
-            {key:'evaluate',label:'Evaluate',prompt:'What do these ayahs reveal about my attitudes, choices, or actions?',placeholder:'Write your personal evaluation…'},
-          ]},
-          {title:'Remembrance',arabic:'Tadhakkur',open:remembranceOpen,setOpen:setRemembranceOpen,index:remembranceIndex,setIndex:setRemembranceIndex,items:[
-            {key:'reminder',label:'Personal Reminder',prompt:'What guidance from these ayahs do I want to keep in my heart and remember?',placeholder:'Write a reminder to yourself…'},
-            {key:'dua',label:'My Dua',prompt:'What would I like to ask Allah after reflecting on these ayahs?',placeholder:'Write your dua…'},
-          ]},
-        ].map(group=><section key={group.title} className={card}>
-          <button type="button" className="flex w-full items-center justify-between gap-3 text-left" aria-expanded={group.open} onClick={()=>group.setOpen(value=>!value)}>
-            <span><span className="block font-semibold">{group.title}</span><span className="mt-1 block text-xs text-slate-500">{group.arabic} · {group.items.filter(item=>String(active.answers?.tadabbur?.[item.key]||'').trim()).length} of {group.items.length} answered</span></span>
-            <ChevronDown size={20} aria-hidden="true" className={group.open?'rotate-180 transition-transform':'transition-transform'}/>
-          </button>
-          {group.open&&<div className="mt-3 border-t border-slate-200 pt-3">
-            <div className="flex items-center justify-between gap-3">
-              <span className="text-xs text-slate-500">Prompt {group.index+1} of {group.items.length}</span>
-              <div className="flex items-center gap-2" aria-label={group.title+' prompt navigation'}>
-                {group.items.map((item,i)=><button key={item.key} type="button" aria-label={'Go to '+item.label} aria-current={group.index===i?'step':undefined} onClick={()=>group.setIndex(i)} className={'h-2.5 w-2.5 rounded-full '+(group.index===i?'bg-[#2d6e5e]':String(active.answers?.tadabbur?.[item.key]||'').trim()?'bg-emerald-200':'bg-slate-200')}/>)}
-              </div>
-            </div>
-            <label htmlFor={'reflect-'+group.items[group.index].key} className="mt-4 block text-sm font-semibold">{group.items[group.index].label}</label>
-            <p className="mt-1 text-sm text-slate-600">{group.items[group.index].prompt}</p>
-            <textarea id={'reflect-'+group.items[group.index].key} className={field+' mt-3 min-h-28'} rows={4} placeholder={group.items[group.index].placeholder} value={active.answers?.tadabbur?.[group.items[group.index].key]||''} onChange={event=>saveTadabburField(group.items[group.index].key,event.target.value)} onBlur={flushAnswers}/>
-            <div className="mt-3 flex items-center justify-between gap-3">
-              <button type="button" className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 disabled:opacity-40" disabled={group.index===0} onClick={()=>group.setIndex(i=>Math.max(0,i-1))}>‹ Previous</button>
-              <button type="button" className="rounded-xl bg-[#2d6e5e] px-4 py-2 text-sm font-semibold text-white disabled:opacity-40" disabled={group.index===group.items.length-1} onClick={()=>group.setIndex(i=>Math.min(group.items.length-1,i+1))}>Next ›</button>
-            </div>
-          </div>}
-        </section>)}
+        <ContemplationAndRemembrance active={active} contemplationOpen={contemplationOpen} setContemplationOpen={setContemplationOpen} contemplationIndex={contemplationIndex} setContemplationIndex={setContemplationIndex} remembranceOpen={remembranceOpen} setRemembranceOpen={setRemembranceOpen} remembranceIndex={remembranceIndex} setRemembranceIndex={setRemembranceIndex} saveTadabburField={saveTadabburField} flushAnswers={flushAnswers} />
         <section className={card} data-reflect-questions>
           <div className="flex items-center justify-between gap-3"><h3 className="font-semibold">Questions</h3><button type="button" className="inline-flex items-center gap-1 text-sm font-medium text-[#2d6e5e]" onClick={()=>{setQuestionAdd(true);setQuestionEdit(false);}}><Plus size={15}/> Add Question</button></div>
           {questionAdd&&<div className="mt-3 rounded-xl bg-slate-50 p-3"><textarea className={field} rows={2} aria-label="New question" placeholder="Write your question…" value={newQuestion} onChange={e=>setNewQuestion(e.target.value)}/><div className="mt-2 flex justify-end gap-2"><button type="button" className="px-3 py-2 text-sm" onClick={()=>setQuestionAdd(false)}>Cancel</button><button type="button" className={action} disabled={!newQuestion.trim()} onClick={()=>{saveStudyMeta({studyQuestions:[...(active.studyQuestions||[]),{id:String(Date.now())+Math.random().toString(36).slice(2),text:newQuestion.trim(),answer:'',answered:false}]});setQuestionIndex((active.studyQuestions||[]).length);setNewQuestion('');setQuestionAdd(false);}}>Add</button></div></div>}
