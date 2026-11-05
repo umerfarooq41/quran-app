@@ -103,6 +103,34 @@ test('saved Reflect lesson and its personal notes survive reloads', async ({ pag
   expect(persistedNotes).toBe('QA persistence note');
 });
 
+test('Reader displays a permanent Reflect marker for a saved passage', async ({ page }) => {
+  await openHome(page);
+  await seedLocalRecords(page);
+  await page.evaluate(async () => {
+    const request = indexedDB.open('quranFluentLocal');
+    const database = await new Promise((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    const transaction = database.transaction('tadabburLessons', 'readwrite');
+    transaction.objectStore('tadabburLessons').put({
+      id: 'qa-reflect-marker', surahNumber: 1, startAyah: 2, endAyah: 4,
+      title: 'Marker verification', status: 'saved',
+      createdAt: Date.now(), updatedAt: Date.now(),
+    });
+    await new Promise((resolve, reject) => {
+      transaction.oncomplete = resolve;
+      transaction.onerror = () => reject(transaction.error);
+    });
+    database.close();
+  });
+  await page.reload();
+  await expect(page.getByRole('heading', { name: 'Al Quran' })).toBeVisible();
+  await page.getByRole('button', { name: /Continue Reading/i }).click();
+  await expect(page.locator('.reader-page').first()).toBeVisible();
+  await expect(page.locator('.quran-ayah-marker--bookmark-tadabbur').first()).toBeVisible();
+});
+
 test('installed production service worker supports an offline cold reload', async ({ page, context }) => {
   await openHome(page);
 
