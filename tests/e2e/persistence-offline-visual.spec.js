@@ -78,6 +78,11 @@ test('saved Reflect lesson and its personal notes survive reloads', async ({ pag
   await expect(page.locator('#reflect-lesson-title')).toHaveValue('QA saved lesson');
   await expect(page.getByText('In the name of Allah')).toBeVisible();
   await expect(page.locator('#reflect-imagine')).toHaveValue('QA persistence note');
+  await expect(page.getByRole('group', { name: 'Word-by-word language' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'English', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await page.getByRole('button', { name: 'Urdu', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Urdu', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('.ayah-word-by-word').first()).toBeVisible();
 
   await page.reload();
   await expect(page.locator('#root')).not.toBeEmpty();
