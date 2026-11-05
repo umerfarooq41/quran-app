@@ -866,3 +866,10 @@
   background: var(--theme-accent, #2f7d68) !important;
   color: #fff !important;
 }
+
+/* Reflect's active tab must stay readable for every theme accent, including pale custom colors. */
+.tabs-screen.reflect-screen .reflect-tabs.library-tabs.share-like-segment > button.is-active,
+[data-theme='dark'] .tabs-screen.reflect-screen .reflect-tabs.library-tabs.share-like-segment > button.is-active {
+  background-color: #245d4e !important;
+  color: #fff !important;
+}
