@@ -25,9 +25,14 @@ document.addEventListener('contextmenu', (event) => {
 });
 
 let refreshingForServiceWorker = false;
+// First-time service-worker activation must not interrupt an in-progress screen.
+// Reload only when an existing controller is replaced by an app update.
+let hadServiceWorkerController = Boolean(navigator.serviceWorker?.controller);
 
 navigator.serviceWorker?.addEventListener('controllerchange', () => {
-  if (refreshingForServiceWorker) return;
+  const replacingExistingController = hadServiceWorkerController;
+  hadServiceWorkerController = Boolean(navigator.serviceWorker?.controller);
+  if (!replacingExistingController || refreshingForServiceWorker) return;
   refreshingForServiceWorker = true;
   window.location.reload();
 });
