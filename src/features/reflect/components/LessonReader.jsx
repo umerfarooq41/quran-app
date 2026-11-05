@@ -51,7 +51,7 @@ export default function LessonReader({ active, verses, translationOption, toggle
             </div>
           </div>
 
-          {verses.length ? <div className="mt-4 divide-y divide-slate-200">
+          {verses.length ? <div className="reflect-passage-verses mt-4">
             {verses.map((verse) => (
               <article key={verse.ayahNumber} data-reflect-ayah={verse.ayahNumber} className="reflect-lesson-ayah" data-translation-language={translationOption.language || 'En'}>
                 <header className="ayah-translation-header reflect-ayah-reference">{surahName} {active.surahNumber}:{verse.ayahNumber}</header>
@@ -72,7 +72,7 @@ export default function LessonReader({ active, verses, translationOption, toggle
                           </button>
                         ))}
                       </div>
-                    ) : <p className="ayah-word-by-word-status">{wordLoading ? 'Loading word meanings…' : wordLanguage === savedLanguage && verse.wordByWord ? verse.wordByWord : 'Word meanings unavailable for this language.'}</p>}
+                    ) : <p className="ayah-word-by-word-status">{wordLoading ? 'Loading word meanings…' : 'Word meanings unavailable for this language.'}</p>}
                   </section>
                   );
                 })()}

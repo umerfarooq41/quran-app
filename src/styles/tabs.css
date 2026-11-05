@@ -1088,3 +1088,45 @@
   color: var(--theme-text, #242424);
 }
 .reflect-screen .reflect-passage-status { margin-top: 10px; font-size: 12px; }
+
+/* Unified Reflect lesson surfaces and readable selected tabs. */
+.tabs-screen.reflect-screen .reflect-tabs.library-tabs.share-like-segment > button.is-active,
+.tabs-screen.reflect-screen .library-tabs.share-like-segment > button.is-active,
+[data-theme='dark'] .tabs-screen.reflect-screen .library-tabs.share-like-segment > button.is-active {
+  background: #245d4e !important;
+  background-color: #245d4e !important;
+  color: #fff !important;
+}
+.reflect-screen .reflect-lesson-title-input,
+.reflect-screen .reflect-lesson-answer {
+  border: 1px solid var(--theme-border, #e5e7eb);
+  background: var(--theme-surface-solid, #fff);
+  color: var(--theme-text, #242424);
+}
+.reflect-screen .reflect-lesson-answer { padding: 10px 12px; border-radius: 12px; }
+.reflect-screen .reflect-lesson-title-input:focus-visible,
+.reflect-screen .reflect-lesson-answer:focus-visible {
+  outline: 2px solid var(--theme-accent, #245d4e);
+  outline-offset: 1px;
+}
+.reflect-screen .reflect-accent-text { color: var(--theme-accent, #245d4e); }
+.reflect-screen .reflect-lesson-inner {
+  background: color-mix(in srgb, var(--theme-surface-solid, #fff) 90%, var(--theme-border, #e5e7eb));
+  border: 1px solid var(--theme-border, #e5e7eb);
+  color: var(--theme-text, #242424);
+}
+.reflect-screen .reflect-lesson-divider,
+.reflect-screen .reflect-passage-verses > * + * { border-color: var(--theme-border, #e5e7eb); }
+.reflect-screen .reflect-passage-verses > * + * { border-top: 1px solid var(--theme-border, #e5e7eb); }
+.reflect-screen .reflect-intro-language-button {
+  background: var(--theme-surface-solid, #fff);
+  border: 1px solid var(--theme-border, #e5e7eb);
+  color: var(--theme-text, #242424);
+}
+.reflect-screen .reflect-intro-language-button[aria-pressed='true'] { background: #245d4e; color: #fff; }
+.reflect-screen .reflect-theme-sheet,
+.reflect-screen .reflect-theme-sheet-footer {
+  background: var(--theme-surface-solid, #fff);
+  color: var(--theme-text, #242424);
+  border-color: var(--theme-border, #e5e7eb);
+}

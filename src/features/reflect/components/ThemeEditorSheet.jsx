@@ -6,7 +6,7 @@ import { reflectActionClass as action, reflectFieldClass as field } from '../ref
 export default function ThemeEditorSheet({ themeCreation, setThemeCreation, setThemeSheet, newThemeName, setNewThemeName, createTheme, themeSearch, setThemeSearch, themeGroups, expandedTheme, setExpandedTheme, draftThemes, toggleThemeSub, toggleThemeMain, finishThemeEditing }) {
   return (
 <div className="fixed inset-0 z-[100] flex items-end bg-black/40" role="presentation" onMouseDown={e => {if(e.target===e.currentTarget)setThemeSheet(false);}}>
-          <div className="flex max-h-[85dvh] w-full flex-col rounded-t-2xl bg-white shadow-xl" role="dialog" aria-modal="true" aria-label="Edit themes">
+          <div className="reflect-theme-sheet flex max-h-[85dvh] w-full flex-col rounded-t-2xl shadow-xl" role="dialog" aria-modal="true" aria-label="Edit themes">
             <div className="mx-auto mt-2 h-1 w-9 shrink-0 rounded-full bg-slate-300"/>
             {themeCreation ? <div className="flex flex-col gap-4 p-4">
               <div className="flex items-center justify-between"><h3 className="font-semibold">{themeCreation.type === 'main' ? 'New Main Theme' : 'New Subtheme'}</h3><button type="button" aria-label="Back to themes" onClick={()=>setThemeCreation(null)}><X size={20}/></button></div>
@@ -22,7 +22,7 @@ export default function ThemeEditorSheet({ themeCreation, setThemeCreation, setT
                   {(expandedTheme===main||themeSearch.trim()) && <div className="px-3 pb-3"><div className="flex flex-wrap gap-2">{subs.filter(sub=>!themeSearch||main.toLowerCase().includes(themeSearch.toLowerCase())||sub.toLowerCase().includes(themeSearch.toLowerCase())).map(sub=><button key={sub} type="button" aria-pressed={draftThemes.some(item=>item.main===main&&item.sub.includes(sub))} className={'rounded-full px-3 py-2 text-xs '+(draftThemes.some(item=>item.main===main&&item.sub.includes(sub))?'bg-[#2d6e5e] text-white':'bg-slate-100 text-slate-700')} onClick={()=>toggleThemeSub(main,sub)}>{sub}</button>)}<button type="button" className="inline-flex items-center gap-1 rounded-full border border-slate-200 px-3 py-2 text-xs" onClick={()=>{setThemeCreation({type:'sub',parent:main});setNewThemeName('');}}><Plus size={13}/> New</button></div><button type="button" className="mt-3 text-xs text-slate-500" onClick={()=>toggleThemeMain(main)}>{draftThemes.some(item=>item.main===main)?'Remove main theme':'Select main theme only'}</button></div>}
                 </div>)}</div>
               </div>
-              <div className="flex shrink-0 items-center justify-between border-t border-slate-100 bg-white px-4 py-3 pb-[max(12px,env(safe-area-inset-bottom))]"><span className="text-xs text-slate-500">{draftThemes.length} themes selected</span><button type="button" className={action} onClick={finishThemeEditing}>Done</button></div>
+              <div className="reflect-theme-sheet-footer flex shrink-0 items-center justify-between border-t px-4 py-3 pb-[max(12px,env(safe-area-inset-bottom))]"><span className="text-xs text-slate-500">{draftThemes.length} themes selected</span><button type="button" className={action} onClick={finishThemeEditing}>Done</button></div>
             </>}
           </div>
         </div>

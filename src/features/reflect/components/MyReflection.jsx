@@ -10,7 +10,7 @@ export default function MyReflection({ active, finalQuestions, reflectionOpen, s
             <span><span className="block font-semibold">My Reflection</span><span className="mt-1 block text-xs text-slate-500">{(active.answers?.final||[]).filter(answer=>String(answer||'').trim()).length} of {finalQuestions.length} answered</span></span>
             <ChevronDown size={20} aria-hidden="true" className={reflectionOpen?'rotate-180 transition-transform':'transition-transform'}/>
           </button>
-          {reflectionOpen && <div id="reflect-my-reflection" className="mt-3 border-t border-slate-200 pt-3">
+          {reflectionOpen && <div id="reflect-my-reflection" className="reflect-lesson-divider mt-3 border-t pt-3">
             <div className="flex items-center justify-between gap-3">
               <span className="text-xs text-slate-500">Question {Math.min(reflectionIndex,finalQuestions.length-1)+1} of {finalQuestions.length}</span>
               <div className="flex items-center gap-2" aria-label="Reflection question navigation">

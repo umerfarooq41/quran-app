@@ -6,7 +6,7 @@ export default function FinishAndRevisit({ active, saveTadabburField, saveStudyM
   return (
         <section className={card}>
           <h3 className="font-semibold">Finish &amp; Revisit</h3>
-          <div className="mt-3 rounded-xl bg-slate-50 p-3">
+          <div className="reflect-lesson-inner mt-3 rounded-xl p-3">
             <p className="text-xs font-semibold text-[#2d6e5e]">{active.surahName || 'Surah '+active.surahNumber} · {active.startAyah}–{active.endAyah}</p>
             <div className="mt-3 flex items-center justify-between gap-2">
               <label htmlFor="reflect-learning-summary" className="text-sm font-semibold">What I Learned</label>
