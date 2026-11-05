@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { getWordByWordTranslation } from '../../../services/quranFoundation/words';
 import renderReflectTranslation from './ReflectTranslation';
 import { reflectCardClass as card } from '../reflectPresentation';
+import { getSurah } from '../../../lib/quran';
 
 /** Read-only Arabic/translation/Tafsir snapshot with interactive keyword selection. */
 export default function LessonReader({ active, verses, translationOption, toggleKeyword, expandedTafsir, setExpandedTafsir }) {
+  const surahName = getSurah(active.surahNumber)?.name || active.surahName || 'Surah';
   const savedLanguage = active.sourceSnapshot?.wordByWordLanguage === 'ur' ? 'ur' : 'en';
   const [wordLanguage, setWordLanguage] = useState(savedLanguage);
   const [wordOverrides, setWordOverrides] = useState({});
@@ -51,8 +53,9 @@ export default function LessonReader({ active, verses, translationOption, toggle
 
           {verses.length ? <div className="mt-4 divide-y divide-slate-200">
             {verses.map((verse) => (
-              <article key={verse.ayahNumber} data-reflect-ayah={verse.ayahNumber} className="ayah-translation-body reflect-lesson-ayah py-5 first:pt-0 last:pb-0" data-translation-language={translationOption.language || 'En'}>
-                <p className="mb-3 text-sm font-semibold text-[#2d6e5e]">Ayah {verse.ayahNumber} · {active.surahNumber}:{verse.ayahNumber}</p>
+              <article key={verse.ayahNumber} data-reflect-ayah={verse.ayahNumber} className="reflect-lesson-ayah" data-translation-language={translationOption.language || 'En'}>
+                <header className="ayah-translation-header reflect-ayah-reference">{surahName} {active.surahNumber}:{verse.ayahNumber}</header>
+                <div className="ayah-translation-body reflect-ayah-body" data-translation-language={translationOption.language || 'En'}>
                 <p className="ayah-translation-arabic" dir="rtl" lang="ar">{verse.arabic}</p>
 
                 {(() => {
@@ -88,6 +91,7 @@ export default function LessonReader({ active, verses, translationOption, toggle
                       <p className="ayah-translation-note-row"><span className="ayah-translation-note-number" dir="ltr" lang="en">{note.number}</span><span className="ayah-translation-note-content">{note.text}</span></p>
                     </section></div></div> : null;
                 })()}
+                </div>
               </article>
             ))}
           </div> : (
