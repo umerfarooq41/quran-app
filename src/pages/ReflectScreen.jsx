@@ -36,7 +36,7 @@ export default function ReflectScreen() {
   const [mode, setMode] = useState(target?.surahNumber ? 'new' : 'hub');
   const [surahNumber, setSurahNumber] = useState(Number(target?.surahNumber) || 1);
   const [startAyah, setStartAyah] = useState(Number(target?.startAyah) || 1);
-  const [endAyah, setEndAyah] = useState(Math.min(15, Number(target?.startAyah || 1) + 2));
+  const [endAyah, setEndAyah] = useState(Number(target?.startAyah || 1) + 2);
   const [active, setActive] = useState(null);
   const [busy, setBusy] = useState(false);
   const [introOpen, setIntroOpen] = useState(false);
