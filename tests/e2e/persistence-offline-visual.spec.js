@@ -83,6 +83,7 @@ test('saved Reflect lesson and its personal notes survive reloads', async ({ pag
   await page.getByRole('button', { name: 'Urdu', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Urdu', exact: true })).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('.ayah-word-by-word').first()).toBeVisible();
+  await expect(page.locator('.reflect-ayah-reference').first()).toContainText(/Al-Fatihah 1:1|Al-Baqarah 2:/);
 
   await page.reload();
   await expect(page.locator('#root')).not.toBeEmpty();

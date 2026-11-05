@@ -43,10 +43,10 @@ export default function LessonReader({ active, verses, translationOption, toggle
         <section className={card}>
           <div className="flex items-center justify-between gap-3">
             <h3 className="font-semibold">Read the passage</h3>
-            <div className="inline-flex rounded-full border border-slate-200 bg-slate-100 p-1" role="group" aria-label="Word-by-word language">
+            <div className="reflect-word-language" role="group" aria-label="Word-by-word language">
               {['en', 'ur'].map(language => <button key={language} type="button"
                 aria-pressed={wordLanguage === language}
-                className={'rounded-full px-3 py-1.5 text-xs font-semibold ' + (wordLanguage === language ? 'bg-[#245d4e] text-white' : 'text-slate-600')}
+                className="reflect-word-language-option"
                 onClick={() => setWordLanguage(language)}>{language === 'en' ? 'English' : 'Urdu'}</button>)}
             </div>
           </div>

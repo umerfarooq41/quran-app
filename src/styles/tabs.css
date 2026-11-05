@@ -972,3 +972,38 @@
 .reflect-screen .reflect-ayah-body .ayah-translation-arabic { margin-top: 0; }
 .reflect-screen .reflect-ayah-body .ayah-word-by-word { margin-top: 20px; }
 .reflect-screen .reflect-ayah-body .ayah-translation-text { margin-top: 22px; }
+
+/* Shared translation-card styling for Reflect's passage reader. */
+.reflect-screen .reflect-lesson-ayah .reflect-ayah-reference {
+  background: var(--theme-surface-solid, #fff);
+  color: var(--theme-text, #242424);
+  font-weight: 500;
+}
+.reflect-screen .reflect-lesson-ayah .reflect-ayah-body {
+  background: var(--theme-surface-solid, #fff);
+  color: var(--theme-text, #242424);
+}
+.reflect-screen .reflect-word-language {
+  display: inline-flex;
+  flex-shrink: 0;
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid var(--theme-border, #e0e3e2);
+  border-radius: 999px;
+  background: var(--theme-surface-solid, #fff);
+}
+.reflect-screen .reflect-word-language button {
+  min-height: 32px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--theme-text, #242424);
+}
+.reflect-screen .reflect-word-language button[aria-pressed="true"] {
+  background: #245d4e;
+  color: #fff;
+}
+@media (max-width: 360px) {
+  .reflect-screen .reflect-word-language button { padding-inline: 8px; }
+}
