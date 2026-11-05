@@ -1,0 +1,30 @@
+import React from 'react';
+import { ChevronDown, Plus, X } from 'lucide-react';
+import { reflectActionClass as action, reflectFieldClass as field } from '../reflectPresentation';
+
+/** Theme selection and creation sheet; state is owned by the Reflect page. */
+export default function ThemeEditorSheet({ themeCreation, setThemeCreation, setThemeSheet, newThemeName, setNewThemeName, createTheme, themeSearch, setThemeSearch, themeGroups, expandedTheme, setExpandedTheme, draftThemes, toggleThemeSub, toggleThemeMain, finishThemeEditing }) {
+  return (
+<div className="fixed inset-0 z-[100] flex items-end bg-black/40" role="presentation" onMouseDown={e => {if(e.target===e.currentTarget)setThemeSheet(false);}}>
+          <div className="flex max-h-[85dvh] w-full flex-col rounded-t-2xl bg-white shadow-xl" role="dialog" aria-modal="true" aria-label="Edit themes">
+            <div className="mx-auto mt-2 h-1 w-9 shrink-0 rounded-full bg-slate-300"/>
+            {themeCreation ? <div className="flex flex-col gap-4 p-4">
+              <div className="flex items-center justify-between"><h3 className="font-semibold">{themeCreation.type === 'main' ? 'New Main Theme' : 'New Subtheme'}</h3><button type="button" aria-label="Back to themes" onClick={()=>setThemeCreation(null)}><X size={20}/></button></div>
+              {themeCreation.type === 'sub' && <p className="text-sm text-slate-500">Under {themeCreation.parent}</p>}
+              <input className={field} autoFocus aria-label="Theme name" placeholder="Theme name" value={newThemeName} onChange={e=>setNewThemeName(e.target.value)}/>
+              <button type="button" className={action} disabled={!newThemeName.trim()} onClick={createTheme}>Create {themeCreation.type === 'main' ? 'Main Theme' : 'Subtheme'}</button>
+            </div> : <>
+              <div className="flex shrink-0 items-center justify-between gap-2 px-4 py-3"><h3 className="font-semibold">Themes</h3><div className="flex items-center gap-3"><button type="button" className="inline-flex items-center gap-1 text-xs font-semibold text-[#2d6e5e]" onClick={()=>{setThemeCreation({type:'main'});setNewThemeName('');}}><Plus size={14}/> Main Theme</button><button type="button" aria-label="Close themes" onClick={()=>setThemeSheet(false)}><X size={20}/></button></div></div>
+              <div className="shrink-0 px-4 pb-3"><input className={field} value={themeSearch} onChange={e=>setThemeSearch(e.target.value)} placeholder="Search themes…" aria-label="Search themes"/></div>
+              <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-3">
+                <div className="overflow-hidden rounded-xl border border-slate-200">{Object.entries(themeGroups).filter(([main,subs])=>main.toLowerCase().includes(themeSearch.toLowerCase())||subs.some(sub=>sub.toLowerCase().includes(themeSearch.toLowerCase()))).map(([main,subs])=><div key={main} className="border-b border-slate-100 last:border-0">
+                  <button type="button" className="flex w-full items-center justify-between px-3 py-3 text-left text-sm font-semibold" aria-expanded={expandedTheme===main} onClick={()=>setExpandedTheme(expandedTheme===main?null:main)}>{main}<ChevronDown size={17} className={expandedTheme===main?'rotate-180 text-slate-500':'text-slate-500'}/></button>
+                  {(expandedTheme===main||themeSearch.trim()) && <div className="px-3 pb-3"><div className="flex flex-wrap gap-2">{subs.filter(sub=>!themeSearch||main.toLowerCase().includes(themeSearch.toLowerCase())||sub.toLowerCase().includes(themeSearch.toLowerCase())).map(sub=><button key={sub} type="button" aria-pressed={draftThemes.some(item=>item.main===main&&item.sub.includes(sub))} className={'rounded-full px-3 py-2 text-xs '+(draftThemes.some(item=>item.main===main&&item.sub.includes(sub))?'bg-[#2d6e5e] text-white':'bg-slate-100 text-slate-700')} onClick={()=>toggleThemeSub(main,sub)}>{sub}</button>)}<button type="button" className="inline-flex items-center gap-1 rounded-full border border-slate-200 px-3 py-2 text-xs" onClick={()=>{setThemeCreation({type:'sub',parent:main});setNewThemeName('');}}><Plus size={13}/> New</button></div><button type="button" className="mt-3 text-xs text-slate-500" onClick={()=>toggleThemeMain(main)}>{draftThemes.some(item=>item.main===main)?'Remove main theme':'Select main theme only'}</button></div>}
+                </div>)}</div>
+              </div>
+              <div className="flex shrink-0 items-center justify-between border-t border-slate-100 bg-white px-4 py-3 pb-[max(12px,env(safe-area-inset-bottom))]"><span className="text-xs text-slate-500">{draftThemes.length} themes selected</span><button type="button" className={action} onClick={finishThemeEditing}>Done</button></div>
+            </>}
+          </div>
+        </div>
+  );
+}
