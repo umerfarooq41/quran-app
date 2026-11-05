@@ -392,6 +392,3 @@ export default function ReflectScreen() {
     </Screen>
   );
 }
-
-           const {filtered, completed, percentage, ayahCount, questions, answered, commitments, recent} = getReflectProgress(lessons, progressPeriod);
-
