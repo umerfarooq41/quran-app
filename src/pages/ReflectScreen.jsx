@@ -332,8 +332,6 @@ export default function ReflectScreen() {
   const verses = active?.sourceSnapshot?.verses || [];
   const finalQuestions = REFLECT_FINAL_QUESTIONS;
   const translationOption = getTranslationOption(active?.sourceSnapshot?.translationId || settings.translation);
-  const wordLanguage = settings.wordByWordLanguage || 'en';
-  const showWordByWord = Boolean(settings.wordByWordTranslation);
   const preferredIntroLanguage = String(translationOption.language || 'En').toLowerCase() === 'ur' ? 'ur' : 'en';
   const displayedIntroLanguage = introLanguage || preferredIntroLanguage;
   const surahIntro = useMemo(() => {
@@ -374,7 +372,7 @@ export default function ReflectScreen() {
 
       {mode === 'lesson' && active && <>
         <LessonIntroduction active={active} saveStudyMeta={saveStudyMeta} guidanceOpen={guidanceOpen} setGuidanceOpen={setGuidanceOpen} introOpen={introOpen} setIntroOpen={setIntroOpen} displayedIntroLanguage={displayedIntroLanguage} setIntroLanguage={setIntroLanguage} surahIntro={surahIntro} />
-        <LessonReader active={active} verses={verses} translationOption={translationOption} showWordByWord={showWordByWord} wordLanguage={wordLanguage} toggleKeyword={toggleKeyword} expandedTafsir={expandedTafsir} setExpandedTafsir={setExpandedTafsir} />
+        <LessonReader active={active} verses={verses} translationOption={translationOption} toggleKeyword={toggleKeyword} expandedTafsir={expandedTafsir} setExpandedTafsir={setExpandedTafsir} />
         <MyReflection active={active} finalQuestions={finalQuestions} reflectionOpen={reflectionOpen} setReflectionOpen={setReflectionOpen} reflectionIndex={reflectionIndex} setReflectionIndex={setReflectionIndex} saveAnswer={saveAnswer} flushAnswers={flushAnswers} />
         <ContemplationAndRemembrance active={active} contemplationOpen={contemplationOpen} setContemplationOpen={setContemplationOpen} contemplationIndex={contemplationIndex} setContemplationIndex={setContemplationIndex} remembranceOpen={remembranceOpen} setRemembranceOpen={setRemembranceOpen} remembranceIndex={remembranceIndex} setRemembranceIndex={setRemembranceIndex} saveTadabburField={saveTadabburField} flushAnswers={flushAnswers} />
         <LessonQuestions active={active} questionAdd={questionAdd} setQuestionAdd={setQuestionAdd} questionEdit={questionEdit} setQuestionEdit={setQuestionEdit} questionIndex={questionIndex} setQuestionIndex={setQuestionIndex} questionMenu={questionMenu} setQuestionMenu={setQuestionMenu} questionDraft={questionDraft} setQuestionDraft={setQuestionDraft} newQuestion={newQuestion} setNewQuestion={setNewQuestion} saveStudyMeta={saveStudyMeta} removeQuestion={removeQuestion} />
