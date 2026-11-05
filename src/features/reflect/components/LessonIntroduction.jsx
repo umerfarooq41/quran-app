@@ -1,6 +1,5 @@
 import React from 'react';
 import { BookOpen, ChevronDown, Info } from 'lucide-react';
-import { getSurah } from '../../../lib/quran';
 import { reflectCardClass as card } from '../reflectPresentation';
 
 /** Lesson identity, reading guidance and source-language introduction. */
@@ -11,9 +10,7 @@ export default function LessonIntroduction({ active, saveStudyMeta, guidanceOpen
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <label htmlFor="reflect-lesson-title" className="block text-xs font-semibold text-slate-600">Lesson Title</label>
-              <input id="reflect-lesson-title" className="reflect-lesson-title-input mt-1 w-full min-w-0 rounded-lg px-3 py-2.5 text-base font-semibold" value={active.title || ''} placeholder="Give your study a title" onChange={e=>saveStudyMeta({title:e.target.value})} />
-              <h2 className="mt-3 text-lg font-bold leading-snug">{active.surahName || getSurah(active.surahNumber)?.name || ("Surah " + active.surahNumber)}</h2>
-              <p className="reflect-accent-text mt-1 text-base font-semibold">{active.surahNumber}:{active.startAyah}–{active.endAyah}</p>
+              <input id="reflect-lesson-title" className="reflect-lesson-title-input mt-1 w-full min-w-0 rounded-lg px-3 py-2.5 text-base font-semibold" value={active.title || ''} placeholder="Give your lesson a title" onChange={e=>saveStudyMeta({title:e.target.value})} />
             </div>
             <button type="button" className="reflect-guidance-trigger" aria-label="Reading guidance" aria-expanded={guidanceOpen} aria-controls="reflect-reading-guidance" onClick={() => setGuidanceOpen(value => !value)}><Info size={21} aria-hidden="true"/></button>
           </div>

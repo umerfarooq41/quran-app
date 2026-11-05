@@ -1130,3 +1130,26 @@
   color: var(--theme-text, #242424);
   border-color: var(--theme-border, #e5e7eb);
 }
+
+/* Reflect theme contract: one surface per section, never a pale card in dark mode. */
+.reflect-screen { --reflect-surface:var(--theme-surface-solid,#fff); --reflect-ink:var(--theme-text,#242424); --reflect-muted:var(--theme-muted,#64748b); --reflect-border:var(--theme-border,#e5e7eb); color:var(--reflect-ink); }
+.reflect-screen .reflect-panel { background:var(--reflect-surface); color:var(--reflect-ink); border-color:var(--reflect-border); }
+.reflect-screen .reflect-field { background:var(--reflect-surface); color:var(--reflect-ink); border-color:var(--reflect-border); }
+.reflect-screen .reflect-field::placeholder { color:var(--reflect-muted); opacity:1; }
+.reflect-screen .reflect-panel .text-slate-500,.reflect-screen .reflect-panel .text-slate-600,.reflect-screen .reflect-panel .text-slate-700 { color:var(--reflect-muted); }
+.reflect-screen .reflect-panel .text-slate-800,.reflect-screen .reflect-panel .text-slate-900 { color:var(--reflect-ink); }
+.reflect-screen .reflect-panel .bg-white,.reflect-screen .reflect-panel .bg-white\/85 { background:var(--reflect-surface);color:var(--reflect-ink); }
+.reflect-screen .reflect-panel .border-slate-200,.reflect-screen .reflect-panel .border-slate-100 { border-color:var(--reflect-border); }
+.reflect-screen .reflect-panel .reflect-lesson-inner { background:transparent; border:0; border-radius:0; padding:0; }
+.reflect-screen .reflect-panel .reflect-finish-content { background:transparent; border:0; padding:0; }
+.reflect-screen .reflect-panel .reflect-lesson-title-input { width:100%; }
+.reflect-screen .reflect-passage-verses { overflow:hidden; border-radius:12px; border:1px solid var(--reflect-border); }
+.reflect-screen .reflect-lesson-ayah .reflect-ayah-reference,.reflect-screen .reflect-lesson-ayah .reflect-ayah-body { background:var(--reflect-surface); color:var(--reflect-ink); }
+.reflect-screen .reflect-lesson-ayah .ayah-word-by-word-list { align-items:start; }
+.reflect-screen .reflect-progress .reflect-panel { background:var(--reflect-surface);color:var(--reflect-ink); }
+.reflect-screen .reflect-progress .reflect-panel p,.reflect-screen .reflect-progress .reflect-panel h2,.reflect-screen .reflect-progress .reflect-panel h3 { color:inherit; }
+.reflect-screen .reflect-progress .reflect-panel .text-slate-500 { color:var(--reflect-muted); }
+.reflect-screen .reflect-progress-metric { color:var(--reflect-ink); }
+.reflect-screen .reflect-study-menu { background:var(--reflect-surface);color:var(--reflect-ink); }
+.reflect-screen .reflect-guidance-panel { background:var(--reflect-surface);color:var(--reflect-ink);border-color:var(--reflect-border); }
+.reflect-screen .reflect-question-card,.reflect-screen .reflect-keyword-card,.reflect-screen .reflect-theme-group { color:var(--reflect-ink); }

@@ -59,7 +59,7 @@ export default function LessonReader({ active, verses, translationOption, toggle
                 <p className="ayah-translation-arabic" dir="rtl" lang="ar">{verse.arabic}</p>
 
                 {(() => {
-                  const words = wordLanguage === savedLanguage ? verse.wordByWordWords : wordOverrides[wordLanguage]?.[verse.ayahNumber];
+                  const words = (wordLanguage === savedLanguage ? verse.wordByWordWords : wordOverrides[wordLanguage]?.[verse.ayahNumber])?.filter(word => word?.arabic && /[\p{L}\p{N}]/u.test(word.arabic) && !/^[۝۞﴿﴾٠-٩۰-۹0-9()]+$/u.test(word.arabic.trim()));
                   return (
                   <section className={`ayah-word-by-word is-${wordLanguage} mt-4`} aria-label={`Ayah ${verse.ayahNumber} word-by-word translation`}>
                     <div className="ayah-word-by-word-heading">Word by word · {wordLanguage === 'ur' ? 'Urdu' : 'English'}</div>
