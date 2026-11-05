@@ -120,10 +120,9 @@ export default function HomeScreen() {
           className="home-reflect-card"
           whileTap={{ scale: 0.985 }}
         >
-          <span className="home-reflect-icon"><BookOpen size={21} /></span>
           <span className="home-favorite-copy home-reflect-copy">
-            <strong>My Quran Studies</strong>
-            <small>Read, understand and reflect on the Quran</small>
+            <strong>Begin reflecting</strong>
+            <small>Explore your lessons and reflections</small>
           </span>
         </motion.button>
       </motion.section>

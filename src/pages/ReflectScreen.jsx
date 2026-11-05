@@ -71,7 +71,7 @@ export default function ReflectScreen() {
   const [themeCreation, setThemeCreation] = useState(null);
   const [newThemeName, setNewThemeName] = useState('');
   const [draftThemes, setDraftThemes] = useState([]);
-  const [hubTab, setHubTab] = useState('Studies');
+  const [hubTab, setHubTab] = useState('Lessons');
   const [lessonOrigin, setLessonOrigin] = useState(null);
   const [progressPeriod, setProgressPeriod] = useState('all');
   const [progressCommitment, setProgressCommitment] = useState(null);
@@ -96,7 +96,7 @@ export default function ReflectScreen() {
   }
 
   useEffect(() => {
-    refresh().catch(() => setError('Unable to load saved Reflect studies.'));
+    refresh().catch(() => setError('Unable to load saved Reflect lessons.'));
   }, []);
 
   function beginNew() {
@@ -131,8 +131,8 @@ export default function ReflectScreen() {
       setMode('lesson');
     } catch (e) {
       setError(e.name === 'AbortError'
-        ? 'Study creation was cancelled or timed out. Please try again.'
-        : (e.message || 'Unable to create this study.'));
+        ? 'Lesson creation was cancelled or timed out. Please try again.'
+        : (e.message || 'Unable to create this lesson.'));
     } finally {
       setBusy(false);
     }
@@ -191,9 +191,9 @@ export default function ReflectScreen() {
     try {
       await refresh();
     } catch {
-      setError('Unable to refresh saved studies.');
+      setError('Unable to refresh saved lessons.');
     }
-    setHubTab(lessonOrigin || 'Studies');
+    setHubTab(lessonOrigin || 'Lessons');
     setLessonOrigin(null);
     setActive(null);
     setMode('hub');
@@ -273,7 +273,7 @@ export default function ReflectScreen() {
     const id = active.id;
     setActive(current => current?.id === id ? {...current, ...patch} : current);
     setLessons(rows=>rows.map(l=>l.id===id?{...l,...patch}:l));
-    saveQueue.current = saveQueue.current.catch(() => {}).then(() => updateTadabburLesson(id, patch)).catch(() => setError('Unable to save study details.'));
+    saveQueue.current = saveQueue.current.catch(() => {}).then(() => updateTadabburLesson(id, patch)).catch(() => setError('Unable to save lesson details.'));
   }
 
   function removeQuestion(lesson,id) {
@@ -298,7 +298,7 @@ export default function ReflectScreen() {
     setError('');
     try {
       const updated = await updateTadabburLesson(active.id, { status: 'completed', completedAt: active.completedAt || Date.now() });
-      if (!updated) throw new Error('Study not found.');
+      if (!updated) throw new Error('Lesson not found.');
       setActive(updated);
       await refresh();
     } catch (cause) {
@@ -344,19 +344,19 @@ export default function ReflectScreen() {
     <Screen className="tabs-screen app-page-shell bg-fluent reflect-screen">
       <div className="app-fixed-header">
         <Header
-          title={mode === 'hub' ? 'Reflect' : mode === 'new' ? 'Select Passage' : 'Study'}
+          title={mode === 'hub' ? 'Reflect' : mode === 'new' ? 'New Lesson' : `${active?.surahName || getSurah(active?.surahNumber)?.name || 'Surah'} ${active?.surahNumber}:${active?.startAyah}–${active?.endAyah}`}
           onBack={() => { if (mode === 'hub') { void flushAnswers(); goBack(); } else { void returnToStudies(); } }}
           backLabel="Back from Reflect"
         />
-        {mode === 'hub' && <button type="button" onClick={beginNew} className="reflect-header-add" aria-label="New study"><Plus size={22}/></button>}
+        {mode === 'hub' && <button type="button" onClick={beginNew} className="reflect-header-add" aria-label="New lesson"><Plus size={22}/></button>}
       </div>
       <div className="app-scroll-content reflect-content" ref={lessonScrollRef}>
       {mode === 'hub' && <>
-        <ReflectHubTabs tabs={['Studies', 'Questions', 'Discover', 'Progress']} active={hubTab} onChange={setHubTab} className="reflect-tabs" label="Reflect library" />
+        <ReflectHubTabs tabs={['Lessons', 'Questions', 'Discover', 'Progress']} active={hubTab} onChange={setHubTab} className="reflect-tabs" label="Reflect library" />
         {hubTab === 'Questions' && <QuestionsTab lessons={lessons} questionFilter={questionFilter} setQuestionFilter={setQuestionFilter} questionSearch={questionSearch} setQuestionSearch={setQuestionSearch} questionExpanded={questionExpanded} setQuestionExpanded={setQuestionExpanded} questionSwiped={questionSwiped} setQuestionSwiped={setQuestionSwiped} questionTouch={questionTouch} removeQuestion={removeQuestion} setQuestionJump={setQuestionJump} setActive={setActive} setMode={setMode} />}
         {hubTab === 'Discover' && <DiscoverTab lessons={lessons} discoverTab={discoverTab} setDiscoverTab={setDiscoverTab} themeGroups={themeGroups} expandedTheme={expandedTheme} setExpandedTheme={setExpandedTheme} expandedSubtheme={expandedSubtheme} setExpandedSubtheme={setExpandedSubtheme} setKeywordJump={setKeywordJump} setActive={setActive} setMode={setMode} />}
         {hubTab === 'Progress' && <ProgressTab lessons={lessons} progressPeriod={progressPeriod} setProgressPeriod={setProgressPeriod} progressCommitment={progressCommitment} setProgressCommitment={setProgressCommitment} saveCommitmentReview={saveCommitmentReview} openProgressLesson={openProgressLesson} setHubTab={setHubTab} />}
-        {hubTab === 'Studies' && <StudiesTab lessons={lessons} swipedStudy={swipedStudy} setSwipedStudy={setSwipedStudy} swipeStart={swipeStart} setPendingDelete={setPendingDelete} studyMenu={studyMenu} setStudyMenu={setStudyMenu} setActive={setActive} setMode={setMode} flushAnswers={flushAnswers} />}
+        {hubTab === 'Lessons' && <StudiesTab lessons={lessons} swipedStudy={swipedStudy} setSwipedStudy={setSwipedStudy} swipeStart={swipeStart} setPendingDelete={setPendingDelete} studyMenu={studyMenu} setStudyMenu={setStudyMenu} setActive={setActive} setMode={setMode} flushAnswers={flushAnswers} />}
               </>}
 
       {pendingDelete !== null && <DeleteLessonDialog onCancel={() => setPendingDelete(null)} onConfirm={async () => { const id = pendingDelete; setPendingDelete(null); await removeLesson(id); }} />}
@@ -366,7 +366,7 @@ export default function ReflectScreen() {
         <PassageSelector surah={surah} surahNumber={surahNumber} setSurahNumber={setSurahNumber} startAyah={startAyah} setStartAyah={setStartAyah} endAyah={endAyah} setEndAyah={setEndAyah} ayahs={ayahs} selected={selected} count={count} validRange={validRange} rangePicker={rangePicker} setRangePicker={setRangePicker} />
         {error && <p role="alert" className="text-sm text-rose-600">{error}</p>}
         <button type="button" className={action+' w-full'} disabled={busy || !validRange || selected.length!==count} onClick={createStudy}>
-          {busy ? <span className="inline-flex items-center gap-2"><Loader2 size={17} className="animate-spin"/>Preparing study…</span> : 'Start Reflect study'}
+          {busy ? <span className="inline-flex items-center gap-2"><Loader2 size={17} className="animate-spin"/>Preparing lesson…</span> : 'Create Lesson'}
         </button>
       </>}
 
@@ -385,7 +385,7 @@ export default function ReflectScreen() {
         {error && <p role="alert" className="text-sm text-rose-600">{error}</p>}
         {active.status !== 'completed' && <button type="button" className={action+' w-full'} disabled={busy} onClick={finishLesson}>{busy ? 'Saving…' : 'Mark as finished'}</button>}
         {active.status === 'completed' && <p role="status" className="text-sm text-emerald-700">Lesson completed</p>}
-        <button type="button" className={action+' w-full'} onClick={()=>{ void returnToStudies(); }}>Back to {lessonOrigin === 'Progress' ? 'Progress' : 'studies'}</button>
+        <button type="button" className={action+' w-full'} onClick={()=>{ void returnToStudies(); }}>Back to {lessonOrigin === 'Progress' ? 'Progress' : 'lessons'}</button>
       </>}
       </div>
     </Screen>

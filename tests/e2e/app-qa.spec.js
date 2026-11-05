@@ -63,16 +63,16 @@ test('home renders the main actions and Reflect card without browser errors', as
   for (const name of ['Index', 'Search', 'Library', 'Settings']) {
     await expect(page.getByRole('button', { name, exact: true })).toBeVisible();
   }
-  await expect(page.getByRole('button', { name: /My Quran Studies/i })).toBeVisible();
+  await expect(page.getByRole('button', { name: /Begin reflecting/i })).toBeVisible();
   await expectHealthyVisibleUI(page);
   expect(pageErrors).toEqual([]);
 });
 
 test('Reflect opens and its passage selection controls are usable', async ({ page }) => {
   await waitForHome(page);
-  await page.getByRole('button', { name: /My Quran Studies/i }).click();
+  await page.getByRole('button', { name: /Begin reflecting/i }).click();
   await expect(page.getByRole('heading', { name: 'Reflect', exact: true })).toBeVisible();
-  await page.getByRole('button', { name: 'New study' }).click();
+  await page.getByRole('button', { name: 'New lesson' }).click();
   await expect(page.getByRole('heading', { name: 'Select Passage' })).toBeVisible();
   const passageSelects = page.locator('.reflect-range-trigger');
   await expect(passageSelects).toHaveCount(3);
@@ -88,12 +88,12 @@ test('Reflect Progress tab renders statistics without blanking the app', async (
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
   await waitForHome(page);
-  await page.getByRole('button', { name: /My Quran Studies/i }).click();
+  await page.getByRole('button', { name: /Begin reflecting/i }).click();
   await expect(page.getByRole('heading', { name: 'Reflect', exact: true })).toBeVisible();
   await page.getByRole('tab', { name: 'Progress' }).click();
   await expect(page.getByRole('heading', { name: 'Study Progress' })).toBeVisible();
   await expect(page.getByText('Ayahs studied')).toBeVisible();
-  await expect(page.getByText('Studies completed')).toBeVisible();
+  await expect(page.getByText('Lessons completed')).toBeVisible();
   await expect(page.locator('#root')).not.toBeEmpty();
   expect(errors).toEqual([]);
 });

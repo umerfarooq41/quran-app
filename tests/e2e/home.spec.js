@@ -27,14 +27,14 @@ test('home screen renders its main actions and study card', async ({ page }) => 
   await expect(page.getByRole('button', { name: /Search/i })).toBeVisible();
   await expect(page.getByRole('button', { name: /Library/i })).toBeVisible();
   await expect(page.getByRole('button', { name: /Settings/i })).toBeVisible();
-  await expect(page.getByRole('button', { name: /My Quran Studies/i })).toBeVisible();
+  await expect(page.getByRole('button', { name: /Begin reflecting/i })).toBeVisible();
   await expectNoHorizontalOverflow(page);
   expect(pageErrors, 'app should not throw uncaught page errors').toEqual([]);
 });
 
 test('Reflect card opens the Reflect screen', async ({ page }) => {
   await waitForApp(page);
-  await page.getByRole('button', { name: /My Quran Studies/i }).click();
+  await page.getByRole('button', { name: /Begin reflecting/i }).click();
   await expect(page.getByText(/Reflect/i).first()).toBeVisible();
   await expectNoHorizontalOverflow(page);
 });

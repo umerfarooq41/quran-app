@@ -4,11 +4,11 @@ import { Empty } from '../../../components/common/AppChrome';
 import { getSurah } from '../../../lib/quran';
 import { studyDisplayTitle } from '../reflectPresentation';
 
-/** Saved studies list, preserving the Library swipe-to-remove pattern. */
+/** Saved lessons list, preserving the Library swipe-to-remove pattern. */
 export default function StudiesTab({ lessons, swipedStudy, setSwipedStudy, swipeStart, setPendingDelete, studyMenu, setStudyMenu, setActive, setMode, flushAnswers }) {
   return <>
 
-        <div className="flex items-center justify-between"><h2 className="font-semibold">Studies</h2><span className="text-xs text-slate-500">{lessons.length} saved</span></div>
+        <div className="flex items-center justify-between"><h2 className="font-semibold">Lessons</h2><span className="text-xs text-slate-500">{lessons.length} saved</span></div>
         {lessons.length ? <div className="tabs-list">{lessons.map((lesson) => {
           const isSwiped = swipedStudy === lesson.id;
           const keywordCount = lesson.keywords?.length || 0;
@@ -36,6 +36,6 @@ export default function StudiesTab({ lessons, swipedStudy, setSwipedStudy, swipe
               </div>
             </div>
           </article>;
-        })}</div> : <Empty text="Your saved Reflect studies will appear here."/>}
+        })}</div> : <Empty text="Your saved lessons will appear here."/>}
   </>;
 }

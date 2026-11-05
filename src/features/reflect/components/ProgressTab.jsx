@@ -9,14 +9,14 @@ export default function ProgressTab({ lessons, progressPeriod, setProgressPeriod
   const { filtered, completed, percentage, ayahCount, questions, answered, commitments, recent } = getReflectProgress(lessons, progressPeriod);
           return <div className="reflect-progress space-y-4">
             <div className="flex items-center justify-between gap-3">
-              <h2 className="text-base font-semibold">Study Progress</h2>
+              <h2 className="text-base font-semibold">Lesson Progress</h2>
               <select aria-label="Progress period" className="reflect-progress-period" value={progressPeriod} onChange={e=>setProgressPeriod(e.target.value)}>
                 <option value="all">All time</option><option value="month">This month</option><option value="week">This week</option>
               </select>
             </div>
             <section className={card}>
               <div className="flex items-center justify-between gap-4">
-                <div><p className="text-xs reflect-muted">Studies completed</p><p className="mt-1 text-2xl font-semibold">{completed.length} <span className="text-sm font-normal text-slate-500">of {filtered.length}</span></p><p className="mt-1 text-xs text-slate-500">{filtered.length - completed.length} in progress</p></div>
+                <div><p className="text-xs reflect-muted">Lessons completed</p><p className="mt-1 text-2xl font-semibold">{completed.length} <span className="text-sm font-normal text-slate-500">of {filtered.length}</span></p><p className="mt-1 text-xs text-slate-500">{filtered.length - completed.length} in progress</p></div>
                 <div className="flex h-[78px] w-[78px] shrink-0 items-center justify-center rounded-full" style={{background: 'conic-gradient(var(--theme-accent, #2d6e5e) '+percentage+'%, var(--theme-border, #e2e8f0) 0)'}}>
                   <div className="reflect-progress-ring-inner flex h-[62px] w-[62px] items-center justify-center rounded-full text-base font-semibold">{percentage}%</div>
                 </div>
@@ -41,15 +41,15 @@ export default function ProgressTab({ lessons, progressPeriod, setProgressPeriod
                     <button type="button" className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-[#2d6e5e]" onClick={()=>openProgressLesson(lesson)}>Open Lesson →</button>
                   </div>}
                 </div>;
-              })}</div> : <p className="mt-3 text-sm text-slate-500">Commitments from completed studies will appear here.</p>}
+              })}</div> : <p className="mt-3 text-sm text-slate-500">Commitments from completed lessons will appear here.</p>}
             </section>
             <section className={card}>
-              <div className="flex items-center justify-between gap-2"><h3 className="text-sm font-semibold">Recent Studies</h3><button type="button" className="text-xs font-semibold text-[#2d6e5e]" onClick={()=>{setHubTab('Studies');setProgressCommitment(null);}}>View all →</button></div>
+              <div className="flex items-center justify-between gap-2"><h3 className="text-sm font-semibold">Recent Lessons</h3><button type="button" className="text-xs font-semibold text-[#2d6e5e]" onClick={()=>{setHubTab('Lessons');setProgressCommitment(null);}}>View all →</button></div>
               {recent.length ? <div className="mt-2 reflect-progress-recent">{recent.map(lesson=><button key={lesson.id} type="button" className="flex w-full items-center gap-3 py-3 text-left" onClick={()=>openProgressLesson(lesson)}>
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-[#2d6e5e]">{lesson.status==='completed'?'✓':<BookOpen size={17}/>}</span>
                 <span className="min-w-0 flex-1"><span className="block truncate text-sm font-semibold text-slate-800">{studyDisplayTitle(lesson)}</span><span className="mt-0.5 block text-xs text-slate-500">{lesson.surahNumber}:{lesson.startAyah}–{lesson.endAyah} · {lesson.status==='completed'?'Completed':'In progress'}</span></span>
                 <span className="text-slate-400" aria-hidden="true">›</span>
-              </button>)}</div> : <p className="mt-3 text-sm text-slate-500">No studies in this period.</p>}
+              </button>)}</div> : <p className="mt-3 text-sm text-slate-500">No lessons in this period.</p>}
             </section>
           </div>;
 }
