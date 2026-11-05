@@ -26,7 +26,7 @@ import {
   createTadabburLesson,
   REFLECT_FINAL_QUESTIONS,
 } from '../services/tadabbur/createTadabburLesson';
-import { getReflectRangeCount, isValidReflectRange } from '../features/reflect/reflectRules';
+import { getReflectRangeCount, isValidReflectRange, getInitialReflectRange } from '../features/reflect/reflectRules';
 
 export default function ReflectScreen() {
   const goBack = useAppStore((s) => s.goBack);
@@ -35,8 +35,9 @@ export default function ReflectScreen() {
   const [lessons, setLessons] = useState([]);
   const [mode, setMode] = useState(target?.surahNumber ? 'new' : 'hub');
   const [surahNumber, setSurahNumber] = useState(Number(target?.surahNumber) || 1);
-  const [startAyah, setStartAyah] = useState(Number(target?.startAyah) || 1);
-  const [endAyah, setEndAyah] = useState(Number(target?.startAyah || 1) + 2);
+  const initialRange = getInitialReflectRange(target?.startAyah || 1, getSurahAyahs(Number(target?.surahNumber) || 1).length);
+  const [startAyah, setStartAyah] = useState(initialRange?.startAyah || 1);
+  const [endAyah, setEndAyah] = useState(initialRange?.endAyah || 3);
   const [active, setActive] = useState(null);
   const [busy, setBusy] = useState(false);
   const [introOpen, setIntroOpen] = useState(false);
