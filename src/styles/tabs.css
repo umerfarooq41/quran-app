@@ -1046,3 +1046,45 @@
 .reflect-screen .reflect-theme-study { background:var(--theme-surface-solid, #fff); border:1px solid var(--theme-border, #e5e7eb); }
 .reflect-screen .reflect-theme-children,
 .reflect-screen .reflect-subtheme { border-color:var(--theme-border, #e5e7eb); }
+
+/* Compact Select Passage controls follow the shared theme surface. */
+.reflect-screen .reflect-passage-selector {
+  padding: 16px;
+  border: 1px solid var(--theme-border, #e5e7eb);
+  background: var(--theme-surface-solid, #fff);
+  color: var(--theme-text, #242424);
+}
+.reflect-screen .reflect-passage-heading { margin-bottom: 12px; }
+.reflect-screen .reflect-passage-heading h2 { font-size: 16px; line-height: 1.4; }
+.reflect-screen .reflect-passage-limit,
+.reflect-screen .reflect-range-label,
+.reflect-screen .reflect-passage-to { color: var(--theme-muted, #64748b); }
+.reflect-screen .reflect-range-label { font-size: 12px; margin-bottom: 5px; }
+.reflect-screen .reflect-range-trigger {
+  min-height: 44px;
+  border-color: var(--theme-border, #d9dfe3);
+  background: var(--theme-surface-solid, #fff);
+  color: var(--theme-text, #242424);
+}
+.reflect-screen .reflect-range-trigger:focus-visible,
+.reflect-screen .reflect-range-options button:focus-visible {
+  outline: 2px solid var(--theme-accent, #2d6e5e);
+  outline-offset: 2px;
+}
+.reflect-screen .reflect-passage-range { margin-top: 12px; gap: 6px; }
+.reflect-screen .reflect-passage-to { padding-bottom: 14px; }
+.reflect-screen .reflect-range-options {
+  background: var(--theme-surface-solid, #fff);
+  border-color: var(--theme-border, #d9dfe3);
+  color: var(--theme-text, #242424);
+  max-height: min(42dvh, 280px);
+}
+.reflect-screen .reflect-range-options button {
+  border-color: var(--theme-border, #e5e7eb);
+  min-height: 44px;
+}
+.reflect-screen .reflect-range-options button.is-selected {
+  background: color-mix(in srgb, var(--theme-accent, #2d6e5e) 12%, var(--theme-surface-solid, #fff));
+  color: var(--theme-text, #242424);
+}
+.reflect-screen .reflect-passage-status { margin-top: 10px; font-size: 12px; }

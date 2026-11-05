@@ -5,7 +5,7 @@ import { ChevronDown } from 'lucide-react';
 export default function ReflectRangePicker({label,value,display,options,open,onToggle,onSelect}) {
   return <div className="reflect-range-field">
     <span className="reflect-range-label">{label}</span>
-    <button type="button" className="reflect-range-trigger" aria-expanded={open} aria-label={label+': '+(display||value)} onClick={onToggle}>
+    <button type="button" className="reflect-range-trigger" aria-expanded={open} aria-haspopup="listbox" aria-label={label+': '+(display||value)} onClick={onToggle}>
       <span>{display || value}</span><ChevronDown size={18} aria-hidden="true"/>
     </button>
     {open && <div className="reflect-range-options" role="listbox" aria-label={label}>

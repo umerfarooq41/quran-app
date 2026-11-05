@@ -4,8 +4,8 @@ import ReflectRangePicker from './ReflectRangePicker';
 import { getInitialReflectRange } from '../reflectRules';
 import { reflectCardClass as card } from '../reflectPresentation';
 
-/** Passage selection and Arabic preview. Range validity is provided by the page. */
-export default function PassageSelector({ surah, surahNumber, setSurahNumber, startAyah, setStartAyah, endAyah, setEndAyah, ayahs, selected, count, validRange, rangePicker, setRangePicker }) {
+/** Passage selection with compact range controls. Range validity is provided by the page. */
+export default function PassageSelector({ surah, surahNumber, setSurahNumber, startAyah, setStartAyah, endAyah, setEndAyah, ayahs, count, validRange, rangePicker, setRangePicker }) {
   return (
         <div className={card + ' reflect-passage-selector'}>
           <div className="reflect-passage-heading">
@@ -25,7 +25,7 @@ export default function PassageSelector({ surah, surahNumber, setSurahNumber, st
               open={rangePicker==='to'} onToggle={()=>setRangePicker(current=>current==='to'?null:'to')}
               onSelect={value=>{setEndAyah(value);setRangePicker(null);}}/>
           </div>
-          <p className={'reflect-passage-status '+(validRange?'is-valid':'is-invalid')}>{validRange ? count+' ayahs selected' : 'Select 3–15 ayahs'}</p>
+          <p role="status" aria-live="polite" className={'reflect-passage-status '+(validRange?'is-valid':'is-invalid')}>{validRange ? count+' ayahs selected' : 'Select 3–15 ayahs'}</p>
 
         </div>
   );
