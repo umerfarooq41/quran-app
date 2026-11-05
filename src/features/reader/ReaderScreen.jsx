@@ -226,7 +226,8 @@ export default function ReaderScreen() {
     Promise.all([
       db.bookmarks.toArray(),
       db.highlights.toArray(),
-    ]).then(([bookmarks, highlights]) => {
+      db.tadabburLessons.toArray(),
+    ]).then(([bookmarks, highlights, reflectLessons]) => {
       if (!mounted) return;
 
       const nextHighlights = new Map();
@@ -244,6 +245,16 @@ export default function ReaderScreen() {
             nextBookmarks.set(`${item.surahNumber}:${item.ayahNumber}`, item.category);
           }
         });
+
+      // A saved Reflect study is a persistent passage marker. Anchor it to
+      // its first ayah; preserve a user's explicit bookmark at that location.
+      reflectLessons.forEach((lesson) => {
+        const surah = Number(lesson?.surahNumber);
+        const start = Number(lesson?.startAyah);
+        if (!Number.isInteger(surah) || surah < 1 || !Number.isInteger(start) || start < 1) return;
+        const reference = `${surah}:${start}`;
+        if (!nextBookmarks.has(reference)) nextBookmarks.set(reference, 'Tadabbur');
+      });
 
       setSavedHighlights(nextHighlights);
       setBookmarkMarkers(nextBookmarks);
