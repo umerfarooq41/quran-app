@@ -1,6 +1,7 @@
 import React from 'react';
 import { getSurah, getSurahAyahs } from '../../../lib/quran';
 import ReflectRangePicker from './ReflectRangePicker';
+import { getInitialReflectRange } from '../reflectRules';
 import { reflectCardClass as card } from '../reflectPresentation';
 
 /** Passage selection and Arabic preview. Range validity is provided by the page. */
@@ -18,7 +19,7 @@ export default function PassageSelector({ surah, surahNumber, setSurahNumber, st
           <div className="reflect-passage-range">
             <ReflectRangePicker label="From" value={startAyah} options={ayahs.map(item=>({value:item.ayahNumber,label:String(item.ayahNumber)}))}
               open={rangePicker==='from'} onToggle={()=>setRangePicker(current=>current==='from'?null:'from')}
-              onSelect={value=>{setStartAyah(value);setEndAyah(Math.min(ayahs.length,value+2));setRangePicker(null);}}/>
+              onSelect={value=>{const range=getInitialReflectRange(value,ayahs.length);setStartAyah(range?.startAyah||value);setEndAyah(range?.endAyah||value);setRangePicker(null);}}/>
             <span className="reflect-passage-to">to</span>
             <ReflectRangePicker label="To" value={endAyah} options={ayahs.filter(item=>item.ayahNumber>=startAyah&&item.ayahNumber<=startAyah+14).map(item=>({value:item.ayahNumber,label:String(item.ayahNumber)}))}
               open={rangePicker==='to'} onToggle={()=>setRangePicker(current=>current==='to'?null:'to')}
