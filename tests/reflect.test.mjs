@@ -7,13 +7,13 @@ import {
   isValidReflectRange,
 } from '../src/features/reflect/reflectRules.js';
 
-test('Reflect passage limits remain 1 to 15 Ayahs', () => {
-  assert.equal(REFLECT_MIN_AYAHS, 1);
+test('Reflect passage limits remain 3 to 15 Ayahs', () => {
+  assert.equal(REFLECT_MIN_AYAHS, 3);
   assert.equal(REFLECT_MAX_AYAHS, 15);
 });
 
 test('accepts the minimum and maximum passage lengths', () => {
-  assert.equal(isValidReflectRange(1, 1, 10), true);
+  assert.equal(isValidReflectRange(1, 3, 10), true);
   assert.equal(isValidReflectRange(1, 15, 20), true);
 });
 
@@ -22,6 +22,7 @@ test('accepts valid numeric-string inputs consistently', () => {
 });
 
 test('rejects passages shorter or longer than the allowed range', () => {
+  assert.equal(isValidReflectRange(1, 2, 20), false);
   assert.equal(isValidReflectRange(0, 0, 20), false);
   assert.equal(isValidReflectRange(1, 16, 20), false);
 });
