@@ -70,7 +70,7 @@ test('saved Reflect lesson and its personal notes survive reloads', async ({ pag
   await seedLocalRecords(page);
   await page.reload();
   await expect(page.getByRole('heading', { name: 'Al Quran' })).toBeVisible();
-  await page.getByRole('button', { name: /Reflect.*Study Ayahs/i }).click();
+  await page.getByRole('button', { name: /My Quran Studies/i }).click();
 
   await expect(page.getByRole('heading', { name: 'Reflect', exact: true })).toBeVisible();
   await expect(page.getByText('1 saved')).toBeVisible();
@@ -140,7 +140,7 @@ test('key screens produce reviewable visual evidence', async ({ page }, testInfo
   await page.screenshot({ path: testInfo.outputPath('library.png'), fullPage: true });
 
   await page.getByRole('button', { name: 'Back from library' }).click();
-  await page.getByRole('button', { name: /Reflect.*Study Ayahs/i }).click();
+  await page.getByRole('button', { name: /My Quran Studies/i }).click();
   await expect(page.getByRole('heading', { name: 'Reflect', exact: true })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath('reflect.png'), fullPage: true });
 
