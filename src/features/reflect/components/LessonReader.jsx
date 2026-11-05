@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getWordByWordTranslation } from '../../quranFoundation/words';
+import { getWordByWordTranslation } from '../../../services/quranFoundation/words';
 import renderReflectTranslation from './ReflectTranslation';
 import { reflectCardClass as card } from '../reflectPresentation';
 
