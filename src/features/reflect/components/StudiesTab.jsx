@@ -36,6 +36,6 @@ export default function StudiesTab({ lessons, swipedStudy, setSwipedStudy, swipe
               </div>
             </div>
           </article>;
-        })}</div> : <Empty text="Your saved Reflect studies will appear here."/>}</>
+        })}</div> : <Empty text="Your saved Reflect studies will appear here."/>}
   </>;
 }
