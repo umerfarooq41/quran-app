@@ -3,7 +3,7 @@ import AxeBuilder from '@axe-core/playwright';
 
 async function auditPage(page, screenName) {
   // Wait for screen transitions before measuring computed color contrast.
-  await page.waitForFunction(() => [...document.getAnimations()].filter(animation => animation.playState === 'running' && animation.effect?.getTiming().iterations !== Infinity).length === 0, { timeout: 5000 }).catch(() => {});
+  await page.waitForFunction(() => [...document.getAnimations()].filter(animation => animation.playState === 'running' && animation.effect?.getTiming().iterations !== Infinity).length === 0, null, { timeout: 5000 }).catch(() => {});
   const results = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice'])
     .analyze();
