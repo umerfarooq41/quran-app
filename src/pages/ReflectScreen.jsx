@@ -12,7 +12,8 @@ import { useAppStore } from '../store/useAppStore';
 import { getSurah, getSurahAyahs, getSurahInfo } from '../lib/quran';
 import { sanitizeSurahHtml } from '../lib/sanitizeHtml';
 import { getTranslationOption } from '../lib/translations';
-import { db, getTadabburLessons, updateTadabburLesson, deleteTadabburLesson, saveReflectAnswerField, saveReflectKeywords } from '../lib/db';
+import { db, getTadabburLessons, updateTadabburLesson, deleteTadabburLesson, saveReflectKeywords } from '../lib/db';
+import { useReflectAutosave } from '../hooks/useReflectAutosave';
 import {
   createTadabburLesson,
   REFLECT_FINAL_QUESTIONS,
@@ -73,49 +74,7 @@ export default function ReflectScreen() {
   const [swipedStudy, setSwipedStudy] = useState(null);
   const [expandedTafsir, setExpandedTafsir] = useState({});
   const swipeStart = useRef(null);
-  const pendingFields = useRef(new Map());
-  const saveQueue = useRef(Promise.resolve());
-
-  function flushAnswers() {
-    const pending = [...pendingFields.current.values()];
-    pendingFields.current.clear();
-    for (const item of pending) {
-      window.clearTimeout(item.timer);
-      saveQueue.current = saveQueue.current
-        .catch(() => {})
-        .then(() => saveReflectAnswerField(item.lessonId, item.group, item.index, item.value))
-        .catch(() => setError('Unable to save a Reflect answer. Please check device storage.'));
-    }
-    return saveQueue.current;
-  }
-
-  function queueAnswer(lessonId, group, index, value) {
-    const key = lessonId + ':' + group + ':' + index;
-    const previous = pendingFields.current.get(key);
-    if (previous) window.clearTimeout(previous.timer);
-    const item = { lessonId, group, index, value, timer: null };
-    item.timer = window.setTimeout(() => {
-      if (pendingFields.current.get(key) !== item) return;
-      pendingFields.current.delete(key);
-      saveQueue.current = saveQueue.current
-        .catch(() => {})
-        .then(() => saveReflectAnswerField(lessonId, group, index, value))
-        .catch(() => setError('Unable to save a Reflect answer. Please check device storage.'));
-    }, 300);
-    pendingFields.current.set(key, item);
-  }
-
-  useEffect(() => {
-    const onVisibility = () => {
-      if (document.visibilityState === 'hidden') flushAnswers();
-    };
-    document.addEventListener('visibilitychange', onVisibility);
-    return () => {
-      document.removeEventListener('visibilitychange', onVisibility);
-      flushAnswers();
-    };
-  }, []);
-
+  const { saveQueue, flushAnswers, queueAnswer } = useReflectAutosave(setError);
 
   const surah = getSurah(surahNumber);
   const ayahs = useMemo(() => getSurahAyahs(surahNumber), [surahNumber]);
