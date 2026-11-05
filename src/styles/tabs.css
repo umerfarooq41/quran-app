@@ -1007,3 +1007,42 @@
 @media (max-width: 360px) {
   .reflect-screen .reflect-word-language button { padding-inline: 8px; }
 }
+
+/* Reflect hub: reuse Library card surfaces and honor app theme tokens. */
+.reflect-screen .reflect-question-tabs { width:100%; }
+.reflect-screen .reflect-question-tabs > button { flex:1; min-width:0; }
+.reflect-screen .reflect-question-card { position:relative; }
+.reflect-screen .reflect-question-card .tab-card-surface {
+  min-height:80px; background:var(--theme-surface-solid, #fff);
+  color:var(--theme-text, #242424); padding:0;
+}
+.reflect-screen .reflect-question-card .tab-card-remove { z-index:0; }
+.reflect-screen .reflect-question-card .tab-card-surface { position:relative; z-index:1; }
+.reflect-screen .reflect-question-expand { min-width:44px; min-height:44px; }
+.reflect-screen .reflect-question-answer {
+  background:var(--theme-surface-solid, #fff);
+  border-color:var(--theme-border, #e5e7eb);
+  color:var(--theme-text, #242424);
+}
+.reflect-screen .reflect-progress-period {
+  min-height:40px; border:1px solid var(--theme-border, #e5e7eb);
+  border-radius:12px; background:var(--theme-surface-solid, #fff);
+  color:var(--theme-text, #242424); padding:8px 12px; font-size:12px;
+}
+.reflect-screen .reflect-muted { color:var(--theme-muted, #64748b); }
+.reflect-screen .reflect-progress-metric {
+  border:1px solid var(--theme-border, #e5e7eb); border-radius:14px;
+  background:var(--theme-surface-solid, #fff); color:var(--theme-text, #242424);
+}
+.reflect-screen .reflect-progress-ring-inner { background:var(--theme-surface-solid, #fff); color:var(--theme-text, #242424); }
+.reflect-screen .reflect-progress-commitment { border:1px solid var(--theme-border, #e5e7eb); background:var(--theme-surface-solid, #fff); color:var(--theme-text, #242424); }
+.reflect-screen .reflect-progress-recent > * + * { border-top:1px solid var(--theme-border, #e5e7eb); }
+.reflect-screen .reflect-keyword-card,
+.reflect-screen .reflect-theme-group,
+.reflect-screen .reflect-study-menu {
+  background:var(--theme-surface-solid, #fff); color:var(--theme-text, #242424);
+  border:1px solid var(--theme-border, #e5e7eb);
+}
+.reflect-screen .reflect-theme-study { background:var(--theme-surface-solid, #fff); border:1px solid var(--theme-border, #e5e7eb); }
+.reflect-screen .reflect-theme-children,
+.reflect-screen .reflect-subtheme { border-color:var(--theme-border, #e5e7eb); }
