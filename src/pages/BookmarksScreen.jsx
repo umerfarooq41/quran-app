@@ -14,7 +14,7 @@ import { Empty, Header, Screen } from '../components/common/AppChrome';
 const BOOKMARK_TYPES = [
   { category: 'Reading', label: 'Recitation', tone: 'emerald' },
   { category: 'Memorize', label: 'Memorize', tone: 'amber' },
-  { category: 'Tadabbur', label: 'Tadabbur', tone: 'rose' },
+  { category: 'Reflect', label: 'Reflect', tone: 'rose' },
 ];
 
 const HIGHLIGHT_TONES = ['amber', 'emerald', 'sky', 'violet', 'rose'];
@@ -469,6 +469,7 @@ function HighlightList({
 
 function normalizeCategory(category) {
   if (category === 'Notes') return 'Notes';
+  if (category === 'Tadabbur') return 'Reflect';
   if (category === 'Recite' || category === 'Recitation') return 'Reading';
   return BOOKMARK_TYPES.some((type) => type.category === category) ? category : 'Reading';
 }
