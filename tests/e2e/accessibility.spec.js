@@ -43,7 +43,7 @@ test('Index, Reflect and Settings meet critical WCAG accessibility checks', asyn
   await auditPage(page, 'Index');
 
   await page.getByRole('button', { name: 'Back from index' }).click();
-  await page.getByRole('button', { name: /Reflect.*Study Ayahs/i }).click();
+  await page.getByRole('button', { name: /My Quran Studies/i }).click();
   await expect(page.getByRole('heading', { name: 'Reflect', exact: true })).toBeVisible();
   await auditPage(page, 'Reflect');
 
