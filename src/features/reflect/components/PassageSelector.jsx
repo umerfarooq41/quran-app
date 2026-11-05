@@ -1,0 +1,40 @@
+import React from 'react';
+import { getSurah, getSurahAyahs } from '../../../lib/quran';
+import ReflectRangePicker from './ReflectRangePicker';
+import { reflectCardClass as card } from '../reflectPresentation';
+
+/** Passage selection and Arabic preview. Range validity is provided by the page. */
+export default function PassageSelector({ surah, surahNumber, setSurahNumber, startAyah, setStartAyah, endAyah, setEndAyah, ayahs, selected, count, validRange, rangePicker, setRangePicker }) {
+  return (
+        <div className={card + ' reflect-passage-selector'}>
+          <div className="reflect-passage-heading">
+            <h2 className="font-semibold">Passage</h2>
+            <span className="reflect-passage-limit">3–15 ayahs</span>
+          </div>
+          <ReflectRangePicker label="Surah" value={surahNumber} display={surahNumber + '. ' + (surah?.name || '')}
+            options={Array.from({length:114},(_,i)=>getSurah(i+1)).filter(Boolean).map(item=>({value:item.number,label:item.number+'. '+item.name}))}
+            open={rangePicker==='surah'} onToggle={()=>setRangePicker(current=>current==='surah'?null:'surah')}
+            onSelect={value=>{setSurahNumber(value);setStartAyah(1);setEndAyah(Math.min(3,getSurahAyahs(value).length));setRangePicker(null);}}/>
+          <div className="reflect-passage-range">
+            <ReflectRangePicker label="From" value={startAyah} options={ayahs.map(item=>({value:item.ayahNumber,label:String(item.ayahNumber)}))}
+              open={rangePicker==='from'} onToggle={()=>setRangePicker(current=>current==='from'?null:'from')}
+              onSelect={value=>{setStartAyah(value);setEndAyah(Math.min(ayahs.length,value+2));setRangePicker(null);}}/>
+            <span className="reflect-passage-to">to</span>
+            <ReflectRangePicker label="To" value={endAyah} options={ayahs.filter(item=>item.ayahNumber>=startAyah&&item.ayahNumber<=startAyah+14).map(item=>({value:item.ayahNumber,label:String(item.ayahNumber)}))}
+              open={rangePicker==='to'} onToggle={()=>setRangePicker(current=>current==='to'?null:'to')}
+              onSelect={value=>{setEndAyah(value);setRangePicker(null);}}/>
+          </div>
+          <p className={'reflect-passage-status '+(validRange?'is-valid':'is-invalid')}>{validRange ? count+' ayahs selected' : 'Select 3–15 ayahs'}</p>
+          <div className="reflect-preview-divider" aria-hidden="true" />
+          <div className="reflect-preview-content">
+            <div className="reflect-preview-heading">Preview</div>
+            <div className="divide-y divide-slate-100">
+              {selected.map(a=><article key={a.ayahNumber} className="py-3 first:pt-1 last:pb-1">
+                <p className="mb-2 text-center text-xs font-medium tabular-nums text-slate-400">{surahNumber}:{a.ayahNumber}</p>
+                <p className="tab-arabic reflect-preview-arabic" style={{whiteSpace:'normal',overflow:'visible',textOverflow:'clip'}} dir="rtl" lang="ar">{a.text}</p>
+              </article>)}
+            </div>
+          </div>
+        </div>
+  );
+}
