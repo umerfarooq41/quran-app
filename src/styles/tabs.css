@@ -947,3 +947,28 @@
   background: #245d4e !important;
   color: #ffffff !important;
 }
+
+/* Reflect passage uses the same reference header, body spacing and dividers
+   as the Reader translation card, in both light and dark themes. */
+.reflect-screen .reflect-lesson-ayah { padding: 0; }
+.reflect-screen .reflect-lesson-ayah + .reflect-lesson-ayah { border-top: 1px solid var(--app-border, #e5e7eb); }
+.reflect-screen .reflect-ayah-reference {
+  position: static;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 56px;
+  padding: 12px 16px;
+  text-align: center;
+  border-bottom: 1px solid var(--app-border, #e5e7eb);
+}
+.reflect-screen .reflect-ayah-body {
+  padding: 24px 12px 28px;
+  overflow: visible;
+  height: auto;
+  max-height: none;
+}
+.reflect-screen .reflect-ayah-body .ayah-translation-arabic { margin-top: 0; }
+.reflect-screen .reflect-ayah-body .ayah-word-by-word { margin-top: 20px; }
+.reflect-screen .reflect-ayah-body .ayah-translation-text { margin-top: 22px; }
