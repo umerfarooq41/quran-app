@@ -84,6 +84,20 @@ test('Reflect opens and its passage selection controls are usable', async ({ pag
   await expectHealthyVisibleUI(page);
 });
 
+test('Reflect Progress tab renders statistics without blanking the app', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await waitForHome(page);
+  await page.getByRole('button', { name: /My Quran Studies/i }).click();
+  await expect(page.getByRole('heading', { name: 'Reflect', exact: true })).toBeVisible();
+  await page.getByRole('tab', { name: 'Progress' }).click();
+  await expect(page.getByRole('heading', { name: 'Study Progress' })).toBeVisible();
+  await expect(page.getByText('Ayahs studied')).toBeVisible();
+  await expect(page.getByText('Studies completed')).toBeVisible();
+  await expect(page.locator('#root')).not.toBeEmpty();
+  expect(errors).toEqual([]);
+});
+
 test('Index, Search, Library and Settings screens open and remain responsive', async ({ page }) => {
   await waitForHome(page);
 
