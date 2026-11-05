@@ -6,6 +6,7 @@ import renderReflectTranslation from '../features/reflect/components/ReflectTran
 import ReflectHubTabs from '../features/reflect/components/ReflectHubTabs';
 import DeleteLessonDialog from '../features/reflect/components/DeleteLessonDialog';
 import ThemeStudyButton from '../features/reflect/components/ThemeStudyButton';
+import { getReflectProgress } from '../features/reflect/reflectProgress';
 import { reflectCardClass as card, reflectActionClass as action, reflectFieldClass as field, studyDisplayTitle, DEFAULT_THEMES, assignmentsFor } from '../features/reflect/reflectPresentation';
 import { useAppStore } from '../store/useAppStore';
 import { getSurah, getSurahAyahs, getSurahInfo } from '../lib/quran';
@@ -495,7 +496,7 @@ export default function ReflectScreen() {
               </div>
             </section>
             <div className="grid grid-cols-3 gap-2">
-              {[{value:ayahKeys.size,label:'Ayahs studied'},{value:answered,label:'Answered'},{value:questions.length-answered,label:'Open questions'}].map(item=><div key={item.label} className="rounded-xl border border-slate-200/70 bg-white/85 px-2 py-3 text-center shadow-sm"><p className="text-xl font-semibold text-slate-900">{item.value}</p><p className="mt-1 text-[11px] leading-tight text-slate-500">{item.label}</p></div>)}
+              {[{value:ayahCount,label:'Ayahs studied'},{value:answered,label:'Answered'},{value:questions.length-answered,label:'Open questions'}].map(item=><div key={item.label} className="rounded-xl border border-slate-200/70 bg-white/85 px-2 py-3 text-center shadow-sm"><p className="text-xl font-semibold text-slate-900">{item.value}</p><p className="mt-1 text-[11px] leading-tight text-slate-500">{item.label}</p></div>)}
             </div>
             <section className={card}>
               <div className="flex items-center justify-between"><h3 className="text-sm font-semibold">Continue &amp; Revisit</h3><span className="text-xs text-slate-500">{commitments.length} commitments</span></div>
@@ -806,4 +807,5 @@ export default function ReflectScreen() {
   );
 }
 
+           const {filtered, completed, percentage, ayahCount, questions, answered, commitments, recent} = getReflectProgress(lessons, progressPeriod);
 
