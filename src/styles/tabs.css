@@ -941,3 +941,9 @@
 .reflect-screen .reflect-theme-empty{padding:4px 0 12px;color:#64748b;font-size:12px}
 .reflect-screen .reflect-theme-custom-label{font-size:12px;font-weight:600;color:#64748b;margin:12px 0 6px}
 @media(prefers-reduced-motion:reduce){.reflect-screen .reflect-theme-chevron{transition:none}}
+
+/* Reflect tabs require a stable WCAG AA contrast ratio even with pale custom accents. */
+.tabs-screen.reflect-screen .library-tabs.share-like-segment > button.is-active {
+  background: #245d4e !important;
+  color: #ffffff !important;
+}
