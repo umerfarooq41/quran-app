@@ -7,10 +7,10 @@ export default function FinishAndRevisit({ active, saveTadabburField, saveStudyM
         <section className={card}>
           <h3 className="font-semibold">Finish &amp; Revisit</h3>
           <div className="reflect-finish-content mt-3">
-            <p className="text-xs font-semibold text-[#2d6e5e]">{active.surahName || 'Surah '+active.surahNumber} · {active.startAyah}–{active.endAyah}</p>
+            <p className="reflect-secondary-action text-xs font-semibold">{active.surahName || 'Surah '+active.surahNumber} · {active.startAyah}–{active.endAyah}</p>
             <div className="mt-3 flex items-center justify-between gap-2">
               <label htmlFor="reflect-learning-summary" className="text-sm font-semibold">What I Learned</label>
-              <button type="button" className="text-xs font-semibold text-[#2d6e5e] disabled:opacity-40" disabled={!String(active.answers?.final?.[1]||'').trim()} onClick={()=>saveTadabburField('learningSummary',active.answers.final[1])}>Use My Reflection</button>
+              <button type="button" className="reflect-secondary-action text-xs font-semibold disabled:opacity-40" disabled={!String(active.answers?.final?.[1]||'').trim()} onClick={()=>saveTadabburField('learningSummary',active.answers.final[1])}>Use My Reflection</button>
             </div>
             <p className="mt-1 text-xs text-slate-500">Summarize the most important lesson in your own words.</p>
             <textarea id="reflect-learning-summary" className={field+' mt-2 min-h-[88px] resize-y'} rows={3} placeholder="The main lesson I learned is…" value={active.answers?.tadabbur?.learningSummary||''} onChange={e=>saveTadabburField('learningSummary',e.target.value)} onBlur={flushAnswers}/>

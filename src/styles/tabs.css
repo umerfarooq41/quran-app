@@ -1153,3 +1153,17 @@
 .reflect-screen .reflect-study-menu { background:var(--reflect-surface);color:var(--reflect-ink); }
 .reflect-screen .reflect-guidance-panel { background:var(--reflect-surface);color:var(--reflect-ink);border-color:var(--reflect-border); }
 .reflect-screen .reflect-question-card,.reflect-screen .reflect-keyword-card,.reflect-screen .reflect-theme-group { color:var(--reflect-ink); }
+
+/* Reflect visual polish: strong actionable accents and compact inner surfaces. */
+.reflect-screen { --reflect-link:#246957; }
+[data-theme='dark'] .reflect-screen { --reflect-link:#75d6b4; }
+.reflect-screen .reflect-secondary-action { color:var(--reflect-link); }
+.reflect-screen .reflect-secondary-action:disabled { color:var(--reflect-muted); opacity:.7; }
+.reflect-screen .reflect-empty-inline { display:block; width:100%; border:0; border-radius:0; background:transparent; color:var(--reflect-muted); padding:16px 0 3px; text-align:left; font-size:14px; }
+.reflect-screen button.reflect-empty-inline:focus-visible { outline:2px solid var(--reflect-link);outline-offset:3px; }
+.reflect-screen .reflect-study-summary .reflect-study-translation { margin-top:12px; padding-top:12px; border-top:1px solid var(--reflect-border); color:var(--reflect-muted); }
+.reflect-screen .reflect-study-summary .reflect-lesson-title-input { max-width:none; }
+.reflect-screen .reflect-selected-tafsir .ayah-translation-note-number { background:color-mix(in srgb,var(--reflect-link) 20%,var(--reflect-surface)); color:var(--reflect-link); border:1px solid color-mix(in srgb,var(--reflect-link) 45%,transparent); }
+.reflect-screen .ayah-translation-footnote-toggle,.reflect-screen .tafsir-footnote-toggle { color:var(--reflect-link); border-color:color-mix(in srgb,var(--reflect-link) 45%,transparent); background:color-mix(in srgb,var(--reflect-link) 13%,var(--reflect-surface)); }
+.reflect-screen .reflect-passage-verses { border:0; border-radius:0; }
+.reflect-screen .reflect-lesson-ayah .reflect-ayah-reference { border-color:var(--reflect-border); }

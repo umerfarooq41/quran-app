@@ -6,7 +6,7 @@ import { reflectCardClass as card, reflectActionClass as action, reflectFieldCla
 export default function LessonQuestions({ active, questionAdd, setQuestionAdd, questionEdit, setQuestionEdit, questionIndex, setQuestionIndex, questionMenu, setQuestionMenu, questionDraft, setQuestionDraft, newQuestion, setNewQuestion, saveStudyMeta, removeQuestion }) {
   return (
         <section className={card} data-reflect-questions>
-          <div className="flex items-center justify-between gap-3"><h3 className="font-semibold">Questions</h3><button type="button" className="inline-flex items-center gap-1 text-sm font-medium text-[#2d6e5e]" onClick={()=>{setQuestionAdd(true);setQuestionEdit(false);}}><Plus size={15}/> Add Question</button></div>
+          <div className="flex items-center justify-between gap-3"><h3 className="font-semibold">Questions</h3><button type="button" className="reflect-secondary-action inline-flex items-center gap-1 text-sm font-medium" onClick={()=>{setQuestionAdd(true);setQuestionEdit(false);}}><Plus size={15}/> Add Question</button></div>
           {questionAdd&&<div className="mt-3"><textarea className={field} rows={2} aria-label="New question" placeholder="Write your question…" value={newQuestion} onChange={e=>setNewQuestion(e.target.value)}/><div className="mt-2 flex justify-end gap-2"><button type="button" className="px-3 py-2 text-sm" onClick={()=>setQuestionAdd(false)}>Cancel</button><button type="button" className={action} disabled={!newQuestion.trim()} onClick={()=>{saveStudyMeta({studyQuestions:[...(active.studyQuestions||[]),{id:String(Date.now())+Math.random().toString(36).slice(2),text:newQuestion.trim(),answer:'',answered:false}]});setQuestionIndex((active.studyQuestions||[]).length);setNewQuestion('');setQuestionAdd(false);}}>Add</button></div></div>}
           {(active.studyQuestions||[]).length?(()=>{
             const count=active.studyQuestions.length,index=Math.min(questionIndex,count-1),q=active.studyQuestions[index];
@@ -17,7 +17,7 @@ export default function LessonQuestions({ active, questionAdd, setQuestionAdd, q
               </div>
               <div className="mt-3 flex items-center justify-between gap-2"><button type="button" className="rounded-xl border border-slate-200 px-3 py-2 text-sm disabled:opacity-40" disabled={index===0} onClick={()=>{setQuestionIndex(index-1);setQuestionEdit(false);setQuestionMenu(false);}}>‹ Previous</button><div className="flex max-w-[35%] flex-wrap justify-center gap-1.5">{active.studyQuestions.map((item,i)=><button key={item.id} type="button" aria-label={'Question '+(i+1)} className={'h-2.5 w-2.5 rounded-full '+(i===index?'bg-[#2d6e5e]':'bg-slate-200')} onClick={()=>{setQuestionIndex(i);setQuestionEdit(false);setQuestionMenu(false);}}/>)}</div><button type="button" className="rounded-xl border border-slate-200 px-3 py-2 text-sm disabled:opacity-40" disabled={index===count-1} onClick={()=>{setQuestionIndex(index+1);setQuestionEdit(false);setQuestionMenu(false);}}>Next ›</button></div>
             </div>;
-          })():!questionAdd&&<button type="button" className="mt-3 w-full rounded-xl border border-dashed border-slate-200 px-3 py-5 text-sm text-slate-500" onClick={()=>setQuestionAdd(true)}>No questions added yet. Tap to add a question.</button>}
+          })():!questionAdd&&<button type="button" className="reflect-empty-inline mt-3" onClick={()=>setQuestionAdd(true)}>No questions added yet. Tap to add a question.</button>}
         </section>
   );
 }
