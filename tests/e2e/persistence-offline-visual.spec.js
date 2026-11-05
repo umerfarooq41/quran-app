@@ -25,7 +25,7 @@ async function seedLocalRecords(page) {
     transaction.objectStore('tadabburLessons').put({
       id: 'qa-reflect-lesson', surahNumber: 1, startAyah: 1, endAyah: 3,
       title: 'QA saved lesson', status: 'saved', createdAt: now, updatedAt: now,
-      answers: { prepare: ['', '', ''], notes: 'QA persistence note' },
+      answers: { prepare: ['', '', ''], tadabbur: { imagine: 'QA persistence note' } },
       finalQuestions: [],
       sourceSnapshot: {
         translationId: 'en-sahih', translationName: 'QA translation',
@@ -77,7 +77,7 @@ test('saved Reflect lesson and its personal notes survive reloads', async ({ pag
   await page.getByRole('button', { name: 'QA saved lesson' }).click();
   await expect(page.locator('#reflect-lesson-title')).toHaveValue('QA saved lesson');
   await expect(page.getByText('In the name of Allah')).toBeVisible();
-  await expect(page.locator('textarea[placeholder="Write your own notes…"]')).toHaveValue('QA persistence note');
+  await expect(page.locator('#reflect-imagine')).toHaveValue('QA persistence note');
 
   await page.reload();
   await expect(page.locator('#root')).not.toBeEmpty();
@@ -94,7 +94,7 @@ test('saved Reflect lesson and its personal notes survive reloads', async ({ pag
       const transaction = database.transaction('tadabburLessons', 'readonly');
       const recordRequest = transaction.objectStore('tadabburLessons').get('qa-reflect-lesson');
       recordRequest.onsuccess = () => {
-        resolve(recordRequest.result?.answers?.notes || null);
+        resolve(recordRequest.result?.answers?.tadabbur?.imagine || null);
         database.close();
       };
       recordRequest.onerror = () => reject(recordRequest.error);
