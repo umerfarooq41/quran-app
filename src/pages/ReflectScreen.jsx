@@ -5,6 +5,7 @@ import ReflectRangePicker from '../features/reflect/components/ReflectRangePicke
 import renderReflectTranslation from '../features/reflect/components/ReflectTranslation';
 import ReflectHubTabs from '../features/reflect/components/ReflectHubTabs';
 import DeleteLessonDialog from '../features/reflect/components/DeleteLessonDialog';
+import ThemeStudyButton from '../features/reflect/components/ThemeStudyButton';
 import { reflectCardClass as card, reflectActionClass as action, reflectFieldClass as field, studyDisplayTitle, DEFAULT_THEMES, assignmentsFor } from '../features/reflect/reflectPresentation';
 import { useAppStore } from '../store/useAppStore';
 import { getSurah, getSurahAyahs, getSurahInfo } from '../lib/quran';
@@ -446,7 +447,7 @@ export default function ReflectScreen() {
                         <span>{sub}</span><span className="reflect-subtheme-count">{matched.length}</span>
                         <ChevronDown size={16} className={subOpen?'reflect-theme-chevron is-open':'reflect-theme-chevron'} aria-hidden="true"/>
                       </button>
-                      {subOpen && <div className="reflect-theme-studies">{matched.length ? matched.map(lesson => themeStudyButton(lesson, lesson => {setActive(lesson);setMode('lesson');})) : <p className="reflect-theme-empty">No saved studies yet.</p>}</div>}
+                      {subOpen && <div className="reflect-theme-studies">{matched.length ? matched.map(lesson => <ThemeStudyButton key={lesson.id} lesson={lesson} onOpen={lesson => {setActive(lesson);setMode('lesson');}} />) : <p className="reflect-theme-empty">No saved studies yet.</p>}</div>}
                     </div>;
                   })}
                   {directLessons.length > 0 && <div className="reflect-subtheme">
@@ -454,7 +455,7 @@ export default function ReflectScreen() {
                       <span>Other Studies</span><span className="reflect-subtheme-count">{directLessons.length}</span>
                       <ChevronDown size={16} className={expandedSubtheme === main+':other'?'reflect-theme-chevron is-open':'reflect-theme-chevron'} aria-hidden="true"/>
                     </button>
-                    {expandedSubtheme === main+':other' && <div className="reflect-theme-studies">{directLessons.map(lesson => themeStudyButton(lesson, lesson => {setActive(lesson);setMode('lesson');}))}</div>}
+                    {expandedSubtheme === main+':other' && <div className="reflect-theme-studies">{directLessons.map(lesson => <ThemeStudyButton key={lesson.id} lesson={lesson} onOpen={lesson => {setActive(lesson);setMode('lesson');}} />)}</div>}
                   </div>}
                 </div>}
               </section>;
