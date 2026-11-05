@@ -42,7 +42,7 @@ test('Reader audio loads, plays, pauses, seeks, repeats and changes speed', asyn
   await page.getByRole('button', { name: /Continue Reading/i }).click();
   await expect(page.locator('.reader-page').first()).toBeVisible();
 
-  await page.locator('.reader-page').first().click({ position: { x: 15, y: 15 } });
+  await page.locator('[data-reader-toggle-zone]').first().click({ force: true });
   await expect(page.locator('.reader-listen-pill')).toBeVisible();
   await page.locator('.reader-listen-pill').click();
   await expect(page.locator('.reader-audio-panel-wrap')).toBeVisible({ timeout: 15000 });
