@@ -144,7 +144,7 @@ test('key screens produce reviewable visual evidence', async ({ page }, testInfo
   await expect(page.getByRole('heading', { name: 'Reflect', exact: true })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath('reflect.png'), fullPage: true });
 
-  await page.getByRole('button', { name: 'Back', exact: true }).click();
+  await page.getByRole('button', { name: 'Back from Reflect' }).click();
   await page.getByRole('button', { name: /Continue Reading/i }).click();
   await expect(page.locator('.reader-page').first()).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath('reader.png'), fullPage: true });
