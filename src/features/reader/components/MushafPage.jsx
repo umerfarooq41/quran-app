@@ -728,7 +728,7 @@ function parseReference(reference) {
 function getBookmarkTone(category) {
   if (category === 'Reading' || category === 'Recitation') return 'reading';
   if (category === 'Memorize') return 'memorize';
-  if (category === 'Tadabbur') return 'tadabbur';
+  if (category === 'Reflect' || category === 'Tadabbur') return 'tadabbur';
   if (category === 'Notes') return 'notes';
   return '';
 }
