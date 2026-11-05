@@ -25,7 +25,8 @@ export default function PassageSelector({ surah, surahNumber, setSurahNumber, st
               onSelect={value=>{setEndAyah(value);setRangePicker(null);}}/>
           </div>
           <p className={'reflect-passage-status '+(validRange?'is-valid':'is-invalid')}>{validRange ? count+' ayahs selected' : 'Select 3–15 ayahs'}</p>
-          <div className="reflect-preview-divider" aria-hidden="true" />
+          {/* Passage content is read in the lesson, not duplicated in selection. */}
+          {/* <div className="reflect-preview-divider" aria-hidden="true" />
           <div className="reflect-preview-content">
             <div className="reflect-preview-heading">Preview</div>
             <div className="divide-y divide-slate-100">
@@ -34,7 +35,7 @@ export default function PassageSelector({ surah, surahNumber, setSurahNumber, st
                 <p className="tab-arabic reflect-preview-arabic" style={{whiteSpace:'normal',overflow:'visible',textOverflow:'clip'}} dir="rtl" lang="ar">{a.text}</p>
               </article>)}
             </div>
-          </div>
+          </div> */}
         </div>
   );
 }
