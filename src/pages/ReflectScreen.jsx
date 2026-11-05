@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Loader2, Plus } from 'lucide-react';
+import { ChevronDown, Loader2, Plus } from 'lucide-react';
 import { Screen, Empty, Header } from '../components/common/AppChrome';
 import ReflectHubTabs from '../features/reflect/components/ReflectHubTabs';
 import DeleteLessonDialog from '../features/reflect/components/DeleteLessonDialog';
@@ -33,6 +33,7 @@ export default function ReflectScreen() {
   const target = useAppStore((s) => s.reflectTarget);
   const settings = useAppStore((s) => s.settings);
   const [lessons, setLessons] = useState([]);
+  const [themesExpanded, setThemesExpanded] = useState(true);
   const [mode, setMode] = useState(target?.surahNumber ? 'new' : 'hub');
   const [surahNumber, setSurahNumber] = useState(Number(target?.surahNumber) || 1);
   const initialRange = getInitialReflectRange(target?.startAyah || 1, getSurahAyahs(Number(target?.surahNumber) || 1).length);
@@ -377,8 +378,10 @@ export default function ReflectScreen() {
         <ContemplationAndRemembrance active={active} contemplationOpen={contemplationOpen} setContemplationOpen={setContemplationOpen} contemplationIndex={contemplationIndex} setContemplationIndex={setContemplationIndex} remembranceOpen={remembranceOpen} setRemembranceOpen={setRemembranceOpen} remembranceIndex={remembranceIndex} setRemembranceIndex={setRemembranceIndex} saveTadabburField={saveTadabburField} flushAnswers={flushAnswers} />
         <LessonQuestions active={active} questionAdd={questionAdd} setQuestionAdd={setQuestionAdd} questionEdit={questionEdit} setQuestionEdit={setQuestionEdit} questionIndex={questionIndex} setQuestionIndex={setQuestionIndex} questionMenu={questionMenu} setQuestionMenu={setQuestionMenu} questionDraft={questionDraft} setQuestionDraft={setQuestionDraft} newQuestion={newQuestion} setNewQuestion={setNewQuestion} saveStudyMeta={saveStudyMeta} removeQuestion={removeQuestion} />
         <section className={card}>
-          <div className="flex items-center justify-between gap-3"><h3 className="font-semibold">Themes</h3><button type="button" className="inline-flex items-center gap-1 text-sm font-medium text-[#2d6e5e]" onClick={openThemeSheet}><Plus size={15}/> Add Theme</button></div>
-          {assignmentsFor(active.studyThemes).length === 0 ? <button type="button" className="mt-3 flex w-full flex-col items-center gap-1 rounded-xl border border-dashed border-slate-200 px-3 py-5 text-center text-sm text-slate-500" onClick={openThemeSheet}><span>No themes added yet</span><small>Tap Add Theme to organize this study</small></button> : <div className="mt-3 space-y-3">{assignmentsFor(active.studyThemes).map((item,index) => <div key={item.main}>{index > 0 && <div className="mb-3 border-t border-slate-100"/>}<p className="text-sm font-semibold">{item.main}</p>{item.sub?.length > 0 && <div className="mt-2 flex flex-wrap gap-1.5">{item.sub.map(sub => <span key={sub} className="rounded-full bg-slate-100 px-2.5 py-1 text-xs">{sub}</span>)}</div>}</div>)}</div>}
+          <div className="reflect-section-heading"><button type="button" className="reflect-section-toggle" aria-expanded={themesExpanded} onClick={()=>setThemesExpanded(v=>!v)}><span className="font-semibold">Themes</span><ChevronDown size={20} className={`reflect-section-chevron ${themesExpanded?"is-open":""}`}/></button>{themesExpanded&&<button type="button" className="reflect-secondary-action inline-flex items-center gap-1 text-sm font-medium" onClick={openThemeSheet}><Plus size={15}/> Add Theme</button>}</div>
+          {themesExpanded&&<div className="reflect-section-body">
+          {assignmentsFor(active.studyThemes).length === 0 ? <button type="button" className="reflect-empty-inline mt-3" onClick={openThemeSheet}>No themes added yet. Tap to add a theme.</button> : <div className="mt-3 space-y-3">{assignmentsFor(active.studyThemes).map((item,index) => <div key={item.main}>{index > 0 && <div className="mb-3 border-t border-slate-100"/>}<p className="text-sm font-semibold">{item.main}</p>{item.sub?.length > 0 && <div className="mt-2 flex flex-wrap gap-1.5">{item.sub.map(sub => <span key={sub} className="rounded-full bg-slate-100 px-2.5 py-1 text-xs">{sub}</span>)}</div>}</div>)}</div>}
+          </div>}
         </section>
         {themeSheet && <ThemeEditorSheet themeCreation={themeCreation} setThemeCreation={setThemeCreation} setThemeSheet={setThemeSheet} newThemeName={newThemeName} setNewThemeName={setNewThemeName} createTheme={createTheme} themeSearch={themeSearch} setThemeSearch={setThemeSearch} themeGroups={themeGroups} expandedTheme={expandedTheme} setExpandedTheme={setExpandedTheme} draftThemes={draftThemes} toggleThemeSub={toggleThemeSub} toggleThemeMain={toggleThemeMain} finishThemeEditing={finishThemeEditing} />}
         <FinishAndRevisit active={active} saveTadabburField={saveTadabburField} saveStudyMeta={saveStudyMeta} flushAnswers={flushAnswers} />

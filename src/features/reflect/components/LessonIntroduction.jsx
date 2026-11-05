@@ -7,12 +7,9 @@ export default function LessonIntroduction({ active, saveStudyMeta, guidanceOpen
   return (
     <>
         <div className={card + " reflect-study-summary"}>
-          <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0 flex-1">
-              <label htmlFor="reflect-lesson-title" className="block text-xs font-semibold text-slate-600">Lesson Title</label>
-              <input id="reflect-lesson-title" className="reflect-lesson-title-input mt-1 w-full min-w-0 rounded-lg px-3 py-2.5 text-base font-semibold" value={active.title || ''} placeholder="Give your lesson a title" onChange={e=>saveStudyMeta({title:e.target.value})} />
-            </div>
-            <button type="button" className="reflect-guidance-trigger" aria-label="Reading guidance" aria-expanded={guidanceOpen} aria-controls="reflect-reading-guidance" onClick={() => setGuidanceOpen(value => !value)}><Info size={21} aria-hidden="true"/></button>
+          <div className="reflect-title-editor">
+            <div className="reflect-title-heading"><label htmlFor="reflect-lesson-title" className="text-sm font-semibold">Lesson Title</label><button type="button" className="reflect-guidance-trigger" aria-label="Reading guidance" aria-expanded={guidanceOpen} aria-controls="reflect-reading-guidance" onClick={() => setGuidanceOpen(value => !value)}><Info size={19} aria-hidden="true"/></button></div>
+            <input id="reflect-lesson-title" className="reflect-lesson-title-input mt-1 w-full min-w-0 rounded-lg px-3 py-2.5 text-base font-semibold" value={active.title || ''} placeholder="Give your lesson a title" onChange={e=>saveStudyMeta({title:e.target.value})} />
           </div>
           {active.sourceSnapshot?.translationName && <div className="reflect-study-translation"><BookOpen size={15} aria-hidden="true"/><span>{active.sourceSnapshot.translationName}</span></div>}
           {guidanceOpen && <div id="reflect-reading-guidance" className="reflect-guidance-panel">
@@ -29,9 +26,9 @@ export default function LessonIntroduction({ active, saveStudyMeta, guidanceOpen
         </div>
 
         <section className={card}>
-          <button type="button" className="flex w-full items-center justify-between gap-3 text-left" aria-expanded={introOpen} aria-controls="reflect-surah-introduction" onClick={() => setIntroOpen((value) => !value)}>
+          <button type="button" className="reflect-section-toggle" aria-expanded={introOpen} aria-controls="reflect-surah-introduction" onClick={() => setIntroOpen((value) => !value)}>
             <span className="font-semibold">Surah Introduction</span>
-            <ChevronDown size={20} aria-hidden="true" className={`reflect-intro-chevron ${introOpen ? "is-open" : ""}`} />
+            <ChevronDown size={20} aria-hidden="true" className={`reflect-section-chevron ${introOpen ? "is-open" : ""}`} />
           </button>
           {introOpen && <div id="reflect-surah-introduction" className="reflect-intro-content">
             <div className="reflect-intro-language mt-4 flex gap-2" role="group" aria-label="Surah introduction language">
