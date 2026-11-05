@@ -1,6 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { BookOpen, ChevronDown, Info, Loader2, Plus, MoreVertical, Trash2, X } from 'lucide-react';
 import { Screen, Empty, Header } from '../components/common/AppChrome';
+import ReflectRangePicker from '../features/reflect/components/ReflectRangePicker';
+import renderReflectTranslation from '../features/reflect/components/ReflectTranslation';
+import ReflectHubTabs from '../features/reflect/components/ReflectHubTabs';
+import DeleteLessonDialog from '../features/reflect/components/DeleteLessonDialog';
+import { reflectCardClass as card, reflectActionClass as action, reflectFieldClass as field, studyDisplayTitle, DEFAULT_THEMES, assignmentsFor } from '../features/reflect/reflectPresentation';
 import { useAppStore } from '../store/useAppStore';
 import { getSurah, getSurahAyahs, getSurahInfo } from '../lib/quran';
 import { sanitizeSurahHtml } from '../lib/sanitizeHtml';
@@ -11,27 +16,6 @@ import {
   REFLECT_FINAL_QUESTIONS,
 } from '../services/tadabbur/createTadabburLesson';
 import { getReflectRangeCount, isValidReflectRange } from '../features/reflect/reflectRules';
-
-const studyDisplayTitle = (lesson) => lesson.title?.trim() || `${lesson.surahName || getSurah(lesson.surahNumber)?.name || 'Surah ' + lesson.surahNumber} ${lesson.surahNumber}:${lesson.startAyah}–${lesson.endAyah}`;
-const card = 'rounded-2xl border border-slate-200/70 bg-white/85 p-4 shadow-sm';
-const action = 'rounded-xl bg-[#2d6e5e] px-4 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40';
-const field = 'w-full rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm text-slate-800 outline-none focus:border-[#2d6e5e]';
-const DEFAULT_THEMES = {
-  'Faith & Theology': ['Tawheed', 'Attributes of Allah', 'Hereafter', 'The Unseen'],
-  'Prophets & History': ['Stories of the Prophets', 'Past Nations', 'Trials & Resilience'],
-  'Worship & Ethics': ['Prayer & Worship', 'Justice', 'Family & Relationships', 'Honesty'],
-  'Heart Purification': ['Patience', 'Gratitude', 'Repentance & Hope', 'Trust in Allah', 'Humility'],
-  'Paradise & Hell': ['Paradise', 'Hellfire', 'Accountability'],
-};
-const assignmentsFor = (studyThemes = {}) => {
-  if (Array.isArray(studyThemes.assignments)) return studyThemes.assignments;
-  const legacy = studyThemes.main ? [{main: studyThemes.main, sub: studyThemes.sub || []}] : [];
-  return legacy;
-};
-const themeStudyButton = (lesson, open) => <button key={lesson.id} type="button" className="reflect-theme-study" onClick={() => open(lesson)}>
-  <strong>{lesson.surahName || getSurah(lesson.surahNumber)?.name} {lesson.surahNumber}:{lesson.startAyah}–{lesson.endAyah}</strong>
-  <small>{lesson.status === 'completed' ? 'Completed' : 'In progress'}</small>
-</button>;
 
 export default function ReflectScreen() {
   const goBack = useAppStore((s) => s.goBack);
@@ -400,9 +384,7 @@ export default function ReflectScreen() {
       </div>
       <div className="app-scroll-content reflect-content" ref={lessonScrollRef}>
       {mode === 'hub' && <>
-        <div className="library-tabs share-like-segment reflect-tabs" role="tablist" aria-label="Reflect library">
-          {['Studies', 'Questions', 'Discover', 'Progress'].map(tab => <button key={tab} type="button" role="tab" aria-selected={hubTab === tab} onClick={() => setHubTab(tab)} className={hubTab === tab ? 'is-active' : ''}>{tab}</button>)}
-        </div>
+        <ReflectHubTabs tabs={['Studies', 'Questions', 'Discover', 'Progress']} active={hubTab} onChange={setHubTab} className="reflect-tabs" label="Reflect library" />
         {hubTab === 'Questions' && (() => {
           const all=lessons.flatMap(lesson=>(lesson.studyQuestions||[]).map(q=>({...q,lesson})));
           const visible=all.filter(q=>(questionFilter==='All'||(questionFilter==='Answered'?!!q.answer?.trim():!q.answer?.trim()))&&(q.text+' '+(q.lesson.title||'')+' '+q.lesson.surahName).toLowerCase().includes(questionSearch.toLowerCase()));
@@ -424,9 +406,7 @@ export default function ReflectScreen() {
           </div>;
         })()}
         {hubTab === 'Discover' && <div className="reflect-discover">
-          <div className="library-tabs share-like-segment reflect-discover-tabs" role="tablist" aria-label="Discover sections">
-            {['Keywords','Themes'].map(tab => <button key={tab} type="button" role="tab" aria-selected={discoverTab === tab} className={discoverTab === tab ? 'is-active' : ''} onClick={() => setDiscoverTab(tab)}>{tab}</button>)}
-          </div>
+          <ReflectHubTabs tabs={['Keywords', 'Themes']} active={discoverTab} onChange={setDiscoverTab} className="reflect-discover-tabs" label="Discover sections" />
 
           {discoverTab === 'Keywords' && (() => {
             const saved = lessons.flatMap(lesson => (lesson.keywords || []).filter(word => (word.arabic || '').trim()).map((word,index) => ({
@@ -576,16 +556,7 @@ export default function ReflectScreen() {
         })}</div> : <Empty text="Your saved Reflect studies will appear here."/>}</>}
       </>}
 
-      {pendingDelete !== null && <div className="reflect-delete-backdrop" role="presentation">
-        <div className="reflect-delete-dialog" role="alertdialog" aria-modal="true" aria-labelledby="reflect-delete-title" aria-describedby="reflect-delete-description">
-          <h2 id="reflect-delete-title">Remove lesson?</h2>
-          <p id="reflect-delete-description">This will permanently remove the saved lesson and its reflections.</p>
-          <div className="reflect-delete-actions">
-            <button type="button" onClick={() => setPendingDelete(null)}>Cancel</button>
-            <button type="button" className="reflect-delete-confirm" onClick={async () => {const id=pendingDelete;setPendingDelete(null);await removeLesson(id);}}>Remove</button>
-          </div>
-        </div>
-      </div>}
+      {pendingDelete !== null && <DeleteLessonDialog onCancel={() => setPendingDelete(null)} onConfirm={async () => { const id = pendingDelete; setPendingDelete(null); await removeLesson(id); }} />}
 
       {mode === 'new' && <>
 
@@ -834,31 +805,4 @@ export default function ReflectScreen() {
   );
 }
 
-/** Reader-style inline references, each toggling only its own Tafsir note. */
-function renderReflectTranslation(value, notes, onToggle, selectedNumber) {
-  const text = String(value || "");
-  const available = new Set((notes || []).map(note => Number(note.number)).filter(Number.isFinite));
-  return text.split(/(\[\d+\])/g).map((part, index) => {
-    const match = /^\[(\d+)\]$/.exec(part);
-    if (!match || !available.has(Number(match[1]))) return <React.Fragment key={index}>{part}</React.Fragment>;
-    const number = Number(match[1]);
-    return <button key={index} type="button" className={"ayah-translation-inline-footnote" + (selectedNumber === number ? " is-active" : "")}
-      dir="ltr" lang="en" aria-pressed={selectedNumber === number} aria-label={"Toggle Tafsir footnote " + number}
-      onClick={() => onToggle(number)}>{number}</button>;
-  });
-}
 
-function ReflectRangePicker({label,value,display,options,open,onToggle,onSelect}) {
-  return <div className="reflect-range-field">
-    <span className="reflect-range-label">{label}</span>
-    <button type="button" className="reflect-range-trigger" aria-expanded={open} aria-label={label+': '+(display||value)} onClick={onToggle}>
-      <span>{display || value}</span><ChevronDown size={18} aria-hidden="true"/>
-    </button>
-    {open && <div className="reflect-range-options" role="listbox" aria-label={label}>
-      {options.map(option=><button key={option.value} type="button" role="option" aria-selected={Number(value)===option.value}
-        className={Number(value)===option.value?'is-selected':''} onClick={()=>onSelect(option.value)}>
-        {option.label}{Number(value)===option.value && <span aria-hidden="true">✓</span>}
-      </button>)}
-    </div>}
-  </div>;
-}
