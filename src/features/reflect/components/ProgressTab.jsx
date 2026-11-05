@@ -6,22 +6,7 @@ import { getReflectProgress } from '../reflectProgress';
 
 /** Progress dashboard and commitment review. */
 export default function ProgressTab({ lessons, progressPeriod, setProgressPeriod, progressCommitment, setProgressCommitment, saveCommitmentReview, openProgressLesson, setHubTab }) {
-  return (() => {
-          const now = new Date();
-          const start = new Date(now);
-          if (progressPeriod === 'week') { start.setDate(now.getDate() - ((now.getDay() + 6) % 7)); start.setHours(0,0,0,0); }
-          if (progressPeriod === 'month') { start.setDate(1); start.setHours(0,0,0,0); }
-          const filtered = progressPeriod === 'all' ? lessons : lessons.filter(l => {
-            const date = new Date(l.updatedAt || l.createdAt || 0);
-            return !Number.isNaN(date.getTime()) && date >= start && date <= now;
-          });
-          const completed = filtered.filter(l => l.status === 'completed');
-          const percentage = filtered.length ? Math.round(completed.length / filtered.length * 100) : 0;
-          const ayahKeys = new Set(filtered.flatMap(l => Array.from({length: Math.max(0, (Number(l.endAyah) || 0) - (Number(l.startAyah) || 0) + 1)}, (_,i) => l.surahNumber + ':' + (Number(l.startAyah) + i))));
-          const questions = filtered.flatMap(l => l.studyQuestions || []);
-          const answered = questions.filter(q => !!String(q.answer || '').trim()).length;
-          const commitments = completed.filter(l => String(l.answers?.tadabbur?.commitment || l.answers?.tadabbur?.plan || '').trim());
-          const recent = [...filtered].sort((a,b) => new Date(b.updatedAt || b.createdAt || 0) - new Date(a.updatedAt || a.createdAt || 0)).slice(0,3);
+  const { filtered, completed, percentage, ayahCount, questions, answered, commitments, recent } = getReflectProgress(lessons, progressPeriod);
           return <div className="space-y-4">
             <div className="flex items-center justify-between gap-3">
               <h2 className="text-base font-semibold text-slate-900">Study Progress</h2>
@@ -67,5 +52,4 @@ export default function ProgressTab({ lessons, progressPeriod, setProgressPeriod
               </button>)}</div> : <p className="mt-3 text-sm text-slate-500">No studies in this period.</p>}
             </section>
           </div>;
-        })();
 }
