@@ -74,11 +74,13 @@ test('Reflect opens and its passage selection controls are usable', async ({ pag
   await expect(page.getByRole('heading', { name: 'Reflect', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'New study' }).click();
   await expect(page.getByRole('heading', { name: 'Select Passage' })).toBeVisible();
-  const passageSelects = page.locator('select');
+  const passageSelects = page.locator('.reflect-range-trigger');
   await expect(passageSelects).toHaveCount(3);
-  await expect(passageSelects.nth(0)).toBeVisible();
-  await expect(passageSelects.nth(1)).toBeVisible();
-  await expect(passageSelects.nth(2)).toBeVisible();
+  for (let index = 0; index < 3; index++) await expect(passageSelects.nth(index)).toBeVisible();
+  await passageSelects.first().click();
+  await expect(page.getByRole('listbox', { name: 'Surah' })).toBeVisible();
+  await page.getByRole('option', { name: /Al-Baqarah/i }).first().click();
+  await expect(page.locator('.reflect-range-trigger').first()).toContainText('2.');
   await expectHealthyVisibleUI(page);
 });
 
@@ -96,7 +98,7 @@ test('Index, Search, Library and Settings screens open and remain responsive', a
   await expect(page.getByRole('heading', { name: 'Search' })).toBeVisible();
   await expectHealthyVisibleUI(page);
 
-  await page.getByRole('button', { name: 'Back from search' }).click();
+  await page.getByRole('button', { name: 'Back', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Al Quran' })).toBeVisible();
 
   await page.getByRole('button', { name: 'Library', exact: true }).click();
