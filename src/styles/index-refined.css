@@ -49,9 +49,9 @@
   gap: 10px;
   margin: 0 0 15px !important;
   padding: 0 14px !important;
-  border: 1px solid var(--ui-card-border);
+  border: 1px solid var(--ui-control-border);
   border-radius: 16px !important;
-  background: var(--ui-card-bg);
+  background: var(--ui-control-bg);
   box-shadow: var(--ui-card-shadow);
   color: var(--theme-muted);
   -webkit-backdrop-filter: var(--ui-card-blur);
@@ -122,8 +122,8 @@
   backdrop-filter: var(--ui-card-blur);
 }
 .index-replica-shell .index-card-wrap.is-open > .index-card {
-  border-color: color-mix(in srgb, var(--brand-gold, #b68a35) 25%, var(--theme-border)) !important;
-  box-shadow: 0 9px 22px rgba(71,54,23,.065) !important;
+  border-color: var(--ui-card-border);
+  box-shadow: var(--ui-card-shadow);
 }
 .index-replica-shell .index-card,
 .index-replica-shell .index-card:active {
@@ -889,16 +889,6 @@
 
 /* Index cards and controls consume the shared design tokens directly.
    Screen-specific layout and interaction remain in this owner. */
-.index-replica-shell .index-surah-info-preview {
-  background: var(--ui-card-bg);
-  border-color: var(--ui-card-border);
-  box-shadow: var(--ui-card-shadow);
-  -webkit-backdrop-filter: var(--ui-card-blur);
-  backdrop-filter: var(--ui-card-blur);
-}
-.index-replica-shell .index-card-wrap.is-open > .index-card {
-  border-color: var(--ui-card-border);
-}
 .index-replica-shell .index-card-main:active { background: var(--ui-pressed-overlay); }
 .index-replica-shell .index-surah-info-preview .index-surah-text-action,
 .index-replica-shell .index-ayah-stepper {
