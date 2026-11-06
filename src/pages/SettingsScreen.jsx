@@ -24,6 +24,7 @@ import {
 import { WORD_BY_WORD_LANGUAGES } from '../services/quranFoundation';
 import { useAppStore } from '../store/useAppStore';
 import { Header, Screen } from '../components/common/AppChrome';
+import { Card } from '../components/common/Surfaces';
 
 export default function SettingsScreen() {
   const { settings, updateSettings, resetSettings, openHelp, openAbout } = useAppStore(useShallow((state) => ({
@@ -224,7 +225,7 @@ function SettingsSection({ title, description, children, className = '' }) {
         <strong>{title}</strong>
         <small>{description}</small>
       </div>
-      <div className="settings-card">{children}</div>
+      <Card as="div" className="settings-card">{children}</Card>
     </section>
   );
 }
