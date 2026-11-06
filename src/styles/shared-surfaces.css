@@ -120,3 +120,40 @@
     --ui-control-bg: #292f2b;
   }
 }
+
+
+/* Reader phase: only panel containers and secondary sheet controls.
+ * Do not change audio timing, waveforms, Mushaf lines, export frames or gestures. */
+.reader-audio-panel.reader-audio-panel-modern {
+  border: 1px solid var(--ui-card-border) !important;
+  background: var(--ui-card-bg) !important;
+  -webkit-backdrop-filter: var(--ui-card-blur);
+  backdrop-filter: var(--ui-card-blur);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, .14) !important;
+}
+/* Translation requires an opaque reading surface behind long Arabic/Urdu text.
+ * The glass treatment belongs to the outer edge, not behind body typography. */
+.ayah-translation-card {
+  background: var(--translation-card-bg, var(--reader-surface-raised)) !important;
+  border-color: var(--ui-card-border) !important;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.ayah-action-sheet.ayah-action-sheet-v2,
+.share-sheet {
+  background: var(--theme-surface-solid) !important;
+  border-color: var(--ui-card-border) !important;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.reader-audio-panel-modern :is(button, input):focus-visible,
+.ayah-action-sheet-v2 :is(button, input):focus-visible,
+.share-sheet :is(button, input):focus-visible {
+  outline: 2px solid var(--ui-primary);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-transparency: reduce) {
+  .reader-audio-panel.reader-audio-panel-modern {
+    background: var(--reader-surface-raised) !important;
+  }
+}
