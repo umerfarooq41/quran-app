@@ -46,3 +46,19 @@ test('Reader Mushaf stays sixteen lines after opening from Home', async ({ page 
   await expect(mushaf).toBeVisible();
   await expect.poll(() => mushaf.evaluate(el => getComputedStyle(el).gridTemplateRows.split(' ').length)).toBe(16);
 });
+
+test('Reflect selected tabs do not animate through low-contrast intermediate colors', async ({ page }) => {
+  await home(page);
+  await page.getByRole('button', { name: /Begin reflecting/i }).click();
+  const tabs = page.getByRole('tablist', { name: 'Reflect library' });
+  await expect(tabs).toBeVisible();
+  const selected = tabs.getByRole('tab', { selected: true });
+  const transition = await selected.evaluate(element => {
+    const style = getComputedStyle(element);
+    return { properties: style.transitionProperty.split(',').map(value => value.trim()), background: style.backgroundColor };
+  });
+  expect(transition.properties).not.toContain('background-color');
+  expect(transition.properties).not.toContain('color');
+  expect(transition.properties).not.toContain('all');
+  expect(transition.background).toBe('rgb(36, 93, 78)');
+});
