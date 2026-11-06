@@ -125,17 +125,6 @@
   color: #fff;
 }
 .surah-info-icon { background: var(--ui-control-bg); }
-/* Reader UI only: outer sheet surfaces. Never affect Mushaf, audio waveform,
- * playback buttons, export previews, gesture layers or translation typography. */
-:is(.ayah-translation-card,.ayah-action-sheet-v2,.share-sheet) {
-  border: 1px solid var(--ui-card-border);
-  background: var(--ui-card-bg);
-  -webkit-backdrop-filter: var(--ui-card-blur);
-  backdrop-filter: var(--ui-card-blur);
-}
-:is(.ayah-translation-card,.ayah-action-sheet-v2,.share-sheet) :focus-visible {
-  outline-color: var(--ui-primary);
-}
 @media (prefers-reduced-motion: reduce) {
   :is(.search-result-card,.home-action-chip,.home-favorite-row,.help-section-trigger,.tab-card-hit) {
     transition: none;
