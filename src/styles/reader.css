@@ -1504,9 +1504,9 @@ body {
   max-height: 94dvh;
   overflow-y: auto;
   border-radius: 28px 28px 0 0;
-  background: #fff;
+  background: var(--theme-surface-solid);
   padding: 18px 16px calc(env(safe-area-inset-bottom, 0px) + 18px);
-  color: #26221e;
+  color: var(--theme-text);
   box-shadow: 0 -24px 70px rgba(0, 0, 0, .20);
 }
 
@@ -2726,10 +2726,6 @@ body {
 }
 
 /* Share Quran image — unified app surface and premium range controls */
-.share-sheet {
-  background: #fbf8ef;
-  color: #252522;
-}
 
 .share-range-card {
   position: relative;
@@ -2874,10 +2870,6 @@ body {
 }
 
 /* Share Quran image — match Index screen theme surfaces */
-.share-sheet {
-  background: var(--theme-background, var(--theme-bg, #f8f1df)) !important;
-  color: var(--theme-text, #252522) !important;
-}
 
 .share-sheet-header p {
   color: var(--theme-muted, rgba(37, 37, 34, .55)) !important;
@@ -2958,9 +2950,6 @@ body {
 }
 
 /* Share Quran image — final Index/reciter visual alignment */
-.share-sheet {
-  background: var(--theme-background, var(--theme-bg, #f8f1df)) !important;
-}
 
 /* Use the same solid card language as Index rows/panels. */
 .share-range-card {
@@ -5561,8 +5550,7 @@ body {
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
 }
-.ayah-action-sheet.ayah-action-sheet-v2,
-.share-sheet {
+.ayah-action-sheet.ayah-action-sheet-v2 {
   background: var(--theme-surface-solid);
   border-color: var(--ui-card-border);
   -webkit-backdrop-filter: none;
