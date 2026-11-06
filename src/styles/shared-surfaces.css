@@ -57,8 +57,7 @@
   outline-offset: 2px;
 }
 /* Cards: shared surface, not a separate white or gold-framed design per screen. */
-:is(.home-action-chip,.home-favorite-row,.home-reflect-card,
-    .search-result-card,.settings-card,.help-intro,.help-section,
+:is(.search-result-card,.settings-card,.help-intro,.help-section,
     .about-card,.about-section,.tab-card-surface,.tabs-status,
     .tafsir-card,.surah-info-content) {
   background: var(--ui-card-bg);
