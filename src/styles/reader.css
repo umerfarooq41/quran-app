@@ -1735,10 +1735,12 @@ body {
   max-height: 60dvh;
   grid-template-rows: 48px minmax(0, 1fr) 56px;
   overflow: hidden;
-  border: 1px solid var(--translation-card-border);
+  border: 1px solid var(--ui-card-border);
   border-bottom: 0;
   border-radius: 22px 22px 0 0;
-  background: var(--translation-card-bg);
+  background: var(--translation-card-bg, var(--reader-surface-raised));
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
   color: var(--translation-card-text);
   box-shadow: var(--translation-card-shadow);
 }
@@ -5544,12 +5546,6 @@ body {
 }
 /* Translation requires an opaque reading surface behind long Arabic/Urdu text.
  * The glass treatment belongs to the outer edge, not behind body typography. */
-.ayah-translation-card {
-  background: var(--translation-card-bg, var(--reader-surface-raised));
-  border-color: var(--ui-card-border);
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-}
 .ayah-action-sheet.ayah-action-sheet-v2 {
   background: var(--theme-surface-solid);
   border-color: var(--ui-card-border);
