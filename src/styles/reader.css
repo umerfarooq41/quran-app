@@ -1,7 +1,6 @@
 /* Reader chrome and overlays. Protected Quran page rendering lives in mushaf.css. */
 
 .reader-passive-header {
-  color: #6b655d !important;
   pointer-events: none;
   position: absolute;
   inset-inline: 0;

@@ -49,11 +49,13 @@
   gap: 10px;
   margin: 0 0 15px !important;
   padding: 0 14px !important;
-  border: 1px solid color-mix(in srgb, var(--theme-border) 80%, transparent) !important;
+  border: 1px solid var(--ui-card-border);
   border-radius: 16px !important;
-  background: color-mix(in srgb, var(--theme-surface) 90%, transparent) !important;
-  box-shadow: 0 6px 16px rgba(72,55,22,.04) !important;
+  background: var(--ui-card-bg);
+  box-shadow: var(--ui-card-shadow);
   color: var(--theme-muted);
+  -webkit-backdrop-filter: var(--ui-card-blur);
+  backdrop-filter: var(--ui-card-blur);
 }
 .index-replica-shell .index-surah-search:focus-within {
   border-color: color-mix(in srgb, var(--brand-gold, #b68a35) 68%, var(--theme-border)) !important;
@@ -112,10 +114,12 @@
   align-items: stretch;
   overflow: hidden !important;
   padding: 0 !important;
-  border: 1px solid color-mix(in srgb, var(--theme-border) 72%, transparent) !important;
+  border: 1px solid var(--ui-card-border);
   border-radius: 22px !important;
-  background: color-mix(in srgb, var(--theme-surface) 94%, transparent) !important;
-  box-shadow: 0 8px 20px rgba(71,54,23,.05) !important;
+  background: var(--ui-card-bg);
+  box-shadow: var(--ui-card-shadow);
+  -webkit-backdrop-filter: var(--ui-card-blur);
+  backdrop-filter: var(--ui-card-blur);
 }
 .index-replica-shell .index-card-wrap.is-open > .index-card {
   border-color: color-mix(in srgb, var(--brand-gold, #b68a35) 25%, var(--theme-border)) !important;
@@ -209,12 +213,14 @@
   margin: 6px 6px 0 !important;
   padding: 0 !important;
   overflow: hidden !important;
-  border: 1px solid color-mix(in srgb, var(--theme-border) 64%, transparent) !important;
+  border: 1px solid var(--ui-card-border);
   border-radius: 20px !important;
-  background: color-mix(in srgb, var(--theme-surface) 92%, transparent) !important;
-  box-shadow: 0 9px 22px rgba(72,55,22,.05) !important;
+  background: var(--ui-card-bg);
+  box-shadow: var(--ui-card-shadow);
   animation: indexPanelIn .18s ease;
   will-change: auto;
+  -webkit-backdrop-filter: var(--ui-card-blur);
+  backdrop-filter: var(--ui-card-blur);
 }
 
 /* Keep the expanded Surah panel on the same themed card surface as other collapse cards. */
@@ -883,10 +889,7 @@
 
 /* Index cards and controls consume the shared design tokens directly.
    Screen-specific layout and interaction remain in this owner. */
-.index-replica-shell .index-card,
-.index-replica-shell .index-collapse-panel,
-.index-replica-shell .index-surah-info-preview,
-.index-replica-shell .index-surah-search {
+.index-replica-shell .index-surah-info-preview {
   background: var(--ui-card-bg);
   border-color: var(--ui-card-border);
   box-shadow: var(--ui-card-shadow);
