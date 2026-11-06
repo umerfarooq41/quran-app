@@ -1,9 +1,12 @@
 /* Tafsir / translation reading cards. */
 .tafsir-card {
   border-radius: 32px;
-  background: rgba(255, 255, 255, .92);
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-card-border);
+  -webkit-backdrop-filter: var(--ui-card-blur);
+  backdrop-filter: var(--ui-card-blur);
   padding: 22px;
-  box-shadow: 0 16px 46px rgba(0, 0, 0, .07);
+  box-shadow: var(--ui-card-shadow);
 }
 
 .tafsir-card-head {
@@ -30,7 +33,7 @@
   align-items: center;
   gap: 8px;
   border-radius: 999px;
-  background: #050505;
+  background: var(--ui-primary);
   color: #fff;
   padding: 10px 14px;
   font-weight: 500;

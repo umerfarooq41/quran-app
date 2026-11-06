@@ -12,11 +12,11 @@
   align-items: center;
   gap: 8px;
   min-width: 0;
-  border: 1px solid rgba(255, 255, 255, .72);
+  border: 1px solid var(--ui-control-border);
   border-radius: 18px;
-  background: rgba(255, 255, 255, .78);
+  background: var(--ui-control-bg);
   padding: 7px 8px 7px 12px;
-  color: #6b7280;
+  color: var(--theme-muted);
   box-shadow: 0 8px 24px rgba(31, 41, 55, .05);
 }
 
@@ -26,21 +26,21 @@
   border: 0;
   background: transparent;
   padding: 4px 0;
-  color: #20242a;
+  color: var(--theme-text);
   font-size: .88rem;
   outline: none;
 }
 
 .search-form input::placeholder {
   overflow: hidden;
-  color: #9ba1aa;
+  color: var(--theme-muted);
   text-overflow: ellipsis;
 }
 
 .search-form button {
   min-height: 34px;
   border-radius: 12px;
-  background: #252a30;
+  background: var(--ui-primary);
   padding: 0 11px;
   color: #fff;
   font-size: .72rem;
