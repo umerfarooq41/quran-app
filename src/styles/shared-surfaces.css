@@ -256,3 +256,68 @@
   text-underline-offset: 4px;
 }
 .reflect-intro-read-more:focus-visible { outline: 2px solid var(--ui-primary); outline-offset: 3px; }
+
+
+/* Shared picker language — consistent triggers and option panels across the app.
+   Native Surah/ayah and Progress select popups remain OS-controlled for scrolling,
+   accessibility and reliable long-list selection. */
+:root {
+  --ui-picker-radius: 16px;
+  --ui-picker-option-radius: 11px;
+  --ui-picker-selected: color-mix(in srgb, var(--ui-primary) 11%, transparent);
+  --ui-picker-hover: rgba(75, 61, 41, .055);
+}
+:root[data-theme='dark'] {
+  --ui-picker-selected: color-mix(in srgb, var(--ui-primary) 26%, transparent);
+  --ui-picker-hover: rgba(255, 255, 255, .075);
+}
+:is(.settings-picker-pill,.share-reciter-trigger,.reader-reciter-picker,
+    .reflect-range-native-wrap,.reflect-progress-period) {
+  border: 1px solid var(--ui-control-border) !important;
+  border-radius: var(--ui-picker-radius) !important;
+  background: var(--ui-control-bg) !important;
+  color: var(--theme-text) !important;
+  box-shadow: none !important;
+}
+:is(.settings-picker-pill,.share-reciter-trigger,.reader-reciter-picker,
+    .reflect-range-native-wrap,.reflect-progress-period):focus-visible,
+:is(.reflect-range-native-wrap,.reader-reciter-picker):focus-within {
+  outline: 2px solid var(--ui-primary);
+  outline-offset: 2px;
+}
+:is(.settings-picker-panel,.share-reciter-menu,.share-reciter-list,
+    .reader-reciter-list) {
+  background: var(--theme-surface-solid) !important;
+  border-color: var(--ui-control-border) !important;
+  border-radius: var(--ui-picker-radius) !important;
+  box-shadow: 0 14px 32px rgba(28, 35, 30, .15) !important;
+}
+:is(.settings-picker-item,.share-reciter-option,.reader-reciter-list-item) {
+  border-radius: var(--ui-picker-option-radius);
+  color: var(--theme-text);
+}
+:is(.settings-picker-item.selected,.share-reciter-option.is-selected,
+    .reader-reciter-list-item.selected) {
+  background: var(--ui-picker-selected) !important;
+  color: var(--theme-text) !important;
+}
+:is(.settings-picker-item,.share-reciter-option,.reader-reciter-list-item):active {
+  background: var(--ui-picker-hover) !important;
+}
+.reflect-range-native {
+  color: var(--theme-text) !important;
+  background: transparent !important;
+}
+.reflect-range-native option,
+.reflect-progress-period option {
+  color: var(--theme-text);
+  background: var(--theme-surface-solid);
+}
+/* Restore a consistent field treatment to the New Lesson title and selection. */
+.reflect-lesson-title-input,
+.reflect-range-native-wrap {
+  border: 1px solid var(--ui-control-border) !important;
+  background: var(--ui-control-bg) !important;
+  color: var(--theme-text) !important;
+}
+.reflect-lesson-title-input::placeholder { color: var(--theme-muted) !important; opacity: 1; }
