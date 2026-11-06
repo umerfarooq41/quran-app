@@ -204,3 +204,16 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* Search form surface is owned by Search. */
+.search-form {
+  background: var(--ui-control-bg);
+  border: 1px solid var(--ui-control-border);
+  box-shadow: var(--ui-card-shadow);
+  -webkit-backdrop-filter: var(--ui-card-blur);
+  backdrop-filter: var(--ui-card-blur);
+}
+.search-form:focus-within {
+  border-color: var(--ui-primary);
+  box-shadow: 0 0 0 2px rgba(45,110,94,.18);
+}

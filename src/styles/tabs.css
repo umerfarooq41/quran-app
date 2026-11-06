@@ -1296,3 +1296,35 @@
 .reflect-screen .reflect-secondary-button:focus-visible {
   outline: 2px solid var(--ui-primary); outline-offset: 2px;
 }
+
+/* Reflect presentation owned by Reflect. */
+.reflect-progress-period { border-radius: 16px; }
+.reflect-progress-period option { background: var(--theme-surface-solid); color: var(--theme-text); }
+.reflect-field::placeholder { color: var(--theme-muted); opacity: 1; }
+:is(.reflect-progress-metric,.reflect-panel,.reflect-question-card) .reflect-muted {
+  color: var(--theme-muted);
+}
+
+/* Reflect introduction uses the same four-line preview as Index. */
+.reflect-surah-info-html.is-preview {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  overflow: hidden;
+  max-height: 9em;
+}
+.reflect-surah-info-html.is-preview :is(p,div) { margin-top: 0; margin-bottom: 0; }
+.reflect-intro-read-more {
+  display: inline-flex;
+  margin-top: 10px;
+  padding: 6px 0;
+  color: var(--ui-primary);
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.reflect-intro-read-more:focus-visible { outline: 2px solid var(--ui-primary); outline-offset: 3px; }
+
+
+.reflect-screen .reflect-progress-period { width: min(168px, 42vw); }

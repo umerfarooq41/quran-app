@@ -142,91 +142,6 @@
 }
 
 
-/* Reflect-specific surfaces and fields; Home card geometry is owned by home.css. */
-:is(.reflect-panel,.reflect-progress-metric,.reflect-question-card .tab-card-surface,
-    .reflect-question-answer) {
-  background: var(--ui-card-bg);
-  border: 1px solid var(--ui-card-border);
-  box-shadow: var(--ui-card-shadow);
-  -webkit-backdrop-filter: var(--ui-card-blur);
-  backdrop-filter: var(--ui-card-blur);
-}
-:is(.reflect-field,.reflect-progress-period,.reflect-question-tabs,
-    .reflect-progress-commitment) {
-  background: var(--ui-control-bg);
-  border: 1px solid var(--ui-control-border);
-  color: var(--theme-text);
-}
-.reflect-progress-period { border-radius: 16px; }
-.reflect-progress-period option { background: var(--theme-surface-solid); color: var(--theme-text); }
-.reflect-field::placeholder { color: var(--theme-muted); opacity: 1; }
-:is(.reflect-progress-metric,.reflect-panel,.reflect-question-card) .reflect-muted {
-  color: var(--theme-muted);
-}
-
-/* A four-line Index introduction: full content is available via Read more. */
-.index-replica-shell .index-surah-introduction-preview {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
-  line-clamp: 4;
-  overflow: hidden;
-  max-width: 100%;
-  margin: 12px 0 0;
-  color: var(--theme-text);
-  line-height: 1.9;
-  overflow-wrap: anywhere;
-}
-.index-replica-shell .index-surah-introduction-preview.is-ur {
-  font-family: inherit;
-  text-align: right;
-  line-height: 2.15;
-}
-.index-replica-shell .index-surah-info-preview {
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-}
-/* Search controls share a distinct neutral control treatment across pages. */
-.search-form,
-.index-replica-shell .index-surah-search {
-  background: var(--ui-control-bg);
-  border: 1px solid var(--ui-control-border);
-  box-shadow: var(--ui-card-shadow);
-  -webkit-backdrop-filter: var(--ui-card-blur);
-  backdrop-filter: var(--ui-card-blur);
-}
-.search-form:focus-within,
-.index-replica-shell .index-surah-search:focus-within,
-.reflect-field:focus-visible {
-  border-color: var(--ui-primary);
-  box-shadow: 0 0 0 2px rgba(45,110,94,.18);
-}
-
-/* Reflect introduction uses the same four-line preview as Index. */
-.reflect-surah-info-html.is-preview {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
-  line-clamp: 4;
-  overflow: hidden;
-  max-height: 9em;
-}
-.reflect-surah-info-html.is-preview :is(p,div) { margin-top: 0; margin-bottom: 0; }
-.reflect-intro-read-more {
-  display: inline-flex;
-  margin-top: 10px;
-  padding: 6px 0;
-  color: var(--ui-primary);
-  font-weight: 650;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
-.reflect-intro-read-more:focus-visible { outline: 2px solid var(--ui-primary); outline-offset: 3px; }
-
-
 /* Shared picker language — consistent triggers and option panels across the app.
    Native Surah/ayah and Progress select popups remain OS-controlled for scrolling,
    accessibility and reliable long-list selection. */
@@ -268,5 +183,4 @@
 }
 .app-option-item.is-selected { background: var(--ui-picker-selected); font-weight: 650; }
 .app-option-item:active { background: var(--ui-picker-hover); }
-.reflect-screen .reflect-progress-period { width: min(168px, 42vw); }
 @media (prefers-reduced-motion: reduce) { .app-option-chevron { transition: none; } }

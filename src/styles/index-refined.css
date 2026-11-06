@@ -906,3 +906,42 @@
   border-color: var(--ui-primary);
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--ui-primary) 18%, transparent);
 }
+
+/* A four-line Index introduction: full content is available via Read more. */
+.index-replica-shell .index-surah-introduction-preview {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  overflow: hidden;
+  max-width: 100%;
+  margin: 12px 0 0;
+  color: var(--theme-text);
+  line-height: 1.9;
+  overflow-wrap: anywhere;
+}
+.index-replica-shell .index-surah-introduction-preview.is-ur {
+  font-family: inherit;
+  text-align: right;
+  line-height: 2.15;
+}
+.index-replica-shell .index-surah-info-preview {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* Index search surface is owned by Index. */
+.index-replica-shell .index-surah-search {
+  background: var(--ui-control-bg);
+  border: 1px solid var(--ui-control-border);
+  box-shadow: var(--ui-card-shadow);
+  -webkit-backdrop-filter: var(--ui-card-blur);
+  backdrop-filter: var(--ui-card-blur);
+}
+.index-replica-shell .index-surah-search:focus-within {
+  border-color: var(--ui-primary);
+  box-shadow: 0 0 0 2px rgba(45,110,94,.18);
+}
