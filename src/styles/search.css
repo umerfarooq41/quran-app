@@ -125,13 +125,10 @@
   min-width: 0;
   gap: 6px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, .74);
   border-radius: 17px;
-  background: rgba(255, 255, 255, .8);
   padding: 11px 12px;
-  color: #25282d;
+  color: var(--theme-text);
   text-align: left;
-  box-shadow: 0 7px 20px rgba(31, 41, 55, .045);
 }
 
 .search-result-reference {

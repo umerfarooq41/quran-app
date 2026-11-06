@@ -40,11 +40,8 @@
 .settings-card {
   display: grid;
   overflow: visible;
-  border: 1px solid var(--ui-card-border);
   border-radius: 22px;
-  background: var(--ui-card-bg);
   padding: 6px 14px;
-  box-shadow: var(--ui-card-shadow);
 }
 
 .settings-theme-picker {

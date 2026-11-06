@@ -56,10 +56,7 @@
 
 .help-section {
   overflow: hidden;
-  border: 1px solid var(--ui-card-border);
   border-radius: 20px;
-  background: var(--ui-card-bg);
-  box-shadow: var(--ui-card-shadow);
 }
 
 .help-section-trigger {

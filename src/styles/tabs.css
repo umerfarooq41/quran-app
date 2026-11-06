@@ -824,13 +824,9 @@
 /* Reflect hub: force four equal tabs on narrow mobile viewports. */
 .reflect-screen .reflect-tabs.library-tabs.share-like-segment {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  width: 100%;
-  max-width: 100%;
+  --ui-segment-columns: 4;
   min-width: 0;
   height: auto;
-  min-height: 48px;
-  overflow: visible;
 }
 .reflect-screen .reflect-tabs > button {
   display: flex; align-items: center; justify-content: center;
@@ -845,10 +841,6 @@
   background: color-mix(in srgb, var(--accent-color, #2d6e5e) 12%, transparent);
   outline: 1px solid var(--accent-color, #2d6e5e);
   outline-offset: -1px;
-}
-.reflect-screen .reflect-keyword-chip {
-  background: color-mix(in srgb, var(--accent-color, #2d6e5e) 9%, white);
-  border-color: color-mix(in srgb, var(--accent-color, #2d6e5e) 28%, transparent);
 }
 
 .reflect-screen .reflect-header-add{background:transparent;color:inherit;border:0;box-shadow:none;border-radius:0;width:44px;height:44px}
@@ -1003,8 +995,7 @@
 .reflect-screen .reflect-question-tabs > button { flex:1; min-width:0; }
 .reflect-screen .reflect-question-card { position:relative; }
 .reflect-screen .reflect-question-card .tab-card-surface {
-  min-height:80px; background:var(--theme-surface-solid, #fff);
-  color:var(--theme-text, #242424); padding:0;
+  min-height:80px; padding:0;
 }
 .reflect-screen .reflect-question-card .tab-card-remove { z-index:0; }
 .reflect-screen .reflect-question-card .tab-card-surface { position:relative; z-index:1; }
@@ -1017,19 +1008,10 @@
   color:var(--theme-text, #242424); padding:8px 12px; font-size:12px;
 }
 .reflect-screen .reflect-muted { color:var(--theme-muted, #64748b); }
-.reflect-screen .reflect-progress-metric {
-  border:1px solid var(--theme-border, #e5e7eb); border-radius:14px;
-  background:var(--theme-surface-solid, #fff); color:var(--theme-text, #242424);
-}
+.reflect-screen .reflect-progress-metric { border-radius:14px; }
 .reflect-screen .reflect-progress-ring-inner { background:var(--theme-surface-solid, #fff); color:var(--theme-text, #242424); }
 .reflect-screen .reflect-progress-commitment { border:1px solid var(--theme-border, #e5e7eb); background:var(--theme-surface-solid, #fff); color:var(--theme-text, #242424); }
 .reflect-screen .reflect-progress-recent > * + * { border-top:1px solid var(--theme-border, #e5e7eb); }
-.reflect-screen .reflect-keyword-card,
-.reflect-screen .reflect-theme-group,
-.reflect-screen .reflect-study-menu {
-  background:var(--theme-surface-solid, #fff); color:var(--theme-text, #242424);
-  border:1px solid var(--theme-border, #e5e7eb);
-}
 .reflect-screen .reflect-theme-study {background:var(--ui-control-bg);border:1px solid var(--ui-control-border);}
 .reflect-screen .reflect-theme-children,
 .reflect-screen .reflect-subtheme { border-color:var(--theme-border, #e5e7eb); }
@@ -1076,19 +1058,7 @@
 }
 .reflect-screen .reflect-passage-status { margin-top: 10px; font-size: 12px; }
 
-/* Reflect lesson fields use neutral control surfaces, never accent-tinted fills. */
-.reflect-screen .reflect-lesson-title-input,
-.reflect-screen .reflect-lesson-answer {
-  border: 1px solid var(--ui-control-border);
-  background: var(--ui-control-bg);
-  color: var(--theme-text);
-}
 .reflect-screen .reflect-lesson-answer { padding: 10px 12px; border-radius: 12px; }
-.reflect-screen .reflect-lesson-title-input:focus-visible,
-.reflect-screen .reflect-lesson-answer:focus-visible {
-  outline: 2px solid var(--theme-accent, #245d4e);
-  outline-offset: 1px;
-}
 .reflect-screen .reflect-accent-text { color: var(--theme-accent, #245d4e); }
 .reflect-screen .reflect-lesson-inner {
   background: transparent;
@@ -1113,8 +1083,6 @@
 
 /* Reflect theme contract: one surface per section, never a pale card in dark mode. */
 .reflect-screen { --reflect-surface:var(--ui-card-bg); --reflect-ink:var(--theme-text,#242424); --reflect-muted:var(--theme-muted,#64748b); --reflect-border:var(--theme-border,#e5e7eb); color:var(--reflect-ink); }
-.reflect-screen .reflect-panel { background:var(--ui-card-bg); color:var(--reflect-ink); border-color:var(--reflect-border); }
-.reflect-screen .reflect-field { background:var(--ui-control-bg); color:var(--reflect-ink); border-color:var(--reflect-border); }
 .reflect-screen .reflect-field::placeholder { color:var(--reflect-muted); opacity:1; }
 .reflect-screen .reflect-panel .text-slate-500,.reflect-screen .reflect-panel .text-slate-600,.reflect-screen .reflect-panel .text-slate-700 { color:var(--reflect-muted); }
 .reflect-screen .reflect-panel .text-slate-800,.reflect-screen .reflect-panel .text-slate-900 { color:var(--reflect-ink); }
@@ -1126,11 +1094,8 @@
 .reflect-screen .reflect-passage-verses { overflow:hidden; border-radius:12px; border:1px solid var(--reflect-border); }
 .reflect-screen .reflect-lesson-ayah .reflect-ayah-reference,.reflect-screen .reflect-lesson-ayah .reflect-ayah-body { background:var(--reflect-surface); color:var(--reflect-ink); }
 .reflect-screen .reflect-lesson-ayah .ayah-word-by-word-list { align-items:start; }
-.reflect-screen .reflect-progress .reflect-panel { background:var(--ui-card-bg);color:var(--reflect-ink); }
 .reflect-screen .reflect-progress .reflect-panel p,.reflect-screen .reflect-progress .reflect-panel h2,.reflect-screen .reflect-progress .reflect-panel h3 { color:inherit; }
 .reflect-screen .reflect-progress .reflect-panel .text-slate-500 { color:var(--reflect-muted); }
-.reflect-screen .reflect-progress-metric { color:var(--reflect-ink); }
-.reflect-screen .reflect-study-menu { background:var(--reflect-surface);color:var(--reflect-ink); }
 .reflect-screen .reflect-guidance-panel { background:var(--reflect-surface);color:var(--reflect-ink);border-color:var(--reflect-border); }
 .reflect-screen .reflect-question-card,.reflect-screen .reflect-keyword-card,.reflect-screen .reflect-theme-group { color:var(--reflect-ink); }
 
@@ -1257,4 +1222,3 @@
 .reflect-screen .reflect-progress-period { width: min(168px, 42vw); }
 
 /* Answers use the shared neutral control surface, not a nested card. */
-.reflect-screen .reflect-question-answer { background: var(--ui-control-bg); border: 1px solid var(--ui-control-border); color: var(--theme-text); }
