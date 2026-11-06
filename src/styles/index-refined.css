@@ -881,94 +881,37 @@
 .index-replica-shell .index-surah-intro-more{display:inline-flex;margin:12px 0 0;padding:8px 0;color:var(--brand-gold,#b68a35);font-size:14px;font-weight:600;text-decoration:underline;text-underline-offset:3px}
 
 
-/* Index balanced-glass pass: warm translucent cards, neutral controls, no gold card outlines.
-   Keep the existing app gradient and primary-green tab/Go styles untouched. */
-.index-replica-shell {
-  --index-glass-card: rgba(255, 255, 255, .66);
-  --index-glass-edge: rgba(255, 255, 255, .84);
-  --index-glass-control: rgba(255, 255, 255, .42);
-  --index-glass-control-edge: rgba(126, 110, 86, .23);
-  --index-glass-blur: blur(16px);
-}
+/* Index cards and controls consume the shared design tokens directly.
+   Screen-specific layout and interaction remain in this owner. */
 .index-replica-shell .index-card,
 .index-replica-shell .index-collapse-panel,
 .index-replica-shell .index-surah-info-preview,
 .index-replica-shell .index-surah-search {
-  background: var(--index-glass-card) !important;
-  border-color: var(--index-glass-edge) !important;
-  -webkit-backdrop-filter: var(--index-glass-blur);
-  backdrop-filter: var(--index-glass-blur);
-  box-shadow: 0 8px 20px rgba(71, 54, 23, .045) !important;
+  background: var(--ui-card-bg);
+  border-color: var(--ui-card-border);
+  box-shadow: var(--ui-card-shadow);
+  -webkit-backdrop-filter: var(--ui-card-blur);
+  backdrop-filter: var(--ui-card-blur);
 }
 .index-replica-shell .index-card-wrap.is-open > .index-card {
-  border-color: var(--index-glass-edge) !important;
+  border-color: var(--ui-card-border);
 }
-.index-replica-shell .index-card-main:active {
-  background: rgba(75, 61, 41, .055) !important;
-}
-.index-replica-shell .index-surah-info-preview .index-surah-text-action {
-  background: var(--index-glass-control) !important;
-  border-color: var(--index-glass-control-edge) !important;
-  color: var(--theme-text) !important;
-  -webkit-backdrop-filter: var(--index-glass-blur);
-  backdrop-filter: var(--index-glass-blur);
+.index-replica-shell .index-card-main:active { background: var(--ui-pressed-overlay); }
+.index-replica-shell .index-surah-info-preview .index-surah-text-action,
+.index-replica-shell .index-ayah-stepper {
+  background: var(--ui-control-bg);
+  border-color: var(--ui-control-border);
+  color: var(--theme-text);
+  -webkit-backdrop-filter: var(--ui-card-blur);
+  backdrop-filter: var(--ui-card-blur);
 }
 .index-replica-shell .index-surah-info-preview .index-surah-text-action.is-favorite {
-  background: var(--brand-green) !important;
-  border-color: var(--brand-green) !important;
-  color: #fff !important;
+  background: var(--ui-primary); border-color: var(--ui-primary); color: #fff;
 }
-.index-replica-shell .index-surah-info-preview .index-surah-text-action:active {
-  filter: brightness(.96);
-}
-.index-replica-shell .index-ayah-stepper {
-  background: var(--index-glass-control) !important;
-  border-color: var(--index-glass-control-edge) !important;
-  -webkit-backdrop-filter: var(--index-glass-blur);
-  backdrop-filter: var(--index-glass-blur);
-}
-.index-replica-shell .index-ayah-stepper-button:first-child {
-  border-right-color: rgba(126, 110, 86, .12) !important;
-}
-.index-replica-shell .index-ayah-stepper-button:last-child {
-  border-left-color: rgba(126, 110, 86, .12) !important;
-}
+.index-replica-shell .index-ayah-stepper-button:first-child { border-right-color: var(--ui-divider); }
+.index-replica-shell .index-ayah-stepper-button:last-child { border-left-color: var(--ui-divider); }
 .index-replica-shell .index-ayah-stepper:focus-within,
 .index-replica-shell .index-surah-search:focus-within {
-  border-color: var(--brand-green) !important;
-  box-shadow: 0 0 0 2px rgba(45, 110, 94, .18) !important;
-}
-[data-theme='dark'] .index-replica-shell {
-  --index-glass-card: rgba(31, 36, 33, .78);
-  --index-glass-edge: rgba(255, 255, 255, .10);
-  --index-glass-control: rgba(255, 255, 255, .065);
-  --index-glass-control-edge: rgba(255, 255, 255, .17);
-}
-[data-theme='dark'] .index-replica-shell .index-card,
-[data-theme='dark'] .index-replica-shell .index-collapse-panel,
-[data-theme='dark'] .index-replica-shell .index-surah-info-preview,
-[data-theme='dark'] .index-replica-shell .index-surah-search {
-  background: var(--index-glass-card) !important;
-  border-color: var(--index-glass-edge) !important;
-}
-[data-theme='dark'] .index-replica-shell .index-surah-info-preview .index-surah-text-action,
-[data-theme='dark'] .index-replica-shell .index-ayah-stepper {
-  background: var(--index-glass-control) !important;
-  border-color: var(--index-glass-control-edge) !important;
-}
-[data-theme='dark'] .index-replica-shell .index-surah-info-preview .index-surah-text-action.is-favorite {
-  background: var(--brand-green) !important;
-  border-color: var(--brand-green) !important;
-  color: #fff !important;
-}
-@media (prefers-reduced-transparency: reduce) {
-  .index-replica-shell {
-    --index-glass-card: #faf7f0;
-    --index-glass-control: #f1ede6;
-    --index-glass-blur: none;
-  }
-  [data-theme='dark'] .index-replica-shell {
-    --index-glass-card: #202521;
-    --index-glass-control: #292f2b;
-  }
+  border-color: var(--ui-primary);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--ui-primary) 18%, transparent);
 }

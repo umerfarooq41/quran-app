@@ -4278,13 +4278,6 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
 }
 
 
-[data-theme='dark'] .home-reflect-card {
-  border-color: var(--theme-border) !important;
-  background: var(--theme-surface-solid) !important;
-  color: var(--theme-text) !important;
-  box-shadow: 0 8px 22px var(--theme-shadow) !important;
-}
-
 [data-theme='dark'] .home-reflect-icon {
   border-color: color-mix(in srgb, var(--brand-gold) 48%, var(--theme-border)) !important;
   color: color-mix(in srgb, var(--brand-gold) 72%, #fff) !important;

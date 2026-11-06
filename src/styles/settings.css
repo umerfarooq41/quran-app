@@ -32,7 +32,7 @@
 
 .settings-section-heading small,
 .settings-row-copy small {
-  color: #596168 !important;
+  color: var(--theme-muted);
   font-size: .73rem;
   line-height: 1.42;
 }
@@ -40,11 +40,11 @@
 .settings-card {
   display: grid;
   overflow: visible;
-  border: 1px solid rgba(201, 162, 75, .16);
+  border: 1px solid var(--ui-card-border);
   border-radius: 22px;
-  background: var(--theme-surface-solid, #fbfaf7);
+  background: var(--ui-card-bg);
   padding: 6px 14px;
-  box-shadow: 0 10px 28px rgba(44, 53, 48, .055);
+  box-shadow: var(--ui-card-shadow);
 }
 
 .settings-theme-picker {
@@ -547,24 +547,6 @@
   border-top: 1px solid var(--theme-divider, rgba(36, 75, 66, .08));
 }
 
-/* Dark mode */
-[data-theme='dark'] .settings-picker-pill {
-  border-color: rgba(201, 162, 75, .30) !important;
-  background: rgba(201, 162, 75, .07) !important;
-  color: var(--theme-text) !important;
-}
-
-[data-theme='dark'] .settings-picker-pill:active {
-  background: rgba(201, 162, 75, .13) !important;
-}
-
-[data-theme='dark'] .settings-picker-chevron {
-  color: var(--theme-muted) !important;
-}
-
-[data-theme='dark'] .settings-section-heading small {
-  color: var(--theme-muted) !important;
-}
 
 /* Small screens: shrink only the gap, never the alignment grid. */
 @media (max-width: 380px) {
