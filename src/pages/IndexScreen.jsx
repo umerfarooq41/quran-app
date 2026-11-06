@@ -14,7 +14,6 @@ import { getJuzLabel } from '../utils/quranLabels';
 import { getJuzForReference } from '../data/quranMeta';
 import { getTranslationLanguageId } from '../lib/translations';
 import { getSurahNameMeta } from '../data/surahNames';
-import { sanitizeSurahHtml } from '../lib/sanitizeHtml';
 
 function formatJuzName(juz) {
   return getJuzLabel(juz);
@@ -440,11 +439,14 @@ function SurahIndex() {
                           </p>
                         </div>
                         {localizedInfo?.text ? (
-                          <div className={`surah-info-html index-surah-introduction is-${translationLanguage}`}
-                            lang={translationLanguage} dir={translationLanguage === 'ur' ? 'rtl' : 'ltr'}
-                            dangerouslySetInnerHTML={{ __html: sanitizeSurahHtml(localizedInfo.text) }} />
+                          <p className={`index-surah-introduction-preview is-${translationLanguage}`}
+                            lang={translationLanguage} dir={translationLanguage === 'ur' ? 'rtl' : 'ltr'}>
+                            {stripHtml(localizedInfo.text)}
+                          </p>
                         ) : <p className="index-surah-info-copy">Surah introduction is unavailable in this language.</p>}
-                        <button type="button" className="index-surah-intro-more" onClick={() => openSurahInfo(surah.number)}>Open Surah Info</button>
+                        {localizedInfo?.text && (
+                          <button type="button" className="index-surah-intro-more" onClick={() => openSurahInfo(surah.number)}>Read more</button>
+                        )}
 
                         <div className="index-surah-quick-actions" aria-label={`${surah.name} quick actions`}>
                           <button
