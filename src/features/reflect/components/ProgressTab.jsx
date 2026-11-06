@@ -1,6 +1,6 @@
 import React from 'react';
 import { BookOpen, ChevronDown } from 'lucide-react';
-import { AppOptionPicker } from './ReflectRangePicker';
+import { AppOptionPicker } from '../../../components/common/Dropdown';
 import { getSurah } from '../../../lib/quran';
 import { reflectCardClass as card, reflectFieldClass as field, studyDisplayTitle } from '../reflectPresentation';
 import { getReflectProgress } from '../reflectProgress';
