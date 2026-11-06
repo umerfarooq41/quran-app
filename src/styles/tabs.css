@@ -1220,3 +1220,10 @@
 .reflect-screen .reflect-panel>button[aria-expanded],.reflect-screen .reflect-panel>.reflect-section-toggle{width:100%;justify-content:space-between}
 .reflect-screen .reflect-panel>button[aria-expanded]>svg:last-child{margin-left:auto;flex-shrink:0}
 .reflect-screen .reflect-panel .rounded-xl.border.border-slate-200.bg-white{background:var(--reflect-surface);color:var(--reflect-ink);border-color:var(--reflect-border)}
+
+/* Accordion header order: heading | add action | far-right chevron. */
+.reflect-screen .reflect-section-heading{display:grid;grid-template-columns:minmax(0,1fr) auto 28px;align-items:center;column-gap:12px}
+.reflect-screen .reflect-section-heading>.reflect-section-title{grid-column:1;min-width:0;text-align:left;color:var(--reflect-ink);min-height:36px}
+.reflect-screen .reflect-section-heading>.reflect-secondary-action{grid-column:2;white-space:nowrap}
+.reflect-screen .reflect-section-heading>.reflect-section-chevron-button{grid-column:3;display:flex;align-items:center;justify-content:flex-end;width:28px;height:36px;color:var(--reflect-muted)}
+.reflect-screen .reflect-section-heading>.reflect-section-chevron-button:focus-visible,.reflect-screen .reflect-section-heading>.reflect-section-title:focus-visible{outline:2px solid var(--reflect-link);outline-offset:2px;border-radius:5px}
