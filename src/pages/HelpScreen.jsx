@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import {
-  BookOpen, Bookmark, ChevronDown, CircleHelp, Headphones, Home,
+  BookOpen, Bookmark, CircleHelp, Headphones, Home,
   Image, Library, List, Search, Settings, Share2, SlidersHorizontal,
 } from 'lucide-react';
 import { Header, Screen } from '../components/common/AppChrome';
+import { Card, Disclosure } from '../components/common/Surfaces';
 
 const SECTIONS = [
   {
@@ -58,21 +59,14 @@ export default function HelpScreen() {
     <Screen className="help-screen app-page-shell bg-fluent">
       <div className="app-fixed-header"><Header title="Help & Guide" /></div>
       <div className="app-scroll-content">
-        <section className="help-intro">
+        <Card className="help-intro">
           <span className="help-intro-icon"><CircleHelp size={22} /></span>
           <div><h2>How to use Al Quran</h2><p>Choose a topic below to learn about the app's features and controls.</p></div>
-        </section>
+        </Card>
         <div className="help-sections">
           {SECTIONS.map(({ id, icon: Icon, title, summary, content }) => {
             const open = openSection === id;
-            return <section className={`help-section${open ? ' is-open' : ''}`} key={id}>
-              <button type="button" className="help-section-trigger" onClick={() => setOpenSection(open ? null : id)} aria-expanded={open}>
-                <span className="help-section-icon"><Icon size={18} /></span>
-                <span className="help-section-label"><strong>{title}</strong><small>{summary}</small></span>
-                <ChevronDown className="help-section-chevron" size={18} />
-              </button>
-              {open && <div className="help-section-content">{content}</div>}
-            </section>;
+            return <Disclosure key={id} className="help-section" triggerClassName="help-section-trigger" icon={Icon} iconClassName="help-section-icon" labelClassName="help-section-label" chevronClassName="help-section-chevron" contentClassName="help-section-content" title={title} summary={summary} open={open} onToggle={() => setOpenSection(open ? null : id)}>{content}</Disclosure>;
           })}
         </div>
       </div>
