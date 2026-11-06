@@ -6,6 +6,7 @@ import { searchQuranImproved } from '../lib/quranSearch';
 import { loadTranslation } from '../lib/translations';
 import { useAppStore } from '../store/useAppStore';
 import { Header, Screen } from '../components/common/AppChrome';
+import { Card } from '../components/common/Surfaces';
 
 const RECENT_SAVE_DELAY = 900;
 
@@ -153,7 +154,7 @@ export default function SearchScreen() {
           ) : (
             <div className="search-results-list">
               {results.map((result, index) => (
-                <button
+                <Card as="button"
                   key={`${result.type}-${result.surahNumber || result.page}-${result.ayahNumber || index}`}
                   type="button"
                   className="search-result-card"
@@ -172,7 +173,7 @@ export default function SearchScreen() {
                   <span className="search-result-meta">
                     {result.matchType} · Page {result.page}
                   </span>
-                </button>
+                </Card>
               ))}
             </div>
           )}
