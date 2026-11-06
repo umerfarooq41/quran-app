@@ -19,3 +19,8 @@ export function Disclosure({ as: Element = 'section', className = '', triggerCla
     {open && <div className={contentClassName}>{children}</div>}
   </Card>;
 }
+
+/** Shared accessible dialog container; caller owns actions and close behavior. */
+export function Dialog({ className = '', labelledBy, describedBy, children }) {
+  return <div className={['ui-dialog', className].filter(Boolean).join(' ')} role="alertdialog" aria-modal="true" aria-labelledby={labelledBy} aria-describedby={describedBy}>{children}</div>;
+}
