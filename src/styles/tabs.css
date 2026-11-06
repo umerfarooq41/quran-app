@@ -938,12 +938,6 @@
 .reflect-screen .reflect-theme-custom-label{font-size:12px;font-weight:600;color:#64748b;margin:12px 0 6px}
 @media(prefers-reduced-motion:reduce){.reflect-screen .reflect-theme-chevron{transition:none}}
 
-/* Reflect tabs require a stable WCAG AA contrast ratio even with pale custom accents. */
-.tabs-screen.reflect-screen .library-tabs.share-like-segment > button.is-active {
-  background: #245d4e;
-  color: #ffffff;
-}
-
 /* Reflect passage uses the same reference header, body spacing and dividers
    as the Reader translation card, in both light and dark themes. */
 .reflect-screen .reflect-lesson-ayah { padding: 0; }
@@ -1082,14 +1076,7 @@
 }
 .reflect-screen .reflect-passage-status { margin-top: 10px; font-size: 12px; }
 
-/* Unified Reflect lesson surfaces and readable selected tabs. */
-.tabs-screen.reflect-screen .reflect-tabs.library-tabs.share-like-segment > button.is-active,
-.tabs-screen.reflect-screen .library-tabs.share-like-segment > button.is-active,
-[data-theme='dark'] .tabs-screen.reflect-screen .library-tabs.share-like-segment > button.is-active {
-  background: #245d4e;
-  background-color: #245d4e;
-  color: #fff;
-}
+/* Reflect lesson fields use neutral control surfaces, never accent-tinted fills. */
 .reflect-screen .reflect-lesson-title-input,
 .reflect-screen .reflect-lesson-answer {
   border: 1px solid var(--ui-control-border);
