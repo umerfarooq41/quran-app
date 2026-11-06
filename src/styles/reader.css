@@ -1520,7 +1520,7 @@ body {
 
 .share-sheet-header p {
   margin: 0 0 2px;
-  color: rgba(38, 34, 30, .50);
+  color: var(--theme-muted, rgba(37, 37, 34, .55));
   font-size: .72rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -1707,7 +1707,7 @@ body {
 
 .share-sheet-status {
   margin: 10px 0 0;
-  color: rgba(38, 34, 30, .60);
+  color: var(--theme-muted, rgba(37, 37, 34, .55));
   font-size: .78rem;
   text-align: center;
 }
@@ -2871,15 +2871,11 @@ body {
   mix-blend-mode: multiply;
 }
 
+/* Share sheet typography and status colors are owned by the original
+ * Reader selectors; do not add later one-property !important patches. */
 /* Share Quran image — match Index screen theme surfaces */
 
-.share-sheet-header p {
-  color: var(--theme-muted, rgba(37, 37, 34, .55)) !important;
-}
 
-.share-sheet-header h2 {
-  color: var(--theme-text, #252522) !important;
-}
 
 .share-sheet-header button,
 .share-sheet-header button:hover,
@@ -2947,9 +2943,6 @@ body {
   box-shadow: 0 8px 20px rgba(24, 91, 77, .14) !important;
 }
 
-.share-sheet-status {
-  color: var(--theme-muted, rgba(37, 37, 34, .55)) !important;
-}
 
 /* Share Quran image — final Index/reciter visual alignment */
 
