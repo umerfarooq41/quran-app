@@ -1224,63 +1224,6 @@
 .reflect-screen .reflect-range-label{display:block;margin-bottom:7px;color:var(--reflect-muted);font-size:13px}
 .reflect-screen .reflect-passage-status{margin-top:15px;font-size:13px}
 
-/* Reflect card and control roles: one source of truth, no override cascade. */
-.reflect-screen .reflect-panel,
-.reflect-screen .reflect-progress-metric,
-.reflect-screen .reflect-keyword-card,
-.reflect-screen .reflect-theme-group,
-.reflect-screen .reflect-theme-picker-group,
-.reflect-screen .tab-card-surface {
-  background: var(--ui-card-bg);
-  border: 1px solid var(--ui-card-border);
-  box-shadow: var(--ui-card-shadow);
-  -webkit-backdrop-filter: var(--ui-card-blur);
-  backdrop-filter: var(--ui-card-blur);
-}
-.reflect-screen .reflect-lesson-answer,
-.reflect-screen .reflect-lesson-title-input,
-.reflect-screen .reflect-field,
-.reflect-screen textarea,
-.reflect-screen input[type='text'],
-.reflect-screen .reflect-keyword-chip,
-.reflect-screen .reflect-word-language {
-  background: var(--ui-control-bg);
-  border: 1px solid var(--ui-control-border);
-  color: var(--theme-text);
-}
-.reflect-screen .reflect-word-language {
-  display: inline-flex; align-items: center; gap: 3px;
-  padding: 3px; border-radius: 999px;
-}
-.reflect-screen .reflect-word-language-option {
-  border: 0; background: transparent; color: var(--theme-text);
-  border-radius: 999px; min-height: 34px; padding: 6px 12px;
-}
-.reflect-screen .reflect-word-language-option[aria-pressed='true'] {
-  background: var(--ui-primary); color: #fff;
-}
-.reflect-screen .reflect-lesson-answer:focus-visible,
-.reflect-screen .reflect-field:focus-visible,
-.reflect-screen textarea:focus-visible {
-  outline: 2px solid var(--ui-primary); outline-offset: 2px;
-}
-.reflect-screen .reflect-study-menu,
-.reflect-screen .reflect-delete-dialog {
-  background: var(--theme-surface-solid); color: var(--theme-text);
-  border: 1px solid var(--ui-control-border);
-}
-
-/* Progress secondary controls are neutral, never white or green-tinted. */
-.reflect-screen .reflect-secondary-button,
-.reflect-screen .reflect-recent-icon {
-  background: var(--ui-control-bg);
-  border: 1px solid var(--ui-control-border);
-  color: var(--theme-text);
-}
-.reflect-screen .reflect-secondary-button:focus-visible {
-  outline: 2px solid var(--ui-primary); outline-offset: 2px;
-}
-
 /* Reflect presentation owned by Reflect. */
 .reflect-progress-period { border-radius: 16px; }
 .reflect-progress-period option { background: var(--theme-surface-solid); color: var(--theme-text); }
