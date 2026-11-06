@@ -154,23 +154,14 @@
 }
 
 
-/* UI consistency audit: use the same card surface in Reflect and Home. */
+/* Reflect-specific surfaces and fields; Home card geometry is owned by home.css. */
 :is(.reflect-panel,.reflect-progress-metric,.reflect-question-card .tab-card-surface,
-    .reflect-question-answer,.home-favorites-empty) {
+    .reflect-question-answer) {
   background: var(--ui-card-bg);
   border: 1px solid var(--ui-card-border);
   box-shadow: var(--ui-card-shadow);
   -webkit-backdrop-filter: var(--ui-card-blur);
   backdrop-filter: var(--ui-card-blur);
-}
-.home-reflect-card,
-.home-favorite-row {
-  min-height: 92px;
-  padding: 17px 19px;
-  border-radius: 23px;
-}
-.home-reflect-card .home-reflect-copy {
-  justify-content: center;
 }
 :is(.reflect-field,.reflect-progress-period,.reflect-question-tabs,
     .reflect-progress-commitment) {
@@ -184,6 +175,7 @@
 :is(.reflect-progress-metric,.reflect-panel,.reflect-question-card) .reflect-muted {
   color: var(--theme-muted);
 }
+
 /* A four-line Index introduction: full content is available via Read more. */
 .index-replica-shell .index-surah-introduction-preview {
   display: -webkit-box;
@@ -223,13 +215,6 @@
 .reflect-field:focus-visible {
   border-color: var(--ui-primary);
   box-shadow: 0 0 0 2px rgba(45,110,94,.18);
-}
-@media (max-width: 370px) {
-  .home-reflect-card,
-  .home-favorite-row {
-    min-height: 76px;
-    padding: 12px 15px;
-  }
 }
 
 /* Reflect introduction uses the same four-line preview as Index. */
