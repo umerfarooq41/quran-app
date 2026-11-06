@@ -26,15 +26,15 @@ export default function LessonIntroduction({ active, saveStudyMeta, guidanceOpen
         </div>
 
         <section className={card}>
-          <button type="button" className="reflect-section-toggle" aria-expanded={introOpen} aria-controls="reflect-surah-introduction" onClick={() => setIntroOpen((value) => !value)}>
-            <span className="font-semibold">Surah Introduction</span>
-            <ChevronDown size={20} aria-hidden="true" className={`reflect-section-chevron ${introOpen ? "is-open" : ""}`} />
-          </button>
+          <div className="reflect-section-heading reflect-introduction-heading">
+            <button type="button" className="reflect-section-title" aria-expanded={introOpen} aria-controls="reflect-surah-introduction" onClick={() => setIntroOpen((value) => !value)}><span className="font-semibold">Surah Introduction</span></button>
+            {introOpen && <div className="reflect-word-language reflect-intro-language" role="group" aria-label="Surah introduction language">
+              {['en', 'ur'].map((language) => <button key={language} type="button" aria-pressed={displayedIntroLanguage === language} onClick={() => setIntroLanguage(language)} className="reflect-word-language-option">{language === 'ur' ? 'Urdu' : 'English'}</button>)}
+            </div>}
+            <button type="button" className="reflect-section-chevron-button" aria-label={introOpen ? 'Collapse Surah Introduction' : 'Expand Surah Introduction'} aria-expanded={introOpen} onClick={() => setIntroOpen(value => !value)}><ChevronDown size={20} aria-hidden="true" className={`reflect-section-chevron ${introOpen ? "is-open" : ""}`}/></button>
+          </div>
           {introOpen && <div id="reflect-surah-introduction" className="reflect-intro-content">
-            <div className="reflect-intro-language mt-4 flex gap-2" role="group" aria-label="Surah introduction language">
-              {['ur', 'en'].map((language) => <button key={language} type="button" aria-pressed={displayedIntroLanguage === language} onClick={() => setIntroLanguage(language)} className="reflect-intro-language-button rounded-lg px-4 py-2 text-sm font-semibold">{language === 'ur' ? 'اردو' : 'English'}</button>)}
-            </div>
-            {surahIntro ? <div className={`surah-info-html is-${displayedIntroLanguage} mt-4`} lang={displayedIntroLanguage} dir={displayedIntroLanguage === 'ur' ? 'rtl' : 'ltr'} dangerouslySetInnerHTML={{ __html: surahIntro }} /> : <p className="mt-4 text-sm text-slate-500">Surah introduction is unavailable in this language.</p>}
+            {surahIntro ? <div className={`surah-info-html reflect-surah-info-html is-${displayedIntroLanguage} mt-4`} lang={displayedIntroLanguage} dir={displayedIntroLanguage === 'ur' ? 'rtl' : 'ltr'} dangerouslySetInnerHTML={{ __html: surahIntro }} /> : <p className="mt-4 text-sm text-slate-500">Surah introduction is unavailable in this language.</p>}
           </div>}
         </section>
     </>

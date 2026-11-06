@@ -1227,3 +1227,19 @@
 .reflect-screen .reflect-section-heading>.reflect-secondary-action{grid-column:2;white-space:nowrap}
 .reflect-screen .reflect-section-heading>.reflect-section-chevron-button{grid-column:3;display:flex;align-items:center;justify-content:flex-end;width:28px;height:36px;color:var(--reflect-muted)}
 .reflect-screen .reflect-section-heading>.reflect-section-chevron-button:focus-visible,.reflect-screen .reflect-section-heading>.reflect-section-title:focus-visible{outline:2px solid var(--reflect-link);outline-offset:2px;border-radius:5px}
+
+/* Visible inputs on cream and charcoal surfaces: explicit contrast, no inherited white-on-white borders. */
+.reflect-screen{--reflect-control-border:#b9c6c1;--reflect-control-fill:#f7faf8}
+[data-theme='dark'] .reflect-screen,.dark .reflect-screen{--reflect-control-border:#53655e;--reflect-control-fill:#252f2b}
+.reflect-screen .reflect-lesson-title-input,.reflect-screen .reflect-field,.reflect-screen textarea,.reflect-screen input[type='text']{border:1px solid var(--reflect-control-border)!important;background:var(--reflect-control-fill)!important;border-radius:12px!important}
+.reflect-screen .reflect-keyword-chip{border:1px solid var(--reflect-control-border)!important;background:var(--reflect-control-fill)!important}
+.reflect-screen .reflect-word-language{display:inline-flex;align-items:center;gap:3px;padding:3px;border:1px solid var(--reflect-control-border)!important;border-radius:999px;background:var(--reflect-control-fill)!important}
+.reflect-screen .reflect-word-language-option{border:0!important;background:transparent!important;color:var(--reflect-ink)!important;border-radius:999px;min-height:34px;padding:6px 12px}
+.reflect-screen .reflect-word-language-option[aria-pressed='true']{background:#245d4e!important;color:#fff!important}
+.reflect-screen .reflect-introduction-heading{grid-template-columns:minmax(0,1fr) auto 28px}
+.reflect-screen .reflect-introduction-heading>.reflect-word-language{grid-column:2;grid-row:1}
+.reflect-screen .reflect-introduction-heading>.reflect-section-chevron-button{grid-column:3;grid-row:1}
+.reflect-screen .reflect-intro-content>.reflect-surah-info-html{background:transparent;border:0;box-shadow:none;margin:14px 0 0;padding:0;width:100%;max-width:none}
+.reflect-screen .reflect-intro-content>.reflect-surah-info-html :is(h1,h2,h3,p){max-width:100%}
+.reflect-screen .reflect-section-heading>.reflect-secondary-action{grid-column:2;grid-row:1}
+.reflect-screen .reflect-section-heading>.reflect-section-chevron-button{grid-column:3;grid-row:1}
