@@ -24,3 +24,8 @@ export function Disclosure({ as: Element = 'section', className = '', triggerCla
 export function Dialog({ className = '', labelledBy, describedBy, children }) {
   return <div className={['ui-dialog', className].filter(Boolean).join(' ')} role="alertdialog" aria-modal="true" aria-labelledby={labelledBy} aria-describedby={describedBy}>{children}</div>;
 }
+
+/** Bottom sheet shell; feature owns its content, actions and dismissal policy. */
+export function Sheet({ className = '', ariaLabel, children }) {
+  return <div className={['ui-sheet', className].filter(Boolean).join(' ')} role="dialog" aria-modal="true" aria-label={ariaLabel}>{children}</div>;
+}

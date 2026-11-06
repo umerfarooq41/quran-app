@@ -1,12 +1,13 @@
 import React from 'react';
 import { ChevronDown, Plus, X } from 'lucide-react';
 import { reflectActionClass as action, reflectFieldClass as field } from '../reflectPresentation';
+import { Sheet } from '../../../components/common/Surfaces';
 
 /** Theme selection and creation sheet; state is owned by the Reflect page. */
 export default function ThemeEditorSheet({ themeCreation, setThemeCreation, setThemeSheet, newThemeName, setNewThemeName, createTheme, themeSearch, setThemeSearch, themeGroups, expandedTheme, setExpandedTheme, draftThemes, toggleThemeSub, toggleThemeMain, finishThemeEditing }) {
   return (
 <div className="fixed inset-0 z-[100] flex items-end bg-black/40" role="presentation" onMouseDown={e => {if(e.target===e.currentTarget)setThemeSheet(false);}}>
-          <div className="reflect-theme-sheet flex max-h-[85dvh] w-full flex-col rounded-t-2xl shadow-xl" role="dialog" aria-modal="true" aria-label="Edit themes">
+          <Sheet className="reflect-theme-sheet flex max-h-[85dvh] w-full flex-col rounded-t-2xl shadow-xl" ariaLabel="Edit themes">
             <div className="mx-auto mt-2 h-1 w-9 shrink-0 rounded-full bg-slate-300"/>
             {themeCreation ? <div className="flex flex-col gap-4 p-4">
               <div className="flex items-center justify-between"><h3 className="font-semibold">{themeCreation.type === 'main' ? 'New Main Theme' : 'New Subtheme'}</h3><button type="button" aria-label="Back to themes" onClick={()=>setThemeCreation(null)}><X size={20}/></button></div>
@@ -24,7 +25,7 @@ export default function ThemeEditorSheet({ themeCreation, setThemeCreation, setT
               </div>
               <div className="reflect-theme-sheet-footer flex shrink-0 items-center justify-between border-t px-4 py-3 pb-[max(12px,env(safe-area-inset-bottom))]"><span className="text-xs reflect-muted-text">{draftThemes.length} themes selected</span><button type="button" className={action} onClick={finishThemeEditing}>Done</button></div>
             </>}
-          </div>
+          </Sheet>
         </div>
   );
 }
