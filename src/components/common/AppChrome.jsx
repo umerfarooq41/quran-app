@@ -11,9 +11,11 @@ export function Shell({ children }) {
 export function Screen({ children, className = '' }) {
   const navDirection = useAppStore((state) => state.navDirection);
   const variants = {
-    forward: { initial: { opacity: 0, x: 34 }, animate: { opacity: 1, x: 0 }, exit: { opacity: 0, x: -28 } },
-    back: { initial: { opacity: 0, x: -34 }, animate: { opacity: 1, x: 0 }, exit: { opacity: 0, x: 28 } },
-    modal: { initial: { opacity: 0, y: 46 }, animate: { opacity: 1, y: 0 }, exit: { opacity: 0, y: 36 } },
+    // Keep text and selected-control contrast stable during page transitions.
+    // Opacity on the entire screen blended white labels into the page behind them.
+    forward: { initial: { x: 34 }, animate: { x: 0 }, exit: { x: -28 } },
+    back: { initial: { x: -34 }, animate: { x: 0 }, exit: { x: 28 } },
+    modal: { initial: { y: 46 }, animate: { y: 0 }, exit: { y: 36 } },
   };
   const v = variants[navDirection] || variants.forward;
   return (
