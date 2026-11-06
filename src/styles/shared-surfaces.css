@@ -303,7 +303,7 @@
   stroke-width: 2 !important;
 }
 
-.share-like-segment > button.is-active {
+:is(.share-like-segment, .index-replica-shell .index-segment.share-like-segment, .tabs-screen .library-tabs.share-like-segment) > button.is-active {
   background: var(--ui-segment-selected) !important;
   color: #fff !important;
   box-shadow: 0 4px 14px rgba(31,61,43,.14) !important;
@@ -330,15 +330,6 @@
   border: 1px solid var(--ui-segment-border) !important;
   border-radius: 999px !important;
   background: var(--ui-segment-bg) !important;
-  box-shadow: none !important;
-}
-
-.index-replica-shell .index-segment.share-like-segment > button,
-.tabs-screen .library-tabs.share-like-segment > button {
-  min-height: 44px !important;
-  border-radius: 999px !important;
-  background: transparent !important;
-  color: var(--theme-muted) !important;
   box-shadow: none !important;
 }
 
