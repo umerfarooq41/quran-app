@@ -154,42 +154,6 @@
 }
 
 
-/* Reader phase: only panel containers and secondary sheet controls.
- * Do not change audio timing, waveforms, Mushaf lines, export frames or gestures. */
-.reader-audio-panel.reader-audio-panel-modern {
-  border: 1px solid var(--ui-card-border);
-  background: var(--ui-card-bg);
-  -webkit-backdrop-filter: var(--ui-card-blur);
-  backdrop-filter: var(--ui-card-blur);
-  box-shadow: 0 18px 48px rgba(0, 0, 0, .14);
-}
-/* Translation requires an opaque reading surface behind long Arabic/Urdu text.
- * The glass treatment belongs to the outer edge, not behind body typography. */
-.ayah-translation-card {
-  background: var(--translation-card-bg, var(--reader-surface-raised));
-  border-color: var(--ui-card-border);
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-}
-.ayah-action-sheet.ayah-action-sheet-v2,
-.share-sheet {
-  background: var(--theme-surface-solid);
-  border-color: var(--ui-card-border);
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-}
-.reader-audio-panel-modern :is(button, input):focus-visible,
-.ayah-action-sheet-v2 :is(button, input):focus-visible,
-.share-sheet :is(button, input):focus-visible {
-  outline: 2px solid var(--ui-primary);
-  outline-offset: 2px;
-}
-@media (prefers-reduced-transparency: reduce) {
-  .reader-audio-panel.reader-audio-panel-modern {
-    background: var(--reader-surface-raised);
-  }
-}
-
 /* UI consistency audit: use the same card surface in Reflect and Home. */
 :is(.reflect-panel,.reflect-progress-metric,.reflect-question-card .tab-card-surface,
     .reflect-question-answer,.home-favorites-empty) {
@@ -303,57 +267,6 @@
   --ui-picker-selected: color-mix(in srgb, var(--ui-primary) 26%, transparent);
   --ui-picker-hover: rgba(255, 255, 255, .075);
 }
-:is(.settings-picker-pill,.share-reciter-trigger,.reader-reciter-picker,
-    .reflect-range-native-wrap,.reflect-progress-period) {
-  border: 1px solid var(--ui-control-border);
-  border-radius: var(--ui-picker-radius);
-  background: var(--ui-control-bg);
-  color: var(--theme-text);
-  box-shadow: none;
-}
-:is(.settings-picker-pill,.share-reciter-trigger,.reader-reciter-picker,
-    .reflect-range-native-wrap,.reflect-progress-period):focus-visible,
-:is(.reflect-range-native-wrap,.reader-reciter-picker):focus-within {
-  outline: 2px solid var(--ui-primary);
-  outline-offset: 2px;
-}
-:is(.settings-picker-panel,.share-reciter-menu,.share-reciter-list,
-    .reader-reciter-list) {
-  background: var(--theme-surface-solid);
-  border-color: var(--ui-control-border);
-  border-radius: var(--ui-picker-radius);
-  box-shadow: 0 14px 32px rgba(28, 35, 30, .15);
-}
-:is(.settings-picker-item,.share-reciter-option,.reader-reciter-list-item) {
-  border-radius: var(--ui-picker-option-radius);
-  color: var(--theme-text);
-}
-:is(.settings-picker-item.selected,.share-reciter-option.is-selected,
-    .reader-reciter-list-item.selected) {
-  background: var(--ui-picker-selected);
-  color: var(--theme-text);
-}
-:is(.settings-picker-item,.share-reciter-option,.reader-reciter-list-item):active {
-  background: var(--ui-picker-hover);
-}
-.reflect-range-native {
-  color: var(--theme-text);
-  background: transparent;
-}
-.reflect-range-native option,
-.reflect-progress-period option {
-  color: var(--theme-text);
-  background: var(--theme-surface-solid);
-}
-/* Restore a consistent field treatment to the New Lesson title and selection. */
-.reflect-lesson-title-input,
-.reflect-range-native-wrap {
-  border: 1px solid var(--ui-control-border);
-  background: var(--ui-control-bg);
-  color: var(--theme-text);
-}
-.reflect-lesson-title-input::placeholder { color: var(--theme-muted); opacity: 1; }
-
 /* Shared dropdown: scrollable options, one visual language on every platform. */
 .app-option-picker { position: relative; min-width: 0; }
 .app-option-trigger {

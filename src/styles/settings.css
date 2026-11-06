@@ -570,3 +570,30 @@
     min-height: 160px;
   }
 }
+
+/* Settings dropdown surfaces use the shared semantic picker palette. */
+.settings-picker-pill {
+  border: 1px solid var(--ui-control-border);
+  border-radius: var(--ui-picker-radius);
+  background: var(--ui-control-bg);
+  color: var(--theme-text);
+  box-shadow: none;
+}
+.settings-picker-pill:focus-visible {
+  outline: 2px solid var(--ui-primary); outline-offset: 2px;
+}
+.settings-picker-panel {
+  background: var(--theme-surface-solid);
+  border-color: var(--ui-control-border);
+  border-radius: var(--ui-picker-radius);
+  box-shadow: 0 14px 32px rgba(28,35,30,.15);
+}
+.settings-picker-item {
+  border-radius: var(--ui-picker-option-radius);
+  color: var(--theme-text);
+}
+.settings-picker-item.selected {
+  background: var(--ui-picker-selected);
+  color: var(--theme-text);
+}
+.settings-picker-item:active { background: var(--ui-picker-hover); }
