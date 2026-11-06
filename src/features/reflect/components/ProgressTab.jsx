@@ -1,5 +1,6 @@
 import React from 'react';
 import { BookOpen, ChevronDown } from 'lucide-react';
+import { AppOptionPicker } from './ReflectRangePicker';
 import { getSurah } from '../../../lib/quran';
 import { reflectCardClass as card, reflectFieldClass as field, studyDisplayTitle } from '../reflectPresentation';
 import { getReflectProgress } from '../reflectProgress';
@@ -10,9 +11,7 @@ export default function ProgressTab({ lessons, progressPeriod, setProgressPeriod
           return <div className="reflect-progress space-y-4">
             <div className="flex items-center justify-between gap-3">
               <h2 className="text-base font-semibold">Lesson Progress</h2>
-              <select aria-label="Progress period" className="reflect-progress-period" value={progressPeriod} onChange={e=>setProgressPeriod(e.target.value)}>
-                <option value="all">All time</option><option value="month">This month</option><option value="week">This week</option>
-              </select>
+              <AppOptionPicker label="Progress period" className="reflect-progress-period" value={progressPeriod} onSelect={setProgressPeriod} options={[{value:'all',label:'All time'},{value:'month',label:'This month'},{value:'week',label:'This week'}]}/>
             </div>
             <section className={card}>
               <div className="flex items-center justify-between gap-4">

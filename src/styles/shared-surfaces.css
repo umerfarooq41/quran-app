@@ -321,3 +321,82 @@
   color: var(--theme-text) !important;
 }
 .reflect-lesson-title-input::placeholder { color: var(--theme-muted) !important; opacity: 1; }
+
+/* Full-screen card audit: enforce the same cream-glass card role in Reflect,
+   Library and lesson lists even where older screen-specific rules are stronger. */
+.reflect-screen .tabs-list .tab-card-surface,
+.reflect-screen .tab-card-surface:has(.reflect-study-card-inner),
+.reflect-screen .reflect-panel,
+.reflect-screen .reflect-progress .reflect-panel,
+.reflect-screen .reflect-progress-metric,
+.tabs-screen .tab-card-surface,
+.tabs-screen .tabs-status {
+  background: var(--ui-card-bg) !important;
+  border-color: var(--ui-card-border) !important;
+  box-shadow: var(--ui-card-shadow) !important;
+  -webkit-backdrop-filter: var(--ui-card-blur);
+  backdrop-filter: var(--ui-card-blur);
+}
+.reflect-screen .reflect-study-menu,
+.reflect-screen .reflect-panel .absolute.bg-white {
+  background: var(--theme-surface-solid) !important;
+  border-color: var(--ui-control-border) !important;
+  color: var(--theme-text) !important;
+}
+.reflect-screen .reflect-lesson-answer,
+.reflect-screen .reflect-panel textarea,
+.reflect-screen .reflect-panel input[type='text'],
+.reflect-screen .reflect-field,
+.reflect-screen .reflect-lesson-title-input {
+  background: var(--ui-control-bg) !important;
+  border: 1px solid var(--ui-control-border) !important;
+  color: var(--theme-text) !important;
+}
+.reflect-screen .reflect-lesson-answer:focus,
+.reflect-screen .reflect-field:focus,
+.reflect-screen .reflect-panel textarea:focus {
+  border-color: var(--ui-primary) !important;
+  outline: 2px solid color-mix(in srgb, var(--ui-primary) 20%, transparent);
+  outline-offset: 0;
+}
+.reflect-screen .reflect-panel .rounded-xl.border.border-slate-200.bg-white {
+  background: var(--ui-control-bg) !important;
+  border-color: var(--ui-control-border) !important;
+  color: var(--theme-text) !important;
+}
+.reflect-screen .reflect-panel .border-slate-200 { border-color: var(--ui-divider) !important; }
+.reflect-screen .reflect-range-native,
+.reflect-screen .reflect-range-native-wrap {
+  border-color: var(--ui-control-border) !important;
+  background: var(--ui-control-bg) !important;
+}
+/* Shared dropdown: scrollable options, one visual language on every platform. */
+.app-option-picker { position: relative; min-width: 0; }
+.app-option-trigger {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; width: 100%; min-height: 52px;
+  padding: 11px 14px; border-radius: var(--ui-picker-radius);
+  background: var(--ui-control-bg); border: 1px solid var(--ui-control-border);
+  color: var(--theme-text); text-align: left; font: inherit;
+}
+.app-option-trigger:focus-visible,
+.app-option-item:focus-visible { outline: 2px solid var(--ui-primary); outline-offset: 2px; }
+.app-option-chevron { flex: 0 0 auto; transition: transform .18s ease; }
+.app-option-chevron.is-open { transform: rotate(180deg); }
+.app-option-menu {
+  position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 100;
+  max-height: min(44vh, 340px); overflow-y: auto; overscroll-behavior: contain;
+  padding: 6px; border-radius: var(--ui-picker-radius);
+  background: var(--theme-surface-solid); border: 1px solid var(--ui-control-border);
+  box-shadow: 0 14px 32px rgba(28, 35, 30, .16);
+}
+.app-option-item {
+  display: flex; width: 100%; min-height: 44px; align-items: center;
+  justify-content: space-between; gap: 12px; padding: 9px 12px;
+  border-radius: var(--ui-picker-option-radius); color: var(--theme-text);
+  text-align: left;
+}
+.app-option-item.is-selected { background: var(--ui-picker-selected); font-weight: 650; }
+.app-option-item:active { background: var(--ui-picker-hover); }
+.reflect-screen .reflect-progress-period { width: min(168px, 42vw); }
+@media (prefers-reduced-motion: reduce) { .app-option-chevron { transition: none; } }
