@@ -1,0 +1,122 @@
+/* Shared warm-glass design system.
+ * Screen-scoped selectors deliberately avoid Mushaf glyphs, playback controls,
+ * gesture hit targets, share export canvases and the Continue Reading gradient.
+ * Loaded after legacy styles while they are migrated and audited.
+ */
+:root {
+  --ui-primary: var(--brand-green, #2d6e5e);
+  --ui-gold: var(--brand-gold, #b8882a);
+  --ui-card-bg: rgba(255, 255, 255, .66);
+  --ui-card-border: rgba(255, 255, 255, .84);
+  --ui-control-bg: rgba(255, 255, 255, .42);
+  --ui-control-border: rgba(126, 110, 86, .23);
+  --ui-card-shadow: 0 8px 20px rgba(71, 54, 23, .045);
+  --ui-card-blur: blur(16px);
+  --ui-pressed-overlay: rgba(75, 61, 41, .055);
+  --ui-divider: rgba(126, 110, 86, .16);
+}
+:root[data-theme='dark'] {
+  --ui-card-bg: rgba(31, 36, 33, .78);
+  --ui-card-border: rgba(255, 255, 255, .10);
+  --ui-control-bg: rgba(255, 255, 255, .065);
+  --ui-control-border: rgba(255, 255, 255, .17);
+  --ui-card-shadow: 0 8px 20px rgba(0, 0, 0, .14);
+  --ui-pressed-overlay: rgba(255, 255, 255, .065);
+  --ui-divider: rgba(255, 255, 255, .11);
+}
+/* Cards: shared surface, not a separate white or gold-framed design per screen. */
+:is(.home-action-chip,.home-favorite-row,.home-reflect-card,
+    .search-result-card,.settings-card,.help-intro,.help-section,
+    .about-card,.about-section,.tab-card-surface,.tabs-status,
+    .tafsir-card,.surah-info-content) {
+  background: var(--ui-card-bg) !important;
+  border: 1px solid var(--ui-card-border) !important;
+  box-shadow: var(--ui-card-shadow) !important;
+  -webkit-backdrop-filter: var(--ui-card-blur);
+  backdrop-filter: var(--ui-card-blur);
+}
+/* Controls are distinct from cards: translucent neutral fill, stronger neutral edge. */
+:is(.search-form,.search-recent-list button,.settings-picker-pill,
+    .settings-theme-picker,.tabs-filter-row button:not(.active),
+    .tabs-back-pill,.surah-info-topbar button) {
+  background: var(--ui-control-bg) !important;
+  border: 1px solid var(--ui-control-border) !important;
+  -webkit-backdrop-filter: var(--ui-card-blur);
+  backdrop-filter: var(--ui-card-blur);
+}
+.search-form {
+  border-radius: 18px;
+}
+.search-form input { color: var(--theme-text) !important; }
+.search-form input::placeholder { color: var(--theme-muted) !important; opacity: 1; }
+.search-form button:not(:disabled) {
+  background: var(--ui-primary) !important;
+  color: #fff !important;
+}
+.search-result-card,
+.home-action-chip,
+.home-favorite-row,
+.help-section-trigger,
+.tab-card-hit {
+  transition: background-color .16s ease;
+}
+:is(.search-result-card,.home-action-chip,.home-favorite-row,
+    .help-section-trigger,.tab-card-hit):active {
+  background-color: var(--ui-pressed-overlay) !important;
+}
+/* Primary green is for explicit selected controls, not green-tinted card fills. */
+:is(.tabs-filter-row button.active,.settings-theme-picker button.is-active) {
+  background: var(--ui-primary) !important;
+  border-color: var(--ui-primary) !important;
+  color: #fff !important;
+}
+.settings-theme-picker button.is-active :is(svg,span) { color: inherit !important; }
+.settings-card > :is(.settings-toggle-row,.settings-picker-row) + :is(.settings-toggle-row,.settings-picker-row) {
+  border-top-color: var(--ui-divider) !important;
+}
+.help-section-content { border-top-color: var(--ui-divider) !important; }
+/* Keep text legible in both themes; do not touch Urdu/Arabic font metrics. */
+:is(.search-result-card,.search-result-reference strong,.search-recent-list button,
+    .settings-card,.help-section,.about-screen,.tab-card-surface,.tafsir-card) {
+  color: var(--theme-text);
+}
+:is(.search-result-reference small,.search-result-preview,.search-result-meta,
+    .search-results-heading span,.search-recent-list button,.settings-row-copy small) {
+  color: var(--theme-muted) !important;
+}
+/* Tafsir and Surah Info: surfaces only; text/Arabic layout and numbering stay owned. */
+.tafsir-section { border-top-color: var(--ui-divider); }
+.tafsir-card-head p,
+.tafsir-section :is(p,div) { color: var(--theme-muted); }
+.tafsir-card-head button {
+  background: var(--ui-primary);
+  color: #fff;
+}
+.surah-info-icon { background: var(--ui-control-bg); }
+/* Reader UI only: outer sheet surfaces. Never affect Mushaf, audio waveform,
+ * playback buttons, export previews, gesture layers or translation typography. */
+:is(.ayah-translation-card,.ayah-action-sheet-v2,.share-sheet) {
+  border: 1px solid var(--ui-card-border);
+  background: var(--ui-card-bg);
+  -webkit-backdrop-filter: var(--ui-card-blur);
+  backdrop-filter: var(--ui-card-blur);
+}
+:is(.ayah-translation-card,.ayah-action-sheet-v2,.share-sheet) :focus-visible {
+  outline-color: var(--ui-primary);
+}
+@media (prefers-reduced-motion: reduce) {
+  :is(.search-result-card,.home-action-chip,.home-favorite-row,.help-section-trigger,.tab-card-hit) {
+    transition: none;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --ui-card-bg: #faf7f0;
+    --ui-control-bg: #f1ede6;
+    --ui-card-blur: none;
+  }
+  :root[data-theme='dark'] {
+    --ui-card-bg: #202521;
+    --ui-control-bg: #292f2b;
+  }
+}

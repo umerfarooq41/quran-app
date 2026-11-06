@@ -18,6 +18,7 @@ import './styles/help.css';
 import './styles/ui-polish.css';
 import './styles/theme.css';
 import './styles/index-refined.css';
+import './styles/shared-surfaces.css';
 
 // Keep native browser/Android long-press menus from competing with app gestures.
 document.addEventListener('contextmenu', (event) => {
