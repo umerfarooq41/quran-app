@@ -144,7 +144,7 @@
   overflow: hidden;
   border-radius: 18px;
   background: #c83a35;
-  padding: 0 !important;
+  padding: 0;
   box-shadow: 0 9px 26px rgba(31, 24, 15, .07);
 }
 
@@ -547,51 +547,51 @@
 
 /* Match Share Quran Image/Video segmented control exactly. */
 .app-media-segment {
-  display: grid !important;
-  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  width: 100% !important;
-  min-height: 52px !important;
-  gap: 0 !important;
-  margin: 8px 0 16px !important;
-  padding: 4px !important;
-  border: 1px solid rgba(201, 162, 75, .18) !important;
-  border-radius: 999px !important;
-  background: rgba(255, 252, 246, .72) !important;
-  box-shadow: none !important;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: 100%;
+  min-height: 52px;
+  gap: 0;
+  margin: 8px 0 16px;
+  padding: 4px;
+  border: 1px solid rgba(201, 162, 75, .18);
+  border-radius: 999px;
+  background: rgba(255, 252, 246, .72);
+  box-shadow: none;
 }
 
 .app-media-segment > button {
-  display: inline-flex !important;
-  min-width: 0 !important;
-  min-height: 44px !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 7px !important;
-  overflow: visible !important;
-  border: 0 !important;
-  border-radius: 999px !important;
-  background: transparent !important;
-  padding: 0 14px !important;
-  color: var(--theme-text-muted, rgba(30,30,30,.62)) !important;
-  font-family: var(--ui-font) !important;
-  font-size: .9rem !important;
-  font-weight: 600 !important;
-  line-height: 1 !important;
-  text-overflow: clip !important;
-  white-space: nowrap !important;
-  transition: transform .15s ease, background-color .2s ease, color .2s ease, box-shadow .2s ease !important;
+  display: inline-flex;
+  min-width: 0;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  overflow: visible;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  padding: 0 14px;
+  color: var(--theme-text-muted, rgba(30,30,30,.62));
+  font-family: var(--ui-font);
+  font-size: .9rem;
+  font-weight: 600;
+  line-height: 1;
+  text-overflow: clip;
+  white-space: nowrap;
+  transition: transform .15s ease, background-color .2s ease, color .2s ease, box-shadow .2s ease;
 }
 
 .app-media-segment > button svg {
-  width: 18px !important;
-  height: 18px !important;
-  flex: 0 0 auto !important;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
 }
 
 .app-media-segment > button.is-active {
-  background: var(--theme-accent, #2f7d68) !important;
-  color: #fff !important;
-  box-shadow: 0 4px 14px rgba(31,61,43,.14) !important;
+  background: var(--theme-accent, #2f7d68);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(31,61,43,.14);
 }
 
 .app-media-segment > button:active {
@@ -604,68 +604,68 @@
 }
 
 [data-theme='dark'] .app-media-segment {
-  border-color: var(--theme-border) !important;
-  background: color-mix(in srgb, var(--theme-surface-solid) 88%, transparent) !important;
+  border-color: var(--theme-border);
+  background: color-mix(in srgb, var(--theme-surface-solid) 88%, transparent);
 }
 
 [data-theme='dark'] .app-media-segment > button {
-  color: var(--theme-muted) !important;
+  color: var(--theme-muted);
 }
 
 [data-theme='dark'] .app-media-segment > button.is-active {
-  background: var(--theme-accent, #2f7d68) !important;
-  color: #fff !important;
+  background: var(--theme-accent, #2f7d68);
+  color: #fff;
 }
 
 
 /* Exact Share Quran-style two-tab segmented control with a visible outer pill. */
 .app-media-segment {
-  display: grid !important;
-  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  width: 100% !important;
-  min-height: 58px !important;
-  gap: 0 !important;
-  margin: 8px 0 18px !important;
-  padding: 6px !important;
-  border: 1px solid rgba(201, 162, 75, .12) !important;
-  border-radius: 999px !important;
-  background: rgba(255, 252, 246, .94) !important;
-  box-shadow: 0 5px 18px rgba(31, 61, 43, .05) !important;
-  overflow: hidden !important;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: 100%;
+  min-height: 58px;
+  gap: 0;
+  margin: 8px 0 18px;
+  padding: 6px;
+  border: 1px solid rgba(201, 162, 75, .12);
+  border-radius: 999px;
+  background: rgba(255, 252, 246, .94);
+  box-shadow: 0 5px 18px rgba(31, 61, 43, .05);
+  overflow: hidden;
 }
 
 .app-media-segment > button {
-  display: inline-flex !important;
-  min-width: 0 !important;
-  min-height: 46px !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 8px !important;
-  border: 0 !important;
-  border-radius: 999px !important;
-  background: transparent !important;
-  padding: 0 16px !important;
-  color: rgba(45, 45, 45, .62) !important;
-  font-family: var(--ui-font) !important;
-  font-size: .98rem !important;
-  font-weight: 600 !important;
-  line-height: 1 !important;
-  white-space: nowrap !important;
-  box-shadow: none !important;
-  transition: background-color .18s ease, color .18s ease, transform .14s ease, box-shadow .18s ease !important;
+  display: inline-flex;
+  min-width: 0;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  padding: 0 16px;
+  color: rgba(45, 45, 45, .62);
+  font-family: var(--ui-font);
+  font-size: .98rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: none;
+  transition: background-color .18s ease, color .18s ease, transform .14s ease, box-shadow .18s ease;
 }
 
 .app-media-segment > button svg {
-  width: 20px !important;
-  height: 20px !important;
-  flex: 0 0 auto !important;
-  stroke-width: 2 !important;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  stroke-width: 2;
 }
 
 .app-media-segment > button.is-active {
-  background: var(--theme-accent, #2f7d68) !important;
-  color: #fff !important;
-  box-shadow: 0 5px 16px rgba(31, 61, 43, .13) !important;
+  background: var(--theme-accent, #2f7d68);
+  color: #fff;
+  box-shadow: 0 5px 16px rgba(31, 61, 43, .13);
 }
 
 .app-media-segment > button:active {
@@ -673,18 +673,18 @@
 }
 
 [data-theme='dark'] .app-media-segment {
-  border-color: var(--theme-border) !important;
-  background: color-mix(in srgb, var(--theme-surface-solid) 92%, transparent) !important;
-  box-shadow: none !important;
+  border-color: var(--theme-border);
+  background: color-mix(in srgb, var(--theme-surface-solid) 92%, transparent);
+  box-shadow: none;
 }
 
 [data-theme='dark'] .app-media-segment > button {
-  color: var(--theme-muted) !important;
+  color: var(--theme-muted);
 }
 
 [data-theme='dark'] .app-media-segment > button.is-active {
-  background: var(--theme-accent, #2f7d68) !important;
-  color: #fff !important;
+  background: var(--theme-accent, #2f7d68);
+  color: #fff;
 }
 
 /* Reflect uses the same fixed header, full-width segmented control and swipe cards as Library. */
@@ -823,8 +823,8 @@
 
 /* Reflect hub: force four equal tabs on narrow mobile viewports. */
 .reflect-screen .reflect-tabs.library-tabs.share-like-segment {
-  display: grid !important;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   width: 100%;
   max-width: 100%;
   min-width: 0;
@@ -857,10 +857,10 @@
 .reflect-screen .reflect-study-open{display:flex;align-items:center;gap:10px;min-width:0;flex:1;text-align:left;font-size:16px;font-weight:600;color:inherit}
 .reflect-screen .reflect-study-open svg{flex-shrink:0;color:#2d6e5e}
 .reflect-screen .reflect-study-menu-trigger{width:38px;height:38px;display:flex;align-items:center;justify-content:center}
-.reflect-screen .reflect-study-menu{position:absolute;right:16px;top:55px;z-index:5;background:white;border:1px solid #ddd;border-radius:12px;box-shadow:0 8px 24px #0002;padding:6px}
+.reflect-screen .reflect-study-menu{position:absolute;right:16px;top:55px;z-index:5;background:var(--theme-surface-solid);border:1px solid #ddd;border-radius:12px;box-shadow:0 8px 24px #0002;padding:6px}
 .reflect-screen .reflect-study-menu button{display:flex;align-items:center;gap:9px;padding:10px 14px;color:#b42318}
 .reflect-screen .reflect-delete-backdrop{position:fixed;inset:0;z-index:1000;background:#0007;display:flex;align-items:center;justify-content:center;padding:20px}
-.reflect-screen .reflect-delete-dialog{width:min(100%,380px);background:white;color:#242424;border-radius:18px;padding:22px}
+.reflect-screen .reflect-delete-dialog{width:min(100%,380px);background:var(--theme-surface-solid);color:#242424;border-radius:18px;padding:22px}
 .reflect-screen .reflect-delete-dialog h2{font-size:19px;font-weight:650}
 .reflect-screen .reflect-delete-dialog p{margin-top:10px;font-size:14px;color:#64748b}
 .reflect-screen .reflect-delete-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:24px}
@@ -912,7 +912,7 @@
 .reflect-screen .reflect-discover-heading h2{font-size:16px;font-weight:600}
 .reflect-screen .reflect-discover-heading span{font-size:12px;color:#64748b}
 .reflect-screen .reflect-keyword-list{display:flex;flex-direction:column;gap:12px}
-.reflect-screen .reflect-keyword-card{border-radius:18px;background:white;padding:16px;box-shadow:0 2px 12px #0000000a}
+.reflect-screen .reflect-keyword-card{border-radius:18px;background:var(--ui-card-bg);padding:16px;box-shadow:0 2px 12px #0000000a}
 .reflect-screen .reflect-keyword-row{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:15px}
 .reflect-screen .reflect-keyword-arabic{font-size:23px;line-height:1.8;text-align:right}
 .reflect-screen .reflect-keyword-refs{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:8px}
@@ -922,7 +922,7 @@
 .reflect-screen .reflect-keyword-link{display:block;width:100%;text-align:left;color:inherit;border:0}
 .reflect-screen .reflect-keyword-refs{justify-content:space-between;align-items:center;color:#64748b}
 .reflect-screen .reflect-keyword-arrow{transform:rotate(-90deg);flex-shrink:0}
-.reflect-screen .reflect-theme-group{background:white;border-radius:16px;overflow:hidden;border:1px solid #e5e7eb}
+.reflect-screen .reflect-theme-group{background:var(--ui-card-bg);border-radius:16px;overflow:hidden;border:1px solid #e5e7eb}
 .reflect-screen .reflect-theme-heading{width:100%;display:flex;justify-content:space-between;align-items:center;text-align:left;padding:15px 16px;gap:10px}
 .reflect-screen .reflect-theme-heading strong{display:block;font-size:15px;font-weight:600}
 .reflect-screen .reflect-theme-heading small{display:block;margin-top:4px;color:#64748b;font-size:12px}
@@ -944,8 +944,8 @@
 
 /* Reflect tabs require a stable WCAG AA contrast ratio even with pale custom accents. */
 .tabs-screen.reflect-screen .library-tabs.share-like-segment > button.is-active {
-  background: #245d4e !important;
-  color: #ffffff !important;
+  background: #245d4e;
+  color: #ffffff;
 }
 
 /* Reflect passage uses the same reference header, body spacing and dividers
@@ -1093,9 +1093,9 @@
 .tabs-screen.reflect-screen .reflect-tabs.library-tabs.share-like-segment > button.is-active,
 .tabs-screen.reflect-screen .library-tabs.share-like-segment > button.is-active,
 [data-theme='dark'] .tabs-screen.reflect-screen .library-tabs.share-like-segment > button.is-active {
-  background: #245d4e !important;
-  background-color: #245d4e !important;
-  color: #fff !important;
+  background: #245d4e;
+  background-color: #245d4e;
+  color: #fff;
 }
 .reflect-screen .reflect-lesson-title-input,
 .reflect-screen .reflect-lesson-answer {
@@ -1132,9 +1132,9 @@
 }
 
 /* Reflect theme contract: one surface per section, never a pale card in dark mode. */
-.reflect-screen { --reflect-surface:var(--theme-surface-solid,#fff); --reflect-ink:var(--theme-text,#242424); --reflect-muted:var(--theme-muted,#64748b); --reflect-border:var(--theme-border,#e5e7eb); color:var(--reflect-ink); }
-.reflect-screen .reflect-panel { background:var(--reflect-surface); color:var(--reflect-ink); border-color:var(--reflect-border); }
-.reflect-screen .reflect-field { background:var(--reflect-surface); color:var(--reflect-ink); border-color:var(--reflect-border); }
+.reflect-screen { --reflect-surface:var(--ui-card-bg); --reflect-ink:var(--theme-text,#242424); --reflect-muted:var(--theme-muted,#64748b); --reflect-border:var(--theme-border,#e5e7eb); color:var(--reflect-ink); }
+.reflect-screen .reflect-panel { background:var(--ui-card-bg); color:var(--reflect-ink); border-color:var(--reflect-border); }
+.reflect-screen .reflect-field { background:var(--ui-control-bg); color:var(--reflect-ink); border-color:var(--reflect-border); }
 .reflect-screen .reflect-field::placeholder { color:var(--reflect-muted); opacity:1; }
 .reflect-screen .reflect-panel .text-slate-500,.reflect-screen .reflect-panel .text-slate-600,.reflect-screen .reflect-panel .text-slate-700 { color:var(--reflect-muted); }
 .reflect-screen .reflect-panel .text-slate-800,.reflect-screen .reflect-panel .text-slate-900 { color:var(--reflect-ink); }
@@ -1146,7 +1146,7 @@
 .reflect-screen .reflect-passage-verses { overflow:hidden; border-radius:12px; border:1px solid var(--reflect-border); }
 .reflect-screen .reflect-lesson-ayah .reflect-ayah-reference,.reflect-screen .reflect-lesson-ayah .reflect-ayah-body { background:var(--reflect-surface); color:var(--reflect-ink); }
 .reflect-screen .reflect-lesson-ayah .ayah-word-by-word-list { align-items:start; }
-.reflect-screen .reflect-progress .reflect-panel { background:var(--reflect-surface);color:var(--reflect-ink); }
+.reflect-screen .reflect-progress .reflect-panel { background:var(--ui-card-bg);color:var(--reflect-ink); }
 .reflect-screen .reflect-progress .reflect-panel p,.reflect-screen .reflect-progress .reflect-panel h2,.reflect-screen .reflect-progress .reflect-panel h3 { color:inherit; }
 .reflect-screen .reflect-progress .reflect-panel .text-slate-500 { color:var(--reflect-muted); }
 .reflect-screen .reflect-progress-metric { color:var(--reflect-ink); }
@@ -1229,8 +1229,7 @@
 .reflect-screen .reflect-section-heading>.reflect-section-chevron-button:focus-visible,.reflect-screen .reflect-section-heading>.reflect-section-title:focus-visible{outline:2px solid var(--reflect-link);outline-offset:2px;border-radius:5px}
 
 /* Visible inputs on cream and charcoal surfaces: explicit contrast, no inherited white-on-white borders. */
-.reflect-screen{--reflect-control-border:#b9c6c1;--reflect-control-fill:#f7faf8}
-[data-theme='dark'] .reflect-screen,.dark .reflect-screen{--reflect-control-border:#53655e;--reflect-control-fill:#252f2b}
+.reflect-screen{--reflect-control-border:var(--ui-control-border);--reflect-control-fill:var(--ui-control-bg)}
 .reflect-screen .reflect-lesson-title-input,.reflect-screen .reflect-field,.reflect-screen textarea,.reflect-screen input[type='text']{border:1px solid var(--reflect-control-border)!important;background:var(--reflect-control-fill)!important;border-radius:12px!important}
 .reflect-screen .reflect-keyword-chip{border:1px solid var(--reflect-control-border)!important;background:var(--reflect-control-fill)!important}
 .reflect-screen .reflect-word-language{display:inline-flex;align-items:center;gap:3px;padding:3px;border:1px solid var(--reflect-control-border)!important;border-radius:999px;background:var(--reflect-control-fill)!important}
@@ -1250,8 +1249,54 @@
 .reflect-screen .reflect-passage-to{display:none}
 .reflect-screen .reflect-range-field{display:block;min-width:0}
 .reflect-screen .reflect-range-label{display:block;margin-bottom:7px;color:var(--reflect-muted);font-size:13px}
-.reflect-screen .reflect-range-native-wrap{display:block;position:relative}
-.reflect-screen .reflect-range-native{appearance:none;-webkit-appearance:none;width:100%;min-height:52px;padding:11px 40px 11px 14px;border:1px solid var(--brand-gold,#b68a35)!important;border-radius:15px;background:var(--reflect-surface,#fff)!important;color:var(--reflect-ink,#242424)!important;font:inherit;font-size:15px;line-height:1.35;cursor:pointer}
-.reflect-screen .reflect-range-native:focus-visible{outline:2px solid var(--reflect-link,#245d4e);outline-offset:2px}
-.reflect-screen .reflect-range-native-chevron{position:absolute;right:13px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--reflect-ink)}
 .reflect-screen .reflect-passage-status{margin-top:15px;font-size:13px}
+
+/* Reflect component surfaces use shared semantic tokens; no global override layer. */
+/* Full-screen card audit: enforce the same cream-glass card role in Reflect,
+   Library and lesson lists even where older screen-specific rules are stronger. */
+.reflect-screen .tabs-list .tab-card-surface,
+.reflect-screen .tab-card-surface:has(.reflect-study-card-inner),
+.reflect-screen .reflect-panel,
+.reflect-screen .reflect-progress .reflect-panel,
+.reflect-screen .reflect-progress-metric,
+.tabs-screen .tab-card-surface,
+.tabs-screen .tabs-status {
+  background: var(--ui-card-bg);
+  border-color: var(--ui-card-border);
+  box-shadow: var(--ui-card-shadow);
+  -webkit-backdrop-filter: var(--ui-card-blur);
+  backdrop-filter: var(--ui-card-blur);
+}
+.reflect-screen .reflect-study-menu,
+.reflect-screen .reflect-panel .absolute.bg-white {
+  background: var(--theme-surface-solid);
+  border-color: var(--ui-control-border);
+  color: var(--theme-text);
+}
+.reflect-screen .reflect-lesson-answer,
+.reflect-screen .reflect-panel textarea,
+.reflect-screen .reflect-panel input[type='text'],
+.reflect-screen .reflect-field,
+.reflect-screen .reflect-lesson-title-input {
+  background: var(--ui-control-bg);
+  border: 1px solid var(--ui-control-border);
+  color: var(--theme-text);
+}
+.reflect-screen .reflect-lesson-answer:focus,
+.reflect-screen .reflect-field:focus,
+.reflect-screen .reflect-panel textarea:focus {
+  border-color: var(--ui-primary);
+  outline: 2px solid color-mix(in srgb, var(--ui-primary) 20%, transparent);
+  outline-offset: 0;
+}
+.reflect-screen .reflect-panel .rounded-xl.border.border-slate-200.bg-white {
+  background: var(--ui-control-bg);
+  border-color: var(--ui-control-border);
+  color: var(--theme-text);
+}
+.reflect-screen .reflect-panel .border-slate-200 { border-color: var(--ui-divider); }
+.reflect-screen .reflect-range-native,
+.reflect-screen .reflect-range-native-wrap {
+  border-color: var(--ui-control-border);
+  background: var(--ui-control-bg);
+}

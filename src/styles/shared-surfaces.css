@@ -29,9 +29,9 @@
     .search-result-card,.settings-card,.help-intro,.help-section,
     .about-card,.about-section,.tab-card-surface,.tabs-status,
     .tafsir-card,.surah-info-content) {
-  background: var(--ui-card-bg) !important;
-  border: 1px solid var(--ui-card-border) !important;
-  box-shadow: var(--ui-card-shadow) !important;
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-card-border);
+  box-shadow: var(--ui-card-shadow);
   -webkit-backdrop-filter: var(--ui-card-blur);
   backdrop-filter: var(--ui-card-blur);
 }
@@ -39,19 +39,19 @@
 :is(.search-form,.search-recent-list button,.settings-picker-pill,
     .settings-theme-picker,.tabs-filter-row button:not(.active),
     .tabs-back-pill,.surah-info-topbar button) {
-  background: var(--ui-control-bg) !important;
-  border: 1px solid var(--ui-control-border) !important;
+  background: var(--ui-control-bg);
+  border: 1px solid var(--ui-control-border);
   -webkit-backdrop-filter: var(--ui-card-blur);
   backdrop-filter: var(--ui-card-blur);
 }
 .search-form {
   border-radius: 18px;
 }
-.search-form input { color: var(--theme-text) !important; }
-.search-form input::placeholder { color: var(--theme-muted) !important; opacity: 1; }
+.search-form input { color: var(--theme-text); }
+.search-form input::placeholder { color: var(--theme-muted); opacity: 1; }
 .search-form button:not(:disabled) {
-  background: var(--ui-primary) !important;
-  color: #fff !important;
+  background: var(--ui-primary);
+  color: #fff;
 }
 .search-result-card,
 .home-action-chip,
@@ -62,19 +62,19 @@
 }
 :is(.search-result-card,.home-action-chip,.home-favorite-row,
     .help-section-trigger,.tab-card-hit):active {
-  background-color: var(--ui-pressed-overlay) !important;
+  background-color: var(--ui-pressed-overlay);
 }
 /* Primary green is for explicit selected controls, not green-tinted card fills. */
 :is(.tabs-filter-row button.active,.settings-theme-picker button.is-active) {
-  background: var(--ui-primary) !important;
-  border-color: var(--ui-primary) !important;
-  color: #fff !important;
+  background: var(--ui-primary);
+  border-color: var(--ui-primary);
+  color: #fff;
 }
-.settings-theme-picker button.is-active :is(svg,span) { color: inherit !important; }
+.settings-theme-picker button.is-active :is(svg,span) { color: inherit; }
 .settings-card > :is(.settings-toggle-row,.settings-picker-row) + :is(.settings-toggle-row,.settings-picker-row) {
-  border-top-color: var(--ui-divider) !important;
+  border-top-color: var(--ui-divider);
 }
-.help-section-content { border-top-color: var(--ui-divider) !important; }
+.help-section-content { border-top-color: var(--ui-divider); }
 /* Keep text legible in both themes; do not touch Urdu/Arabic font metrics. */
 :is(.search-result-card,.search-result-reference strong,.search-recent-list button,
     .settings-card,.help-section,.about-screen,.tab-card-surface,.tafsir-card) {
@@ -82,7 +82,7 @@
 }
 :is(.search-result-reference small,.search-result-preview,.search-result-meta,
     .search-results-heading span,.search-recent-list button,.settings-row-copy small) {
-  color: var(--theme-muted) !important;
+  color: var(--theme-muted);
 }
 /* Tafsir and Surah Info: surfaces only; text/Arabic layout and numbering stay owned. */
 .tafsir-section { border-top-color: var(--ui-divider); }
@@ -125,24 +125,24 @@
 /* Reader phase: only panel containers and secondary sheet controls.
  * Do not change audio timing, waveforms, Mushaf lines, export frames or gestures. */
 .reader-audio-panel.reader-audio-panel-modern {
-  border: 1px solid var(--ui-card-border) !important;
-  background: var(--ui-card-bg) !important;
+  border: 1px solid var(--ui-card-border);
+  background: var(--ui-card-bg);
   -webkit-backdrop-filter: var(--ui-card-blur);
   backdrop-filter: var(--ui-card-blur);
-  box-shadow: 0 18px 48px rgba(0, 0, 0, .14) !important;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, .14);
 }
 /* Translation requires an opaque reading surface behind long Arabic/Urdu text.
  * The glass treatment belongs to the outer edge, not behind body typography. */
 .ayah-translation-card {
-  background: var(--translation-card-bg, var(--reader-surface-raised)) !important;
-  border-color: var(--ui-card-border) !important;
+  background: var(--translation-card-bg, var(--reader-surface-raised));
+  border-color: var(--ui-card-border);
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
 }
 .ayah-action-sheet.ayah-action-sheet-v2,
 .share-sheet {
-  background: var(--theme-surface-solid) !important;
-  border-color: var(--ui-card-border) !important;
+  background: var(--theme-surface-solid);
+  border-color: var(--ui-card-border);
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
 }
@@ -154,32 +154,32 @@
 }
 @media (prefers-reduced-transparency: reduce) {
   .reader-audio-panel.reader-audio-panel-modern {
-    background: var(--reader-surface-raised) !important;
+    background: var(--reader-surface-raised);
   }
 }
 
 /* UI consistency audit: use the same card surface in Reflect and Home. */
 :is(.reflect-panel,.reflect-progress-metric,.reflect-question-card .tab-card-surface,
     .reflect-question-answer,.home-favorites-empty) {
-  background: var(--ui-card-bg) !important;
-  border: 1px solid var(--ui-card-border) !important;
-  box-shadow: var(--ui-card-shadow) !important;
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-card-border);
+  box-shadow: var(--ui-card-shadow);
   -webkit-backdrop-filter: var(--ui-card-blur);
   backdrop-filter: var(--ui-card-blur);
 }
 .home-reflect-card,
 .home-favorite-row {
-  min-height: 92px !important;
-  padding: 17px 19px !important;
-  border-radius: 23px !important;
+  min-height: 92px;
+  padding: 17px 19px;
+  border-radius: 23px;
 }
 .home-reflect-card .home-reflect-copy {
   justify-content: center;
 }
 :is(.reflect-field,.reflect-progress-period,.reflect-question-tabs,
     .reflect-progress-commitment) {
-  background: var(--ui-control-bg) !important;
-  border: 1px solid var(--ui-control-border) !important;
+  background: var(--ui-control-bg);
+  border: 1px solid var(--ui-control-border);
   color: var(--theme-text);
 }
 .reflect-progress-period { border-radius: 16px; }
@@ -207,32 +207,32 @@
   line-height: 2.15;
 }
 .index-replica-shell .index-surah-info-preview {
-  background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
 }
 /* Search controls share a distinct neutral control treatment across pages. */
 .search-form,
 .index-replica-shell .index-surah-search {
-  background: var(--ui-control-bg) !important;
-  border: 1px solid var(--ui-control-border) !important;
-  box-shadow: var(--ui-card-shadow) !important;
+  background: var(--ui-control-bg);
+  border: 1px solid var(--ui-control-border);
+  box-shadow: var(--ui-card-shadow);
   -webkit-backdrop-filter: var(--ui-card-blur);
   backdrop-filter: var(--ui-card-blur);
 }
 .search-form:focus-within,
 .index-replica-shell .index-surah-search:focus-within,
 .reflect-field:focus-visible {
-  border-color: var(--ui-primary) !important;
-  box-shadow: 0 0 0 2px rgba(45,110,94,.18) !important;
+  border-color: var(--ui-primary);
+  box-shadow: 0 0 0 2px rgba(45,110,94,.18);
 }
 @media (max-width: 370px) {
   .home-reflect-card,
   .home-favorite-row {
-    min-height: 76px !important;
-    padding: 12px 15px !important;
+    min-height: 76px;
+    padding: 12px 15px;
   }
 }
 
@@ -245,7 +245,7 @@
   overflow: hidden;
   max-height: 9em;
 }
-.reflect-surah-info-html.is-preview :is(p,div) { margin-top: 0 !important; margin-bottom: 0 !important; }
+.reflect-surah-info-html.is-preview :is(p,div) { margin-top: 0; margin-bottom: 0; }
 .reflect-intro-read-more {
   display: inline-flex;
   margin-top: 10px;
@@ -273,11 +273,11 @@
 }
 :is(.settings-picker-pill,.share-reciter-trigger,.reader-reciter-picker,
     .reflect-range-native-wrap,.reflect-progress-period) {
-  border: 1px solid var(--ui-control-border) !important;
-  border-radius: var(--ui-picker-radius) !important;
-  background: var(--ui-control-bg) !important;
-  color: var(--theme-text) !important;
-  box-shadow: none !important;
+  border: 1px solid var(--ui-control-border);
+  border-radius: var(--ui-picker-radius);
+  background: var(--ui-control-bg);
+  color: var(--theme-text);
+  box-shadow: none;
 }
 :is(.settings-picker-pill,.share-reciter-trigger,.reader-reciter-picker,
     .reflect-range-native-wrap,.reflect-progress-period):focus-visible,
@@ -287,10 +287,10 @@
 }
 :is(.settings-picker-panel,.share-reciter-menu,.share-reciter-list,
     .reader-reciter-list) {
-  background: var(--theme-surface-solid) !important;
-  border-color: var(--ui-control-border) !important;
-  border-radius: var(--ui-picker-radius) !important;
-  box-shadow: 0 14px 32px rgba(28, 35, 30, .15) !important;
+  background: var(--theme-surface-solid);
+  border-color: var(--ui-control-border);
+  border-radius: var(--ui-picker-radius);
+  box-shadow: 0 14px 32px rgba(28, 35, 30, .15);
 }
 :is(.settings-picker-item,.share-reciter-option,.reader-reciter-list-item) {
   border-radius: var(--ui-picker-option-radius);
@@ -298,15 +298,15 @@
 }
 :is(.settings-picker-item.selected,.share-reciter-option.is-selected,
     .reader-reciter-list-item.selected) {
-  background: var(--ui-picker-selected) !important;
-  color: var(--theme-text) !important;
+  background: var(--ui-picker-selected);
+  color: var(--theme-text);
 }
 :is(.settings-picker-item,.share-reciter-option,.reader-reciter-list-item):active {
-  background: var(--ui-picker-hover) !important;
+  background: var(--ui-picker-hover);
 }
 .reflect-range-native {
-  color: var(--theme-text) !important;
-  background: transparent !important;
+  color: var(--theme-text);
+  background: transparent;
 }
 .reflect-range-native option,
 .reflect-progress-period option {
@@ -316,60 +316,12 @@
 /* Restore a consistent field treatment to the New Lesson title and selection. */
 .reflect-lesson-title-input,
 .reflect-range-native-wrap {
-  border: 1px solid var(--ui-control-border) !important;
-  background: var(--ui-control-bg) !important;
-  color: var(--theme-text) !important;
+  border: 1px solid var(--ui-control-border);
+  background: var(--ui-control-bg);
+  color: var(--theme-text);
 }
-.reflect-lesson-title-input::placeholder { color: var(--theme-muted) !important; opacity: 1; }
+.reflect-lesson-title-input::placeholder { color: var(--theme-muted); opacity: 1; }
 
-/* Full-screen card audit: enforce the same cream-glass card role in Reflect,
-   Library and lesson lists even where older screen-specific rules are stronger. */
-.reflect-screen .tabs-list .tab-card-surface,
-.reflect-screen .tab-card-surface:has(.reflect-study-card-inner),
-.reflect-screen .reflect-panel,
-.reflect-screen .reflect-progress .reflect-panel,
-.reflect-screen .reflect-progress-metric,
-.tabs-screen .tab-card-surface,
-.tabs-screen .tabs-status {
-  background: var(--ui-card-bg) !important;
-  border-color: var(--ui-card-border) !important;
-  box-shadow: var(--ui-card-shadow) !important;
-  -webkit-backdrop-filter: var(--ui-card-blur);
-  backdrop-filter: var(--ui-card-blur);
-}
-.reflect-screen .reflect-study-menu,
-.reflect-screen .reflect-panel .absolute.bg-white {
-  background: var(--theme-surface-solid) !important;
-  border-color: var(--ui-control-border) !important;
-  color: var(--theme-text) !important;
-}
-.reflect-screen .reflect-lesson-answer,
-.reflect-screen .reflect-panel textarea,
-.reflect-screen .reflect-panel input[type='text'],
-.reflect-screen .reflect-field,
-.reflect-screen .reflect-lesson-title-input {
-  background: var(--ui-control-bg) !important;
-  border: 1px solid var(--ui-control-border) !important;
-  color: var(--theme-text) !important;
-}
-.reflect-screen .reflect-lesson-answer:focus,
-.reflect-screen .reflect-field:focus,
-.reflect-screen .reflect-panel textarea:focus {
-  border-color: var(--ui-primary) !important;
-  outline: 2px solid color-mix(in srgb, var(--ui-primary) 20%, transparent);
-  outline-offset: 0;
-}
-.reflect-screen .reflect-panel .rounded-xl.border.border-slate-200.bg-white {
-  background: var(--ui-control-bg) !important;
-  border-color: var(--ui-control-border) !important;
-  color: var(--theme-text) !important;
-}
-.reflect-screen .reflect-panel .border-slate-200 { border-color: var(--ui-divider) !important; }
-.reflect-screen .reflect-range-native,
-.reflect-screen .reflect-range-native-wrap {
-  border-color: var(--ui-control-border) !important;
-  background: var(--ui-control-bg) !important;
-}
 /* Shared dropdown: scrollable options, one visual language on every platform. */
 .app-option-picker { position: relative; min-width: 0; }
 .app-option-trigger {
