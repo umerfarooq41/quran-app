@@ -73,14 +73,14 @@ test('Reflect opens and its passage selection controls are usable', async ({ pag
   await page.getByRole('button', { name: /Begin reflecting/i }).click();
   await expect(page.getByRole('heading', { name: 'Reflect', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'New lesson' }).click();
-  await expect(page.getByRole('heading', { name: 'Select Passage' })).toBeVisible();
-  const passageSelects = page.locator('.reflect-range-trigger');
+  await expect(page.getByRole('heading', { name: 'Passage' })).toBeVisible();
+  const passageSelects = page.locator('.app-option-trigger');
   await expect(passageSelects).toHaveCount(3);
   for (let index = 0; index < 3; index++) await expect(passageSelects.nth(index)).toBeVisible();
   await passageSelects.first().click();
   await expect(page.getByRole('listbox', { name: 'Surah' })).toBeVisible();
   await page.getByRole('option', { name: /Al-Baqarah/i }).first().click();
-  await expect(page.locator('.reflect-range-trigger').first()).toContainText('2.');
+  await expect(page.locator('.app-option-trigger').first()).toContainText('2.');
   await expectHealthyVisibleUI(page);
 });
 
@@ -91,7 +91,7 @@ test('Reflect Progress tab renders statistics without blanking the app', async (
   await page.getByRole('button', { name: /Begin reflecting/i }).click();
   await expect(page.getByRole('heading', { name: 'Reflect', exact: true })).toBeVisible();
   await page.getByRole('tab', { name: 'Progress' }).click();
-  await expect(page.getByRole('heading', { name: 'Study Progress' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Lesson Progress' })).toBeVisible();
   await expect(page.getByText('Ayahs studied')).toBeVisible();
   await expect(page.getByText('Lessons completed')).toBeVisible();
   await expect(page.locator('#root')).not.toBeEmpty();

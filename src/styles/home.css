@@ -415,7 +415,7 @@
   }
 }
 
-/* Reflect Home entry is a single compact, full-width row (no vacant icon column). */
+/* Reflect Home entry uses the same density as Favorite Surahs. */
 .home-reflect-card { display:flex; align-items:center; min-height:76px; gap:0; }
 .home-reflect-card .home-reflect-copy { display:flex; flex:1 1 auto; min-width:0; width:100%; flex-direction:column; align-items:flex-start; }
 .home-reflect-card .home-reflect-copy strong { display:block; width:100%; overflow:visible; text-overflow:clip; white-space:normal; }
@@ -424,11 +424,17 @@
 [data-theme='dark'] .home-reflect-card .home-reflect-copy strong { color:var(--theme-text); }
 [data-theme='dark'] .home-reflect-card .home-reflect-copy small { color:var(--theme-muted); }
 
-/* Shared Home navigation-card dimensions, including populated Favorite Surahs. */
-.home-reflect-card { min-height:92px; padding:17px 19px; border-radius:23px; box-shadow:0 7px 24px rgba(38,52,45,.06); }
-.home-reflect-card .home-reflect-copy { gap:4px; }
-.home-reflect-card .home-reflect-copy strong { font-size:.92rem; font-weight:740; letter-spacing:normal; }
-.home-reflect-card .home-reflect-copy small { font-size:.72rem; font-weight:500; line-height:1.35; }
-.home-empty-link { color:#7b581d; font-size:.76rem; font-weight:750; text-decoration:underline; text-underline-offset:3px; }
-[data-theme='dark'] .home-empty-link { color:#e3bd70; }
-@media(max-width:370px) { .home-reflect-card { min-height:76px; padding:12px 15px; } }
+
+/* Shared Home cards: keep the approved gradient separate from ordinary surfaces. */
+.home-action-chip,.home-favorite-row,.home-reflect-card,.home-favorites-empty {
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-card-border);
+  box-shadow: var(--ui-card-shadow);
+  -webkit-backdrop-filter: var(--ui-card-blur);
+  backdrop-filter: var(--ui-card-blur);
+}
+.home-reflect-card,.home-favorite-row { min-height: 92px; padding: 17px 19px; border-radius: 23px; }
+.home-reflect-card .home-reflect-copy { gap: 4px; }
+@media(max-width:370px) {
+  .home-reflect-card,.home-favorite-row { min-height: 76px; padding: 12px 15px; }
+}

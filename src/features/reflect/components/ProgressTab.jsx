@@ -37,7 +37,7 @@ export default function ProgressTab({ lessons, progressPeriod, setProgressPeriod
                     <p className="text-sm font-semibold">How is your commitment going?</p>
                     {[['practicing',"I'm practicing it"],['working',"I'm working towards it"],['not-yet',"I haven't started yet"]].map(([value,label])=><label key={value} className="flex items-center gap-2 text-sm text-slate-700"><input type="radio" name={'progress-review-'+lesson.id} checked={(lesson.commitmentReview?.status==='done'?'practicing':lesson.commitmentReview?.status==='progress'?'working':lesson.commitmentReview?.status)===value} onChange={()=>saveCommitmentReview(lesson,{status:value})}/>{label}</label>)}
                     <textarea className={field} rows={2} aria-label="Commitment review notes" placeholder="What have you noticed? (optional)" value={lesson.commitmentReview?.notes || ''} onChange={e=>saveCommitmentReview(lesson,{notes:e.target.value})}/>
-                    <button type="button" className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-[#2d6e5e]" onClick={()=>openProgressLesson(lesson)}>Open Lesson →</button>
+                    <button type="button" className="reflect-secondary-button inline-flex items-center rounded-lg px-3 py-2 text-xs font-semibold" onClick={()=>openProgressLesson(lesson)}>Open Lesson →</button>
                   </div>}
                 </div>;
               })}</div> : <p className="mt-3 text-sm text-slate-500">Commitments from completed lessons will appear here.</p>}
@@ -45,7 +45,7 @@ export default function ProgressTab({ lessons, progressPeriod, setProgressPeriod
             <section className={card}>
               <div className="flex items-center justify-between gap-2"><h3 className="text-sm font-semibold">Recent Lessons</h3><button type="button" className="text-xs font-semibold text-[#2d6e5e]" onClick={()=>{setHubTab('Lessons');setProgressCommitment(null);}}>View all →</button></div>
               {recent.length ? <div className="mt-2 reflect-progress-recent">{recent.map(lesson=><button key={lesson.id} type="button" className="flex w-full items-center gap-3 py-3 text-left" onClick={()=>openProgressLesson(lesson)}>
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-[#2d6e5e]">{lesson.status==='completed'?'✓':<BookOpen size={17}/>}</span>
+                <span className="reflect-recent-icon flex h-9 w-9 shrink-0 items-center justify-center rounded-lg">{lesson.status==='completed'?'✓':<BookOpen size={17}/>}</span>
                 <span className="min-w-0 flex-1"><span className="block truncate text-sm font-semibold text-slate-800">{studyDisplayTitle(lesson)}</span><span className="mt-0.5 block text-xs text-slate-500">{lesson.surahNumber}:{lesson.startAyah}–{lesson.endAyah} · {lesson.status==='completed'?'Completed':'In progress'}</span></span>
                 <span className="text-slate-400" aria-hidden="true">›</span>
               </button>)}</div> : <p className="mt-3 text-sm text-slate-500">No lessons in this period.</p>}
