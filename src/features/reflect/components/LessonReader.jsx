@@ -105,7 +105,7 @@ export default function LessonReader({ active, verses, translationOption, toggle
           {(active.keywords || []).length ? <div className="mt-3 flex flex-wrap gap-2">
             {active.keywords.map((keyword) => <button type="button" key={keyword.key} className="reflect-keyword-chip rounded-xl border px-3 py-2 text-sm" onClick={() => toggleKeyword(keyword.ayahNumber, keyword, Number(keyword.key.split(':')[1]))} aria-label={`Remove keyword ${keyword.arabic}`}>
               <span lang="ar" dir="rtl" className="font-semibold">{keyword.arabic}</span>
-              <span className="mx-2 text-slate-500">{keyword.meaning}</span>
+              <span className="mx-2 reflect-keyword-meaning">{keyword.meaning}</span>
               <span aria-hidden="true">×</span>
             </button>)}
           </div> : <p className="mt-3 text-sm text-slate-500">No keywords selected yet.</p>}

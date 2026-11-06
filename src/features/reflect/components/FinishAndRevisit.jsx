@@ -10,7 +10,6 @@ export default function FinishAndRevisit({ active, saveTadabburField, saveStudyM
           <button type="button" className="reflect-section-toggle" aria-expanded={expanded} onClick={()=>setExpanded(v=>!v)}><span className="font-semibold">Finish &amp; Revisit</span><ChevronDown size={20} className={`reflect-section-chevron ${expanded?"is-open":""}`}/></button>
           {expanded&&<>
           <div className="reflect-finish-content mt-3">
-            <p className="reflect-secondary-action text-xs font-semibold">{active.surahName || 'Surah '+active.surahNumber} · {active.startAyah}–{active.endAyah}</p>
             <div className="mt-3 flex items-center justify-between gap-2">
               <label htmlFor="reflect-learning-summary" className="text-sm font-semibold">What I Learned</label>
               <button type="button" className="reflect-secondary-action text-xs font-semibold disabled:opacity-40" disabled={!String(active.answers?.final?.[1]||'').trim()} onClick={()=>saveTadabburField('learningSummary',active.answers.final[1])}>Use My Reflection</button>
