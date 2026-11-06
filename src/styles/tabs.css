@@ -918,7 +918,7 @@
 .reflect-screen .reflect-keyword-link{display:block;width:100%;text-align:left;color:inherit;border:0}
 .reflect-screen .reflect-keyword-refs{justify-content:space-between;align-items:center;color:#64748b}
 .reflect-screen .reflect-keyword-arrow{transform:rotate(-90deg);flex-shrink:0}
-.reflect-screen .reflect-theme-group{background:var(--ui-card-bg);border-radius:16px;overflow:hidden;border:1px solid #e5e7eb}
+.reflect-screen .reflect-theme-group{background:var(--ui-card-bg);border-radius:16px;overflow:hidden;border:1px solid var(--ui-card-border)}
 .reflect-screen .reflect-theme-heading{width:100%;display:flex;justify-content:space-between;align-items:center;text-align:left;padding:15px 16px;gap:10px}
 .reflect-screen .reflect-theme-heading strong{display:block;font-size:15px;font-weight:600}
 .reflect-screen .reflect-theme-heading small{display:block;margin-top:4px;color:#64748b;font-size:12px}
@@ -931,7 +931,7 @@
 .reflect-screen .reflect-subtheme-heading>span:first-child{flex:1}
 .reflect-screen .reflect-subtheme-count{font-size:12px;color:#64748b}
 .reflect-screen .reflect-theme-studies{padding:0 0 10px 12px}
-.reflect-screen .reflect-theme-study{display:flex;flex-direction:column;align-items:flex-start;gap:4px;width:100%;padding:11px 12px;margin:5px 0;border-radius:10px;background:#f6f8f7;text-align:left}
+.reflect-screen .reflect-theme-study{display:flex;flex-direction:column;align-items:flex-start;gap:4px;width:100%;padding:11px 12px;margin:5px 0;border-radius:10px;background:var(--ui-control-bg);text-align:left}
 .reflect-screen .reflect-theme-study strong{font-size:13px;font-weight:600}
 .reflect-screen .reflect-theme-study small{font-size:12px;color:#64748b}
 .reflect-screen .reflect-theme-empty{padding:4px 0 12px;color:#64748b;font-size:12px}
@@ -1015,10 +1015,7 @@
 .reflect-screen .reflect-question-card .tab-card-remove { z-index:0; }
 .reflect-screen .reflect-question-card .tab-card-surface { position:relative; z-index:1; }
 .reflect-screen .reflect-question-expand { min-width:44px; min-height:44px; }
-.reflect-screen .reflect-question-answer {
-  background:var(--theme-surface-solid, #fff);
-  border-color:var(--theme-border, #e5e7eb);
-  color:var(--theme-text, #242424);
+.reflect-screen .reflect-question-answer {background:var(--ui-control-bg);border-color:var(--ui-control-border);color:var(--theme-text);
 }
 .reflect-screen .reflect-progress-period {
   min-height:40px; border:1px solid var(--theme-border, #e5e7eb);
@@ -1039,7 +1036,7 @@
   background:var(--theme-surface-solid, #fff); color:var(--theme-text, #242424);
   border:1px solid var(--theme-border, #e5e7eb);
 }
-.reflect-screen .reflect-theme-study { background:var(--theme-surface-solid, #fff); border:1px solid var(--theme-border, #e5e7eb); }
+.reflect-screen .reflect-theme-study {background:var(--ui-control-bg);border:1px solid var(--ui-control-border);}
 .reflect-screen .reflect-theme-children,
 .reflect-screen .reflect-subtheme { border-color:var(--theme-border, #e5e7eb); }
 
@@ -1095,9 +1092,9 @@
 }
 .reflect-screen .reflect-lesson-title-input,
 .reflect-screen .reflect-lesson-answer {
-  border: 1px solid var(--theme-border, #e5e7eb);
-  background: var(--theme-surface-solid, #fff);
-  color: var(--theme-text, #242424);
+  border: 1px solid var(--ui-control-border);
+  background: var(--ui-control-bg);
+  color: var(--theme-text);
 }
 .reflect-screen .reflect-lesson-answer { padding: 10px 12px; border-radius: 12px; }
 .reflect-screen .reflect-lesson-title-input:focus-visible,
@@ -1107,9 +1104,9 @@
 }
 .reflect-screen .reflect-accent-text { color: var(--theme-accent, #245d4e); }
 .reflect-screen .reflect-lesson-inner {
-  background: color-mix(in srgb, var(--theme-surface-solid, #fff) 90%, var(--theme-border, #e5e7eb));
-  border: 1px solid var(--theme-border, #e5e7eb);
-  color: var(--theme-text, #242424);
+  background: transparent;
+  border: 0;
+  color: var(--theme-text);
 }
 .reflect-screen .reflect-lesson-divider,
 .reflect-screen .reflect-passage-verses > * + * { border-color: var(--theme-border, #e5e7eb); }
@@ -1328,3 +1325,6 @@
 
 
 .reflect-screen .reflect-progress-period { width: min(168px, 42vw); }
+
+/* Answers use the shared neutral control surface, not a nested card. */
+.reflect-screen .reflect-question-answer { background: var(--ui-control-bg); border: 1px solid var(--ui-control-border); color: var(--theme-text); }
