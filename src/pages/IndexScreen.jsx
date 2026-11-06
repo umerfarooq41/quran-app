@@ -14,6 +14,7 @@ import { getJuzLabel } from '../utils/quranLabels';
 import { getJuzForReference } from '../data/quranMeta';
 import { getTranslationLanguageId } from '../lib/translations';
 import { getSurahNameMeta } from '../data/surahNames';
+import { sanitizeSurahHtml } from '../lib/sanitizeHtml';
 
 function formatJuzName(juz) {
   return getJuzLabel(juz);
@@ -433,25 +434,17 @@ function SurahIndex() {
                     <div id={`index-surah-panel-${surah.number}`} className="index-collapse-panel index-surah-collapse" aria-label={`${surah.name} details`}>
                       <div className="index-surah-info-preview">
                         <div className="index-surah-info-heading">
-                          <span className="index-surah-info-label">Surah Info</span>
+                          <span className="index-surah-info-label">Surah Introduction</span>
                           <p className="index-surah-info-meta">
                             {nameMeta.meaning} <span aria-hidden="true">•</span> {ayahCount} Ayahs <span aria-hidden="true">•</span> {surah.revelation}
                           </p>
                         </div>
-                        <p
-                          className={`index-surah-info-copy is-${translationLanguage}`}
-                          lang={translationLanguage}
-                          dir={translationLanguage === 'ur' ? 'rtl' : 'ltr'}
-                        >
-                          <span>{previewText(localizedInfo)} </span>
-                          <button
-                            type="button"
-                            className="inline-read-more index-surah-read-more"
-                            onClick={() => openSurahInfo(surah.number)}
-                          >
-                            Read more
-                          </button>
-                        </p>
+                        {localizedInfo?.text ? (
+                          <div className={`surah-info-html index-surah-introduction is-${translationLanguage}`}
+                            lang={translationLanguage} dir={translationLanguage === 'ur' ? 'rtl' : 'ltr'}
+                            dangerouslySetInnerHTML={{ __html: sanitizeSurahHtml(localizedInfo.text) }} />
+                        ) : <p className="index-surah-info-copy">Surah introduction is unavailable in this language.</p>}
+                        <button type="button" className="index-surah-intro-more" onClick={() => openSurahInfo(surah.number)}>Open Surah Info</button>
 
                         <div className="index-surah-quick-actions" aria-label={`${surah.name} quick actions`}>
                           <button

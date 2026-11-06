@@ -1243,3 +1243,15 @@
 .reflect-screen .reflect-intro-content>.reflect-surah-info-html :is(h1,h2,h3,p){max-width:100%}
 .reflect-screen .reflect-section-heading>.reflect-secondary-action{grid-column:2;grid-row:1}
 .reflect-screen .reflect-section-heading>.reflect-section-chevron-button{grid-column:3;grid-row:1}
+
+/* New Lesson: index-inspired compact selectors, native scrolling lists on Android/iOS. */
+.reflect-screen .reflect-passage-selector{overflow:visible;padding:16px 18px;border:1px solid var(--reflect-control-border,#b9c6c1);border-radius:22px}
+.reflect-screen .reflect-passage-range{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin-top:14px}
+.reflect-screen .reflect-passage-to{display:none}
+.reflect-screen .reflect-range-field{display:block;min-width:0}
+.reflect-screen .reflect-range-label{display:block;margin-bottom:7px;color:var(--reflect-muted);font-size:13px}
+.reflect-screen .reflect-range-native-wrap{display:block;position:relative}
+.reflect-screen .reflect-range-native{appearance:none;-webkit-appearance:none;width:100%;min-height:52px;padding:11px 40px 11px 14px;border:1px solid var(--brand-gold,#b68a35)!important;border-radius:15px;background:var(--reflect-surface,#fff)!important;color:var(--reflect-ink,#242424)!important;font:inherit;font-size:15px;line-height:1.35;cursor:pointer}
+.reflect-screen .reflect-range-native:focus-visible{outline:2px solid var(--reflect-link,#245d4e);outline-offset:2px}
+.reflect-screen .reflect-range-native-chevron{position:absolute;right:13px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--reflect-ink)}
+.reflect-screen .reflect-passage-status{margin-top:15px;font-size:13px}

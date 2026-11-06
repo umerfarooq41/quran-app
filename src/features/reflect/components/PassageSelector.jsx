@@ -20,8 +20,7 @@ export default function PassageSelector({ surah, surahNumber, setSurahNumber, st
             <ReflectRangePicker label="From" value={startAyah} options={ayahs.map(item=>({value:item.ayahNumber,label:String(item.ayahNumber)}))}
               open={rangePicker==='from'} onToggle={()=>setRangePicker(current=>current==='from'?null:'from')}
               onSelect={value=>{const range=getInitialReflectRange(value,ayahs.length);setStartAyah(range?.startAyah||value);setEndAyah(range?.endAyah||value);setRangePicker(null);}}/>
-            <span className="reflect-passage-to">to</span>
-            <ReflectRangePicker label="To" value={endAyah} options={ayahs.filter(item=>item.ayahNumber>=startAyah&&item.ayahNumber<=startAyah+14).map(item=>({value:item.ayahNumber,label:String(item.ayahNumber)}))}
+              <ReflectRangePicker label="To" value={endAyah} options={ayahs.filter(item=>item.ayahNumber>=startAyah&&item.ayahNumber<=startAyah+14).map(item=>({value:item.ayahNumber,label:String(item.ayahNumber)}))}
               open={rangePicker==='to'} onToggle={()=>setRangePicker(current=>current==='to'?null:'to')}
               onSelect={value=>{setEndAyah(value);setRangePicker(null);}}/>
           </div>

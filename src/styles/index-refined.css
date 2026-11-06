@@ -873,3 +873,9 @@
   background: #245d4e !important;
   color: #fff !important;
 }
+
+/* Index and Reflect share the same complete Surah Introduction presentation. */
+.index-replica-shell .index-surah-info-label{text-transform:none!important;letter-spacing:0!important;font-size:1rem!important}
+.index-replica-shell .index-surah-introduction{background:transparent;border:0;box-shadow:none;padding:0;margin:12px 0 0;width:100%;max-width:none;color:var(--theme-text)}
+.index-replica-shell .index-surah-introduction :is(h1,h2,h3,p){max-width:100%}
+.index-replica-shell .index-surah-intro-more{display:inline-flex;margin:12px 0 0;padding:8px 0;color:var(--brand-gold,#b68a35);font-size:14px;font-weight:600;text-decoration:underline;text-underline-offset:3px}
