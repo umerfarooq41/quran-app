@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BookOpen, ChevronDown, Info } from 'lucide-react';
 import { reflectCardClass as card } from '../reflectPresentation';
 
 /** Lesson identity, reading guidance and source-language introduction. */
 export default function LessonIntroduction({ active, saveStudyMeta, guidanceOpen, setGuidanceOpen, introOpen, setIntroOpen, displayedIntroLanguage, setIntroLanguage, surahIntro }) {
+  const [showFullIntro, setShowFullIntro] = useState(false);
   return (
     <>
         <div className={card + " reflect-study-summary"}>
@@ -34,7 +35,8 @@ export default function LessonIntroduction({ active, saveStudyMeta, guidanceOpen
             <button type="button" className="reflect-section-chevron-button" aria-label={introOpen ? 'Collapse Surah Introduction' : 'Expand Surah Introduction'} aria-expanded={introOpen} onClick={() => setIntroOpen(value => !value)}><ChevronDown size={20} aria-hidden="true" className={`reflect-section-chevron ${introOpen ? "is-open" : ""}`}/></button>
           </div>
           {introOpen && <div id="reflect-surah-introduction" className="reflect-intro-content">
-            {surahIntro ? <div className={`surah-info-html reflect-surah-info-html is-${displayedIntroLanguage} mt-4`} lang={displayedIntroLanguage} dir={displayedIntroLanguage === 'ur' ? 'rtl' : 'ltr'} dangerouslySetInnerHTML={{ __html: surahIntro }} /> : <p className="mt-4 text-sm text-slate-500">Surah introduction is unavailable in this language.</p>}
+            {surahIntro ? <div className={`surah-info-html reflect-surah-info-html is-${displayedIntroLanguage} mt-4 ${showFullIntro ? "is-expanded" : "is-preview"}`} lang={displayedIntroLanguage} dir={displayedIntroLanguage === 'ur' ? 'rtl' : 'ltr'} dangerouslySetInnerHTML={{ __html: surahIntro }} /> : <p className="mt-4 text-sm text-slate-500">Surah introduction is unavailable in this language.</p>}
+            {surahIntro && <button type="button" className="reflect-intro-read-more" aria-expanded={showFullIntro} onClick={() => setShowFullIntro(value => !value)}>{showFullIntro ? "Show less" : "Read more"}</button>}
           </div>}
         </section>
     </>

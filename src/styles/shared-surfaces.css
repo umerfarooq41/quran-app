@@ -235,3 +235,24 @@
     padding: 12px 15px !important;
   }
 }
+
+/* Reflect introduction uses the same four-line preview as Index. */
+.reflect-surah-info-html.is-preview {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  overflow: hidden;
+  max-height: 9em;
+}
+.reflect-surah-info-html.is-preview :is(p,div) { margin-top: 0 !important; margin-bottom: 0 !important; }
+.reflect-intro-read-more {
+  display: inline-flex;
+  margin-top: 10px;
+  padding: 6px 0;
+  color: var(--ui-primary);
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.reflect-intro-read-more:focus-visible { outline: 2px solid var(--ui-primary); outline-offset: 3px; }
