@@ -154,7 +154,7 @@
 .reader-bottom-sheet {
   pointer-events: auto;
   width: min(100%, 576px);
-  border-radius: 28px 28px 0 0;
+
   background: rgba(255, 255, 255, .94);
   padding: 28px 30px calc(env(safe-area-inset-bottom, 0px) + 22px);
   box-shadow: 0 -18px 50px rgba(28, 23, 16, .08);
@@ -1591,12 +1591,12 @@ body {
 
 .share-background-picker > div {
   display: flex;
-  gap: 12px;
+
 }
 
 .share-background-picker button {
-  width: 36px;
-  height: 36px;
+
+
   border-radius: 999px;
   background: var(--share-color);
   box-shadow: inset 0 0 0 1px rgba(31, 27, 23, .09);
@@ -1608,7 +1608,7 @@ body {
 
 .quran-share-preview {
   aspect-ratio: 4 / 5;
-  width: min(100%, 430px);
+
   margin: 0 auto;
   border-radius: 28px;
   background: var(--share-background);
@@ -1659,7 +1659,7 @@ body {
 
 .quran-share-ayahs {
   display: flex;
-  min-height: 0;
+
   flex: 1;
   flex-direction: column;
   justify-content: center;
@@ -1668,23 +1668,23 @@ body {
 
 .quran-share-ayahs p {
   margin: 0 0 8px;
-  color: #17130f;
-  font-family: IndopakNastaleeq, serif;
-  font-size: var(--share-preview-font, 1.2rem);
+
+
+
   line-height: 1.75;
   text-align: right;
 }
 
 .quran-share-ayahs span {
   color: rgba(55, 42, 29, .72);
-  white-space: nowrap;
+
 }
 
 .quran-share-frame footer {
   color: rgba(48, 39, 30, .58);
-  font-size: .72rem;
+
   font-weight: 700;
-  text-align: center;
+
 }
 
 .share-image-button {
@@ -1791,9 +1791,9 @@ body {
   background: rgba(45, 110, 94, .15);
   color: #245f51;
   font-family: var(--translation-english-font);
-  font-size: .62em;
+
   font-weight: 800;
-  line-height: 1;
+
   vertical-align: .18em;
 }
 
@@ -2292,13 +2292,13 @@ body {
   width: 18px;
   height: 18px;
   place-items: center;
-  border-radius: 50%;
+
   background: rgba(45, 110, 94, .15);
   color: #245f51;
   font-family: var(--translation-english-font);
   font-size: .62rem;
   font-weight: 800;
-  line-height: 1;
+
 }
 
 .ayah-translation-note-content {
@@ -2724,7 +2724,7 @@ body {
 .quran-share-frame footer img {
   background: transparent !important;
   border-radius: 0 !important;
-  mix-blend-mode: multiply;
+
 }
 
 /* Share Quran image — unified app surface and premium range controls */
@@ -2751,7 +2751,7 @@ body {
 }
 
 .share-range-field {
-  position: relative;
+
   min-width: 0;
 }
 
@@ -2808,7 +2808,7 @@ body {
   border-radius: 16px;
   background: #fffdf8;
   box-shadow: 0 14px 34px rgba(35, 31, 25, .14);
-  overscroll-behavior: contain;
+
 }
 
 .share-range-menu button {
@@ -2894,7 +2894,7 @@ body {
 }
 
 .share-range-card h3 {
-  color: var(--theme-text, #252522) !important;
+
 }
 
 .share-range-field > span,
@@ -2904,10 +2904,10 @@ body {
 
 .share-range-trigger {
   border: 1px solid color-mix(in srgb, var(--theme-border, #dfd3b5) 72%, transparent) !important;
-  border-radius: 16px !important;
+
   background: color-mix(in srgb, var(--theme-surface, #fffdf8) 94%, transparent) !important;
-  color: var(--theme-text, #252522) !important;
-  box-shadow: 0 6px 16px rgba(72, 55, 22, .04) !important;
+
+
 }
 
 .share-range-trigger[aria-expanded='true'] {
@@ -2924,7 +2924,7 @@ body {
 }
 
 .share-range-menu button {
-  color: var(--theme-text, #252522) !important;
+
 }
 
 .share-range-menu button.is-selected {
@@ -2948,39 +2948,39 @@ body {
 
 /* Use the same solid card language as Index rows/panels. */
 .share-range-card {
-  padding: 16px !important;
+
   border: 1px solid color-mix(in srgb, var(--theme-border, #dfd3b5) 72%, transparent) !important;
   border-radius: 22px !important;
-  background: var(--theme-surface-solid, #fffdf8) !important;
+
   box-shadow: 0 8px 20px rgba(71, 54, 23, .05) !important;
 }
 
 .share-range-card h3 {
   margin-bottom: 14px !important;
-  color: var(--theme-text, #252522) !important;
-  font-size: 1rem !important;
-  font-weight: 680 !important;
+
+
+
 }
 
 .share-range-selectors {
-  gap: 12px !important;
+
 }
 
 .share-range-field > span {
   margin-bottom: 7px !important;
   color: var(--theme-muted, #756f65) !important;
-  font-size: .78rem !important;
-  font-weight: 600 !important;
+
+
 }
 
 /* From/To fields must be opaque, like Index cards rather than glass controls. */
 .share-range-trigger {
   min-height: 56px !important;
-  padding: 0 14px !important;
+
   border: 1px solid color-mix(in srgb, var(--theme-border, #dfd3b5) 76%, transparent) !important;
   border-radius: 17px !important;
   background: var(--theme-surface-solid, #fffdf8) !important;
-  color: var(--theme-text, #252522) !important;
+
   box-shadow: 0 6px 16px rgba(72, 55, 22, .04) !important;
   opacity: 1 !important;
 }
@@ -2996,14 +2996,14 @@ body {
    soft selected row, compact scrollbar, and no transparent menu backing. */
 .share-range-menu {
   top: calc(100% + 9px) !important;
-  width: 100% !important;
+
   max-height: min(38dvh, 330px) !important;
   padding: 9px 8px !important;
-  overflow-y: auto !important;
+
   overscroll-behavior: contain !important;
   border: 1px solid color-mix(in srgb, var(--theme-border, #dfd3b5) 78%, transparent) !important;
   border-radius: 23px !important;
-  background: var(--theme-surface-solid, #fffdf8) !important;
+
   color: var(--theme-text, #252522) !important;
   box-shadow: 0 18px 42px rgba(0, 0, 0, .18) !important;
   opacity: 1 !important;
@@ -3287,10 +3287,10 @@ body {
 
 .share-media-live-preview {
   width: 100%;
-  overflow: hidden;
-  border-radius: 26px;
+
+
   background: #ead8b8;
-  box-shadow: 0 6px 22px rgba(31,61,43,.08);
+
 }
 
 .share-media-live-preview.is-landscape {
@@ -3308,7 +3308,7 @@ body {
 
 .share-media-live-preview .quran-share-generated-image {
   display: block;
-  width: 100%;
+
   height: auto;
 }
 
@@ -3336,7 +3336,7 @@ body {
 }
 
 .share-video-preview-background {
-  object-fit: cover;
+
 }
 
 .share-video-preview-fallback {
@@ -3385,7 +3385,7 @@ body {
   font-family: 'IndopakNastaleeq', serif;
   font-size: clamp(1.6rem, 7vw, 2.7rem);
   line-height: 1.85;
-  text-align: center;
+
   direction: rtl;
   animation: shareAyahFadeIn .22s ease both;
   text-shadow: 0 2px 8px rgba(0,0,0,.30);
@@ -3404,7 +3404,7 @@ body {
   min-height: 42px;
   transform: translateX(-50%);
   border: 1px solid rgba(255,255,255,.28);
-  border-radius: 999px;
+
   background: rgba(0,0,0,.32);
   color: white;
   font-weight: 600;
@@ -3531,20 +3531,20 @@ body {
 
 .share-background-grid button {
   aspect-ratio: 1;
-  overflow: hidden;
-  border: 2px solid transparent;
-  border-radius: 14px;
-  background: rgba(31,61,43,.06);
+
+
+
+
 }
 
 .share-background-grid button.is-selected {
-  border-color: var(--theme-accent, #2f7d68);
+
 }
 
 .share-background-grid img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+
+
+
 }
 
 .share-background-empty {
@@ -3675,11 +3675,11 @@ body {
 
 /* Share Quran refinement: solid Ayah card, full-frame preview, Settings-style reciter picker. */
 .share-media-range-card {
-  background: var(--theme-surface-solid, #fffdf8) !important;
+
   border-color: rgba(201, 162, 75, .18) !important;
   box-shadow: 0 4px 16px rgba(31, 61, 43, .05) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
+
+
 }
 
 .share-media-live-preview {
@@ -3711,7 +3711,7 @@ body {
 }
 
 .share-reciter-picker {
-  position: relative;
+
   display: grid;
   gap: 10px;
 }
@@ -3825,7 +3825,7 @@ body {
   display: grid;
   min-height: 22%;
   place-items: center;
-  transform: translateY(-50%);
+
   border: 1px solid rgba(255,255,255,.09);
   border-radius: 22px;
   background: rgba(8, 24, 22, .44);
@@ -3863,7 +3863,7 @@ body {
 }
 
 .share-text-settings {
-  display: grid;
+
   gap: 14px;
 }
 
@@ -3935,7 +3935,7 @@ body {
   display: block;
   height: auto !important;
   max-height: none !important;
-  overflow: hidden !important;
+
   border-radius: 26px;
   background: #103a34;
   box-shadow: 0 6px 22px rgba(31,61,43,.08);
@@ -3971,7 +3971,7 @@ body {
   width: 100% !important;
   height: 100% !important;
   max-height: none !important;
-  object-fit: contain !important;
+
   border-radius: 0 !important;
 }
 
@@ -3988,10 +3988,10 @@ body {
 /* Ayahs card follows the same solid card language as Settings. */
 .share-media-range-card {
   border: 1px solid rgba(201,162,75,.18) !important;
-  background: var(--theme-surface-solid, #fffdf8) !important;
+
   box-shadow: 0 4px 16px rgba(31,61,43,.05) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
+
+
 }
 
 /* From/To use the Settings-style field treatment. */
@@ -4082,8 +4082,8 @@ body {
 }
 
 .share-quran-page-content > * {
-  flex: 0 0 auto !important;
-  min-width: 0;
+
+
 }
 
 .share-media-live-preview {
@@ -4122,7 +4122,7 @@ body {
 }
 
 .share-range-menu {
-  z-index: 100 !important;
+
 }
 
 .share-media-final-action {
@@ -4272,17 +4272,17 @@ body {
 
 .share-media-live-preview.is-image.is-landscape,
 .share-media-live-preview.is-video.is-landscape {
-  aspect-ratio: 16 / 9 !important;
+
 }
 
 .share-image-preview-stage,
 .share-video-preview-stage {
-  position: absolute !important;
-  inset: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  min-height: 0 !important;
-  max-height: none !important;
+
+
+
+
+
+
 }
 
 /* Tabs and cards always sit below the preview. */
@@ -4311,17 +4311,17 @@ body {
 
 /* Dropdowns float above content but don't change layout height. */
 .share-range-field {
-  position: relative;
+
 }
 
 .share-range-menu {
-  position: absolute !important;
-  top: calc(100% + 8px) !important;
-  left: 0 !important;
-  right: 0 !important;
-  width: 100% !important;
-  max-height: 280px !important;
-  overflow-y: auto !important;
+
+
+
+
+
+
+
   z-index: 80 !important;
 }
 
@@ -4332,12 +4332,12 @@ body {
 
 .share-reciter-menu {
   position: absolute !important;
-  top: calc(100% + 8px) !important;
+
   left: 0 !important;
   right: 0 !important;
   width: 100% !important;
   max-height: 300px !important;
-  overflow-y: auto !important;
+
   z-index: 90 !important;
   border-radius: 18px !important;
   background: var(--theme-surface-solid, #fffdf8) !important;
@@ -4645,7 +4645,7 @@ body {
 
 /* Reserve independent zones in landscape: title / ayah card / controls. */
 .share-media-live-preview.is-video.is-landscape .share-video-preview-header {
-  top: 5% !important;
+
   right: 8% !important;
   left: 8% !important;
 }
@@ -4677,10 +4677,10 @@ body {
 
 .share-media-live-preview.is-video.is-landscape .share-video-preview-translation {
   display: -webkit-box;
-  margin-top: 6px !important;
+
   overflow: hidden;
   font-size: .68rem !important;
-  line-height: 1.28 !important;
+
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
 }
@@ -4712,14 +4712,14 @@ body {
 /* Share Quran media composition refinement */
 .share-video-preview-ayah-card {
   top: 45% !important;
-  right: 6% !important;
-  left: 6% !important;
+
+
   width: auto !important;
-  min-height: 0 !important;
-  height: auto !important;
+
+
   max-height: 58% !important;
   transform: translateY(-50%);
-  overflow: hidden !important;
+
   border: 0 !important;
   border-radius: 18px !important;
   background: rgba(4, 19, 18, .42) !important;
@@ -4732,9 +4732,9 @@ body {
 .share-video-preview-ayah span { transition: color 80ms linear; }
 .share-video-preview-translation { margin-top: 12px !important; display: block !important; overflow: visible !important; font-size: .84rem !important; line-height: 1.45 !important; -webkit-line-clamp: unset !important; }
 .share-video-preview-reference { margin-top: 12px; color: rgba(255,255,255,.76); font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: .92rem; font-weight: 600; line-height: 1.2; text-align: center; }
-.share-video-preview-controls { position: absolute !important; right: 5% !important; bottom: 4% !important; left: 5% !important; z-index: 8 !important; display: grid !important; grid-template-columns: 1fr !important; gap: 8px !important; min-height: 0 !important; border: 0 !important; border-radius: 0 !important; background: linear-gradient(180deg, transparent, rgba(0,0,0,.34)) !important; padding: 24px 4px 2px !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+.share-video-preview-controls { position: absolute !important; right: 5% !important; bottom: 4% !important; left: 5% !important; z-index: 8 !important; display: grid !important; grid-template-columns: 1fr !important; gap: 8px !important; min-height: 0 !important; border: 0 !important; background: linear-gradient(180deg, transparent, rgba(0,0,0,.34)) !important; padding: 24px 4px 2px !important; box-shadow: none !important; -webkit-backdrop-filter: none !important; }
 .share-video-preview-control-row { display: grid; grid-template-columns: 38px 1fr 38px; align-items: center; gap: 10px; }
-.share-video-preview-play, .share-video-preview-fullscreen { display: grid !important; width: 38px !important; height: 38px !important; place-items: center !important; border: 0 !important; border-radius: 999px !important; background: transparent !important; color: #fff !important; padding: 0 !important; }
+.share-video-preview-play, .share-video-preview-fullscreen { display: grid !important; width: 38px !important; height: 38px !important; place-items: center !important; border-radius: 999px !important; color: #fff !important; padding: 0 !important; }
 .share-video-preview-play:active, .share-video-preview-fullscreen:active { transform: scale(.94); }
 .share-video-preview-inline-time { color: rgba(255,255,255,.95); font-size: .76rem; font-variant-numeric: tabular-nums; text-align: left; }
 .share-video-preview-seek { width: 100% !important; height: 18px !important; margin: 0 !important; accent-color: #fff; }
@@ -4743,7 +4743,7 @@ body {
 .share-video-preview-seek::-moz-range-track { height: 5px !important; border-radius: 999px !important; background: rgba(255,255,255,.46) !important; }
 .share-video-preview-seek::-moz-range-thumb { width: 15px !important; height: 15px !important; border: 0 !important; border-radius: 50% !important; background: #fff !important; }
 .share-media-live-preview.is-video.is-landscape .share-video-preview-header { top: 5% !important; }
-.share-media-live-preview.is-video.is-landscape .share-video-preview-ayah-card { top: 46% !important; right: 8% !important; left: 8% !important; max-height: 55% !important; border-radius: 16px !important; padding: 10px 16px 9px !important; }
+.share-media-live-preview.is-video.is-landscape .share-video-preview-ayah-card { top: 46% !important; right: 8% !important; max-height: 55% !important; border-radius: 16px !important; padding: 10px 16px 9px !important; }
 .share-media-live-preview.is-video.is-landscape .share-video-preview-translation { margin-top: 6px !important; font-size: .70rem !important; line-height: 1.30 !important; }
 .share-media-live-preview.is-video.is-landscape .share-video-preview-reference { margin-top: 5px; font-size: .62rem; }
 .share-media-live-preview.is-video.is-landscape .share-video-preview-controls { right: 5% !important; bottom: 3% !important; left: 5% !important; padding-top: 18px !important; }
@@ -4953,11 +4953,11 @@ body {
 }
 
 .share-video-preview-translation {
-  font-size: calc(.84rem * var(--share-translation-scale, 1)) !important;
+
 }
 
 .share-media-live-preview.is-video.is-landscape .share-video-preview-translation {
-  font-size: calc(.70rem * var(--share-translation-scale, 1)) !important;
+
 }
 
 [data-theme='dark'] .share-surah-trigger,
@@ -5161,87 +5161,87 @@ body {
    This prevents page header, mode switch, tabs and settings cards from
    appearing around the media even when app ancestors use transforms. */
 .share-video-fullscreen-shell {
-  position: fixed !important;
-  inset: 0 !important;
-  z-index: 2147483000 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: 100vw !important;
-  height: 100dvh !important;
-  overflow: hidden !important;
-  background: #000 !important;
-  padding: 0 !important;
-  margin: 0 !important;
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 .share-video-fullscreen-shell .share-video-preview-stage.is-fullscreen {
-  position: relative !important;
-  inset: auto !important;
-  flex: none !important;
+
+
+
   max-width: 100vw !important;
   max-height: 100dvh !important;
-  border-radius: 0 !important;
-  overflow: hidden !important;
-  background: #000 !important;
+
+
+
 }
 
 /* Keep the exact downloaded-video aspect ratio instead of stretching the
    composition to the device's screen ratio. */
 .share-video-fullscreen-shell.is-portrait .share-video-preview-stage.is-fullscreen {
-  width: min(100vw, calc(100dvh * 9 / 16)) !important;
-  height: min(100dvh, calc(100vw * 16 / 9)) !important;
-  aspect-ratio: 9 / 16 !important;
+
+
+
 }
 
 .share-video-fullscreen-shell.is-landscape .share-video-preview-stage.is-fullscreen {
-  width: min(100vw, calc(100dvh * 16 / 9)) !important;
-  height: min(100dvh, calc(100vw * 9 / 16)) !important;
-  aspect-ratio: 16 / 9 !important;
+
+
+
 }
 
 /* Match shareVideoExport.js geometry. */
 .share-video-preview-stage.is-portrait .share-video-preview-header {
-  top: 4.5% !important;
-  right: 6% !important;
-  left: 6% !important;
+
+
+
 }
 
 .share-video-preview-stage.is-landscape .share-video-preview-header {
-  top: 4.5% !important;
-  right: 7% !important;
-  left: 7% !important;
+
+
+
 }
 
 .share-video-preview-stage.is-portrait .share-video-preview-ayah-card {
-  right: 6% !important;
-  left: 6% !important;
+
+
 }
 
 .share-video-preview-stage.is-landscape .share-video-preview-ayah-card {
-  right: 7% !important;
-  left: 7% !important;
+
+
 }
 
 /* Controls are preview chrome, not part of the composition.
    They disappear automatically so fullscreen becomes an unobstructed
    representation of the downloaded video. Tap the video to reveal them. */
 .share-video-fullscreen-shell .share-video-preview-controls {
-  transition: opacity 160ms ease !important;
+
 }
 
 .share-video-fullscreen-shell
 .share-video-preview-stage.is-controls-hidden
 .share-video-preview-controls {
-  opacity: 0 !important;
-  pointer-events: none !important;
+
+
 }
 
 .share-video-fullscreen-shell .share-video-preview-background {
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-  object-position: center !important;
+
+
+
+
 }
 
 /* Playback controls never participate in text/card layout calculations. */
@@ -5434,7 +5434,7 @@ body {
 .share-video-preview-reference.is-arabic-sized {
   font-size: calc(.68rem * var(--share-text-scale, 1)) !important;
   line-height: 1.2 !important;
-  font-weight: 500 !important;
+
 }
 .share-video-preview-stage.is-landscape .share-video-preview-reference.is-arabic-sized {
   font-size: calc(.58rem * var(--share-text-scale, 1)) !important;

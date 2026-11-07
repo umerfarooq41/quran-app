@@ -514,7 +514,7 @@ body,
 
 .reader-wave-bars span,
 .reader-wave-marker {
-  background: var(--reader-primary) !important;
+
 }
 
 .reader-audio-panel,
@@ -564,8 +564,8 @@ body,
 }
 
 .reader-page {
-  position: relative !important;
-  isolation: isolate;
+
+
 }
 
 .quran-line--juz-start {
@@ -3773,14 +3773,14 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
 
 [data-theme='dark'] .settings-toggle-row,
 [data-theme='dark'] .settings-picker-row {
-  background: transparent !important;
+
 }
 
 [data-theme='dark'] .settings-card > .settings-toggle-row + .settings-toggle-row,
 [data-theme='dark'] .settings-card > .settings-toggle-row + .settings-picker-row,
 [data-theme='dark'] .settings-card > .settings-picker-row + .settings-toggle-row,
 [data-theme='dark'] .settings-card > .settings-picker-row + .settings-picker-row {
-  border-top-color: var(--theme-border) !important;
+
 }
 
 [data-theme='dark'] .settings-row-icon {
