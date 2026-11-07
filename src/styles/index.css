@@ -2,8 +2,8 @@
 .index-replica-shell {
   min-height: 100dvh;
   overflow-x: hidden;
-  background: #eef0f2;
-  color: #17181b;
+  background: var(--theme-page-bg, #eef0f2);
+  color: var(--theme-text, #17181b);
   padding: calc(env(safe-area-inset-top, 0px) + 58px) 12px calc(env(safe-area-inset-bottom, 0px) + 26px);
 }
 
@@ -28,7 +28,7 @@
   font-weight: 500;
   line-height: .95;
   letter-spacing: -.055em;
-  color: #24262b;
+  color: var(--theme-text, #24262b);
 }
 
 .index-close-pill {
@@ -39,8 +39,8 @@
   flex: 0 0 auto;
   border: 0;
   border-radius: 999px;
-  background: #e1e3e6;
-  color: #020202;
+  background: var(--ui-control-bg, #e1e3e6);
+  color: var(--theme-text, #020202);
 }
 
 .index-segment {
@@ -49,7 +49,7 @@
   height: clamp(54px, 14vw, 64px);
   margin: 0 0 26px;
   border-radius: 999px;
-  background: #e0e2e5;
+  background: var(--ui-segment-bg, #e0e2e5);
   padding: 4px;
   box-shadow: inset 0 1px 0 rgba(255,255,255,.32);
 }
@@ -58,14 +58,14 @@
   border: 0;
   border-radius: 999px;
   background: transparent;
-  color: #111315;
+  color: var(--theme-text, #111315);
   font-size: clamp(.96rem, 3.8vw, 1.12rem);
   font-weight: 400;
   letter-spacing: -.02em;
 }
 
 .index-segment button.is-active {
-  background: #fff;
+  background: var(--ui-card-bg, #fff);
   box-shadow: 4px 0 0 rgba(0,0,0,.035), 0 2px 8px rgba(0,0,0,.035);
 }
 
@@ -84,8 +84,8 @@
   min-height: clamp(68px, 18vw, 82px);
   border: 0;
   border-radius: 24px;
-  background: #fff;
-  color: #101113;
+  background: var(--ui-card-bg, #fff);
+  color: var(--theme-text, #101113);
   box-shadow: none;
 }
 
@@ -104,9 +104,9 @@
   width: clamp(40px, 10.5vw, 48px);
   height: clamp(40px, 10.5vw, 48px);
   place-items: center;
-  border: 2px solid #d6d7d9;
+  border: 2px solid var(--theme-border, #d6d7d9);
   border-radius: 999px;
-  color: #17181b;
+  color: var(--theme-text, #17181b);
   font-size: clamp(1rem, 4vw, 1.2rem);
   font-weight: 400;
   line-height: 1;
@@ -114,7 +114,7 @@
 
 .index-card-title {
   min-width: 0;
-  color: #111315;
+  color: var(--theme-text, #111315);
   font-size: clamp(1.14rem, 5vw, 1.45rem);
   font-weight: 400;
   letter-spacing: -.045em;
@@ -134,7 +134,7 @@
 
 .index-section-title {
   margin: 0 0 10px 14px;
-  color: #111315;
+  color: var(--theme-text, #111315);
   font-size: clamp(.86rem, 3.5vw, 1rem);
   font-weight: 500;
   line-height: 1;
@@ -154,7 +154,7 @@
 
 .index-surah-text strong {
   overflow: hidden;
-  color: #08090a;
+  color: var(--theme-text, #08090a);
   font-size: clamp(1.08rem, 4.8vw, 1.38rem);
   font-weight: 650;
   line-height: 1.04;
@@ -165,7 +165,7 @@
 
 .index-surah-text small {
   overflow: hidden;
-  color: #9c9da1;
+  color: var(--theme-muted, #9c9da1);
   font-size: clamp(.82rem, 3.5vw, .98rem);
   font-weight: 400;
   line-height: 1.08;
@@ -191,9 +191,9 @@
   min-height: 58px;
   border: 0;
   border-radius: 18px;
-  background: #f1f2f3;
+  background: var(--ui-control-bg, #f1f2f3);
   padding: 10px 12px;
-  color: #111315;
+  color: var(--theme-text, #111315);
   text-align: left;
 }
 
@@ -210,7 +210,7 @@
 
 .index-quarter-btn span {
   margin-top: 3px;
-  color: #8c8d91;
+  color: var(--theme-muted, #8c8d91);
   font-size: .74rem;
 }
 
@@ -221,13 +221,13 @@
 
 .index-surah-info-preview {
   border-radius: 22px;
-  background: #f0efeb;
+  background: var(--ui-control-bg, #f0efeb);
   padding: 18px 18px 16px;
 }
 
 .index-surah-info-preview p {
   margin: 0;
-  color: #747b88;
+  color: var(--theme-muted, #747b88);
   font-size: clamp(.92rem, 3.8vw, 1.05rem);
   font-weight: 400;
   line-height: 1.52;
@@ -241,7 +241,7 @@
 .index-surah-info-label {
   display: block;
   margin-bottom: 7px;
-  color: #9ca5b4;
+  color: var(--theme-muted, #9ca5b4);
   font-size: .72rem;
   font-weight: 700;
   letter-spacing: .24em;
@@ -252,7 +252,7 @@
   display: inline;
   border: 0;
   background: transparent;
-  color: #1f2937;
+  color: var(--theme-text, #1f2937);
   padding: 0;
   font: inherit;
   font-weight: 650;
@@ -270,8 +270,8 @@
   height: 44px;
   border: 0;
   border-radius: 999px;
-  background: #f0f1f3;
-  color: #111315;
+  background: var(--ui-control-bg, #f0f1f3);
+  color: var(--theme-text, #111315);
   font-size: .95rem;
   font-weight: 500;
 }
@@ -304,7 +304,7 @@
   border: 0;
   background: transparent;
   padding: 2px 0;
-  color: #4f5863;
+  color: var(--theme-muted, #4f5863);
   font-size: clamp(.76rem, 3.2vw, .88rem);
   font-weight: 650;
   line-height: 1.2;
