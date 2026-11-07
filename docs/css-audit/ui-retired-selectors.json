@@ -1,0 +1,1136 @@
+{
+  "removedDeclarations": 188,
+  "resolvedPriority": 1549,
+  "removedSelectors": [
+    {
+      "from": "reader",
+      "selector": ".ayah-tafsir-block h3",
+      "retired": "ayah-tafsir-block"
+    },
+    {
+      "from": "reader",
+      "selector": ".ayah-tafsir-block p",
+      "retired": "ayah-tafsir-block"
+    },
+    {
+      "from": "reader",
+      "selector": ".ayah-tafsir-block button",
+      "retired": "ayah-tafsir-block"
+    },
+    {
+      "from": "reader",
+      "selector": ".ayah-tafsir-expanded",
+      "retired": "ayah-tafsir-expanded"
+    },
+    {
+      "from": "reader",
+      "selector": ".ayah-tafsir-heading",
+      "retired": "ayah-tafsir-heading"
+    },
+    {
+      "from": "reader",
+      "selector": ".reader-audio-wave-bars",
+      "retired": "reader-audio-wave-bars"
+    },
+    {
+      "from": "reader",
+      "selector": ".reader-audio-wave-bars span",
+      "retired": "reader-audio-wave-bars"
+    },
+    {
+      "from": "reader",
+      "selector": ".reader-audio-wave-bars span.wave-played",
+      "retired": "reader-audio-wave-bars"
+    },
+    {
+      "from": "reader",
+      "selector": ".reader-audio-wave-bars",
+      "retired": "reader-audio-wave-bars"
+    },
+    {
+      "from": "reader",
+      "selector": ".reader-audio-panel-hidden",
+      "retired": "reader-audio-panel-hidden"
+    },
+    {
+      "from": "reader",
+      "selector": ".ayah-tafsir-block",
+      "retired": "ayah-tafsir-block"
+    },
+    {
+      "from": "reader",
+      "selector": ".ayah-tafsir-block h3",
+      "retired": "ayah-tafsir-block"
+    },
+    {
+      "from": "reader",
+      "selector": ".ayah-tafsir-block p",
+      "retired": "ayah-tafsir-block"
+    },
+    {
+      "from": "reader",
+      "selector": ".ayah-tafsir-block h3",
+      "retired": "ayah-tafsir-block"
+    },
+    {
+      "from": "reader",
+      "selector": ".ayah-tafsir-block p",
+      "retired": "ayah-tafsir-block"
+    },
+    {
+      "from": "reader",
+      "selector": ".ayah-tafsir-block button",
+      "retired": "ayah-tafsir-block"
+    },
+    {
+      "from": "reader",
+      "selector": "[data-theme='dark'] .ayah-tafsir-block h3",
+      "retired": "ayah-tafsir-block"
+    },
+    {
+      "from": "reader",
+      "selector": "[data-theme='dark'] .ayah-tafsir-block button",
+      "retired": "ayah-tafsir-block"
+    },
+    {
+      "from": "share",
+      "selector": ".share-preview-panel",
+      "retired": "share-preview-panel"
+    },
+    {
+      "from": "share",
+      "selector": ".share-preview-header",
+      "retired": "share-preview-header"
+    },
+    {
+      "from": "share",
+      "selector": ".share-color-dots",
+      "retired": "share-color-dots"
+    },
+    {
+      "from": "share",
+      "selector": ".share-color-dots span",
+      "retired": "share-color-dots"
+    },
+    {
+      "from": "share",
+      "selector": ".share-preview-panel img",
+      "retired": "share-preview-panel"
+    },
+    {
+      "from": "share",
+      "selector": ".share-sheet-backdrop",
+      "retired": "share-sheet-backdrop"
+    },
+    {
+      "from": "share",
+      "selector": ".share-sheet-header",
+      "retired": "share-sheet-header"
+    },
+    {
+      "from": "share",
+      "selector": ".share-sheet-header p",
+      "retired": "share-sheet-header"
+    },
+    {
+      "from": "share",
+      "selector": ".share-sheet-header button",
+      "retired": "share-sheet-header"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-card h3",
+      "retired": "share-range-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-background-picker h3",
+      "retired": "share-background-picker"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-selectors",
+      "retired": "share-range-selectors"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-selectors label",
+      "retired": "share-range-selectors"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-selectors span",
+      "retired": "share-range-selectors"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-selectors select",
+      "retired": "share-range-selectors"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-card > p",
+      "retired": "share-range-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-background-picker > div",
+      "retired": "share-background-picker"
+    },
+    {
+      "from": "share",
+      "selector": ".share-background-picker button",
+      "retired": "share-background-picker"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-preview",
+      "retired": "quran-share-preview"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-frame",
+      "retired": "quran-share-frame"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-frame > h3",
+      "retired": "quran-share-frame"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-divider",
+      "retired": "quran-share-divider"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-divider::before",
+      "retired": "quran-share-divider"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-divider::after",
+      "retired": "quran-share-divider"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-divider span",
+      "retired": "quran-share-divider"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-ayahs",
+      "retired": "quran-share-ayahs"
+    },
+    {
+      "from": "share",
+      "selector": ".share-image-button",
+      "retired": "share-image-button"
+    },
+    {
+      "from": "share",
+      "selector": ".share-image-button:disabled",
+      "retired": "share-image-button"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-preview",
+      "retired": "quran-share-preview"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-frame",
+      "retired": "quran-share-frame"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-surah-header",
+      "retired": "quran-share-surah-header"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-surah-header img",
+      "retired": "quran-share-surah-header"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-surah-header h3",
+      "retired": "quran-share-surah-header"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-bismillah",
+      "retired": "quran-share-bismillah"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-ayahs",
+      "retired": "quran-share-ayahs"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-ayahs p",
+      "retired": "quran-share-ayahs"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-ayahs span",
+      "retired": "quran-share-ayahs"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-frame footer",
+      "retired": "quran-share-frame"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-frame footer img",
+      "retired": "quran-share-frame"
+    },
+    {
+      "from": "share",
+      "selector": ".share-background-picker button",
+      "retired": "share-background-picker"
+    },
+    {
+      "from": "share",
+      "selector": ".share-background-picker button:active",
+      "retired": "share-background-picker"
+    },
+    {
+      "from": "share",
+      "selector": ".share-background-picker button.is-active",
+      "retired": "share-background-picker"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-reference",
+      "retired": "quran-share-reference"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-frame footer",
+      "retired": "quran-share-frame"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-frame footer img",
+      "retired": "quran-share-frame"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-card",
+      "retired": "share-range-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-card > p",
+      "retired": "share-range-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-background-picker",
+      "retired": "share-background-picker"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-preview",
+      "retired": "quran-share-preview"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-surah-title",
+      "retired": "quran-share-surah-title"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-divider",
+      "retired": "quran-share-divider"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-bismillah",
+      "retired": "quran-share-bismillah"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-frame footer img",
+      "retired": "quran-share-frame"
+    },
+    {
+      "from": "share",
+      "selector": ".share-sheet-header button",
+      "retired": "share-sheet-header"
+    },
+    {
+      "from": "share",
+      "selector": ".share-sheet-header button:hover",
+      "retired": "share-sheet-header"
+    },
+    {
+      "from": "share",
+      "selector": ".share-sheet-header button:active",
+      "retired": "share-sheet-header"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-card",
+      "retired": "share-range-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-card > p",
+      "retired": "share-range-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-image-button",
+      "retired": "share-image-button"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-card",
+      "retired": "share-range-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-card h3",
+      "retired": "share-range-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-card > p",
+      "retired": "share-range-card"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-preview",
+      "retired": "quran-share-preview"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-frame",
+      "retired": "quran-share-frame"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-bismillah",
+      "retired": "quran-share-bismillah"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-ayahs",
+      "retired": "quran-share-ayahs"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-ayahs p",
+      "retired": "quran-share-ayahs"
+    },
+    {
+      "from": "share",
+      "selector": ".share-sheet-header",
+      "retired": "share-sheet-header"
+    },
+    {
+      "from": "share",
+      "selector": ".share-sheet-header h2",
+      "retired": "share-sheet-header"
+    },
+    {
+      "from": "share",
+      "selector": ".share-sheet-header .shared-back-button",
+      "retired": "share-sheet-header"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-card",
+      "retired": "share-range-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-card h3",
+      "retired": "share-range-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-selectors",
+      "retired": "share-range-selectors"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-card > p",
+      "retired": "share-range-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-card > p::before",
+      "retired": "share-range-card"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-generated-preview",
+      "retired": "quran-share-generated-preview"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-preview-loading",
+      "retired": "quran-share-preview-loading"
+    },
+    {
+      "from": "share",
+      "selector": ".share-quran-page-content .share-range-card",
+      "retired": "share-range-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-quran-page-content .share-image-button",
+      "retired": "share-image-button"
+    },
+    {
+      "from": "share",
+      "selector": ".share-orientation-switch",
+      "retired": "share-orientation-switch"
+    },
+    {
+      "from": "share",
+      "selector": ".share-orientation-switch button",
+      "retired": "share-orientation-switch"
+    },
+    {
+      "from": "share",
+      "selector": ".share-orientation-switch button.is-active",
+      "retired": "share-orientation-switch"
+    },
+    {
+      "from": "share",
+      "selector": ".share-video-preview-progress",
+      "retired": "share-video-preview-progress"
+    },
+    {
+      "from": "share",
+      "selector": ".share-video-preview-progress span",
+      "retired": "share-video-preview-progress"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-range-card",
+      "retired": "share-media-range-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-range-title h3",
+      "retired": "share-media-range-title"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-range-title p",
+      "retired": "share-media-range-title"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-simple-message span",
+      "retired": "share-media-simple-message"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-toggle-row span",
+      "retired": "share-media-toggle-row"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-simple-message",
+      "retired": "share-media-simple-message"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-simple-message > svg",
+      "retired": "share-media-simple-message"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-simple-message div",
+      "retired": "share-media-simple-message"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-control-group",
+      "retired": "share-media-control-group"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-control-group label",
+      "retired": "share-media-control-group"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-control-group select",
+      "retired": "share-media-control-group"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-toggle-row",
+      "retired": "share-media-toggle-row"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-toggle-row > div",
+      "retired": "share-media-toggle-row"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-toggle-row input",
+      "retired": "share-media-toggle-row"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-range-title",
+      "retired": "share-media-range-title"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-range-title > div",
+      "retired": "share-media-range-title"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-range-title > span",
+      "retired": "share-media-range-title"
+    },
+    {
+      "from": "share",
+      "selector": ".share-selected-reciter",
+      "retired": "share-selected-reciter"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-export-note",
+      "retired": "share-media-export-note"
+    },
+    {
+      "from": "share",
+      "selector": "[data-theme='dark'] .share-orientation-switch",
+      "retired": "share-orientation-switch"
+    },
+    {
+      "from": "share",
+      "selector": "[data-theme='dark'] .share-media-range-card",
+      "retired": "share-media-range-card"
+    },
+    {
+      "from": "share",
+      "selector": "[data-theme='dark'] .share-media-control-group select",
+      "retired": "share-media-control-group"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-range-card",
+      "retired": "share-media-range-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-range-card",
+      "retired": "share-media-range-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-toggle-row",
+      "retired": "share-media-toggle-row"
+    },
+    {
+      "from": "share",
+      "selector": "[data-theme='dark'] .share-media-range-card",
+      "retired": "share-media-range-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-text-size-control",
+      "retired": "share-text-size-control"
+    },
+    {
+      "from": "share",
+      "selector": ".share-text-size-control > button",
+      "retired": "share-text-size-control"
+    },
+    {
+      "from": "share",
+      "selector": ".share-text-size-control > button:active",
+      "retired": "share-text-size-control"
+    },
+    {
+      "from": "share",
+      "selector": ".share-text-size-control > button:disabled",
+      "retired": "share-text-size-control"
+    },
+    {
+      "from": "share",
+      "selector": ".share-text-size-control > div",
+      "retired": "share-text-size-control"
+    },
+    {
+      "from": "share",
+      "selector": ".share-text-size-control > div strong",
+      "retired": "share-text-size-control"
+    },
+    {
+      "from": "share",
+      "selector": ".share-text-size-control > div span",
+      "retired": "share-text-size-control"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-range-card",
+      "retired": "share-media-range-card"
+    },
+    {
+      "from": "share",
+      "selector": "[data-theme='dark'] .share-media-range-card",
+      "retired": "share-media-range-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-range-card",
+      "retired": "share-media-range-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-selected-reciter",
+      "retired": "share-selected-reciter"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-export-note",
+      "retired": "share-media-export-note"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-range-card",
+      "retired": "share-media-range-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-video-preview-seek-wrap",
+      "retired": "share-video-preview-seek-wrap"
+    },
+    {
+      "from": "share",
+      "selector": ".share-video-preview-time",
+      "retired": "share-video-preview-time"
+    },
+    {
+      "from": "share",
+      "selector": ".share-video-preview-progress",
+      "retired": "share-video-preview-progress"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-range-card",
+      "retired": "share-media-range-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-selected-reciter",
+      "retired": "share-selected-reciter"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-export-note",
+      "retired": "share-media-export-note"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-range-card",
+      "retired": "share-media-range-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-range-card",
+      "retired": "share-media-range-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-video-controls",
+      "retired": "share-video-controls"
+    },
+    {
+      "from": "share",
+      "selector": ".share-video-controls button",
+      "retired": "share-video-controls"
+    },
+    {
+      "from": "share",
+      "selector": ".share-video-controls .share-video-time",
+      "retired": "share-video-controls"
+    },
+    {
+      "from": "share",
+      "selector": ".share-video-controls input[type='range']",
+      "retired": "share-video-controls"
+    },
+    {
+      "from": "share",
+      "selector": ".share-video-controls",
+      "retired": "share-video-controls"
+    },
+    {
+      "from": "share",
+      "selector": ".share-text-settings",
+      "retired": "share-text-settings"
+    },
+    {
+      "from": "share",
+      "selector": ".share-text-size-section",
+      "retired": "share-text-size-section"
+    },
+    {
+      "from": "share",
+      "selector": ".share-text-ayahs-card",
+      "retired": "share-text-ayahs-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-text-ayahs-card .share-media-range-title",
+      "retired": "share-text-ayahs-card"
+    },
+    {
+      "from": "share",
+      "selector": "[data-theme='dark'] .share-text-ayahs-card",
+      "retired": "share-text-ayahs-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-text-ayahs-card",
+      "retired": "share-text-ayahs-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-media-export-note",
+      "retired": "share-media-export-note"
+    },
+    {
+      "from": "share",
+      "selector": ".share-selected-reciter",
+      "retired": "share-selected-reciter"
+    },
+    {
+      "from": "share",
+      "selector": ".share-translation-setting",
+      "retired": "share-translation-setting"
+    },
+    {
+      "from": "share",
+      "selector": ".share-translation-setting-copy",
+      "retired": "share-translation-setting-copy"
+    },
+    {
+      "from": "share",
+      "selector": ".share-translation-setting-copy > strong",
+      "retired": "share-translation-setting-copy"
+    },
+    {
+      "from": "share",
+      "selector": ".share-translation-setting-copy > span",
+      "retired": "share-translation-setting-copy"
+    },
+    {
+      "from": "share",
+      "selector": ".share-translation-setting-copy > small",
+      "retired": "share-translation-setting-copy"
+    },
+    {
+      "from": "share",
+      "selector": "[data-theme='dark'] .share-translation-setting",
+      "retired": "share-translation-setting"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-selectors.is-single",
+      "retired": "share-range-selectors"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-selectors.is-single .share-range-field",
+      "retired": "share-range-selectors"
+    },
+    {
+      "from": "share",
+      "selector": ".share-video-preview-seek-wrap",
+      "retired": "share-video-preview-seek-wrap"
+    },
+    {
+      "from": "share",
+      "selector": ".share-video-preview-time",
+      "retired": "share-video-preview-time"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-preview-loading",
+      "retired": "quran-share-preview-loading"
+    },
+    {
+      "from": "share",
+      "selector": ".share-video-preview-bismillah",
+      "retired": "share-video-preview-bismillah"
+    },
+    {
+      "from": "share",
+      "selector": ".share-video-preview-stage.is-landscape .share-video-preview-bismillah",
+      "retired": "share-video-preview-bismillah"
+    },
+    {
+      "from": "share",
+      "selector": ".share-video-preview-bismillah",
+      "retired": "share-video-preview-bismillah"
+    },
+    {
+      "from": "share",
+      "selector": ".share-video-preview-bismillah-reference",
+      "retired": "share-video-preview-bismillah-reference"
+    },
+    {
+      "from": "share",
+      "selector": ".share-reciter-list",
+      "retired": "share-reciter-list"
+    },
+    {
+      "from": "share",
+      "selector": ".share-reciter-option",
+      "retired": "share-reciter-option"
+    },
+    {
+      "from": "share",
+      "selector": ".share-reciter-option.is-selected",
+      "retired": "share-reciter-option"
+    },
+    {
+      "from": "share",
+      "selector": ".share-reciter-option:active",
+      "retired": "share-reciter-option"
+    },
+    {
+      "from": "share",
+      "selector": ".share-preview-panel",
+      "retired": "share-preview-panel"
+    },
+    {
+      "from": "share",
+      "selector": ".share-header-spacer",
+      "retired": "share-header-spacer"
+    },
+    {
+      "from": "share",
+      "selector": ".share-sheet-backdrop",
+      "retired": "share-sheet-backdrop"
+    },
+    {
+      "from": "share",
+      "selector": ".share-sheet-header",
+      "retired": "share-sheet-header"
+    },
+    {
+      "from": "share",
+      "selector": ".share-sheet-header > div",
+      "retired": "share-sheet-header"
+    },
+    {
+      "from": "share",
+      "selector": ".share-sheet-header p",
+      "retired": "share-sheet-header"
+    },
+    {
+      "from": "share",
+      "selector": ".share-sheet-header h2",
+      "retired": "share-sheet-header"
+    },
+    {
+      "from": "share",
+      "selector": ".share-sheet-header .shared-back-button",
+      "retired": "share-sheet-header"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-card",
+      "retired": "share-range-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-card h3",
+      "retired": "share-range-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-background-picker h3",
+      "retired": "share-background-picker"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-selectors",
+      "retired": "share-range-selectors"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-selectors label",
+      "retired": "share-range-selectors"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-selectors select",
+      "retired": "share-range-selectors"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-selectors select",
+      "retired": "share-range-selectors"
+    },
+    {
+      "from": "share",
+      "selector": ".share-background-picker",
+      "retired": "share-background-picker"
+    },
+    {
+      "from": "share",
+      "selector": ".share-background-picker > div",
+      "retired": "share-background-picker"
+    },
+    {
+      "from": "share",
+      "selector": ".share-background-picker button",
+      "retired": "share-background-picker"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-preview",
+      "retired": "quran-share-preview"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-frame",
+      "retired": "quran-share-frame"
+    },
+    {
+      "from": "share",
+      "selector": ".share-image-button",
+      "retired": "share-image-button"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-selectors",
+      "retired": "share-range-selectors"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-preview",
+      "retired": "quran-share-preview"
+    },
+    {
+      "from": "share",
+      "selector": ".quran-share-frame",
+      "retired": "quran-share-frame"
+    },
+    {
+      "from": "share",
+      "selector": "[data-theme='dark'] .share-sheet-header p",
+      "retired": "share-sheet-header"
+    },
+    {
+      "from": "share",
+      "selector": "[data-theme='dark'] .share-range-selectors span",
+      "retired": "share-range-selectors"
+    },
+    {
+      "from": "share",
+      "selector": "[data-theme='dark'] .share-range-card > p",
+      "retired": "share-range-card"
+    },
+    {
+      "from": "share",
+      "selector": "[data-theme='dark'] .share-range-card",
+      "retired": "share-range-card"
+    },
+    {
+      "from": "share",
+      "selector": "[data-theme='dark'] .share-sheet-header button",
+      "retired": "share-sheet-header"
+    },
+    {
+      "from": "share",
+      "selector": "[data-theme='dark'] .share-sheet-header h2",
+      "retired": "share-sheet-header"
+    },
+    {
+      "from": "share",
+      "selector": "[data-theme='dark'] .share-range-card h3",
+      "retired": "share-range-card"
+    },
+    {
+      "from": "share",
+      "selector": "[data-theme='dark'] .share-background-picker h3",
+      "retired": "share-background-picker"
+    },
+    {
+      "from": "share",
+      "selector": "[data-theme='dark'] .share-image-button",
+      "retired": "share-image-button"
+    },
+    {
+      "from": "share",
+      "selector": "[data-theme='dark'] .share-range-selectors select",
+      "retired": "share-range-selectors"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-card",
+      "retired": "share-range-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-sheet-header button",
+      "retired": "share-sheet-header"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-selectors select",
+      "retired": "share-range-selectors"
+    },
+    {
+      "from": "share",
+      "selector": ".share-sheet-header h2",
+      "retired": "share-sheet-header"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-card h3",
+      "retired": "share-range-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-background-picker h3",
+      "retired": "share-background-picker"
+    },
+    {
+      "from": "share",
+      "selector": ".share-sheet-header p",
+      "retired": "share-sheet-header"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-selectors span",
+      "retired": "share-range-selectors"
+    },
+    {
+      "from": "share",
+      "selector": ".share-range-card > p",
+      "retired": "share-range-card"
+    },
+    {
+      "from": "share",
+      "selector": ".share-sheet-header .shared-back-button",
+      "retired": "share-sheet-header"
+    },
+    {
+      "from": "share",
+      "selector": "[data-theme='dark'] .share-sheet-header .shared-back-button",
+      "retired": "share-sheet-header"
+    }
+  ]
+}

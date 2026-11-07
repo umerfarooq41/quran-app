@@ -8,6 +8,8 @@ import './styles/theme.css';
 import './styles/base.css';
 import './styles/app.css';
 import './styles/reader.css';
+import './styles/reader-audio.css';
+import './styles/translation.css';
 import './styles/share.css';
 import './styles/mushaf.css';
 import './styles/tabs.css';

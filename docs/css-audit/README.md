@@ -1,5 +1,9 @@
 # Coordinated CSS architecture audit
 
+**Current status:** the [UI follow-up](UI.md) resolves all remaining source CSS
+`!important` declarations. The counts and exceptions below describe the earlier
+architecture commit, not the current source tree.
+
 Baseline: `33a2c4c611aa8ae7f3306b2760cc8d28ad04b535` on
 `feature/tadabbur-gemini-foundation`. Production `main` is outside this change.
 
@@ -79,7 +83,7 @@ Mushaf rule cannot win merely because its file was imported later.
 
 The two cross-file owners are intentional `:root` and `:root[data-theme=dark]` token/reset scopes. Component selectors have a single file owner.
 
-### Remaining `!important` exceptions
+### Historical `!important` exceptions
 
 Ordinary screen, base, layout and shared primitive owners contain **zero**
 `!important` declarations. The remaining flags are confined to three protected

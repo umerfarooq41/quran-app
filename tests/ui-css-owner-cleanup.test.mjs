@@ -28,8 +28,8 @@ test('Responsive chrome and protected Share states live in their owners', async 
   assert.match(index, /\.index-surah-read-more\s*\{[^}]*color: var\(--theme-text\)/s);
 });
 
-test('Ordinary screen owners use the normal cascade; protected renderers own exceptions', async () => {
-  for (const name of ['app','base','help','home','index','reflect','search','settings','shared-surfaces','tabs','tafsir','theme','tokens']) {
+test('Every component owner uses the normal cascade', async () => {
+  for (const name of ['reader','reader-audio','translation','share','mushaf','app','base','help','home','index','reflect','search','settings','shared-surfaces','tabs','tafsir','theme','tokens']) {
     const root = postcss.parse(await read(name));
     root.walkDecls(d => assert.ok(!d.important, `${name}: ${d.prop}`));
   }
