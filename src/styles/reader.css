@@ -839,19 +839,19 @@ body {
 }
 
 .reader-passive-header {
-  height: calc(env(safe-area-inset-top, 0px) + 82px) !important;
-  padding-top: calc(env(safe-area-inset-top, 0px) + 30px) !important;
-  padding-inline: clamp(28px, 7vw, 46px) !important;
-  color: rgba(35, 35, 35, .68) !important;
-  font-size: clamp(1.12rem, 4.3vw, 1.35rem) !important;
-  font-weight: 600 !important;
+
+
+
+
+
+
 }
 
 .reader-footer-meta {
-  bottom: 22px !important;
-  padding-inline: clamp(32px, 8vw, 52px) !important;
-  color: rgba(35, 35, 35, .52) !important;
-  font-size: clamp(1.05rem, 4vw, 1.25rem) !important;
+
+
+
+
 }
 
 /* Step 5 correction: reference-small muted reader header/footer only. */
@@ -2888,9 +2888,9 @@ body {
 
 .share-range-card {
   border: 1px solid color-mix(in srgb, var(--theme-border, #dfd3b5) 64%, transparent) !important;
-  border-radius: 20px !important;
-  background: color-mix(in srgb, var(--theme-surface, #fffdf8) 92%, transparent) !important;
-  box-shadow: 0 9px 22px rgba(72, 55, 22, .05) !important;
+
+
+
 }
 
 .share-range-card h3 {
@@ -2903,9 +2903,9 @@ body {
 }
 
 .share-range-trigger {
-  border: 1px solid color-mix(in srgb, var(--theme-border, #dfd3b5) 72%, transparent) !important;
 
-  background: color-mix(in srgb, var(--theme-surface, #fffdf8) 94%, transparent) !important;
+
+
 
 
 }
@@ -2917,10 +2917,10 @@ body {
 }
 
 .share-range-menu {
-  border: 1px solid color-mix(in srgb, var(--theme-border, #dfd3b5) 72%, transparent) !important;
-  border-radius: 16px !important;
-  background: var(--theme-surface, #fffdf8) !important;
-  box-shadow: 0 14px 34px rgba(71, 54, 23, .12) !important;
+
+
+
+
 }
 
 .share-range-menu button {
@@ -2928,8 +2928,8 @@ body {
 }
 
 .share-range-menu button.is-selected {
-  background: linear-gradient(135deg, var(--brand-green, #2f7a68), #185b4d) !important;
-  color: #fff !important;
+
+
 }
 
 .share-range-menu button:active:not(.is-selected) {
@@ -2950,9 +2950,9 @@ body {
 .share-range-card {
 
   border: 1px solid color-mix(in srgb, var(--theme-border, #dfd3b5) 72%, transparent) !important;
-  border-radius: 22px !important;
 
-  box-shadow: 0 8px 20px rgba(71, 54, 23, .05) !important;
+
+
 }
 
 .share-range-card h3 {
@@ -2975,13 +2975,13 @@ body {
 
 /* From/To fields must be opaque, like Index cards rather than glass controls. */
 .share-range-trigger {
-  min-height: 56px !important;
 
-  border: 1px solid color-mix(in srgb, var(--theme-border, #dfd3b5) 76%, transparent) !important;
-  border-radius: 17px !important;
-  background: var(--theme-surface-solid, #fffdf8) !important;
 
-  box-shadow: 0 6px 16px rgba(72, 55, 22, .04) !important;
+
+
+
+
+
   opacity: 1 !important;
 }
 
@@ -2995,17 +2995,17 @@ body {
 /* Match the audio reciter chooser: solid floating surface, generous radius,
    soft selected row, compact scrollbar, and no transparent menu backing. */
 .share-range-menu {
-  top: calc(100% + 9px) !important;
 
-  max-height: min(38dvh, 330px) !important;
+
+
   padding: 9px 8px !important;
 
   overscroll-behavior: contain !important;
-  border: 1px solid color-mix(in srgb, var(--theme-border, #dfd3b5) 78%, transparent) !important;
+
   border-radius: 23px !important;
 
   color: var(--theme-text, #252522) !important;
-  box-shadow: 0 18px 42px rgba(0, 0, 0, .18) !important;
+
   opacity: 1 !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
@@ -3033,8 +3033,8 @@ body {
 }
 
 .share-range-menu button.is-selected {
-  background: color-mix(in srgb, var(--brand-green, #2f7a68) 12%, var(--theme-surface-solid, #fffdf8)) !important;
-  color: var(--theme-text, #252522) !important;
+
+
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand-green, #2f7a68) 22%, transparent) !important;
   font-weight: 720 !important;
 }
@@ -3138,13 +3138,13 @@ body {
 
 /* Branded but quiet range controls — no generic white input appearance. */
 .share-range-trigger {
-  min-height: 54px !important;
-  padding: 0 14px !important;
-  border: 1px solid rgba(182, 138, 53, .34) !important;
-  border-radius: 16px !important;
-  background: color-mix(in srgb, var(--brand-gold, #b68a35) 4.5%, var(--theme-surface-solid, #fffdf8)) !important;
+
+
+
+
+
   color: var(--theme-text, #252522) !important;
-  box-shadow: 0 2px 6px rgba(71, 54, 23, .045) !important;
+
   font-weight: 600 !important;
 }
 
@@ -3210,7 +3210,7 @@ body {
 }
 
 [data-theme='dark'] .share-range-trigger {
-  background: color-mix(in srgb, var(--brand-gold, #b68a35) 6%, var(--theme-surface-solid, #202723)) !important;
+
 }
 
 /* Share Quran — standalone screen. The share experience is a full app page,
@@ -3677,7 +3677,7 @@ body {
 .share-media-range-card {
 
   border-color: rgba(201, 162, 75, .18) !important;
-  box-shadow: 0 4px 16px rgba(31, 61, 43, .05) !important;
+
 
 
 }
@@ -4126,7 +4126,7 @@ body {
 }
 
 .share-media-final-action {
-  z-index: 2 !important;
+
 }
 
 /* Video preview transport controls: play/pause + real seek input. */
@@ -4267,7 +4267,7 @@ body {
 
 .share-media-live-preview.is-image.is-portrait,
 .share-media-live-preview.is-video.is-portrait {
-  aspect-ratio: 3 / 4 !important;
+
 }
 
 .share-media-live-preview.is-image.is-landscape,
@@ -4322,7 +4322,7 @@ body {
 
 
 
-  z-index: 80 !important;
+
 }
 
 /* Reciter picker must stay compact and self-contained. */
@@ -4336,11 +4336,11 @@ body {
   left: 0 !important;
   right: 0 !important;
   width: 100% !important;
-  max-height: 300px !important;
 
-  z-index: 90 !important;
+
+
   border-radius: 18px !important;
-  background: var(--theme-surface-solid, #fffdf8) !important;
+
   box-shadow: 0 14px 34px rgba(31,61,43,.18) !important;
 }
 
@@ -4394,7 +4394,7 @@ body {
 
 /* Quran Ayah card is shown only in Text tab for video. */
 .share-video-preview-ayah-card {
-  top: 47% !important;
+
   z-index: 5 !important;
 }
 
@@ -4661,34 +4661,34 @@ body {
 }
 
 .share-media-live-preview.is-video.is-landscape .share-video-preview-ayah-card {
-  top: 47% !important;
-  right: 11% !important;
-  left: 11% !important;
+
+
+
   min-height: 0 !important;
-  max-height: 46% !important;
-  padding: 10px 20px !important;
+
+
   overflow: hidden !important;
 }
 
 .share-media-live-preview.is-video.is-landscape .share-video-preview-ayah {
-  font-size: calc(clamp(.95rem, 3.2vw, 1.55rem) * var(--share-text-scale)) !important;
-  line-height: 1.42 !important;
+
+
 }
 
 .share-media-live-preview.is-video.is-landscape .share-video-preview-translation {
   display: -webkit-box;
 
   overflow: hidden;
-  font-size: .68rem !important;
+
 
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
 }
 
 .share-media-live-preview.is-video.is-landscape .share-video-preview-controls {
-  right: 8% !important;
+
   bottom: 4% !important;
-  left: 8% !important;
+
   min-height: 48px !important;
 }
 
@@ -4711,13 +4711,13 @@ body {
 
 /* Share Quran media composition refinement */
 .share-video-preview-ayah-card {
-  top: 45% !important;
+
 
 
   width: auto !important;
 
 
-  max-height: 58% !important;
+
   transform: translateY(-50%);
 
   border: 0 !important;
@@ -4728,11 +4728,11 @@ body {
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
 }
-.share-video-preview-ayah { line-height: 1.52 !important; }
+.share-video-preview-ayah { }
 .share-video-preview-ayah span { transition: color 80ms linear; }
-.share-video-preview-translation { margin-top: 12px !important; display: block !important; overflow: visible !important; font-size: .84rem !important; line-height: 1.45 !important; -webkit-line-clamp: unset !important; }
+.share-video-preview-translation { margin-top: 12px !important; display: block !important; overflow: visible !important; font-size: .84rem !important; -webkit-line-clamp: unset !important; }
 .share-video-preview-reference { margin-top: 12px; color: rgba(255,255,255,.76); font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: .92rem; font-weight: 600; line-height: 1.2; text-align: center; }
-.share-video-preview-controls { position: absolute !important; right: 5% !important; bottom: 4% !important; left: 5% !important; z-index: 8 !important; display: grid !important; grid-template-columns: 1fr !important; gap: 8px !important; min-height: 0 !important; border: 0 !important; background: linear-gradient(180deg, transparent, rgba(0,0,0,.34)) !important; padding: 24px 4px 2px !important; box-shadow: none !important; -webkit-backdrop-filter: none !important; }
+.share-video-preview-controls { position: absolute !important; right: 5% !important; bottom: 4% !important; left: 5% !important; z-index: 8 !important; display: grid !important; grid-template-columns: 1fr !important; gap: 8px !important; min-height: 0 !important; border: 0 !important; padding: 24px 4px 2px !important; -webkit-backdrop-filter: none !important; }
 .share-video-preview-control-row { display: grid; grid-template-columns: 38px 1fr 38px; align-items: center; gap: 10px; }
 .share-video-preview-play, .share-video-preview-fullscreen { display: grid !important; width: 38px !important; height: 38px !important; place-items: center !important; border-radius: 999px !important; color: #fff !important; padding: 0 !important; }
 .share-video-preview-play:active, .share-video-preview-fullscreen:active { transform: scale(.94); }
@@ -4742,14 +4742,14 @@ body {
 .share-video-preview-seek::-webkit-slider-thumb { width: 15px !important; height: 15px !important; margin-top: -5px !important; border: 0 !important; border-radius: 50% !important; background: #fff !important; }
 .share-video-preview-seek::-moz-range-track { height: 5px !important; border-radius: 999px !important; background: rgba(255,255,255,.46) !important; }
 .share-video-preview-seek::-moz-range-thumb { width: 15px !important; height: 15px !important; border: 0 !important; border-radius: 50% !important; background: #fff !important; }
-.share-media-live-preview.is-video.is-landscape .share-video-preview-header { top: 5% !important; }
-.share-media-live-preview.is-video.is-landscape .share-video-preview-ayah-card { top: 46% !important; right: 8% !important; max-height: 55% !important; border-radius: 16px !important; padding: 10px 16px 9px !important; }
-.share-media-live-preview.is-video.is-landscape .share-video-preview-translation { margin-top: 6px !important; font-size: .70rem !important; line-height: 1.30 !important; }
+.share-media-live-preview.is-video.is-landscape .share-video-preview-header { }
+.share-media-live-preview.is-video.is-landscape .share-video-preview-ayah-card { right: 8% !important; border-radius: 16px !important; }
+.share-media-live-preview.is-video.is-landscape .share-video-preview-translation { margin-top: 6px !important; font-size: .70rem !important; }
 .share-media-live-preview.is-video.is-landscape .share-video-preview-reference { margin-top: 5px; font-size: .62rem; }
 .share-media-live-preview.is-video.is-landscape .share-video-preview-controls { right: 5% !important; bottom: 3% !important; left: 5% !important; padding-top: 18px !important; }
 .share-video-preview-stage:fullscreen { width: 100vw !important; height: 100vh !important; border-radius: 0 !important; background: #000 !important; }
 .share-video-preview-stage:fullscreen .share-video-preview-background { object-fit: cover !important; }
-.share-video-preview-stage:fullscreen .share-video-preview-ayah-card { right: 8% !important; left: 8% !important; max-height: 58% !important; }
+.share-video-preview-stage:fullscreen .share-video-preview-ayah-card { right: 8% !important; left: 8% !important; }
 .share-video-preview-stage:fullscreen .share-video-preview-controls { right: 4% !important; bottom: 3% !important; left: 4% !important; }
 .share-video-preview-seek-wrap, .share-video-preview-time { display: none !important; }
 
@@ -5008,8 +5008,8 @@ body {
 }
 
 .share-video-preview-translation {
-  font-size: calc(.84rem * var(--share-translation-scale, 1)) !important;
-  line-height: 1.42 !important;
+
+
 }
 
 .share-media-live-preview.is-video.is-landscape .share-video-preview-header {
@@ -5387,8 +5387,8 @@ body {
 }
 
 .share-video-preview-reference.is-arabic-sized {
-  font-size: calc(clamp(1.18rem, 5.3vw, 2.05rem) * var(--share-text-scale, 1)) !important;
-  line-height: 1.25 !important;
+
+
 }
 
 .share-video-preview-reference.is-translation-sized {
@@ -5397,7 +5397,7 @@ body {
 }
 
 .share-video-preview-stage.is-landscape .share-video-preview-reference.is-arabic-sized {
-  font-size: calc(clamp(.95rem, 3.2vw, 1.55rem) * var(--share-text-scale, 1)) !important;
+
 }
 
 .share-video-preview-stage.is-landscape .share-video-preview-reference.is-translation-sized {
@@ -5432,7 +5432,7 @@ body {
 
 /* Share Quran — compact ayah references + Bismillah 1:1 marker */
 .share-video-preview-reference.is-arabic-sized {
-  font-size: calc(.68rem * var(--share-text-scale, 1)) !important;
+
   line-height: 1.2 !important;
 
 }

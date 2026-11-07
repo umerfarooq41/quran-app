@@ -1581,7 +1581,7 @@ html[data-theme='dark'] {
   border-radius: 0 0 18px 18px !important;
   background: var(--reader-surface, #fffaf1) !important;
   box-shadow: 0 10px 34px rgba(28, 23, 16, .10) !important;
-  padding: calc(env(safe-area-inset-top, 0px) + 7px) 24px 10px !important;
+
   opacity: 0;
   transform: translate3d(0, -100%, 0);
   transition:
@@ -2571,15 +2571,15 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
 
 .surah-info-html h2 {
   font-family: var(--translation-urdu-font) !important;
-  font-size: clamp(1.35rem, 5.5vw, 1.7rem) !important;
-  line-height: 1.75 !important;
+
+
   letter-spacing: 0 !important;
 }
 
 .surah-info-html h3 {
   font-family: var(--translation-urdu-font) !important;
-  font-size: clamp(1.2rem, 4.9vw, 1.45rem) !important;
-  line-height: 1.75 !important;
+
+
   letter-spacing: 0 !important;
 }
 
@@ -2902,7 +2902,7 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
 
 /* Surah Info reading card: shared visual treatment for Urdu and English. */
 .surah-info-content {
-  padding: 0 18px 28px !important;
+
   background: transparent !important;
   border: 0 !important;
   border-radius: 0 !important;
@@ -2911,7 +2911,7 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
 
 .surah-info-title-row {
   display: block !important;
-  margin: 18px 0 0 !important;
+
 }
 
 .surah-info-icon {
@@ -2921,8 +2921,8 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
 .surah-info-html {
   box-sizing: border-box;
   width: 100%;
-  margin-top: 28px !important;
-  padding: 20px 18px 24px !important;
+
+
   border: 1px solid rgba(174, 142, 74, .13);
   border-radius: 24px;
   background: rgba(255, 255, 255, .46);
@@ -3006,11 +3006,11 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
 
 @media (max-width: 380px) {
   .surah-info-content {
-    padding-inline: 14px !important;
+
   }
 
   .surah-info-html {
-    padding: 18px 16px 22px !important;
+
     border-radius: 21px;
   }
 }
@@ -3105,7 +3105,7 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
   border-radius: 0 !important;
   outline: 0 !important;
   background: transparent !important;
-  color: var(--theme-text) !important;
+
   padding: 0 !important;
   box-shadow: none !important;
   backdrop-filter: none !important;
@@ -3515,7 +3515,7 @@ body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel
   align-items: center;
   justify-content: flex-start;
   gap: 3px 5px;
-  margin: 0 0 11px !important;
+
   color: var(--theme-muted) !important;
   font-family: inherit !important;
   font-size: .78rem !important;
