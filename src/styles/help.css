@@ -1,3 +1,4 @@
+/* help: component-owned styles; responsive and theme states live with their owner. */
 .help-screen {
   display: grid;
   width: min(100%, 480px);
@@ -144,26 +145,6 @@
   font-size: .71rem;
 }
 
-.settings-help-row {
-  display: grid;
-  width: 100%;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 11px;
-  min-height: 72px;
-  padding: 11px 2px;
-  text-align: left;
-  color: var(--theme-text);
-}
-
-.settings-help-arrow {
-  padding-right: 4px;
-  color: var(--theme-muted);
-  font-size: 1.45rem;
-  font-weight: 300;
-  line-height: 1;
-}
-
 [data-theme='dark'] .help-intro-icon,
 [data-theme='dark'] .help-section-icon {
   background: rgba(52, 112, 94, .22);
@@ -176,7 +157,6 @@
   }
 }
 
-/* About, credits and legal information */
 .about-screen {
   display: grid;
   width: min(100%, 480px);
@@ -250,9 +230,13 @@
 }
 
 .about-section-label { display: grid; min-width: 0; gap: 3px; }
+
 .about-section-label strong { color: var(--theme-text); font-size: .82rem; font-weight: 730; }
+
 .about-section-label small { color: var(--theme-muted); font-size: .7rem; line-height: 1.35; }
+
 .about-section-chevron { color: var(--theme-muted); transition: transform .2s ease; }
+
 .about-section.is-open .about-section-chevron { transform: rotate(180deg); }
 
 .about-section-content {
@@ -265,9 +249,13 @@
 }
 
 .about-section-content p { margin: 12px 0 0; }
+
 .about-section-content h3 { margin: 14px 0 -4px; color: var(--theme-text); font-size: .78rem; font-weight: 750; }
+
 .about-section-content strong { color: var(--theme-text); font-weight: 720; }
+
 .about-links { display: grid; gap: 7px; margin-top: 14px; }
+
 .about-link-row {
   display: flex;
   align-items: center;
@@ -282,16 +270,18 @@
   text-decoration: none;
   font-weight: 700;
 }
+
 .about-disclaimer { font-size: .7rem; }
+
 .about-version { display: flex; justify-content: center; align-items: center; gap: 6px; color: var(--theme-muted); font-size: .68rem; padding: 4px 0 2px; }
+
 [data-theme='dark'] .about-intro-icon,
 [data-theme='dark'] .about-section-icon { background: rgba(52, 112, 94, .22); color: #9fcabb; }
+
 @media (max-width: 380px) { .about-section-content { padding-left: 2px; } }
 
-.qf-attribution {
-  margin: 8px 0 0;
-  color: var(--theme-muted);
-  font-size: .64rem;
-  line-height: 1.35;
-  text-align: left;
+.help-section-trigger {
+  transition: background-color .16s ease;
 }
+
+.help-section-content { border-top-color: var(--ui-divider); }

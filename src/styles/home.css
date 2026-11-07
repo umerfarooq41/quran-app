@@ -1,22 +1,12 @@
-/* Home screen and bottom navigation polish. */
-/* Premium manuscript direction refinements */
-.bg-fluent {
-  background:
-    radial-gradient(circle at 15% 10%, rgba(212, 168, 67, 0.18), transparent 38%),
-    radial-gradient(circle at 85% 18%, rgba(45, 110, 94, 0.12), transparent 32%),
-    radial-gradient(circle at 50% 90%, rgba(212, 168, 67, 0.10), transparent 40%),
-    linear-gradient(160deg, #fdf8ef 0%, #f8f3e8 50%, #f4f0e6 100%);
-}
+/* home: component-owned styles; responsive and theme states live with their owner. */
+
 
 .home-subtitle {
   font-family: IndopakNastaleeq, serif;
-  font-size: clamp(1.15rem, 4.5vw, 1.45rem);
   color: rgba(176, 132, 44, 0.78);
 }
 
 .home-title {
-  font-size: clamp(2.45rem, 9vw, 4rem);
-  font-weight: 760;
   letter-spacing: -0.045em;
   color: #1f180f;
 }
@@ -26,41 +16,26 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 28px 28px 28px 32px;
-  border-radius: 32px;
   background:
     radial-gradient(circle at 12% 0%, rgba(255,255,255,.18), transparent 36%),
     linear-gradient(135deg, #2d6e5e 0%, #1f483d 100%);
   color: #fff;
   text-align: left;
-  box-shadow: 0 18px 48px rgba(30, 68, 56, 0.32);
   overflow: hidden;
   position: relative;
 }
 
 .home-hero-label {
-  font-size: 0.78rem;
-  font-weight: 700;
   opacity: 0.66;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-.home-hero-surah {
-  font-size: clamp(1.65rem, 6vw, 2.25rem);
-  font-weight: 760;
-  margin: 7px 0 8px;
-}
-
 .home-hero-meta {
-  font-size: 0.92rem;
   opacity: 0.68;
 }
 
 .home-hero-ornament {
-  width: 74px;
-  height: 74px;
   display: grid;
   place-items: center;
   border-radius: 50%;
@@ -70,52 +45,20 @@
 
 .home-actions-row {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 10px;
 }
 
 .home-action-chip {
   display: flex;
-  min-width: 0;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 16px 6px;
-  border-radius: 22px;
   background: rgba(255, 255, 255, 0.72);
   border: 1px solid rgba(255, 255, 255, 0.84);
   backdrop-filter: blur(16px);
-  font-size: 0.72rem;
-  font-weight: 700;
   color: #3a3228;
   box-shadow: 0 4px 16px rgba(19, 54, 105, 0.07);
 }
 
 .home-action-icon { color: #b8882a; }
-
-.nav-icon-btn {
-  position: relative;
-  display: grid;
-  height: 44px;
-  width: 44px;
-  place-items: center;
-  border-radius: 22px;
-  color: #5d5448;
-  transition: color 0.2s ease;
-}
-
-.nav-icon-active-bg {
-  position: absolute;
-  inset: 0;
-  border-radius: 22px;
-  background: #2d6e5e;
-  opacity: 0;
-  transform: scale(0.5);
-  transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.nav-icon-btn.active { color: #fff; }
-.nav-icon-btn.active .nav-icon-active-bg { opacity: 1; transform: scale(1); }
 
 @media (max-width: 420px) {
   .home-actions-row { gap: 7px; }
@@ -190,7 +133,6 @@
   position: relative;
   z-index: 1;
   width: 100%;
-  min-height: 82px;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
@@ -231,11 +173,9 @@
 .home-favorite-copy {
   min-width: 0;
   display: grid;
-  gap: 5px;
 }
 
 .home-favorite-copy strong {
-  color: #2d271f !important;
   overflow: hidden;
   color: #2d271f;
   font-size: 1.02rem;
@@ -246,7 +186,6 @@
 }
 
 .home-favorite-copy small {
-  color: #6f6254 !important;
   overflow: hidden;
   color: #6f6254;
   font-size: .73rem;
@@ -298,7 +237,6 @@
 
 @media (max-width: 370px) {
   .home-favorite-row {
-    min-height: 76px;
     padding: 12px 15px;
   }
 
@@ -310,21 +248,18 @@
   .home-empty-link { display: none; }
 }
 
-
-/* Final Home spacing / navigation / favorite refinements */
 .home-branding-block {
   padding-bottom: 8px;
 }
 
-/* Higher specificity than later generic theme rules. */
 .home-actions-row.home-actions-row-spaced {
-  gap: 12px !important;
+  gap: 12px;
 }
 
 .home-actions-row.home-actions-row-spaced .home-action-chip {
   box-shadow:
     0 6px 18px rgba(31, 61, 43, .09),
-    0 1px 3px rgba(31, 61, 43, .04) !important;
+    0 1px 3px rgba(31, 61, 43, .04);
 }
 
 .home-favorite-row {
@@ -339,7 +274,7 @@
 
 @media (max-width: 420px) {
   .home-actions-row.home-actions-row-spaced {
-    gap: 10px !important;
+    gap: 10px;
   }
 }
 
@@ -351,8 +286,6 @@
   }
 }
 
-
-/* Reflect uses the same section heading and compact row language as Favorites. */
 .home-reflect-section {
   gap: 12px;
 }
@@ -361,25 +294,11 @@
   width: 100%;
   min-width: 0;
   min-height: 74px;
-  display: grid;
   grid-template-columns: 46px minmax(0, 1fr);
-  align-items: center;
-  gap: 14px;
   border-radius: 18px;
   padding: 11px 18px;
   color: #30291f;
   text-align: left;
-}
-
-.home-reflect-icon {
-  display: grid;
-  width: 46px;
-  height: 46px;
-  place-items: center;
-  border: 1.5px solid rgba(184, 136, 42, .38);
-  border-radius: 50%;
-  color: #8d671f;
-  background: rgba(184, 136, 42, .06);
 }
 
 .home-reflect-copy {
@@ -406,16 +325,255 @@
     min-height: 70px;
     padding: 10px 15px;
   }
-  .home-reflect-icon {
-    width: 42px;
-    height: 42px;
+}
+
+.home-reflect-card { display:flex; align-items:center; gap:0; }
+
+.home-reflect-card .home-reflect-copy { display:flex; flex:1 1 auto; min-width:0; width:100%; flex-direction:column; align-items:flex-start; }
+
+.home-reflect-card .home-reflect-copy strong { display:block; width:100%; overflow:visible; text-overflow:clip; white-space:normal; }
+
+.home-reflect-card .home-reflect-copy small { display:block; width:100%; overflow:visible; text-overflow:clip; white-space:normal; }
+
+.home-subtitle { margin: 0; }
+
+.home-hero-card {
+  box-shadow: 0 12px 30px rgba(30, 68, 56, 0.22);
+}
+
+.home-action-chip {
+  line-height: 1.05;
+}
+
+@media (min-width: 640px) {
+  .home-hero-card { padding: 26px 28px 26px 30px; border-radius: 30px; }
+  .home-action-chip { padding: 15px 6px; border-radius: 21px; font-size: .72rem; }
+}
+
+.home-title {
+  max-width: 100%;
+  margin-block: var(--ui-space-2) 0;
+  font-size: clamp(1.78rem, 8vw, 2.18rem);
+  font-weight: 650;
+  line-height: 1;
+  overflow-wrap: anywhere;
+}
+
+.home-subtitle {
+  max-width: 100%;
+  font-size: clamp(.92rem, 3.8vw, 1.08rem);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.home-hero-card {
+  min-width: 0;
+  gap: var(--ui-space-5);
+  border-radius: var(--ui-radius-xl);
+  padding: var(--ui-space-7);
+}
+
+.home-hero-content {
+  min-width: 0;
+}
+
+.home-hero-label {
+  font-size: var(--ui-text-xs);
+  font-weight: 600;
+}
+
+.home-hero-surah {
+  overflow: hidden;
+  margin: var(--ui-space-1) 0;
+  font-size: 1.34rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-hero-meta {
+  overflow: hidden;
+  font-size: var(--ui-text-sm);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-hero-ornament {
+  width: 48px;
+  height: 48px;
+}
+
+.home-hero-ornament svg {
+  width: var(--ui-icon-lg);
+  height: var(--ui-icon-lg);
+}
+
+.home-actions-row {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--ui-space-2);
+}
+
+.home-action-chip {
+  min-width: 0;
+  min-height: 60px;
+  gap: var(--ui-space-2);
+  border-radius: var(--ui-radius-md);
+  padding: var(--ui-space-4) var(--ui-space-1);
+  font-size: var(--ui-text-xs);
+  font-weight: 600;
+}
+
+.home-action-chip span {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-action-chip svg {
+  width: var(--ui-icon-md);
+  height: var(--ui-icon-md);
+}
+
+@media (max-width: 360px) {
+  .home-actions-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-/* Reflect Home entry uses the same density as Favorite Surahs. */
-.home-reflect-card { display:flex; align-items:center; gap:0; }
-.home-reflect-card .home-reflect-copy { display:flex; flex:1 1 auto; min-width:0; width:100%; flex-direction:column; align-items:flex-start; }
-.home-reflect-card .home-reflect-copy strong { display:block; width:100%; overflow:visible; text-overflow:clip; white-space:normal; }
-.home-reflect-card .home-reflect-copy small { display:block; width:100%; overflow:visible; text-overflow:clip; white-space:normal; }
+[data-theme='dark'] .home-title {
+  color: var(--theme-text);
+}
 
+[data-theme='dark'] .home-subtitle,
+[data-theme='dark'] .home-action-icon {
+  color: #d6ad58;
+}
 
+[data-theme='dark'] .home-hero-card {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255,255,255,.1), transparent 36%),
+    linear-gradient(135deg, #286454 0%, #173b32 100%);
+}
+
+[data-theme='dark'] .home-action-chip {
+  border-color: var(--theme-border);
+  background: var(--theme-surface-solid);
+  color: var(--theme-text);
+  box-shadow: 0 9px 28px var(--theme-shadow);
+}
+
+@media (min-width: 768px) {
+
+  .home-actions-row {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(10px, 1.8vw, 16px);
+  }
+
+  .home-hero-card {
+    padding: clamp(24px, 3.8vw, 34px) clamp(26px, 4vw, 38px);
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .home-hero-surah {
+    font-size: clamp(1.7rem, 3vw, 2.3rem);
+  }
+}
+
+[data-theme='dark'] .home-favorite-swipe {
+  background: transparent;
+  box-shadow: none;
+}
+
+[data-theme='dark'] .home-favorite-swipe.is-swiped {
+  background: #c83a35;
+}
+
+[data-theme='dark'] .home-favorite-row {
+  border-color: var(--theme-border);
+  background: var(--theme-surface-solid);
+  color: var(--theme-text);
+  box-shadow: 0 8px 22px var(--theme-shadow);
+}
+
+[data-theme='dark'] .home-favorite-row:active {
+  background: var(--theme-soft);
+}
+
+[data-theme='dark'] .home-favorite-copy strong {
+  color: var(--theme-text);
+}
+
+[data-theme='dark'] .home-favorite-copy small {
+  color: var(--theme-muted);
+}
+
+[data-theme='dark'] .home-favorite-number {
+  border-color: color-mix(in srgb, var(--brand-gold) 48%, var(--theme-border));
+  color: color-mix(in srgb, var(--brand-gold) 72%, #fff);
+  background: color-mix(in srgb, var(--brand-gold) 8%, transparent);
+}
+
+[data-theme='dark'] .home-favorites-empty {
+  border-color: var(--theme-border);
+  background: var(--theme-surface-solid);
+  box-shadow: 0 8px 22px var(--theme-shadow);
+}
+
+[data-theme='dark'] .home-favorites-empty small {
+  color: var(--theme-muted);
+}
+
+[data-theme='dark'] .home-section-heading h2 {
+  color: var(--theme-text);
+}
+
+[data-theme='dark'] .home-section-heading,
+[data-theme='dark'] .home-favorites-section {
+  color: var(--theme-text);
+}
+
+[data-theme='dark'] .home-favorites-empty {
+  color: var(--theme-muted);
+}
+
+[data-theme='dark'] .home-reflect-copy strong {
+  color: var(--theme-text);
+}
+
+[data-theme='dark'] .home-reflect-copy small {
+  color: var(--theme-muted);
+}
+
+#root .home-favorite-copy strong {
+  color: #2d271f;
+}
+
+#root .home-favorite-copy small {
+  color: #6f6254;
+}
+
+[data-theme='dark'] #root .home-favorite-copy strong {
+  color: var(--theme-text);
+}
+
+[data-theme='dark'] #root .home-favorite-copy small {
+  color: var(--theme-muted);
+}
+
+.home-action-chip,
+.home-favorite-row {
+  transition: background-color .16s ease;
+}
+
+.home-reflect-card,
+.home-favorite-row { min-height: 92px; padding: 17px 19px; border-radius: 23px; }
+
+.home-reflect-card .home-reflect-copy { gap: 4px; }
+
+@media(max-width:370px) {
+  .home-reflect-card,
+.home-favorite-row { min-height: 76px; padding: 12px 15px; }
+}

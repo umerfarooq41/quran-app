@@ -31,7 +31,7 @@ export default function ContemplationAndRemembrance({ active, contemplationOpen,
             <p className="mt-1 text-sm text-slate-600">{group.items[group.index].prompt}</p>
             <textarea id={'reflect-'+group.items[group.index].key} className={field+' mt-3 min-h-28'} rows={4} placeholder={group.items[group.index].placeholder} value={active.answers?.tadabbur?.[group.items[group.index].key]||''} onChange={event=>saveTadabburField(group.items[group.index].key,event.target.value)} onBlur={flushAnswers}/>
             <div className="mt-3 flex items-center justify-between gap-3">
-              <button type="button" className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 disabled:opacity-40" disabled={group.index===0} onClick={()=>group.setIndex(i=>Math.max(0,i-1))}>‹ Previous</button>
+              <button type="button" className="reflect-secondary-button rounded-xl px-3 py-2 text-sm font-semibold disabled:opacity-40" disabled={group.index===0} onClick={()=>group.setIndex(i=>Math.max(0,i-1))}>‹ Previous</button>
               <button type="button" className="rounded-xl bg-[#2d6e5e] px-4 py-2 text-sm font-semibold text-white disabled:opacity-40" disabled={group.index===group.items.length-1} onClick={()=>group.setIndex(i=>Math.min(group.items.length-1,i+1))}>Next ›</button>
             </div>
           </div>}

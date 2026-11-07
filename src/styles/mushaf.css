@@ -1,31 +1,122 @@
-/*
- * Protected Mushaf rendering contract.
- * Do not place reader chrome or general responsive UI rules in this file.
- * Preserve text metrics, spacing, justification, and page fitting.
- */
+/* mushaf: component-owned styles; responsive and theme states live with their owner. */
 
-.reader-shell {
-  isolation: isolate;
-  width: 100vw;
-  max-width: 576px;
-  overflow: hidden !important;
-  background: #ffffff !important;
+
+.reader-page .reader-ayah-highlight-amber { background: rgba(250, 204, 21, .24); }
+.reader-page .reader-ayah-highlight-emerald { background: rgba(134, 239, 172, .24); }
+.reader-page .reader-ayah-highlight-sky { background: rgba(147, 197, 253, .24); }
+.reader-page .reader-ayah-highlight-violet { background: rgba(196, 181, 253, .24); }
+.reader-page .reader-ayah-highlight-rose { background: rgba(253, 164, 175, .24); }
+.reader-page .reader-word-highlight-amber { background: rgba(250, 204, 21, .48); }
+.reader-page .reader-word-highlight-emerald { background: rgba(134, 239, 172, .48); }
+.reader-page .reader-word-highlight-sky { background: rgba(147, 197, 253, .48); }
+.reader-page .reader-word-highlight-violet { background: rgba(196, 181, 253, .48); }
+.reader-page .reader-word-highlight-rose { background: rgba(253, 164, 175, .48); }
+.reader-page-slide-viewport {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--reader-bg, #fffaf1);
+  touch-action: pan-y;
+}
+@media (hover: hover) and (pointer: fine) {
+  .reader-page-slide-viewport {
+    cursor: grab;
+  }
+
+  .reader-page-slide-viewport.is-dragging {
+    cursor: grabbing;
+  }
+}
+.reader-page-slide {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  min-width: 100%;
+  height: 100%;
+  background: var(--reader-bg, #fffaf1);
+  will-change: transform;
+}
+.reader-page-slide > .reader-page {
+  flex: 1 1 auto;
+  height: 100%;
+}
+.reader-page-slide-current {
+  z-index: 2;
+  transform: translate3d(var(--reader-page-slide-x, 0px), 0, 0);
+}
+.reader-page-slide-adjacent {
+  z-index: 1;
+  pointer-events: none;
+}
+.reader-page-slide-adjacent.is-next {
+  transform: translate3d(calc(-100% + var(--reader-page-slide-x, 0px)), 0, 0);
+}
+.reader-page-slide-adjacent.is-previous {
+  transform: translate3d(calc(100% + var(--reader-page-slide-x, 0px)), 0, 0);
+}
+.reader-page-slide-viewport.is-settling .reader-page-slide-current,
+.reader-page-slide-viewport.is-settling .reader-page-slide-adjacent {
+  transition: transform .19s ease-out;
+}
+.reader-page-slide-viewport.is-transitioning .reader-page-slide {
+  pointer-events: none;
+}
+.reader-page-slide-viewport.is-transitioning.is-next .reader-page-slide-current {
+  animation: readerPageEnterFromLeft .19s ease-out both;
+}
+.reader-page-slide-viewport.is-transitioning.is-next .reader-page-slide-leaving {
+  animation: readerPageExitToRight .19s ease-out both;
+}
+.reader-page-slide-viewport.is-transitioning.is-previous .reader-page-slide-current {
+  animation: readerPageEnterFromRight .19s ease-out both;
+}
+.reader-page-slide-viewport.is-transitioning.is-previous .reader-page-slide-leaving {
+  animation: readerPageExitToLeft .19s ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reader-page-slide,
+.reader-page-slide-viewport.is-settling .reader-page-slide-current,
+.reader-page-slide-viewport.is-settling .reader-page-slide-adjacent {
+    transition: none;
+    animation: none !important;
+  }
+}
+.reader-page .quran-word.is-recited-word {
+  color: #2d6e5e !important;
+  background: transparent !important;
+  font-size: inherit;
+  font-weight: inherit;
+  text-shadow: none;
+  box-shadow: none;
+}
+[data-theme='dark'] .reader-page .quran-word.is-recited-word {
+  color: #69ae97 !important;
+  background: transparent !important;
+}
+.reader-page .quran-word.is-recited-word,
+.reader-page .quran-word.is-recited-word::before,
+.reader-page .quran-word.is-recited-word::after {
+  background: transparent !important;
+  background-color: transparent !important;
   box-shadow: none !important;
 }
-
+.reader-shell {
+  isolation: isolate;
+  overflow: hidden !important;
+  background: #ffffff !important;
+}
 .grid-rows-16 {
   grid-template-rows: repeat(16, minmax(0, 1fr));
 }
-
 .quran-line-marked {
   background: linear-gradient(90deg, rgba(218, 165, 80, .08), rgba(168, 117, 55, .16), rgba(218, 165, 80, .08));
 }
-
 .quran-line-jumped {
   background: linear-gradient(90deg, rgba(56, 189, 248, .08), rgba(14, 165, 233, .22), rgba(56, 189, 248, .08));
   box-shadow: inset 0 0 0 1px rgba(14, 165, 233, .22);
 }
-
 .surah-banner {
   position: absolute;
   z-index: 5;
@@ -38,8 +129,6 @@
   margin: 0;
   direction: ltr;
   font-family: IndopakNastaleeq, serif;
-  color: #12110c;
-  background-color: transparent !important;
   background-repeat: no-repeat !important;
   background-position: center !important;
   /* Keep the outer gold stroke visible while remaining visually edge-to-edge. */
@@ -47,20 +136,14 @@
   pointer-events: none;
   overflow: visible;
 }
-
 .surah-banner--single,
 .surah-banner--inline {
   padding: 0;
   background-image: url('/border/Border Quran-01.svg') !important;
 }
-
 .surah-banner--single {
   display: block;
 }
-
-/* Single-row headers use one ornament-safe justified group:
- * ayah count | equal flexible space | Bismillah | equal flexible space | Surah name.
- * The outer labels sit at the available-area edges while the two gaps remain equal. */
 .surah-banner--inline {
   display: grid;
   box-sizing: border-box;
@@ -69,7 +152,6 @@
   padding-inline: 13.8%;
   column-gap: 0;
 }
-
 .surah-banner--single .surah-banner-ayahs,
 .surah-banner--single .surah-banner-name {
   position: absolute;
@@ -82,7 +164,6 @@
   overflow: hidden;
   text-align: center;
 }
-
 .surah-banner--inline .surah-banner-ayahs,
 .surah-banner--inline .surah-banner-name,
 .surah-banner--inline .surah-banner-basmallah {
@@ -98,39 +179,32 @@
   overflow: hidden;
   text-align: center;
 }
-
 .surah-banner--inline .surah-banner-ayahs {
   grid-column: 1;
   justify-self: start;
   font-size: calc(clamp(.74rem, 1.72vh, .98rem) * var(--font-scale, 1));
 }
-
 .surah-banner--inline .surah-banner-basmallah {
   grid-column: 3;
   justify-self: center;
   font-size: calc(clamp(.94rem, 2.18vh, 1.26rem) * var(--font-scale, 1));
 }
-
 .surah-banner--inline .surah-banner-name {
   grid-column: 5;
   justify-self: end;
   font-size: calc(clamp(.80rem, 1.88vh, 1.08rem) * var(--font-scale, 1));
 }
-
-/* Single/Surah-only header zones. */
 .surah-banner--single .surah-banner-ayahs {
   left: 13.8%;
   width: 14% !important;
   font-size: calc(clamp(.66rem, 1.56vh, .90rem) * var(--font-scale, 1));
 }
-
 .surah-banner--single .surah-banner-name {
   left: 27%;
   right: 27%;
   width: auto !important;
   font-size: calc(clamp(.90rem, 2.12vh, 1.22rem) * var(--font-scale, 1));
 }
-
 .surah-banner--double {
   display: block;
   top: 0;
@@ -138,7 +212,6 @@
   height: 200%;
   background-image: url('/border/Border Quran-02.svg') !important;
 }
-
 .surah-banner--double .surah-banner-ayahs,
 .surah-banner--double .surah-banner-name,
 .surah-banner--double .surah-banner-basmallah {
@@ -150,10 +223,6 @@
   overflow: hidden;
   text-align: center;
 }
-
-/* Exact text compartments for the 1200 × 239 two-row SVG.
- * Nastaleeq has a visually high baseline, so each compartment receives
- * a small top inset rather than being shifted with transforms. */
 .surah-banner--double .surah-banner-ayahs {
   box-sizing: border-box;
   left: 4.2%;
@@ -163,7 +232,6 @@
   padding: 3.1% 1.2% 0;
   font-size: calc(clamp(.68rem, 1.60vh, .92rem) * var(--font-scale, 1));
 }
-
 .surah-banner--double .surah-banner-name {
   box-sizing: border-box;
   left: 18.7%;
@@ -174,7 +242,6 @@
   padding: 2.2% 2% 0;
   font-size: calc(clamp(.88rem, 2.02vh, 1.18rem) * var(--font-scale, 1));
 }
-
 .surah-banner--double .surah-banner-basmallah {
   box-sizing: border-box;
   left: 14.5%;
@@ -185,7 +252,6 @@
   padding: 1.3% 2.5% 0;
   font-size: calc(clamp(1.02rem, 2.42vh, 1.38rem) * var(--font-scale, 1));
 }
-
 .surah-banner-name,
 .surah-banner-ayahs,
 .surah-banner-basmallah {
@@ -195,7 +261,6 @@
   direction: rtl;
   line-height: 1;
 }
-
 .surah-banner-fit-text {
   display: inline-block;
   max-width: 100%;
@@ -203,7 +268,6 @@
   font-size: calc(1em * var(--header-text-scale, 1));
   transform-origin: center;
 }
-
 @media (max-width: 420px) {
   .surah-banner--inline {
     padding-inline: 14%;
@@ -219,47 +283,36 @@
     width: 12.7% !important;
   }
 }
-
 .quran-line-surah_name {
   z-index: 5;
   align-self: stretch;
   overflow: visible !important;
 }
-
 .quran-line-basmallah,
 .quran-line-bismillah {
   position: relative;
   z-index: 3;
   background: transparent !important;
 }
-
 .quran-line--combined-header-covered {
   z-index: 2;
   align-self: stretch;
   min-height: 0;
   pointer-events: none;
 }
-
 .quran-line--combined-header-covered .quran-line-text {
   visibility: hidden;
 }
-
-
-
 @keyframes ayah-pulse {
   0% { box-shadow: inset 0 0 0 1px rgba(14,165,233,0); background: rgba(14,165,233,0.12); }
   40% { box-shadow: inset 0 0 0 2px rgba(14,165,233,0.4); background: rgba(56,189,248,0.22); }
   100% { box-shadow: inset 0 0 0 1px rgba(14,165,233,0.18); background: rgba(56,189,248,0.09); }
 }
-
 .quran-line-jumped {
   animation: ayah-pulse 0.9s cubic-bezier(0.4, 0, 0.2, 1) 2;
 }
-
 .reader-page {
   --reader-page-x-padding: clamp(18px, 5.2vw, 34px);
-  position: relative;
-  isolation: isolate;
   direction: rtl;
   width: 100%;
   max-width: 100%;
@@ -271,7 +324,6 @@
   gap: 0 !important;
   contain: layout paint;
 }
-
 .quran-line {
   position: relative;
   z-index: 1;
@@ -289,7 +341,6 @@
   border: 0 !important;
   border-radius: 0 !important;
   background: transparent !important;
-  color: #171717;
   font-family: IndopakNastaleeq, serif;
   font-size: calc(clamp(1.02rem, 2.6vh, 1.58rem) * var(--font-scale, 1)) !important;
   line-height: 1.18 !important;
@@ -300,7 +351,6 @@
   -webkit-touch-callout: none;
   caret-color: transparent;
 }
-
 .quran-line-text {
   position: relative;
   z-index: 2;
@@ -316,37 +366,26 @@
   user-select: none;
   -webkit-user-select: none;
 }
-
 .quran-word {
   letter-spacing: 0 !important;
 }
-
-
-/* Opening pages contain shorter centered ayah lines with extra pause symbols.
- * Keep this isolated to pages 1 and 2 so normal 16-line Mushaf pages are untouched.
- */
 .reader-page-opening .quran-line-ayah {
   line-height: 1.36 !important;
 }
-
 .reader-page-opening .quran-line-ayah .quran-line-text {
   letter-spacing: 0 !important;
 }
-
 .quran-line-normal {
   justify-content: flex-end !important;
   text-align: right !important;
 }
-
 .quran-line-centered {
   justify-content: center !important;
   text-align: center !important;
 }
-
 .quran-line-centered .quran-line-text {
   transform-origin: center center;
 }
-
 .reader-ayah-highlight-layer {
   position: absolute;
   inset: 0;
@@ -354,14 +393,12 @@
   overflow: hidden;
   pointer-events: none;
 }
-
 .reader-ayah-highlight-block {
   position: absolute;
   z-index: 0;
   display: block;
   border-radius: 5px;
 }
-
 @keyframes quarter-marker-pulse {
   0% {
     opacity: 0;
@@ -379,7 +416,6 @@
     box-shadow: 0 0 0 6px rgba(180, 135, 45, 0);
   }
 }
-
 .reader-quarter-marker-flash {
   position: absolute;
   z-index: 3;
@@ -398,29 +434,24 @@
 .reader-marker-flash--tadabbur { color: #b83b58; }
 .reader-marker-flash--notes { color: #216d91; }
 .reader-marker-flash--quarter { color: #a56d05; }
-
 .reader-ayah-highlight-saved {
   box-shadow: inset 0 0 0 1px rgba(120, 84, 32, .08);
 }
-
 .reader-ayah-highlight-amber { background: rgba(243, 184, 62, .24); }
 .reader-ayah-highlight-emerald { background: rgba(34, 125, 104, .18); }
 .reader-ayah-highlight-rose { background: rgba(212, 20, 78, .15); }
 .reader-ayah-highlight-sky { background: rgba(2, 132, 199, .16); }
 .reader-ayah-highlight-violet { background: rgba(124, 58, 237, .15); }
-
 .reader-ayah-highlight-selection {
   background: rgba(218, 174, 82, .20);
   fill: rgba(218, 174, 82, .20);
   box-shadow: none;
 }
-
 .reader-ayah-highlight-audio {
   background: rgba(45, 110, 94, .13);
   fill: rgba(45, 110, 94, .13);
   box-shadow: none;
 }
-
 .reader-ayah-highlight-shape {
   position: absolute;
   inset: 0;
@@ -428,83 +459,65 @@
   overflow: visible;
   pointer-events: none;
 }
-
 .reader-ayah-highlight-navigation {
   fill: rgba(218, 174, 82, .16);
   animation: reader-ayah-navigation-flash .9s cubic-bezier(.4, 0, .2, 1) 2;
 }
-
 @keyframes reader-ayah-navigation-flash {
   0% { opacity: .45; }
   42% { opacity: 1; }
   100% { opacity: .35; }
 }
-
 .reader-ayah-highlight-segment {
   border-radius: 0;
 }
-
 .reader-ayah-highlight-segment--single {
   border-radius: 3px;
 }
-
-/* Quran text is RTL: the first segment begins at the right and continues
- * through the left page edge; the last arrives from the right page edge. */
 .reader-ayah-highlight-segment--first {
   border-radius: 0 3px 3px 0;
 }
-
 .reader-ayah-highlight-segment--last {
   border-radius: 3px 0 0 3px;
 }
-
 .reader-ayah-highlight-segment--middle {
   border-radius: 0;
 }
-
 .reader-word-highlight-block {
   z-index: 0;
   border-radius: 4px;
 }
-
 .reader-word-highlight-amber { background: rgba(202, 128, 16, .42); }
 .reader-word-highlight-emerald { background: rgba(22, 101, 82, .36); }
 .reader-word-highlight-rose { background: rgba(159, 18, 57, .34); }
 .reader-word-highlight-sky { background: rgba(3, 105, 161, .35); }
 .reader-word-highlight-violet { background: rgba(91, 33, 182, .34); }
-
 ::highlight(reader-highlight-amber) { background: rgba(243, 184, 62, .30); }
 ::highlight(reader-highlight-emerald) { background: rgba(34, 125, 104, .22); }
 ::highlight(reader-highlight-rose) { background: rgba(212, 20, 78, .18); }
 ::highlight(reader-highlight-sky) { background: rgba(2, 132, 199, .20); }
 ::highlight(reader-highlight-violet) { background: rgba(124, 58, 237, .18); }
-
 ::highlight(reader-word-highlight-amber) { background: rgba(202, 128, 16, .52); }
 ::highlight(reader-word-highlight-emerald) { background: rgba(22, 101, 82, .46); }
 ::highlight(reader-word-highlight-rose) { background: rgba(159, 18, 57, .42); }
 ::highlight(reader-word-highlight-sky) { background: rgba(3, 105, 161, .44); }
 ::highlight(reader-word-highlight-violet) { background: rgba(91, 33, 182, .42); }
-
 ::highlight(reader-bookmark-reading) {
   color: #26725f;
   background: rgba(197, 239, 222, .82);
 }
-
 ::highlight(reader-bookmark-memorize) {
   color: #a56d05;
   background: rgba(252, 228, 171, .88);
 }
-
 ::highlight(reader-bookmark-tadabbur) {
   color: #a83258;
   background: rgba(250, 207, 220, .88);
 }
-
 ::highlight(reader-bookmark-notes) {
   color: #216d91;
   background: rgba(202, 231, 244, .90);
 }
-
 .quran-line-surah_name,
 .quran-line-basmallah,
 .quran-line-bismillah,
@@ -515,29 +528,21 @@
   letter-spacing: 0 !important;
   word-spacing: normal !important;
 }
-
 .quran-line-surah_name::before,
 .quran-line-surah_name::after {
   display: none !important;
 }
-
 .quran-line-surah_name .quran-line-text,
 .quran-line-basmallah .quran-line-text,
 .quran-line-bismillah .quran-line-text {
   letter-spacing: 0 !important;
   word-spacing: normal !important;
 }
-
 .quran-line-surah_name,
 .quran-line-basmallah {
   background: transparent !important;
   border: 0 !important;
 }
-
-.surah-banner {
-  background-color: transparent !important;
-}
-
 @media (max-width: 420px) {
   .reader-page {
     --reader-page-x-padding: 16px;
@@ -546,14 +551,12 @@
     padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 68px) !important;
   }
 }
-
 @media (max-width: 380px) {
   .reader-page {
     --reader-page-x-padding: 14px;
     padding-inline: var(--reader-page-x-padding) !important;
   }
 }
-
 @media (min-width: 640px) {
   .reader-shell {
     width: min(100%, 576px);
@@ -562,14 +565,6 @@
     border-radius: 28px;
   }
 }
-
-/* Ayah end markers use the original Mushaf glyph from the Quran data.
- * The marker cluster is kept intact, including any tiny signs above/below it,
- * and is treated as a word-sized ornament so browser word-spacing gives equal
- * breathing room before and after it. The marker counter-scales against line
- * compression so circular ayah ornaments stay visually round. Do not add margins to ordinary pause
- * symbols such as ۚ ۖ ۛ; they remain attached to their word by mushafText.js.
- */
 .quran-ayah-marker {
   display: inline-block;
   margin-inline: 0;
@@ -581,7 +576,6 @@
   white-space: nowrap;
   text-rendering: geometricPrecision;
 }
-
 .quran-ayah-marker-glyph {
   display: inline-block;
   min-width: 1em;
@@ -589,40 +583,24 @@
   transform-origin: center center;
   text-align: center;
 }
-
-
-/* Soft center fallback for ayah lines that would require excessive word spacing.
-   This keeps ayah markers and pause symbols untouched while avoiding ugly over-stretching. */
 .quran-line-soft-centered {
   justify-content: center !important;
   text-align: center !important;
 }
-
 .quran-line-soft-centered .quran-line-text {
   margin-inline: auto !important;
 }
-
-/* Header optical corrections -------------------------------------------------
- * A double header in row 1 has no ayah row above it, so its outer SVG stroke
- * needs a tiny vertical inset to look balanced inside the first two grid rows.
- * This does not change the 16-row grid or any ayah metrics. */
 .reader-page--starts-with-double-header .surah-banner--double {
   top: 1px;
   height: calc(200% - 2px);
 }
-
 .reader-page--starts-with-double-header .surah-banner--double .surah-banner-ayahs,
 .reader-page--starts-with-double-header .surah-banner--double .surah-banner-name {
   padding-top: calc(2.6% + 1px);
 }
-
 .reader-page--starts-with-double-header .surah-banner--double .surah-banner-basmallah {
   padding-top: calc(.9% + 1px);
 }
-
-
-/* Persistent bookmark markers: a category-colored circular ring centered on
- * the Mushaf ayah marker. The Quran glyph itself remains untouched. */
 .reader-bookmark-marker-ring {
   position: absolute;
   z-index: 2;
@@ -633,20 +611,14 @@
   background: color-mix(in srgb, currentColor 10%, transparent);
   pointer-events: none;
 }
-
 .reader-bookmark-marker-ring--reading { color: #26725f; }
 .reader-bookmark-marker-ring--memorize { color: #a56d05; }
 .reader-bookmark-marker-ring--tadabbur { color: #b83b58; }
 .reader-bookmark-marker-ring--notes { color: #216d91; }
-
 [data-theme='dark'] .reader-bookmark-marker-ring--reading { color: #86d5b2; }
 [data-theme='dark'] .reader-bookmark-marker-ring--memorize { color: #e6bd62; }
 [data-theme='dark'] .reader-bookmark-marker-ring--tadabbur { color: #ee8da2; }
 [data-theme='dark'] .reader-bookmark-marker-ring--notes { color: #82c5e3; }
-
-
-/* SVG safety: never allow a Quran highlight path to fall back to SVG's
- * browser-default black fill while styles or a new highlight class load. */
 .reader-ayah-highlight-shape path {
   fill: transparent;
 }
@@ -658,10 +630,6 @@
 .reader-ayah-highlight-shape .reader-ayah-highlight-audio { fill: rgba(45, 110, 94, .13); }
 .reader-ayah-highlight-shape .reader-ayah-highlight-selection { fill: rgba(218, 174, 82, .20); }
 .reader-ayah-highlight-shape .reader-ayah-highlight-navigation { fill: rgba(218, 174, 82, .16); }
-
-
-/* Mushaf quarter positions are fixed Quran navigation landmarks, not
- * user-editable bookmarks. Keep their marker ring permanently visible. */
 .reader-quarter-marker-ring {
   position: absolute;
   z-index: 2;
@@ -673,68 +641,44 @@
   background: color-mix(in srgb, currentColor 8%, transparent);
   pointer-events: none;
 }
-
 [data-theme='dark'] .reader-quarter-marker-ring {
   border-color: rgba(230, 189, 98, .72);
   background: rgba(230, 189, 98, .07);
 }
-
-
-/* Permanent quarter markers are part of the ayah marker itself. This prevents
- * a measured overlay from appearing late during ordinary page navigation. */
-/* Permanent marker capsules live on the ayah glyph itself so they are
- * present on the first paint and move with the Quran text. Quarter landmarks
- * intentionally use the same geometry as bookmarks, only with the gold tone. */
 .quran-ayah-marker--quarter,
 .quran-ayah-marker--bookmark {
   position: relative;
-  border-radius: 999px;
-  box-shadow:
-    0 0 0 1px currentColor,
-    0 0 0 3px color-mix(in srgb, currentColor 8%, transparent);
 }
-
 .quran-ayah-marker--quarter { color: #a56d05; }
 .quran-ayah-marker--bookmark-reading { color: #26725f; }
 .quran-ayah-marker--bookmark-memorize { color: #a56d05; }
 .quran-ayah-marker--bookmark-tadabbur { color: #b83b58; }
 .quran-ayah-marker--bookmark-notes { color: #216d91; }
-
 [data-theme='dark'] .quran-ayah-marker--quarter,
 [data-theme='dark'] .quran-ayah-marker--bookmark-memorize { color: #e6bd62; }
 [data-theme='dark'] .quran-ayah-marker--bookmark-reading { color: #86d5b2; }
 [data-theme='dark'] .quran-ayah-marker--bookmark-tadabbur { color: #ee8da2; }
 [data-theme='dark'] .quran-ayah-marker--bookmark-notes { color: #82c5e3; }
-
-
-/* Saved annotations are painted by the Quran word nodes themselves. They are
- * therefore present on the first render and cannot lag behind a page slide. */
 .quran-word--saved-amber { background: rgba(243, 184, 62, .24); }
 .quran-word--saved-emerald { background: rgba(34, 125, 104, .18); }
 .quran-word--saved-rose { background: rgba(212, 20, 78, .15); }
 .quran-word--saved-sky { background: rgba(2, 132, 199, .16); }
 .quran-word--saved-violet { background: rgba(124, 58, 237, .15); }
-
 .quran-word[class*="quran-word--saved-"] {
   border-radius: 2px;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
-
 .quran-word--saved-word {
   border-radius: 5px !important;
   box-shadow: inset 0 0 0 999px rgba(255, 255, 255, .12);
 }
-
-/* Bookmark and quarter landmarks use the same narrow capsule silhouette.
- * The ayah glyph remains centered and unchanged; only the capsule tone differs. */
 .quran-ayah-marker--quarter,
 .quran-ayah-marker--bookmark {
   color: inherit;
   border-radius: 999px;
   box-shadow: none;
 }
-
 .quran-ayah-marker--quarter::after,
 .quran-ayah-marker--bookmark::after {
   content: '';
@@ -742,8 +686,6 @@
   z-index: -1;
   left: 50%;
   top: 50%;
-  width: 1.12em;
-  height: 1.58em;
   transform: translate(-50%, -50%) scaleX(var(--quran-marker-scale-x, 1));
   transform-origin: center;
   border: 1px solid var(--marker-capsule-color);
@@ -751,64 +693,224 @@
   background: color-mix(in srgb, var(--marker-capsule-color) 8%, transparent);
   pointer-events: none;
 }
-
 .quran-ayah-marker--quarter { --marker-capsule-color: #a56d05; }
 .quran-ayah-marker--bookmark-reading { --marker-capsule-color: #26725f; }
 .quran-ayah-marker--bookmark-memorize { --marker-capsule-color: #a56d05; }
 .quran-ayah-marker--bookmark-tadabbur { --marker-capsule-color: #b83b58; }
 .quran-ayah-marker--bookmark-notes { --marker-capsule-color: #216d91; }
-
 [data-theme='dark'] .quran-ayah-marker--quarter,
 [data-theme='dark'] .quran-ayah-marker--bookmark-memorize { --marker-capsule-color: #e6bd62; }
 [data-theme='dark'] .quran-ayah-marker--bookmark-reading { --marker-capsule-color: #86d5b2; }
 [data-theme='dark'] .quran-ayah-marker--bookmark-tadabbur { --marker-capsule-color: #ee8da2; }
 [data-theme='dark'] .quran-ayah-marker--bookmark-notes { --marker-capsule-color: #82c5e3; }
-
-
-/* Marker capsule correction: keep the bookmark/quarter silhouette narrow but
- * extend it vertically so stacked IndoPak quarter text (for example 1/4)
- * remains fully enclosed instead of crossing the lower edge. */
-.quran-ayah-marker--quarter::after,
-.quran-ayah-marker--bookmark::after {
-  width: 1.12em;
-  height: 1.92em;
-}
-
-
-/* Shared Quran marker capsule geometry.
- * Permanent quarter/bookmark markers and their navigation flash use this
- * single definition so their silhouette cannot drift apart. */
 .reader-page {
   --quran-marker-capsule-width: 0.98em;
   --quran-marker-capsule-height: 2.16em;
 }
-
 .quran-ayah-marker--quarter::after,
 .quran-ayah-marker--bookmark::after {
   width: var(--quran-marker-capsule-width);
   height: var(--quran-marker-capsule-height);
 }
-
 .reader-quarter-marker-flash {
   width: var(--quran-marker-capsule-width) !important;
   height: var(--quran-marker-capsule-height) !important;
 }
-
-
-/* Animate the same permanent capsule DOM used by bookmarks/quarter landmarks.
- * There is no separately measured flash capsule anymore. */
 @keyframes quran-marker-capsule-pulse {
   0% { opacity: .35; box-shadow: 0 0 0 0 color-mix(in srgb, var(--marker-capsule-color) 30%, transparent); }
   45% { opacity: 1; box-shadow: 0 0 0 3px color-mix(in srgb, var(--marker-capsule-color) 18%, transparent); }
   100% { opacity: .55; box-shadow: 0 0 0 7px transparent; }
 }
-
 .quran-ayah-marker--flash::after {
   animation: quran-marker-capsule-pulse .7s ease-out 2;
 }
-
 .quran-ayah-marker--flash-reading { --marker-capsule-color: #26725f; }
 .quran-ayah-marker--flash-memorize { --marker-capsule-color: #a56d05; }
 .quran-ayah-marker--flash-tadabbur { --marker-capsule-color: #b83b58; }
 .quran-ayah-marker--flash-notes { --marker-capsule-color: #216d91; }
 .quran-ayah-marker--flash-quarter { --marker-capsule-color: #a56d05; }
+.reader-page {
+  padding-top: calc(env(safe-area-inset-top, 0px) + 44px) !important;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 30px) !important;
+}
+@media (max-width: 380px) {
+
+  .reader-page {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 42px) !important;
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 28px) !important;
+  }
+}
+.reader-shell,
+.reader-page {
+  background: var(--reader-bg) !important;
+  color: var(--reader-text) !important;
+}
+.reader-shell {
+  box-shadow: none !important;
+}
+.surah-banner {
+  background-color: transparent !important;
+  color: var(--mushaf-banner-text) !important;
+}
+.quran-line {
+  color: var(--mushaf-text) !important;
+}
+.quran-line--juz-start {
+  position: relative !important;
+  isolation: isolate;
+  color: var(--reader-primary-text) !important;
+  background: transparent !important;
+  transition: none !important;
+}
+.quran-line--juz-start::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  left: calc(var(--reader-page-x-padding, 1rem) * -1) !important;
+  right: calc(var(--reader-page-x-padding, 1rem) * -1) !important;
+  z-index: -1 !important;
+  opacity: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  background: rgba(5, 5, 5, .9) !important;
+  background: color-mix(in srgb, var(--reader-primary) 90%, transparent) !important;
+  animation: none !important;
+  pointer-events: none !important;
+  transition: none !important;
+  transform: none !important;
+}
+.quran-line--juz-start .quran-line-text,
+.quran-line--juz-start .quran-word,
+.quran-line--juz-start .quran-ayah-marker {
+  position: relative;
+  z-index: 1;
+  color: inherit !important;
+  animation: none !important;
+  transition: none !important;
+}
+[data-theme='dark'] .quran-line--juz-start {
+  color: var(--reader-primary-text) !important;
+}
+[data-theme='dark'] .quran-line--juz-start::before {
+  background: rgba(240, 242, 239, .92) !important;
+  background: color-mix(in srgb, var(--reader-primary) 90%, transparent) !important;
+}
+.quran-line-text,
+.quran-word,
+.quran-ayah-marker {
+  color: inherit;
+}
+[data-theme='dark'] .quran-line-marked {
+  background: linear-gradient(90deg, rgba(139, 199, 180, .08), rgba(139, 199, 180, .18), rgba(139, 199, 180, .08));
+}
+[data-theme='dark'] .quran-line-jumped {
+  background: linear-gradient(90deg, rgba(56, 189, 248, .10), rgba(56, 189, 248, .24), rgba(56, 189, 248, .10));
+  box-shadow: inset 0 0 0 1px rgba(56, 189, 248, .22);
+}
+[data-theme='dark'] .reader-page .reader-ayah-highlight-amber { background: rgba(250, 204, 21, .22); }
+[data-theme='dark'] .reader-page .reader-ayah-highlight-emerald { background: rgba(134, 239, 172, .20); }
+[data-theme='dark'] .reader-page .reader-ayah-highlight-sky { background: rgba(147, 197, 253, .20); }
+[data-theme='dark'] .reader-page .reader-ayah-highlight-violet { background: rgba(196, 181, 253, .20); }
+[data-theme='dark'] .reader-page .reader-ayah-highlight-rose { background: rgba(253, 164, 175, .20); }
+[data-theme='dark'] .reader-page .reader-ayah-highlight-audio {
+  background: rgba(105, 174, 151, .17);
+  box-shadow: none;
+}
+[data-theme='dark'] .reader-page .reader-ayah-highlight-selection {
+  background: rgba(230, 190, 105, .20);
+  box-shadow: none;
+}
+[data-theme='dark'] .reader-page .reader-word-highlight-amber { background: rgba(250, 204, 21, .42); }
+[data-theme='dark'] .reader-page .reader-word-highlight-emerald { background: rgba(134, 239, 172, .38); }
+[data-theme='dark'] .reader-page .reader-word-highlight-sky { background: rgba(147, 197, 253, .38); }
+[data-theme='dark'] .reader-page .reader-word-highlight-violet { background: rgba(196, 181, 253, .38); }
+[data-theme='dark'] .reader-page .reader-word-highlight-rose { background: rgba(253, 164, 175, .38); }
+.reader-shell-audio-active .reader-footer-meta {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  transition: opacity .2s ease, transform .2s ease !important;
+}
+.reader-shell-audio-collapsed .reader-footer-meta {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 6px) !important;
+  min-height: 44px !important;
+  align-items: center !important;
+  padding-inline: 24px !important;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  z-index: 75 !important;
+}
+.reader-page {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 58px) !important;
+}
+.reader-shell {
+  width: min(100vw, var(--app-responsive-reader-width)) !important;
+  max-width: var(--app-responsive-reader-width) !important;
+}
+.reader-page {
+  position: relative !important;
+  isolation: isolate;
+}
+.reader-page .reader-ayah-highlight-layer {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 2 !important;
+  pointer-events: none !important;
+}
+.reader-page .reader-ayah-highlight-block,
+.reader-page .reader-quarter-marker-flash {
+  position: absolute !important;
+  z-index: 2 !important;
+  pointer-events: none !important;
+}
+.reader-page .quran-line,
+.reader-page [data-quran-line] {
+  position: relative !important;
+  z-index: auto !important;
+}
+.reader-page .quran-line--juz-start {
+  isolation: auto !important;
+  z-index: auto !important;
+}
+.reader-page .quran-line--juz-start::before {
+  z-index: 0 !important;
+}
+.reader-page .quran-line-text,
+.reader-page .quran-word,
+.reader-page .quran-ayah-marker {
+  position: relative !important;
+  z-index: 3 !important;
+}
+.reader-page {
+  --reader-page-x-padding: clamp(18px, 5.2vw, 34px);
+}
+.reader-page .quran-line-jumped {
+  background: transparent !important;
+  box-shadow: none !important;
+  animation: none !important;
+}
+.reader-page .quran-line-jumped::after {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  left: calc(var(--reader-page-x-padding, 1rem) * -1) !important;
+  right: calc(var(--reader-page-x-padding, 1rem) * -1) !important;
+  z-index: 1 !important;
+  display: block !important;
+  border: 1px solid rgba(180, 135, 45, .28) !important;
+  border-radius: 0 !important;
+  background: rgba(218, 174, 82, .13) !important;
+  box-shadow: inset 0 0 0 1px rgba(180, 135, 45, .10) !important;
+  pointer-events: none !important;
+  animation: reader-line-jump-flash .9s cubic-bezier(.4, 0, .2, 1) 2 !important;
+}
+[data-theme='dark'] .reader-page .quran-line-jumped::after {
+  border-color: rgba(230, 190, 105, .30) !important;
+  background: rgba(205, 164, 77, .16) !important;
+  box-shadow: inset 0 0 0 1px rgba(230, 190, 105, .12) !important;
+}

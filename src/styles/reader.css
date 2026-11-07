@@ -1,21 +1,16 @@
-/* Reader chrome and overlays. Protected Quran page rendering lives in mushaf.css. */
+/* reader: component-owned styles; responsive and theme states live with their owner. */
+
 
 .reader-passive-header {
   pointer-events: none;
   position: absolute;
   inset-inline: 0;
   top: 0;
-  z-index: 10;
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: calc(env(safe-area-inset-top, 0px) + 58px);
   padding: calc(env(safe-area-inset-top, 0px) + 18px) 20px 0;
-  color: var(--reader-meta, #6b655d);
-  font-size: clamp(1.05rem, 3.75vw, 1.22rem);
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: -0.01em;
 }
 
 .reader-meta-label {
@@ -47,34 +42,24 @@
   inset-inline: 0;
   top: 0;
   z-index: 30;
-  padding: calc(env(safe-area-inset-top, 0px) + 24px) 22px 48px;
-  background: linear-gradient(180deg, rgba(255, 250, 241, .98), rgba(255, 250, 241, .86), rgba(255, 250, 241, 0));
   opacity: 0;
   pointer-events: none;
-  transform: translateY(-10px);
-  transition: opacity .2s ease, transform .2s ease;
 }
 
 .reader-topbar-visible {
   opacity: 1;
   pointer-events: auto;
-  transform: translateY(0);
 }
 
 .reader-control-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
 }
 
 .reader-back-pill {
   display: grid;
-  height: 66px;
-  min-width: 104px;
   place-items: center;
-  border-radius: 30px;
-  background: rgba(223, 224, 226, .82);
   color: #171717;
   box-shadow: inset 0 1px 0 rgba(255,255,255,.75);
 }
@@ -82,16 +67,12 @@
 .reader-top-actions {
   display: flex;
   align-items: center;
-  gap: 32px;
   color: rgba(22, 24, 27, .72);
 }
 
 .reader-top-icon {
   display: grid;
-  height: 48px;
-  width: 48px;
   place-items: center;
-  border-radius: 999px;
 }
 
 .reader-footer-meta {
@@ -99,16 +80,8 @@
   position: absolute;
   inset-inline: 0;
   bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
-  z-index: 10;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding-inline: 26px;
-  color: var(--reader-meta, #6b655d);
-  font-size: clamp(1.05rem, 3.75vw, 1.22rem);
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: -0.01em;
 }
 
 .reader-bottom-controls {
@@ -128,44 +101,26 @@
   z-index: 2;
   display: inline-flex;
   align-items: center;
-  gap: 18px;
-  min-height: 72px;
-  max-width: min(86vw, 390px);
-  margin-bottom: -18px;
-  border-radius: 36px;
   background: rgba(255, 255, 255, .96);
   color: #2d2b28;
-  padding: 8px 26px 8px 10px;
-  font-size: clamp(1rem, 4.2vw, 1.22rem);
   font-weight: 500;
-  box-shadow: 0 18px 48px rgba(28, 23, 16, .12);
 }
 
 .reader-listen-play {
   display: grid;
-  height: 56px;
-  width: 104px;
   place-items: center;
-  border-radius: 999px;
   background: #050505;
   color: #fff;
 }
 
 .reader-bottom-sheet {
   pointer-events: auto;
-  width: min(100%, 576px);
-
-  background: rgba(255, 255, 255, .94);
-  padding: 28px 30px calc(env(safe-area-inset-bottom, 0px) + 22px);
-  box-shadow: 0 -18px 50px rgba(28, 23, 16, .08);
 }
 
 .reader-bottom-meta {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: rgba(62, 57, 49, .42);
-  font-size: clamp(1rem, 4vw, 1.18rem);
   font-weight: 500;
 }
 
@@ -177,8 +132,6 @@
 
 .reader-wave-slider {
   position: relative;
-  height: 78px;
-  margin: 8px 42px 0;
   overflow: visible;
   cursor: grab;
   outline: none;
@@ -208,7 +161,6 @@
   left: 50%;
   top: 50%;
   display: block;
-  width: 1.5px;
   min-width: 1.5px;
   max-width: 1.5px;
   transform: translate3d(-50%, -50%, 0);
@@ -221,16 +173,10 @@
 .reader-wave-marker {
   position: absolute;
   left: 50%;
-  top: -14px;
   z-index: 2;
-
-  width: 22px;
-  height: 84px;
 
   transform: translateX(-50%);
   background: #050505;
-
-  border-radius: 18px 18px 8px 8px;
 
   clip-path: polygon(
     50% 0,
@@ -252,7 +198,6 @@
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   color: rgba(6, 6, 6, .95);
-  margin-top: -4px;
 }
 
 .reader-bottom-actions button:first-child {
@@ -267,45 +212,6 @@
   justify-self: start;
   margin-left: -3px;
   color: rgba(62, 57, 49, .42);
-  font-size: .95rem;
-}
-
-.wave-slider {
-  appearance: none;
-  height: 34px;
-  border-radius: 999px;
-  background:
-    radial-gradient(ellipse at center, rgba(15, 23, 42, .2), transparent 58%),
-    repeating-linear-gradient(90deg, rgba(14, 116, 144, .24) 0 3px, transparent 3px 10px),
-    linear-gradient(90deg, rgba(14, 165, 233, .12), rgba(34, 197, 94, .16));
-  outline: none;
-}
-
-.wave-slider::-webkit-slider-thumb {
-  appearance: none;
-  height: 32px;
-  width: 32px;
-  border-radius: 999px;
-  background: #0ea5e9;
-  border: 4px solid #fff;
-  box-shadow: 0 10px 24px rgba(14, 116, 144, .26);
-}
-
-.prose h2 {
-  margin-top: 1.3em;
-  font-size: 1.25rem;
-}
-
-.prose a {
-  color: #0369a1;
-}
-
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 @media (max-width: 420px) {
@@ -319,138 +225,14 @@
   }
 }
 
-.ayah-action-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 55;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  background: rgba(19, 17, 15, .38);
-  padding: 14px;
-}
-
-.ayah-action-sheet {
-  width: min(100%, 548px);
-  border-radius: 30px;
-  background: rgba(255, 255, 255, .98);
-  box-shadow: 0 28px 76px rgba(9, 9, 9, .24);
-  padding: 18px 30px 28px;
-  color: #1d1c1a;
-}
-
-.sheet-grabber {
-  width: 54px;
-  height: 6px;
-  margin: 0 auto 18px;
-  border-radius: 999px;
-  background: rgba(22, 22, 22, .14);
-}
-
-.ayah-tab-row {
-  display: flex;
-  gap: 14px;
-  overflow-x: auto;
-  padding: 10px 0 20px;
-  scrollbar-width: none;
-}
-
-.ayah-tab-row::-webkit-scrollbar {
-  display: none;
-}
-
-.ayah-tab-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 54px;
-  white-space: nowrap;
-  border-radius: 999px;
-  padding: 0 22px;
-  font-size: clamp(1rem, 3.8vw, 1.2rem);
-  font-weight: 500;
-  transition: transform .18s ease, box-shadow .18s ease;
-}
-
-.ayah-tab-pill:active,
-.ayah-round-action:active {
-  transform: scale(.98);
-}
-
-.ayah-tab-emerald {
-  background: #e4fff1;
-  color: #2f7e69;
-}
-
-.ayah-tab-amber {
-  background: #fff5de;
-  color: #d49b27;
-}
-
-.ayah-tab-rose {
-  background: #ffe4ef;
-  color: #d4144e;
-}
-
-.ayah-tab-active {
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .04), 0 10px 24px rgba(0, 0, 0, .05);
-}
-
-.ayah-main-action-row {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(58px, 1fr));
-  gap: 18px;
-  align-items: center;
-  padding: 4px 0 28px;
-}
-
-.ayah-round-action {
-  display: grid;
-  height: clamp(64px, 14vw, 78px);
-  min-width: 0;
-  place-items: center;
-  border-radius: 999px;
-  background: #f3f3f3;
-  color: #111;
-}
-
-.ayah-round-action.active {
-  background: #050505;
-  color: #fff;
-}
-
-.ayah-round-action.gradient {
-  background: #f2f2f2;
-}
-
-.gradient-check {
-  display: grid;
-  height: 46px;
-  width: 72px;
-  place-items: center;
-  border-radius: 999px;
-  background:
-    radial-gradient(circle at 30% 35%, #ff6b52, transparent 34%),
-    radial-gradient(circle at 74% 66%, #2ec7c2, transparent 38%),
-    radial-gradient(circle at 42% 78%, #f7c542, transparent 34%),
-    #151515;
-  color: #fff;
-  font-size: 2rem;
-  line-height: 1;
-  transform: rotate(180deg);
-}
-
 .ayah-tafsir-block h3 {
   margin: 0;
-  font-size: clamp(1.4rem, 5vw, 1.75rem);
   font-weight: 500;
 }
 
 .ayah-tafsir-block p {
   margin: 16px 0 8px;
   color: rgba(30, 30, 30, .45);
-  font-size: clamp(1.02rem, 4.2vw, 1.18rem);
-  line-height: 1.55;
 }
 
 .ayah-tafsir-block button {
@@ -459,23 +241,6 @@
   color: #333;
   text-decoration: underline;
   font-size: clamp(1rem, 4vw, 1.12rem);
-}
-
-.ayah-ref-pill {
-  border-radius: 999px;
-  background: #f2f2f2;
-  padding: 6px 12px;
-  color: rgba(30, 30, 30, .48);
-  font-size: .9rem;
-}
-
-.ayah-action-status {
-  margin: 16px 0 0;
-  border-radius: 18px;
-  background: #f6f6f6;
-  padding: 10px 14px;
-  color: rgba(20, 20, 20, .62);
-  font-size: .95rem;
 }
 
 .ayah-tooltip-backdrop {
@@ -679,7 +444,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .ayah-highlight-chip-row,
-  .ayah-bookmark-picker {
+.ayah-bookmark-picker {
     animation-name: ayahTooltipPanelFadeIn;
     animation-duration: .08s;
     transform: none;
@@ -711,158 +476,18 @@
   box-shadow: 0 8px 24px rgba(0,0,0,0.50);
 }
 
-.reader-page .reader-ayah-highlight-amber { background: rgba(250, 204, 21, .24); }
-.reader-page .reader-ayah-highlight-emerald { background: rgba(134, 239, 172, .24); }
-.reader-page .reader-ayah-highlight-sky { background: rgba(147, 197, 253, .24); }
-.reader-page .reader-ayah-highlight-violet { background: rgba(196, 181, 253, .24); }
-.reader-page .reader-ayah-highlight-rose { background: rgba(253, 164, 175, .24); }
-
-.reader-page .reader-word-highlight-amber { background: rgba(250, 204, 21, .48); }
-.reader-page .reader-word-highlight-emerald { background: rgba(134, 239, 172, .48); }
-.reader-page .reader-word-highlight-sky { background: rgba(147, 197, 253, .48); }
-.reader-page .reader-word-highlight-violet { background: rgba(196, 181, 253, .48); }
-.reader-page .reader-word-highlight-rose { background: rgba(253, 164, 175, .48); }
-
-.share-preview-panel {
-  margin-top: 18px;
-  max-height: 46dvh;
-  overflow: auto;
-  border-radius: 24px;
-  background: #f7f7f7;
-  padding: 16px;
-}
-
-.share-preview-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: rgba(20, 20, 20, .58);
-  font-size: .98rem;
-}
-
-.share-color-dots {
-  display: flex;
-  gap: 20px;
-  overflow: hidden;
-  padding: 18px 8px;
-}
-
-.share-color-dots span {
-  flex: 0 0 auto;
-  width: 40px;
-  height: 40px;
-  border-radius: 999px;
-}
-
-.share-preview-panel img {
-  display: block;
-  width: min(100%, 380px);
-  margin: 0 auto;
-  border-radius: 18px;
-}
-
-.ayah-highlight-panel {
-  margin: -8px 0 22px;
-  border-radius: 24px;
-  background: #f7f7f7;
-  padding: 12px;
-}
-
-.ayah-highlight-toggle {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  border-radius: 18px;
-  padding: 10px 12px;
-  color: rgba(20, 20, 20, .72);
-  font-weight: 500;
-}
-
-.highlight-dot,
-.highlight-color-button {
-  display: grid;
-  width: 34px;
-  height: 34px;
-  place-items: center;
-  border-radius: 999px;
-  color: #fff;
-  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .8), 0 8px 18px rgba(0, 0, 0, .08);
-}
-
-.highlight-color-row {
-  display: flex;
-  gap: 14px;
-  padding: 10px 8px 4px;
-}
-
-.highlight-amber { background: #f3b83e; }
-.highlight-emerald { background: #227d68; }
-.highlight-rose { background: #d4144e; }
-.highlight-sky { background: #0284c7; }
-.highlight-violet { background: #7c3aed; }
-
 .reader-passive-header {
   height: calc(env(safe-area-inset-top, 0px) + 62px);
   padding-top: calc(env(safe-area-inset-top, 0px) + 22px);
-  padding-inline: 38px;
-  color: #1d1b18;
-  font-size: clamp(1rem, 3.6vw, 1.18rem);
   z-index: 12;
 }
 
 .reader-footer-meta { bottom: 18px; }
 
-.reader-bottom-sheet { border-radius: 28px 28px 0 0; }
-
-@media (max-width: 420px) {
-  .home-actions-row { gap: 7px; }
-  .home-action-chip { padding: 14px 4px; font-size: .68rem; border-radius: 19px; }
-}
-
-
-html,
-body,
-#root {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden !important;
-}
-
-body {
-  background: #ffffff;
-}
-
-.bg-reader {
-  background: #ffffff;
-}
-
-.reader-passive-header {
-
-
-
-
-
-
-}
-
-.reader-footer-meta {
-
-
-
-
-}
-
-/* Step 5 correction: reference-small muted reader header/footer only. */
 .reader-passive-header {
   height: calc(env(safe-area-inset-top, 0px) + 72px) !important;
   padding-top: calc(env(safe-area-inset-top, 0px) + 28px) !important;
   padding-inline: clamp(22px, 6vw, 36px) !important;
-  color: rgba(35, 35, 35, .50) !important;
-  font-size: clamp(.86rem, 3.05vw, 1rem) !important;
-  font-weight: 500 !important;
-  letter-spacing: -.025em !important;
 }
 
 .reader-meta-label {
@@ -871,89 +496,6 @@ body {
 
 .reader-footer-meta {
   bottom: calc(env(safe-area-inset-bottom, 0px) + 16px) !important;
-  padding-inline: clamp(26px, 7vw, 42px) !important;
-  color: rgba(35, 35, 35, .45) !important;
-  font-size: clamp(.92rem, 3.4vw, 1.08rem) !important;
-  font-weight: 500 !important;
-  letter-spacing: -.025em !important;
-}
-
-.reader-page-slide-viewport {
-  position: relative;
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow: hidden;
-  background: var(--reader-bg, #fffaf1);
-  touch-action: pan-y;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .reader-page-slide-viewport {
-    cursor: grab;
-  }
-
-  .reader-page-slide-viewport.is-dragging {
-    cursor: grabbing;
-  }
-}
-
-.reader-page-slide {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  display: flex;
-  min-width: 100%;
-  height: 100%;
-  background: var(--reader-bg, #fffaf1);
-  will-change: transform;
-}
-
-.reader-page-slide > .reader-page {
-  flex: 1 1 auto;
-  height: 100%;
-}
-
-.reader-page-slide-current {
-  z-index: 2;
-  transform: translate3d(var(--reader-page-slide-x, 0px), 0, 0);
-}
-
-.reader-page-slide-adjacent {
-  z-index: 1;
-  pointer-events: none;
-}
-
-.reader-page-slide-adjacent.is-next {
-  transform: translate3d(calc(-100% + var(--reader-page-slide-x, 0px)), 0, 0);
-}
-
-.reader-page-slide-adjacent.is-previous {
-  transform: translate3d(calc(100% + var(--reader-page-slide-x, 0px)), 0, 0);
-}
-
-.reader-page-slide-viewport.is-settling .reader-page-slide-current,
-.reader-page-slide-viewport.is-settling .reader-page-slide-adjacent {
-  transition: transform .19s ease-out;
-}
-
-.reader-page-slide-viewport.is-transitioning .reader-page-slide {
-  pointer-events: none;
-}
-
-.reader-page-slide-viewport.is-transitioning.is-next .reader-page-slide-current {
-  animation: readerPageEnterFromLeft .19s ease-out both;
-}
-
-.reader-page-slide-viewport.is-transitioning.is-next .reader-page-slide-leaving {
-  animation: readerPageExitToRight .19s ease-out both;
-}
-
-.reader-page-slide-viewport.is-transitioning.is-previous .reader-page-slide-current {
-  animation: readerPageEnterFromRight .19s ease-out both;
-}
-
-.reader-page-slide-viewport.is-transitioning.is-previous .reader-page-slide-leaving {
-  animation: readerPageExitToLeft .19s ease-out both;
 }
 
 @keyframes readerPageEnterFromLeft {
@@ -976,88 +518,10 @@ body {
   to { transform: translate3d(-100%, 0, 0); }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .reader-page-slide,
-  .reader-page-slide-viewport.is-settling .reader-page-slide-current,
-  .reader-page-slide-viewport.is-settling .reader-page-slide-adjacent {
-    transition: none;
-    animation: none !important;
-  }
-}
-
-/* Reader overlay interaction patch: UI only. Do not alter Mushaf text metrics here. */
-.ayah-action-sheet-compact {
-  max-height: min(42dvh, 390px);
-  overflow: hidden;
-  border-radius: 28px 28px 0 0;
-  padding: 10px 18px calc(env(safe-area-inset-bottom, 0px) + 16px);
-}
-
-.ayah-main-action-row-compact {
-  grid-template-columns: repeat(5, minmax(44px, 1fr));
-  gap: 10px;
-  padding: 4px 0 14px;
-}
-
-.ayah-action-sheet-compact .ayah-round-action {
-  height: 48px;
-  width: 100%;
-  min-width: 0;
-  border-radius: 999px;
-  background: #f1f1f1;
-}
-
-.brand-dot {
-  display: block;
-  width: 28px;
-  height: 28px;
-  border-radius: 999px;
-  background:
-    radial-gradient(circle at 32% 28%, #67e8f9, transparent 38%),
-    radial-gradient(circle at 70% 70%, #2563eb, transparent 42%),
-    radial-gradient(circle at 36% 76%, #facc15, transparent 36%),
-    #101827;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.35);
-}
-
-.ayah-action-sheet-compact .ayah-tafsir-block h3 {
-  font-size: 1.08rem;
-  font-weight: 700;
-}
-
-.ayah-action-sheet-compact .ayah-tafsir-block p {
-  margin: 8px 0 6px;
-  color: rgba(26, 26, 26, .58);
-  font-size: .92rem;
-  line-height: 1.45;
-}
-
-.tafsir-preview-text {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
 .ayah-tafsir-expanded {
   max-height: 24dvh;
   overflow: auto;
   padding-right: 2px;
-}
-
-.ayah-action-sheet-compact .ayah-tafsir-block button {
-  margin: 2px 0 0;
-  color: #1f2937;
-  font-size: .9rem;
-  font-weight: 600;
-  text-align: left;
-}
-
-.ayah-action-sheet-compact .sheet-grabber {
-  width: 42px;
-  height: 5px;
-  margin-bottom: 12px;
 }
 
 .reader-audio-panel-wrap {
@@ -1081,17 +545,13 @@ body {
 }
 
 .reader-audio-panel-visible {
-  opacity: 1;
-  visibility: visible;
   transform: translateY(0);
 }
 
 .reader-audio-panel {
   pointer-events: auto;
   width: min(100%, 548px);
-  border-radius: 26px;
   background: rgba(255,255,255,.97);
-  padding: 16px;
   color: #171717;
   box-shadow: 0 24px 70px rgba(0,0,0,.18);
 }
@@ -1107,7 +567,6 @@ body {
 .reader-audio-head {
   justify-content: space-between;
   gap: 10px;
-  font-size: .96rem;
   letter-spacing: -.01em;
 }
 
@@ -1123,7 +582,6 @@ body {
 .reader-reciter-row {
   margin: 12px 0 10px;
   gap: 10px;
-  border-radius: 18px;
   background: #f7f7f7;
   padding: 8px 10px;
 }
@@ -1137,12 +595,10 @@ body {
 }
 
 .reader-reciter-row select {
-  min-width: 0;
   flex: 1;
   appearance: none;
   background: transparent;
   color: #242424;
-  font-size: .9rem;
   outline: none;
 }
 
@@ -1161,14 +617,11 @@ body {
 
 .reader-transport-row {
   justify-content: space-between;
-  gap: 8px;
   margin-top: 12px;
 }
 
 .reader-transport-row button {
   display: grid;
-  min-width: 40px;
-  height: 40px;
   place-items: center;
   border-radius: 999px;
   background: #f4f4f4;
@@ -1176,20 +629,9 @@ body {
 }
 
 .reader-transport-row .transport-main {
-  min-width: 72px;
   border-radius: 999px;
   background: #050505;
   color: #fff;
-}
-
-.transport-speed {
-  font-size: .84rem;
-  font-weight: 700;
-}
-
-.transport-active {
-  background: #dcfce7 !important;
-  color: #166534 !important;
 }
 
 .reader-audio-status {
@@ -1204,8 +646,6 @@ body {
   bottom: calc(100% + 7px);
   z-index: 6;
   display: grid;
-  min-width: 142px;
-  max-width: min(76vw, 270px);
   gap: 2px;
   transform: translateX(-50%);
   border-radius: 13px;
@@ -1263,201 +703,6 @@ body {
   }
 }
 
-/* Patch 2: storage-backed ayah actions and share sheet. */
-.ayah-action-sheet.ayah-action-sheet-v2 {
-  width: min(100%, 548px);
-  max-height: min(82dvh, 720px) !important;
-  overflow-y: auto !important;
-  border-radius: 28px 28px 0 0 !important;
-  padding: 10px 18px calc(env(safe-area-inset-bottom, 0px) + 18px) !important;
-}
-
-.ayah-action-reference {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
-  color: #28231e;
-}
-
-.ayah-action-reference strong {
-  font-size: 1rem;
-}
-
-.ayah-action-reference span {
-  border-radius: 999px;
-  background: #f1f1f1;
-  padding: 5px 10px;
-  color: rgba(31, 27, 23, .56);
-  font-size: .78rem;
-}
-
-.ayah-main-actions-v2 {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.ayah-main-action-v2 {
-  display: grid;
-  min-width: 0;
-  justify-items: center;
-  gap: 6px;
-  color: #4a4640;
-}
-
-.ayah-main-action-v2 > span {
-  display: grid;
-  width: 48px;
-  height: 48px;
-  place-items: center;
-  border-radius: 18px;
-  background: #f1f1f1;
-  transition: transform .16s ease, background .16s ease, color .16s ease;
-}
-
-.ayah-main-action-v2 small {
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: .68rem;
-  font-weight: 650;
-  white-space: nowrap;
-}
-
-.ayah-main-action-v2.is-active > span {
-  background: #23211e;
-  color: #fff;
-}
-
-.ayah-main-action-v2:active > span {
-  transform: scale(.95);
-}
-
-.ayah-inline-panel {
-  margin-bottom: 12px;
-  border-radius: 20px;
-  background: #f7f7f6;
-  padding: 12px;
-}
-
-.ayah-inline-panel-title {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 10px;
-}
-
-.ayah-inline-panel-title strong {
-  font-size: .92rem;
-}
-
-.ayah-inline-panel-title span {
-  color: rgba(32, 29, 25, .48);
-  font-size: .72rem;
-  text-align: right;
-}
-
-.ayah-highlight-colors {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.ayah-remove-highlight {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  margin-top: 11px;
-  border-radius: 999px;
-  background: #fff0ef;
-  padding: 7px 11px;
-  color: #b42318;
-  font-size: .76rem;
-  font-weight: 700;
-}
-
-.ayah-highlight-colors .highlight-color-button {
-  width: 36px !important;
-  height: 36px !important;
-  border-radius: 999px !important;
-  transition: transform .16s ease, box-shadow .16s ease;
-}
-
-.ayah-highlight-colors .highlight-color-button.is-selected {
-  transform: scale(1.08);
-  box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgba(35, 33, 30, .18);
-}
-
-.ayah-bookmark-types {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-}
-
-.bookmark-type {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 7px;
-  min-height: 44px;
-  border-radius: 15px;
-  padding: 8px 10px;
-  font-size: .76rem;
-  font-weight: 650;
-  text-align: left;
-}
-
-.bookmark-type span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.bookmark-type-emerald { background: #e4f7ef; color: #2f7462; }
-.bookmark-type-amber { background: #fff2d5; color: #a46f09; }
-.bookmark-type-rose { background: #fbe4eb; color: #a9365b; }
-.bookmark-type-sky { background: #e2f1f8; color: #286f91; }
-
-.bookmark-type.is-selected {
-  box-shadow: inset 0 0 0 2px currentColor;
-}
-
-.ayah-note-editor {
-  display: grid;
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.ayah-note-editor textarea {
-  width: 100%;
-  resize: vertical;
-  border: 1px solid rgba(42, 38, 33, .12);
-  border-radius: 14px;
-  background: #fff;
-  padding: 10px 12px;
-  color: #27231f;
-  outline: none;
-}
-
-.ayah-note-editor button {
-  justify-self: end;
-  border-radius: 999px;
-  background: #25221e;
-  padding: 8px 14px;
-  color: #fff;
-  font-size: .78rem;
-  font-weight: 700;
-}
-
-.ayah-action-sheet-v2 .ayah-tafsir-block {
-  border-radius: 20px;
-  background: #faf9f7;
-  padding: 12px;
-}
-
 .ayah-tafsir-heading {
   display: flex;
   align-items: center;
@@ -1465,257 +710,9 @@ body {
   gap: 10px;
 }
 
-.ayah-action-sheet-v2 .ayah-tafsir-block h3 {
-  font-size: 1rem !important;
-}
-
-.ayah-action-sheet-v2 .ayah-tafsir-block p {
-  margin: 8px 0 6px !important;
-  color: rgba(29, 26, 22, .62) !important;
-  font-size: .88rem !important;
-  line-height: 1.58 !important;
-}
-
-.ayah-action-sheet-v2 .ayah-tafsir-block > button {
-  margin: 0 !important;
-  font-size: .8rem !important;
-  font-weight: 700;
-}
-
-.ayah-action-sheet-v2 .ayah-action-status {
-  margin: 10px 0 0;
-  padding: 8px 11px;
-  font-size: .78rem;
-}
-
-.share-sheet-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 65;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  background: rgba(18, 16, 14, .42);
-  padding: 12px;
-}
-
-.share-sheet {
-  width: min(100%, 576px);
-  max-height: 94dvh;
-  overflow-y: auto;
-  border-radius: 28px 28px 0 0;
-  background: var(--theme-surface-solid);
-  padding: 18px 16px calc(env(safe-area-inset-bottom, 0px) + 18px);
-  color: var(--theme-text);
-  box-shadow: 0 -24px 70px rgba(0, 0, 0, .20);
-}
-
-.share-sheet-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 14px;
-}
-
-.share-sheet-header p {
-  margin: 0 0 2px;
-  color: var(--theme-muted, rgba(37, 37, 34, .55));
-  font-size: .72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-}
-
-.share-sheet-header h2 {
-  margin: 0;
-  font-size: 1.32rem;
-}
-
-.share-sheet-header button {
-  display: grid;
-  width: 40px;
-  height: 40px;
-  place-items: center;
-  border-radius: 999px;
-  background: #f0f0ef;
-}
-
-.share-range-card {
-  border-radius: 20px;
-  background: #f7f7f6;
-  padding: 12px;
-}
-
-.share-range-card h3,
-.share-background-picker h3 {
-  margin: 0 0 10px;
-  font-size: .9rem;
-}
-
-.share-range-selectors {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.share-range-selectors label {
-  display: grid;
-  gap: 5px;
-}
-
-.share-range-selectors span {
-  color: rgba(38, 34, 30, .54);
-  font-size: .72rem;
-  font-weight: 700;
-}
-
-.share-range-selectors select {
-  width: 100%;
-  border: 1px solid rgba(38, 34, 30, .10);
-  border-radius: 13px;
-  background: #fff;
-  padding: 9px 10px;
-  outline: none;
-}
-
-.share-range-card > p {
-  margin: 8px 0 0;
-  color: rgba(38, 34, 30, .44);
-  font-size: .7rem;
-}
-
-.share-background-picker {
-  margin: 14px 0;
-}
-
-.share-background-picker > div {
-  display: flex;
-
-}
-
-.share-background-picker button {
-
-
-  border-radius: 999px;
-  background: var(--share-color);
-  box-shadow: inset 0 0 0 1px rgba(31, 27, 23, .09);
-}
-
-.share-background-picker button.is-active {
-  box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgba(31, 27, 23, .24);
-}
-
-.quran-share-preview {
-  aspect-ratio: 4 / 5;
-
-  margin: 0 auto;
-  border-radius: 28px;
-  background: var(--share-background);
-  padding: 20px;
-  box-shadow: 0 18px 42px rgba(37, 31, 24, .14);
-}
-
-.quran-share-frame {
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-  border: 1px solid rgba(53, 43, 32, .16);
-  border-radius: 22px;
-  background: rgba(255,255,255,.56);
-  padding: 22px;
-}
-
-.quran-share-frame > h3 {
-  margin: 0;
-  color: #30271e;
-  font-family: IndopakNastaleeq, serif;
-  font-size: clamp(1.3rem, 5vw, 1.8rem);
-  font-weight: 600;
-  text-align: center;
-}
-
-.quran-share-divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 8px 0 14px;
-}
-
-.quran-share-divider::before,
-.quran-share-divider::after {
-  content: '';
-  height: 1px;
-  flex: 1;
-  background: rgba(64, 50, 35, .22);
-}
-
-.quran-share-divider span {
-  width: 10px;
-  height: 10px;
-  transform: rotate(45deg);
-  background: rgba(64, 50, 35, .52);
-}
-
-.quran-share-ayahs {
-  display: flex;
-
-  flex: 1;
-  flex-direction: column;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.quran-share-ayahs p {
-  margin: 0 0 8px;
-
-
-
-  line-height: 1.75;
-  text-align: right;
-}
-
-.quran-share-ayahs span {
-  color: rgba(55, 42, 29, .72);
-
-}
-
-.quran-share-frame footer {
-  color: rgba(48, 39, 30, .58);
-
-  font-weight: 700;
-
-}
-
-.share-image-button {
-  display: flex;
-  width: min(100%, 430px);
-  min-height: 48px;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin: 14px auto 0;
-  border-radius: 16px;
-  background: #25221e;
-  color: #fff;
-  font-weight: 750;
-}
-
-.share-image-button:disabled {
-  opacity: .55;
-}
-
-.share-sheet-status {
-  margin: 10px 0 0;
-  color: var(--theme-muted, rgba(37, 37, 34, .55));
-  font-size: .78rem;
-  text-align: center;
-}
-
 .ayah-translation-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 90;
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -1775,26 +772,13 @@ body {
   text-align: start;
 }
 
-.ayah-translation-body[data-translation-language="Ur"] .ayah-translation-text {
-  font-family: var(--translation-urdu-font);
-  font-size: 17px;
-  line-height: 2;
-}
-
 .ayah-translation-inline-footnote {
-  display: inline-grid;
   width: 1.18em;
   height: 1.18em;
   margin: 0 .18em;
   place-items: center;
-  border-radius: 999px;
   background: rgba(45, 110, 94, .15);
   color: #245f51;
-  font-family: var(--translation-english-font);
-
-  font-weight: 800;
-
-  vertical-align: .18em;
 }
 
 .ayah-translation-arabic {
@@ -1843,37 +827,6 @@ body {
   --translation-card-shadow: 0 -8px 28px rgba(0,0,0,0.45);
 }
 
-@media (max-width: 420px) {
-  .ayah-main-actions-v2 {
-    gap: 5px;
-  }
-
-  .ayah-main-action-v2 > span {
-    width: 44px;
-    height: 44px;
-    border-radius: 16px;
-  }
-
-  .ayah-main-action-v2 small {
-    font-size: .62rem;
-  }
-
-  .bookmark-type {
-    font-size: .7rem;
-  }
-
-  .quran-share-preview {
-    padding: 14px;
-    border-radius: 22px;
-  }
-
-  .quran-share-frame {
-    padding: 16px;
-    border-radius: 18px;
-  }
-}
-
-/* Modern ayah audio player */
 .reader-audio-over-reader {
   bottom: calc(env(safe-area-inset-bottom, 0px) + 76px) !important;
 }
@@ -2252,8 +1205,6 @@ body {
   border-radius: 999px;
   background: rgba(45, 110, 94, .08);
   color: #245f51;
-  padding: 8px 12px;
-  font-size: .78rem;
   font-weight: 700;
   line-height: 1;
 }
@@ -2269,12 +1220,8 @@ body {
 .ayah-translation-footnotes {
   display: grid;
   gap: 7px;
-  border-radius: 14px;
   background: rgba(45, 110, 94, .08);
-  padding: 10px;
   color: #4a535b;
-  font-size: .76rem;
-  line-height: 1.65;
 }
 
 .ayah-translation-footnotes p,
@@ -2288,23 +1235,15 @@ body {
 }
 
 .ayah-translation-note-number {
-  display: inline-grid;
-  width: 18px;
-  height: 18px;
   place-items: center;
 
   background: rgba(45, 110, 94, .15);
   color: #245f51;
-  font-family: var(--translation-english-font);
-  font-size: .62rem;
-  font-weight: 800;
 
 }
 
 .ayah-translation-note-content {
   display: block !important;
-  flex: 1 1 auto;
-  min-width: 0;
   width: auto !important;
   max-width: 100%;
   height: auto !important;
@@ -2317,7 +1256,6 @@ body {
   white-space: pre-line;
 }
 
-/* Return to the ayah currently being recited after browsing away. */
 .reader-return-to-audio-chip {
   position: fixed;
   top: calc(env(safe-area-inset-top, 0px) + 52px);
@@ -2400,8 +1338,6 @@ body {
   }
 }
 
-
-/* Quran Foundation word-by-word translation inside the ayah card. */
 .ayah-translation-card.has-word-by-word {
   height: clamp(360px, 68dvh, 72dvh);
   max-height: 72dvh;
@@ -2481,72 +1417,6 @@ body {
   line-height: 1.75;
 }
 
-/* QUL/Tarteel English word-by-word grammatical colors. */
-.wbw-colored-meaning .n {
-  color: #4f8fc9;
-}
-
-.wbw-colored-meaning .v {
-  color: #55a64f;
-}
-
-.wbw-colored-meaning .p {
-  color: #c45b58;
-}
-
-.wbw-colored-meaning .pn {
-  color: #7457b8;
-}
-
-.wbw-colored-meaning .paren {
-  color: var(--translation-card-secondary);
-  opacity: .74;
-}
-
-.wbw-colored-meaning .punc {
-  color: var(--translation-card-secondary);
-}
-
-[data-theme="dark"] .wbw-colored-meaning .n {
-  color: #7db7e8;
-}
-
-[data-theme="dark"] .wbw-colored-meaning .v {
-  color: #83d17d;
-}
-
-[data-theme="dark"] .wbw-colored-meaning .p {
-  color: #ef8a86;
-}
-
-[data-theme="dark"] .wbw-colored-meaning .pn {
-  color: #b59ae8;
-}
-
-/* Playback-only word color. The ayah-wide highlight is drawn by the overlay layer. */
- .reader-page .quran-word.is-recited-word {
-  color: #2d6e5e !important;
-  background: transparent !important;
-  font-size: inherit;
-  font-weight: inherit;
-  text-shadow: none;
-  box-shadow: none;
-}
-
-[data-theme='dark'] .reader-page .quran-word.is-recited-word {
-  color: #69ae97 !important;
-  background: transparent !important;
-}
-
-/* Recitation progress changes glyph colour only; never paint a word box. */
-.reader-page .quran-word.is-recited-word,
-.reader-page .quran-word.is-recited-word::before,
-.reader-page .quran-word.is-recited-word::after {
-  background: transparent !important;
-  background-color: transparent !important;
-  box-shadow: none !important;
-}
-
 .ayah-translation-note-section {
   display: grid;
   gap: 8px;
@@ -2592,1257 +1462,9 @@ body {
   cursor: pointer;
 }
 
-
-/* Share Quran image — app-aligned adaptive composition */
-.quran-share-preview {
-  aspect-ratio: auto;
-  width: min(100%, 430px);
-  padding: 14px;
-  border-radius: 24px;
-}
-
-.quran-share-frame {
-  height: auto;
-  min-height: 0;
-  padding: 18px 18px 14px;
-  border-radius: 20px;
-}
-
-.quran-share-surah-header {
-  position: relative;
-  width: 100%;
-  margin: 0 auto 4px;
-  aspect-ratio: 10 / 1;
-}
-
-.quran-share-surah-header img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: fill;
-}
-
-.quran-share-surah-header h3 {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  margin: 0;
-  padding: 0 24%;
-  overflow: hidden;
-  color: #211c17;
-  font-family: IndopakNastaleeq, serif;
-  font-size: clamp(1.05rem, 4.4vw, 1.45rem);
-  font-weight: 600;
-  line-height: 1;
-  text-align: center;
-  white-space: nowrap;
-}
-
-.quran-share-bismillah {
-  margin: 8px 0 10px;
-  color: #2a241e;
-  font-family: IndopakNastaleeq, serif;
-  font-size: clamp(1rem, 4.4vw, 1.35rem);
-  line-height: 1.7;
-  text-align: center;
-}
-
-.quran-share-ayahs {
-  display: block;
-  min-height: 0;
-  overflow: visible;
-}
-
-.quran-share-ayahs p {
-  margin: 0;
-  color: #17130f;
-  font-family: IndopakNastaleeq, serif;
-  font-size: var(--share-preview-font, 1.2rem);
-  line-height: 2;
-  text-align: center;
-}
-
-.quran-share-ayahs span {
-  color: inherit;
-  white-space: nowrap;
-}
-
-.quran-share-frame footer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  margin-top: 14px;
-  color: rgba(48, 39, 30, .62);
-  font-size: .72rem;
-  font-weight: 650;
-  text-align: center;
-}
-
-.quran-share-frame footer img {
-  width: 20px;
-  height: 20px;
-  border-radius: 5px;
-}
-
-/* Share color picker: compact app-green selected state without the broken double ring. */
-.share-background-picker > div {
-  gap: 12px;
-  padding: 4px;
-}
-
-.share-background-picker button {
-  width: 36px;
-  height: 36px;
-  border: 0;
-  box-shadow: inset 0 0 0 1px rgba(31, 27, 23, .10);
-  transition: transform 120ms ease, box-shadow 120ms ease;
-}
-
-.share-background-picker button:active {
-  transform: scale(.94);
-}
-
-.share-background-picker button.is-active {
-  box-shadow: inset 0 0 0 2px rgba(255,255,255,.78), 0 0 0 3px #2d6e5e;
-}
-
-.quran-share-reference {
-  margin: 12px 0 0;
-  color: rgba(48, 39, 30, .64);
-  font-size: .92rem;
-  font-weight: 650;
-  line-height: 1.2;
-  text-align: center;
-}
-
-.quran-share-frame footer {
-  margin-top: 7px;
-}
-
-.quran-share-frame footer img {
-  background: transparent !important;
-  border-radius: 0 !important;
-
-}
-
-/* Share Quran image — unified app surface and premium range controls */
-
-.share-range-card {
-  position: relative;
-  overflow: visible;
-  border: 1px solid rgba(201, 162, 75, .16);
-  border-radius: 22px;
-  background: rgba(255, 255, 255, .64);
-  padding: 16px;
-  box-shadow: 0 5px 18px rgba(40, 35, 27, .035);
-}
-
-.share-range-card h3 {
-  margin-bottom: 14px;
-  color: #252522;
-  font-size: .95rem;
-  font-weight: 650;
-}
-
-.share-range-selectors {
-  gap: 12px;
-}
-
-.share-range-field {
-
-  min-width: 0;
-}
-
-.share-range-field > span {
-  display: block;
-  margin-bottom: 7px;
-  color: rgba(37, 37, 34, .55);
-  font-size: .75rem;
-  font-weight: 600;
-}
-
-.share-range-trigger {
-  display: flex;
-  width: 100%;
-  min-height: 54px;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 0 14px;
-  border: 1px solid rgba(201, 162, 75, .34);
-  border-radius: 16px;
-  background: #fffdf8;
-  color: #252522;
-  font: inherit;
-  font-size: .98rem;
-  text-align: left;
-  box-shadow: 0 2px 8px rgba(40, 35, 27, .025);
-}
-
-.share-range-trigger[aria-expanded='true'] {
-  border-color: rgba(201, 162, 75, .64);
-  box-shadow: 0 0 0 2px rgba(201, 162, 75, .08);
-}
-
-.share-range-trigger svg {
-  flex: 0 0 auto;
-  transition: transform 150ms ease;
-}
-
-.share-range-trigger[aria-expanded='true'] svg {
-  transform: rotate(180deg);
-}
-
-.share-range-menu {
-  position: absolute;
-  z-index: 20;
-  top: calc(100% + 7px);
-  left: 0;
-  width: 100%;
-  max-height: 230px;
-  overflow-y: auto;
-  padding: 6px;
-  border: 1px solid rgba(201, 162, 75, .22);
-  border-radius: 16px;
-  background: #fffdf8;
-  box-shadow: 0 14px 34px rgba(35, 31, 25, .14);
-
-}
-
-.share-range-menu button {
-  display: block;
-  width: 100%;
-  min-height: 42px;
-  padding: 8px 11px;
-  border: 0;
-  border-radius: 11px;
-  background: transparent;
-  color: #252522;
-  font: inherit;
-  font-size: .9rem;
-  text-align: left;
-}
-
-.share-range-menu button.is-selected {
-  background: #2d7667;
-  color: #fff;
-}
-
-.share-range-menu button:active:not(.is-selected) {
-  background: rgba(201, 162, 75, .10);
-}
-
-.share-range-card > p {
-  margin-top: 10px;
-  color: rgba(37, 37, 34, .46);
-}
-
-/* Palette intentionally removed; share cards use the app's default warm sand. */
-.share-background-picker {
-  display: none !important;
-}
-
-.quran-share-preview {
-  margin-top: 14px;
-  background: #ead8b8;
-}
-
-.quran-share-surah-title {
-  margin: 0;
-  color: #30271e;
-  font-family: IndopakNastaleeq, serif;
-  font-size: clamp(1.3rem, 5vw, 1.8rem);
-  font-weight: 600;
-  line-height: 1.55;
-  text-align: center;
-}
-
-.quran-share-divider {
-  margin: 5px 0 10px;
-}
-
-.quran-share-bismillah {
-  margin-top: 1px;
-}
-
-.quran-share-frame footer img {
-  mix-blend-mode: multiply;
-}
-
-/* Share sheet typography and status colors are owned by the original
- * Reader selectors; do not add later one-property !important patches. */
-/* Share Quran image — match Index screen theme surfaces */
-
-
-
-.share-sheet-header button,
-.share-sheet-header button:hover,
-.share-sheet-header button:active {
-  border: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  color: var(--theme-text, #252522) !important;
-}
-
-.share-range-card {
-  border: 1px solid color-mix(in srgb, var(--theme-border, #dfd3b5) 64%, transparent) !important;
-
-
-
-}
-
-.share-range-card h3 {
-
-}
-
-.share-range-field > span,
-.share-range-card > p {
-  color: var(--theme-muted, rgba(37, 37, 34, .55)) !important;
-}
-
-.share-range-trigger {
-
-
-
-
-
-}
-
-.share-range-trigger[aria-expanded='true'] {
-  border-color: color-mix(in srgb, var(--brand-gold, #b68a35) 52%, var(--theme-border, #dfd3b5)) !important;
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-gold, #b68a35) 10%, transparent),
-              0 6px 16px rgba(72, 55, 22, .04) !important;
-}
-
-.share-range-menu {
-
-
-
-
-}
-
-.share-range-menu button {
-
-}
-
-.share-range-menu button.is-selected {
-
-
-}
-
-.share-range-menu button:active:not(.is-selected) {
-  background: color-mix(in srgb, var(--brand-gold, #b68a35) 10%, transparent) !important;
-}
-
-.share-image-button {
-  border-radius: 16px !important;
-  background: linear-gradient(135deg, var(--brand-green, #2f7a68), #185b4d) !important;
-  color: #fff !important;
-  box-shadow: 0 8px 20px rgba(24, 91, 77, .14) !important;
-}
-
-
-/* Share Quran image — final Index/reciter visual alignment */
-
-/* Use the same solid card language as Index rows/panels. */
-.share-range-card {
-
-  border: 1px solid color-mix(in srgb, var(--theme-border, #dfd3b5) 72%, transparent) !important;
-
-
-
-}
-
-.share-range-card h3 {
-  margin-bottom: 14px !important;
-
-
-
-}
-
-.share-range-selectors {
-
-}
-
-.share-range-field > span {
-  margin-bottom: 7px !important;
-  color: var(--theme-muted, #756f65) !important;
-
-
-}
-
-/* From/To fields must be opaque, like Index cards rather than glass controls. */
-.share-range-trigger {
-
-
-
-
-
-
-
-  opacity: 1 !important;
-}
-
-.share-range-trigger[aria-expanded='true'] {
-  border-color: color-mix(in srgb, var(--brand-gold, #b68a35) 50%, var(--theme-border, #dfd3b5)) !important;
-  background: var(--theme-surface-solid, #fffdf8) !important;
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-gold, #b68a35) 9%, transparent),
-              0 6px 16px rgba(72, 55, 22, .04) !important;
-}
-
-/* Match the audio reciter chooser: solid floating surface, generous radius,
-   soft selected row, compact scrollbar, and no transparent menu backing. */
-.share-range-menu {
-
-
-
-  padding: 9px 8px !important;
-
-  overscroll-behavior: contain !important;
-
-  border-radius: 23px !important;
-
-  color: var(--theme-text, #252522) !important;
-
-  opacity: 1 !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  scrollbar-width: thin;
-  scrollbar-color: var(--theme-muted, #756f65) transparent;
-}
-
-.share-range-menu::-webkit-scrollbar { width: 4px; }
-.share-range-menu::-webkit-scrollbar-thumb {
-  border-radius: 999px;
-  background: var(--theme-muted, #756f65);
-}
-
-.share-range-menu button {
-  display: flex !important;
-  min-height: 52px !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: 10px !important;
-  padding: 8px 12px !important;
-  border-radius: 17px !important;
-  background: transparent !important;
-  color: var(--theme-text, #252522) !important;
-  font-size: .94rem !important;
-}
-
-.share-range-menu button.is-selected {
-
-
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand-green, #2f7a68) 22%, transparent) !important;
-  font-weight: 720 !important;
-}
-
-.share-range-menu button.is-selected svg {
-  color: var(--brand-green, #2f7a68) !important;
-}
-
-.share-range-menu button:active:not(.is-selected) {
-  background: color-mix(in srgb, var(--theme-border, #dfd3b5) 30%, transparent) !important;
-}
-
-.share-range-card > p {
-  margin-top: 10px !important;
-  color: var(--theme-muted, #756f65) !important;
-}
-
-/* Let the preview grow with its Quran text. Bismillah uses the same reading
-   scale as the ayahs; only very large ranges are modestly reduced in JS. */
-.quran-share-preview {
-  height: auto !important;
-  max-height: none !important;
-}
-
-.quran-share-frame {
-  height: auto !important;
-  max-height: none !important;
-}
-
-.quran-share-bismillah {
-  margin: 8px 0 10px !important;
-  font-size: var(--share-preview-font, 1.36rem) !important;
-  line-height: 2 !important;
-}
-
-.quran-share-ayahs,
-.quran-share-ayahs p {
-  max-height: none !important;
-  overflow: visible !important;
-}
-
-/* Share Quran Image — final synchronized UI/export pass.
-   The preview now displays the generated PNG itself, so preview and share output
-   are always identical. */
-.share-sheet-header {
-  display: grid !important;
-  grid-template-columns: 44px minmax(0, 1fr) 44px !important;
-  align-items: center !important;
-  gap: 10px !important;
-  margin-bottom: 18px !important;
-}
-
-.share-sheet-header h2 {
-  margin: 0 !important;
-  overflow: visible !important;
-  color: var(--theme-text, #252522) !important;
-  font-size: 1.45rem !important;
-  font-weight: 650 !important;
-  line-height: 1.2 !important;
-  text-align: center !important;
-  text-overflow: clip !important;
-  white-space: nowrap !important;
-}
-
-.share-sheet-header .shared-back-button {
-  justify-self: start !important;
-}
-
-.share-header-spacer {
-  width: 44px;
-  height: 44px;
-}
-
-/* Same solid card language as Index: clear surface separation, subtle gold edge. */
-.share-range-card {
-  margin: 0 !important;
-  padding: 16px !important;
-  border: 1px solid color-mix(in srgb, var(--brand-gold, #b68a35) 22%, var(--theme-border, #dfd3b5)) !important;
-  border-radius: 24px !important;
-  background: var(--theme-surface-solid, #fffdf8) !important;
-  box-shadow: 0 8px 22px rgba(71, 54, 23, .07) !important;
-}
-
-.share-range-card h3 {
-  margin: 0 0 14px !important;
-  color: var(--theme-text, #252522) !important;
-  font-size: 1rem !important;
-  font-weight: 680 !important;
-}
-
-.share-range-selectors {
-  gap: 12px !important;
-}
-
-.share-range-field > span {
-  margin: 0 0 7px !important;
-  color: color-mix(in srgb, var(--theme-text, #252522) 58%, transparent) !important;
-  font-size: .78rem !important;
-  font-weight: 600 !important;
-}
-
-/* Branded but quiet range controls — no generic white input appearance. */
-.share-range-trigger {
-
-
-
-
-
-  color: var(--theme-text, #252522) !important;
-
-  font-weight: 600 !important;
-}
-
-.share-range-trigger:active,
-.share-range-trigger[aria-expanded='true'] {
-  border-color: rgba(182, 138, 53, .58) !important;
-  background: color-mix(in srgb, var(--brand-gold, #b68a35) 8%, var(--theme-surface-solid, #fffdf8)) !important;
-  box-shadow: 0 0 0 3px rgba(182, 138, 53, .08) !important;
-}
-
-.share-range-card > p {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  margin: 11px 0 0 !important;
-  color: color-mix(in srgb, var(--theme-text, #252522) 55%, transparent) !important;
-  font-size: .74rem !important;
-  font-weight: 560 !important;
-}
-
-.share-range-card > p::before {
-  content: '';
-  width: 5px;
-  height: 5px;
-  flex: 0 0 auto;
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--brand-gold, #b68a35) 74%, transparent);
-}
-
-/* Generated PNG is the preview. No second CSS recreation means no drift in
-   line wrapping, font sizing, radii, footer spacing, or branding. */
-.quran-share-generated-preview {
-  width: min(100%, 430px) !important;
-  height: auto !important;
-  margin: 16px auto 0 !important;
-  padding: 0 !important;
-  overflow: visible !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-}
-
-.quran-share-generated-image {
-  display: block;
-  width: 100%;
-  height: auto;
-  border: 0;
-  background: transparent;
-  box-shadow: 0 14px 34px rgba(55, 43, 25, .10);
-}
-
-.quran-share-preview-loading {
-  display: grid;
-  min-height: 280px;
-  place-items: center;
-  border: 1px solid color-mix(in srgb, var(--theme-border, #dfd3b5) 72%, transparent);
-  border-radius: 22px;
-  background: var(--theme-surface-solid, #fffdf8);
-  color: var(--theme-muted, #756f65);
-  font-size: .85rem;
-  font-weight: 600;
-}
-
-[data-theme='dark'] .share-range-trigger {
-
-}
-
-/* Share Quran — standalone screen. The share experience is a full app page,
-   not a Reader overlay/sheet. */
-.share-quran-screen {
-  min-height: 100dvh;
-}
-
-.share-quran-page-content {
-  width: min(100%, 720px);
-  margin-inline: auto;
-  padding-inline: 10px;
-  padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px));
-}
-
-.share-quran-page-content .share-range-card {
-  margin-top: 8px !important;
-}
-
-.share-quran-page-content .share-image-button {
-  width: min(100%, 430px);
-  min-height: 54px;
-  margin: 18px auto 0;
-}
-
-.share-quran-page-content .share-sheet-status {
-  width: min(100%, 430px);
-  margin: 10px auto 0;
-  text-align: center;
-}
-
-@media (min-width: 640px) {
-  .share-quran-page-content {
-    padding-inline: 18px;
-  }
-}
-
-
-/* Share Quran media-maker foundation */
-.share-quran-page-content {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.share-media-mode-switch,
-.share-orientation-switch {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  border: 1px solid rgba(201, 162, 75, .18);
-  border-radius: 999px;
-  background: rgba(255, 252, 246, .72);
-  padding: 4px;
-}
-
-.share-media-mode-switch button,
-.share-orientation-switch button {
-  display: inline-flex;
-  min-height: 44px;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  border-radius: 999px;
-  color: var(--theme-text-muted, rgba(30,30,30,.62));
-  font-weight: 600;
-}
-
-.share-media-mode-switch button.is-active,
-.share-orientation-switch button.is-active {
-  background: var(--theme-accent, #2f7d68);
-  color: white;
-  box-shadow: 0 4px 14px rgba(31,61,43,.14);
-}
-
-.share-media-live-preview {
-  width: 100%;
-
-
-  background: #ead8b8;
-
-}
-
-.share-media-live-preview.is-landscape {
-  aspect-ratio: 16 / 9;
-}
-
-.share-media-live-preview.is-video.is-portrait {
-  aspect-ratio: 9 / 16;
-  max-height: min(66vh, 640px);
-}
-
-.share-media-live-preview.is-image {
-  aspect-ratio: auto;
-}
-
-.share-media-live-preview .quran-share-generated-image {
-  display: block;
-
-  height: auto;
-}
-
-.share-video-preview-stage {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  min-height: 460px;
-  overflow: hidden;
-  background: #183c35;
-  color: white;
-}
-
-.share-media-live-preview.is-landscape .share-video-preview-stage {
-  min-height: 0;
-}
-
-.share-video-preview-background,
-.share-video-preview-fallback,
-.share-video-preview-overlay {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.share-video-preview-background {
-
-}
-
-.share-video-preview-fallback {
-  background:
-    radial-gradient(circle at 70% 18%, rgba(234,216,184,.22), transparent 32%),
-    linear-gradient(145deg, #214e45 0%, #173b35 48%, #0f2925 100%);
-}
-
-.share-video-preview-overlay {
-  background: linear-gradient(
-    to bottom,
-    rgba(0,0,0,.20),
-    rgba(0,0,0,.43) 40%,
-    rgba(0,0,0,.48)
-  );
-}
-
-.share-video-preview-header {
-  position: absolute;
-  top: 9%;
-  right: 8%;
-  left: 8%;
-  display: grid;
-  gap: 3px;
-  text-align: center;
-  text-shadow: 0 2px 7px rgba(0,0,0,.28);
-}
-
-.share-video-preview-header strong {
-  font-family: 'IndopakNastaleeq', serif;
-  font-size: clamp(1.25rem, 5vw, 2rem);
-  line-height: 1.35;
-}
-
-.share-video-preview-header span {
-  font-size: .88rem;
-  opacity: .9;
-}
-
-.share-video-preview-ayah {
-  position: absolute;
-  top: 50%;
-  right: 9%;
-  left: 9%;
-  transform: translateY(-50%);
-  font-family: 'IndopakNastaleeq', serif;
-  font-size: clamp(1.6rem, 7vw, 2.7rem);
-  line-height: 1.85;
-
-  direction: rtl;
-  animation: shareAyahFadeIn .22s ease both;
-  text-shadow: 0 2px 8px rgba(0,0,0,.30);
-}
-
 @keyframes shareAyahFadeIn {
   from { opacity: 0; transform: translateY(-47%); }
   to { opacity: 1; transform: translateY(-50%); }
-}
-
-.share-video-preview-play {
-  position: absolute;
-  bottom: 36px;
-  left: 50%;
-  min-width: 94px;
-  min-height: 42px;
-  transform: translateX(-50%);
-  border: 1px solid rgba(255,255,255,.28);
-
-  background: rgba(0,0,0,.32);
-  color: white;
-  font-weight: 600;
-  backdrop-filter: blur(10px);
-}
-
-.share-video-preview-progress {
-  position: absolute;
-  right: 8%;
-  bottom: 18px;
-  left: 8%;
-  height: 4px;
-  overflow: hidden;
-  border-radius: 999px;
-  background: rgba(255,255,255,.28);
-}
-
-.share-video-preview-progress span {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: white;
-  transition: width .08s linear;
-}
-
-.share-media-tabs {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  border: 1px solid rgba(201,162,75,.16);
-  border-radius: 20px;
-  background: var(--theme-surface-solid, #fffdf8);
-  padding: 5px;
-  box-shadow: 0 3px 12px rgba(31,61,43,.05);
-}
-
-.share-media-tabs button {
-  display: grid;
-  min-height: 52px;
-  place-items: center;
-  gap: 2px;
-  border-radius: 15px;
-  color: var(--theme-text-muted, #757575);
-  font-size: .72rem;
-  font-weight: 600;
-}
-
-.share-media-tabs button.is-active {
-  background: rgba(47,125,104,.10);
-  color: var(--theme-accent, #2f7d68);
-}
-
-.share-media-settings-card,
-.share-media-range-card {
-  border: 1px solid rgba(201,162,75,.18);
-  border-radius: 24px;
-  background: var(--theme-surface-solid, #fffdf8);
-  padding: 18px;
-  box-shadow: 0 4px 16px rgba(31,61,43,.05);
-}
-
-.share-media-section-heading {
-  display: grid;
-  gap: 2px;
-  margin-bottom: 12px;
-}
-
-.share-media-section-heading strong,
-.share-media-range-title h3 {
-  font-size: 1rem;
-  font-weight: 700;
-}
-
-.share-media-section-heading span,
-.share-media-range-title p,
-.share-media-simple-message span,
-.share-media-toggle-row span {
-  color: var(--theme-text-muted, #7b7b7b);
-  font-size: .82rem;
-}
-
-.share-media-simple-message {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-height: 64px;
-}
-
-.share-media-simple-message > svg {
-  flex: 0 0 auto;
-  color: var(--theme-accent, #2f7d68);
-}
-
-.share-media-simple-message div {
-  display: grid;
-  gap: 3px;
-}
-
-.share-media-control-group {
-  display: grid;
-  gap: 9px;
-}
-
-.share-media-control-group label {
-  font-weight: 700;
-}
-
-.share-media-control-group select {
-  width: 100%;
-  min-height: 48px;
-  border: 1px solid rgba(201,162,75,.28);
-  border-radius: 14px;
-  background: rgba(201,162,75,.045);
-  padding: 0 13px;
-  color: var(--theme-text, #1f2421);
-  font: inherit;
-  font-weight: 600;
-}
-
-.share-background-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 9px;
-}
-
-.share-background-grid button {
-  aspect-ratio: 1;
-
-
-
-
-}
-
-.share-background-grid button.is-selected {
-
-}
-
-.share-background-grid img {
-
-
-
-}
-
-.share-background-empty {
-  display: grid;
-  min-height: 132px;
-  place-items: center;
-  align-content: center;
-  gap: 6px;
-  border: 1px dashed rgba(201,162,75,.42);
-  border-radius: 18px;
-  background: rgba(201,162,75,.035);
-  padding: 18px;
-  text-align: center;
-}
-
-.share-background-empty svg {
-  color: var(--theme-accent, #2f7d68);
-}
-
-.share-background-empty span {
-  max-width: 290px;
-  color: var(--theme-text-muted, #777);
-  font-size: .8rem;
-}
-
-.share-media-toggle-row {
-  display: flex;
-  min-height: 64px;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 14px;
-  padding-top: 14px;
-  border-top: 1px solid rgba(201,162,75,.13);
-}
-
-.share-media-toggle-row > div {
-  display: grid;
-  gap: 3px;
-}
-
-.share-media-toggle-row input {
-  width: 44px;
-  height: 24px;
-  accent-color: var(--theme-accent, #2f7d68);
-}
-
-.share-media-range-title {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 14px;
-  margin-bottom: 14px;
-}
-
-.share-media-range-title > div {
-  display: grid;
-  gap: 2px;
-}
-
-.share-media-range-title > span {
-  color: var(--theme-text-muted, #777);
-  font-size: .84rem;
-  font-weight: 600;
-}
-
-.share-selected-reciter {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--theme-text-muted, #777);
-  font-size: .85rem;
-}
-
-.share-media-final-action {
-  display: inline-flex;
-  width: 100%;
-  min-height: 54px;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  border-radius: 18px;
-  background: var(--theme-accent, #2f7d68);
-  color: white;
-  font-weight: 700;
-  box-shadow: 0 8px 20px rgba(31,61,43,.15);
-}
-
-.share-media-final-action:disabled {
-  cursor: default;
-  opacity: .52;
-}
-
-.share-media-export-note {
-  margin: -6px 4px 0;
-  color: var(--theme-text-muted, #777);
-  font-size: .78rem;
-  line-height: 1.5;
-  text-align: center;
-}
-
-[data-theme='dark'] .share-media-mode-switch,
-[data-theme='dark'] .share-orientation-switch,
-[data-theme='dark'] .share-media-tabs,
-[data-theme='dark'] .share-media-settings-card,
-[data-theme='dark'] .share-media-range-card {
-  border-color: rgba(201,162,75,.17);
-  background: var(--theme-surface-solid);
-}
-
-[data-theme='dark'] .share-media-control-group select,
-[data-theme='dark'] .share-background-empty {
-  background: rgba(201,162,75,.055);
-}
-
-@media (max-width: 380px) {
-  .share-media-tabs button {
-    min-height: 48px;
-    font-size: .68rem;
-  }
-
-  .share-media-settings-card,
-  .share-media-range-card {
-    padding: 15px;
-  }
-}
-
-
-/* Share Quran refinement: solid Ayah card, full-frame preview, Settings-style reciter picker. */
-.share-media-range-card {
-
-  border-color: rgba(201, 162, 75, .18) !important;
-
-
-
-}
-
-.share-media-live-preview {
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-  background: rgba(201, 162, 75, .10);
-}
-
-.share-media-live-preview.is-image.is-portrait,
-.share-media-live-preview.is-video.is-portrait {
-  aspect-ratio: 3 / 4;
-}
-
-.share-media-live-preview.is-image.is-landscape,
-.share-media-live-preview.is-video.is-landscape {
-  aspect-ratio: 16 / 9;
-}
-
-.share-media-live-preview .quran-share-generated-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center;
-}
-
-.share-video-preview-stage {
-  min-height: 0 !important;
-}
-
-.share-reciter-picker {
-
-  display: grid;
-  gap: 10px;
-}
-
-.share-reciter-trigger {
-  display: grid;
-  grid-template-columns: 36px minmax(0, 1fr) 20px;
-  width: 100%;
-  min-height: 52px;
-  align-items: center;
-  gap: 10px;
-  border: 1px solid rgba(201, 162, 75, .28);
-  border-radius: 16px;
-  background: rgba(201, 162, 75, .045);
-  padding: 7px 12px;
-  color: var(--theme-text, #1f2421);
-  text-align: left;
-  font-weight: 600;
-}
-
-.share-reciter-trigger > span {
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-
-.share-reciter-trigger > svg {
-  justify-self: end;
-  color: var(--theme-text-muted, #777);
-}
-
-.share-reciter-avatar {
-  width: 34px;
-  height: 34px;
-  flex: 0 0 34px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.share-reciter-menu {
-  position: absolute;
-  z-index: 40;
-  top: calc(100% + 6px);
-  right: 0;
-  left: 0;
-  max-height: 280px;
-  overflow-y: auto;
-  border: 1px solid rgba(201, 162, 75, .22);
-  border-radius: 18px;
-  background: var(--theme-surface-solid, #fffdf8);
-  padding: 6px;
-  box-shadow: 0 14px 34px rgba(31, 61, 43, .16);
-}
-
-.share-reciter-menu button {
-  display: grid;
-  grid-template-columns: 36px minmax(0, 1fr) 20px;
-  width: 100%;
-  min-height: 50px;
-  align-items: center;
-  gap: 10px;
-  border-radius: 13px;
-  padding: 6px 9px;
-  color: var(--theme-text, #1f2421);
-  text-align: left;
-}
-
-.share-reciter-menu button.is-selected {
-  background: rgba(47, 125, 104, .10);
-  color: var(--theme-accent, #2f7d68);
-}
-
-.share-reciter-menu button > svg {
-  justify-self: end;
-}
-
-/* The old still-frame control is intentionally removed from the UI. */
-.share-media-toggle-row {
-  display: none !important;
-}
-
-[data-theme='dark'] .share-media-range-card,
-[data-theme='dark'] .share-reciter-menu {
-  background: var(--theme-surface-solid) !important;
-}
-
-
-/* Share Quran text + centered ayah-card refinement */
-.share-video-preview-header {
-  top: 8%;
-}
-
-.share-video-preview-header strong {
-  font-size: clamp(1.35rem, 5vw, 2rem);
-  font-weight: 700;
-}
-
-.share-video-preview-header span {
-  margin-top: 2px;
-  font-size: .9rem;
-  opacity: .92;
-}
-
-/* Only the active ayah gets the transparent card.
-   It stays centered vertically and horizontally in the media frame. */
-.share-video-preview-ayah-card {
-  --share-text-scale: 1;
-  position: absolute;
-  top: 50%;
-  right: 5%;
-  left: 5%;
-  display: grid;
-  min-height: 22%;
-  place-items: center;
-
-  border: 1px solid rgba(255,255,255,.09);
-  border-radius: 22px;
-  background: rgba(8, 24, 22, .44);
-  padding: clamp(18px, 5vw, 34px) clamp(16px, 6vw, 38px);
-  box-shadow: 0 12px 30px rgba(0,0,0,.14);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-.share-video-preview-ayah {
-  position: static;
-  width: 100%;
-  transform: none;
-  font-size: calc(clamp(1.6rem, 7vw, 2.7rem) * var(--share-text-scale));
-  line-height: 1.8;
-  text-align: center;
-  animation: shareAyahTextFadeIn .22s ease both;
 }
 
 @keyframes shareAyahTextFadeIn {
@@ -3850,1630 +1472,6 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-.share-media-live-preview.is-landscape .share-video-preview-ayah-card {
-  right: 12%;
-  left: 12%;
-  min-height: 30%;
-  padding: 14px 24px;
-}
-
-.share-media-live-preview.is-landscape .share-video-preview-ayah {
-  font-size: calc(clamp(1.2rem, 4vw, 2rem) * var(--share-text-scale));
-  line-height: 1.65;
-}
-
-.share-text-settings {
-
-  gap: 14px;
-}
-
-.share-text-size-control {
-  display: grid;
-  grid-template-columns: 48px minmax(0, 1fr) 48px;
-  align-items: center;
-  gap: 12px;
-}
-
-.share-text-size-control > button {
-  width: 48px;
-  height: 48px;
-  border: 1px solid rgba(201,162,75,.30);
-  border-radius: 15px;
-  background: rgba(201,162,75,.045);
-  color: var(--theme-accent, #2f7d68);
-  font-size: 1.55rem;
-  font-weight: 600;
-}
-
-.share-text-size-control > button:active {
-  background: rgba(201,162,75,.12);
-  transform: scale(.96);
-}
-
-.share-text-size-control > button:disabled {
-  opacity: .35;
-}
-
-.share-text-size-control > div {
-  display: grid;
-  min-height: 48px;
-  place-items: center;
-  align-content: center;
-  border: 1px solid rgba(201,162,75,.16);
-  border-radius: 15px;
-  background: rgba(201,162,75,.025);
-}
-
-.share-text-size-control > div strong {
-  font-size: .95rem;
-}
-
-.share-text-size-control > div span {
-  color: var(--theme-text-muted, #777);
-  font-size: .75rem;
-}
-
-/* Keep the image preview entirely visible for both orientations. */
-.share-media-live-preview.is-image {
-  display: grid;
-  place-items: center;
-  background: transparent;
-  box-shadow: none;
-}
-
-.share-media-live-preview.is-image .quran-share-generated-image {
-  width: 100%;
-  max-height: 68vh;
-  object-fit: contain;
-  border-radius: 24px;
-}
-
-
-/* Share Quran overlap + unified media-style authority */
-.share-media-live-preview {
-  position: relative;
-  display: block;
-  height: auto !important;
-  max-height: none !important;
-
-  border-radius: 26px;
-  background: #103a34;
-  box-shadow: 0 6px 22px rgba(31,61,43,.08);
-}
-
-.share-media-live-preview.is-video.is-portrait,
-.share-media-live-preview.is-image.is-portrait {
-  aspect-ratio: 3 / 4 !important;
-}
-
-.share-media-live-preview.is-video.is-landscape,
-.share-media-live-preview.is-image.is-landscape {
-  aspect-ratio: 16 / 9 !important;
-}
-
-.share-video-preview-stage,
-.share-image-preview-stage {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100% !important;
-  min-height: 0 !important;
-  overflow: hidden;
-}
-
-.share-image-preview-stage {
-  display: grid;
-  place-items: center;
-  background: #103a34;
-}
-
-.share-image-preview-stage .quran-share-generated-image {
-  width: 100% !important;
-  height: 100% !important;
-  max-height: none !important;
-
-  border-radius: 0 !important;
-}
-
-.share-media-tabs,
-.share-media-settings-card,
-.share-media-range-card,
-.share-selected-reciter,
-.share-media-final-action,
-.share-media-export-note {
-  position: relative;
-  z-index: 1;
-}
-
-/* Ayahs card follows the same solid card language as Settings. */
-.share-media-range-card {
-  border: 1px solid rgba(201,162,75,.18) !important;
-
-  box-shadow: 0 4px 16px rgba(31,61,43,.05) !important;
-
-
-}
-
-/* From/To use the Settings-style field treatment. */
-.share-range-trigger {
-  min-height: 46px !important;
-  border: 1px solid rgba(201,162,75,.30) !important;
-  border-radius: 14px !important;
-  background: rgba(201,162,75,.045) !important;
-  padding: 0 12px !important;
-  box-shadow: 0 1px 3px rgba(31,61,43,.04) !important;
-}
-
-.share-range-trigger > span {
-  font-weight: 600;
-}
-
-.share-range-trigger:active {
-  background: rgba(201,162,75,.10) !important;
-  transform: scale(.985);
-}
-
-.share-range-menu {
-  border: 1px solid rgba(201,162,75,.18) !important;
-  background: var(--theme-surface-solid, #fffdf8) !important;
-  box-shadow: 0 12px 30px rgba(31,61,43,.16) !important;
-}
-
-.share-range-menu button {
-  min-height: 44px;
-}
-
-.share-range-menu button.is-selected {
-  background: rgba(47,125,104,.10) !important;
-  color: var(--theme-accent, #2f7d68) !important;
-}
-
-[data-theme='dark'] .share-media-range-card,
-[data-theme='dark'] .share-range-menu {
-  background: var(--theme-surface-solid) !important;
-}
-
-[data-theme='dark'] .share-range-trigger {
-  background: rgba(201,162,75,.055) !important;
-}
-
-
-/* Share background asset integration */
-.share-background-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.share-background-grid button {
-  position: relative;
-  aspect-ratio: 4 / 3;
-  overflow: hidden;
-  border: 2px solid transparent;
-  border-radius: 14px;
-  background: rgba(31,61,43,.06);
-  padding: 0;
-}
-
-.share-background-grid button.is-selected {
-  border-color: var(--theme-accent, #2f7d68);
-  box-shadow: 0 0 0 2px rgba(47,125,104,.10);
-}
-
-.share-background-grid img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.share-background-grid button:active {
-  transform: scale(.97);
-}
-
-.share-video-preview-background {
-  object-fit: cover;
-  object-position: center;
-}
-
-/* Share Quran layout + interactive preview authority
-   Prevent fixed-height page flexbox from shrinking sections into one another. */
-.share-quran-page-content {
-  align-items: stretch;
-}
-
-.share-quran-page-content > * {
-
-
-}
-
-.share-media-live-preview {
-  flex: none !important;
-  width: 100% !important;
-  min-width: 0;
-}
-
-/* Keep every control panel outside the preview's stacking context. */
-.share-media-tabs,
-.share-media-settings-card,
-.share-media-range-card,
-.share-selected-reciter,
-.share-media-final-action,
-.share-media-export-note,
-.share-sheet-status {
-  flex: none !important;
-}
-
-/* Range dropdowns must sit above the final action instead of behind it. */
-.share-media-range-card {
-  z-index: 4 !important;
-  overflow: visible !important;
-}
-
-.share-media-range-card:has(.share-range-menu) {
-  z-index: 80 !important;
-}
-
-.share-range-field {
-  z-index: 1;
-}
-
-.share-range-field:has(.share-range-menu) {
-  z-index: 90;
-}
-
-.share-range-menu {
-
-}
-
-.share-media-final-action {
-
-}
-
-/* Video preview transport controls: play/pause + real seek input. */
-.share-video-preview-controls {
-  position: absolute;
-  right: 6%;
-  bottom: 18px;
-  left: 6%;
-  z-index: 6;
-  display: grid;
-  grid-template-columns: 46px minmax(0, 1fr);
-  align-items: center;
-  gap: 12px;
-  border: 1px solid rgba(255,255,255,.16);
-  border-radius: 20px;
-  background: rgba(4, 18, 17, .42);
-  padding: 9px 12px 8px 9px;
-  box-shadow: 0 10px 26px rgba(0,0,0,.16);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-.share-video-preview-play {
-  position: static !important;
-  display: grid;
-  width: 42px;
-  min-width: 42px !important;
-  height: 42px;
-  min-height: 42px !important;
-  place-items: center;
-  transform: none !important;
-  border: 1px solid rgba(255,255,255,.26);
-  border-radius: 999px;
-  background: rgba(255,255,255,.94);
-  color: #173c35;
-  padding: 0;
-}
-
-.share-video-preview-play:active {
-  transform: scale(.95) !important;
-}
-
-.share-video-preview-seek-wrap {
-  display: grid;
-  min-width: 0;
-  gap: 3px;
-}
-
-.share-video-preview-seek {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 100%;
-  height: 24px;
-  margin: 0;
-  background: transparent;
-  cursor: pointer;
-  touch-action: pan-x;
-}
-
-.share-video-preview-seek::-webkit-slider-runnable-track {
-  height: 4px;
-  border-radius: 999px;
-  background: rgba(255,255,255,.38);
-}
-
-.share-video-preview-seek::-webkit-slider-thumb {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 16px;
-  height: 16px;
-  margin-top: -6px;
-  border: 2px solid #fff;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,.22);
-}
-
-.share-video-preview-seek::-moz-range-track {
-  height: 4px;
-  border-radius: 999px;
-  background: rgba(255,255,255,.38);
-}
-
-.share-video-preview-seek::-moz-range-thumb {
-  width: 14px;
-  height: 14px;
-  border: 2px solid #fff;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,.22);
-}
-
-.share-video-preview-time {
-  display: flex;
-  justify-content: space-between;
-  color: rgba(255,255,255,.78);
-  font-size: .68rem;
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
-}
-
-/* Supersede the old decorative progress bar now that the slider is interactive. */
-.share-video-preview-progress {
-  display: none !important;
-}
-
-/* Leave enough room between Quran card and playback controls in portrait. */
-.share-media-live-preview.is-video.is-portrait .share-video-preview-ayah-card {
-  top: 47%;
-}
-
-.share-media-live-preview.is-video.is-landscape .share-video-preview-controls {
-  right: 8%;
-  left: 8%;
-  bottom: 12px;
-}
-
-
-/* Share Quran stabilized layout authority */
-.share-quran-page-content {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 18px !important;
-}
-
-.share-quran-page-content > * {
-  flex: 0 0 auto !important;
-  min-width: 0;
-}
-
-/* Preview is a single reserved block. */
-.share-media-live-preview {
-  position: relative !important;
-  overflow: hidden !important;
-  isolation: isolate;
-  z-index: 0 !important;
-}
-
-.share-media-live-preview.is-image.is-portrait,
-.share-media-live-preview.is-video.is-portrait {
-
-}
-
-.share-media-live-preview.is-image.is-landscape,
-.share-media-live-preview.is-video.is-landscape {
-
-}
-
-.share-image-preview-stage,
-.share-video-preview-stage {
-
-
-
-
-
-
-}
-
-/* Tabs and cards always sit below the preview. */
-.share-media-tabs,
-.share-media-settings-card,
-.share-media-range-card,
-.share-selected-reciter,
-.share-media-final-action,
-.share-media-export-note {
-  position: relative !important;
-  z-index: 1 !important;
-  flex: 0 0 auto !important;
-}
-
-.share-media-settings-card,
-.share-media-range-card {
-  overflow: visible !important;
-}
-
-/* Ayahs card is fully opaque and separate. */
-.share-media-range-card {
-  background: var(--theme-surface-solid, #fffdf8) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-
-/* Dropdowns float above content but don't change layout height. */
-.share-range-field {
-
-}
-
-.share-range-menu {
-
-
-
-
-
-
-
-
-}
-
-/* Reciter picker must stay compact and self-contained. */
-.share-reciter-picker {
-  position: relative;
-}
-
-.share-reciter-menu {
-  position: absolute !important;
-
-  left: 0 !important;
-  right: 0 !important;
-  width: 100% !important;
-
-
-
-  border-radius: 18px !important;
-
-  box-shadow: 0 14px 34px rgba(31,61,43,.18) !important;
-}
-
-/* Final action never sits underneath picker content visually. */
-.share-media-final-action {
-  z-index: 0 !important;
-}
-
-/* Video playback controls: compact bottom strip. */
-.share-video-controls {
-  position: absolute !important;
-  right: 7% !important;
-  bottom: 5.5% !important;
-  left: 7% !important;
-  z-index: 6 !important;
-  display: grid !important;
-  grid-template-columns: 44px auto 1fr auto !important;
-  align-items: center !important;
-  gap: 10px !important;
-  min-height: 58px !important;
-  border: 1px solid rgba(255,255,255,.12) !important;
-  border-radius: 18px !important;
-  background: rgba(5,22,20,.56) !important;
-  padding: 7px 10px !important;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-.share-video-controls button {
-  width: 44px !important;
-  height: 44px !important;
-  display: grid !important;
-  place-items: center !important;
-  border-radius: 999px !important;
-  background: rgba(255,255,255,.96) !important;
-  color: #173b35 !important;
-}
-
-.share-video-controls .share-video-time {
-  color: rgba(255,255,255,.9) !important;
-  font-size: .78rem !important;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
-.share-video-controls input[type='range'] {
-  width: 100% !important;
-  min-width: 0 !important;
-  accent-color: #ffffff;
-}
-
-/* Quran Ayah card is shown only in Text tab for video. */
-.share-video-preview-ayah-card {
-
-  z-index: 5 !important;
-}
-
-/* Image tab: keep preview clean except on Text tab.
-   The generated image remains unchanged for export; this only hides it visually
-   in non-Text tabs to avoid competing overlays while adjusting other settings. */
-.share-media-live-preview.is-image:not(.tab-text) .quran-share-generated-image {
-  opacity: .999;
-}
-
-/* Compact spacing on small screens. */
-@media (max-width: 380px) {
-  .share-quran-page-content {
-    gap: 14px !important;
-  }
-
-  .share-video-controls {
-    right: 5% !important;
-    left: 5% !important;
-    gap: 7px !important;
-  }
-}
-
-
-/* Text-tab Ayahs + adaptive range menus */
-.share-text-settings {
-  display: grid;
-  gap: 16px;
-}
-
-.share-text-size-section {
-  display: grid;
-  gap: 14px;
-}
-
-.share-text-ayahs-card {
-  position: relative;
-  z-index: 2;
-  overflow: visible;
-  border: 1px solid rgba(201, 162, 75, .18);
-  border-radius: 22px;
-  background: var(--theme-surface-solid, #fffdf8);
-  padding: 16px;
-  box-shadow: 0 3px 12px rgba(31, 61, 43, .045);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
-.share-text-ayahs-card .share-media-range-title {
-  margin-bottom: 14px;
-}
-
-.share-range-field {
-  position: relative;
-}
-
-.share-range-field:has(.share-range-menu) {
-  z-index: 80;
-}
-
-.share-range-menu {
-  position: absolute !important;
-  top: calc(100% + 8px) !important;
-  bottom: auto !important;
-  left: 0 !important;
-  right: 0 !important;
-  width: 100% !important;
-  max-height: 280px !important;
-  overflow-y: auto !important;
-  overscroll-behavior: contain;
-  z-index: 100 !important;
-}
-
-.share-range-field.opens-up .share-range-menu {
-  top: auto !important;
-  bottom: calc(100% + 8px) !important;
-}
-
-.share-range-trigger svg {
-  transition: transform .16s ease;
-}
-
-.share-range-field.opens-up .share-range-trigger svg {
-  transform: rotate(180deg);
-}
-
-[data-theme='dark'] .share-text-ayahs-card {
-  background: var(--theme-surface-solid);
-  border-color: rgba(201, 162, 75, .16);
-}
-
-@media (max-width: 380px) {
-  .share-text-ayahs-card {
-    padding: 14px;
-  }
-}
-
-
-/* Share Quran playback / translation / picker final fixes */
-.share-media-export-note,
-.share-selected-reciter {
-  display: none !important;
-}
-
-.share-reciter-picker {
-  isolation: isolate;
-  z-index: 30;
-}
-
-.share-reciter-menu {
-  top: calc(100% + 8px) !important;
-  bottom: auto !important;
-  max-height: min(300px, 46vh) !important;
-  overflow-y: auto !important;
-  overscroll-behavior: contain;
-  opacity: 1 !important;
-  background: #fffdf8 !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  z-index: 120 !important;
-}
-
-.share-reciter-picker.opens-up .share-reciter-menu {
-  top: auto !important;
-  bottom: calc(100% + 8px) !important;
-}
-
-.share-reciter-picker.opens-up .share-reciter-trigger > svg {
-  transform: rotate(180deg);
-}
-
-.share-reciter-trigger > svg {
-  transition: transform .16s ease;
-}
-
-.share-media-live-preview.is-video.is-landscape.tab-text .share-video-preview-ayah-card {
-  display: grid !important;
-  top: 47% !important;
-  right: 9% !important;
-  left: 9% !important;
-  max-height: 48% !important;
-  overflow: hidden;
-}
-
-.share-media-live-preview.is-video.is-landscape.tab-text .share-video-preview-ayah {
-  font-size: calc(clamp(1rem, 3.6vw, 1.75rem) * var(--share-text-scale)) !important;
-  line-height: 1.5 !important;
-}
-
-.share-video-preview-translation {
-  width: 100%;
-  margin-top: 10px;
-  color: rgba(255,255,255,.92);
-  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
-  font-size: .84rem;
-  line-height: 1.45;
-  text-align: center;
-}
-
-.share-media-live-preview.is-video.is-landscape .share-video-preview-translation {
-  margin-top: 6px;
-  font-size: .72rem;
-  line-height: 1.35;
-}
-
-.share-translation-setting {
-  display: flex;
-  min-height: 66px;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  border: 1px solid rgba(201,162,75,.16);
-  border-radius: 18px;
-  background: rgba(201,162,75,.025);
-  padding: 12px 14px;
-}
-
-.share-translation-setting-copy {
-  display: grid;
-  min-width: 0;
-  gap: 3px;
-}
-
-.share-translation-setting-copy > strong {
-  font-size: .95rem;
-  font-weight: 650;
-}
-
-.share-translation-setting-copy > span {
-  color: var(--theme-text-muted, #777);
-  font-size: .78rem;
-  line-height: 1.4;
-}
-
-.share-translation-setting-copy > small {
-  color: var(--theme-accent, #2f7d68);
-  font-size: .7rem;
-}
-
-.share-translation-toggle {
-  position: relative;
-  width: 48px;
-  height: 28px;
-  flex: 0 0 48px;
-  border-radius: 999px;
-  background: rgba(110,110,110,.22);
-  padding: 3px;
-  transition: background .16s ease;
-}
-
-.share-translation-toggle > span {
-  display: block;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 1px 4px rgba(0,0,0,.18);
-  transition: transform .16s ease;
-}
-
-.share-translation-toggle.is-on {
-  background: var(--theme-accent, #2f7d68);
-}
-
-.share-translation-toggle.is-on > span {
-  transform: translateX(20px);
-}
-
-[data-theme='dark'] .share-reciter-menu,
-[data-theme='dark'] .share-translation-setting {
-  background: var(--theme-surface-solid) !important;
-}
-
-
-/* Share Quran final mode behavior */
-.share-range-selectors.is-single {
-  grid-template-columns: minmax(0, 1fr) !important;
-}
-
-.share-range-selectors.is-single .share-range-field {
-  width: 100%;
-}
-
-/* Video Quran text is part of the composition, not a Text-tab-only preview. */
-.share-media-live-preview.is-video .share-video-preview-ayah-card {
-  display: grid !important;
-}
-
-/* Reserve independent zones in landscape: title / ayah card / controls. */
-.share-media-live-preview.is-video.is-landscape .share-video-preview-header {
-
-  right: 8% !important;
-  left: 8% !important;
-}
-
-.share-media-live-preview.is-video.is-landscape .share-video-preview-header strong {
-  font-size: clamp(1.05rem, 3.3vw, 1.55rem) !important;
-  line-height: 1.15 !important;
-}
-
-.share-media-live-preview.is-video.is-landscape .share-video-preview-header span {
-  margin-top: 1px !important;
-  font-size: .72rem !important;
-}
-
-.share-media-live-preview.is-video.is-landscape .share-video-preview-ayah-card {
-
-
-
-  min-height: 0 !important;
-
-
-  overflow: hidden !important;
-}
-
-.share-media-live-preview.is-video.is-landscape .share-video-preview-ayah {
-
-
-}
-
-.share-media-live-preview.is-video.is-landscape .share-video-preview-translation {
-  display: -webkit-box;
-
-  overflow: hidden;
-
-
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-}
-
-.share-media-live-preview.is-video.is-landscape .share-video-preview-controls {
-
-  bottom: 4% !important;
-
-  min-height: 48px !important;
-}
-
-/* In portrait, keep the text card clear of the playback controls. */
-.share-media-live-preview.is-video.is-portrait .share-video-preview-ayah-card {
-  top: 45% !important;
-  max-height: 48% !important;
-  overflow: hidden !important;
-}
-
-/* Export progress remains visually active while recording. */
-.share-media-final-action:disabled {
-  opacity: .62;
-}
-
-.share-media-final-action[disabled] {
-  cursor: default;
-}
-
-
-/* Share Quran media composition refinement */
-.share-video-preview-ayah-card {
-
-
-
-  width: auto !important;
-
-
-
-  transform: translateY(-50%);
-
-  border: 0 !important;
-  border-radius: 18px !important;
-  background: rgba(4, 19, 18, .42) !important;
-  padding: 18px 20px 16px !important;
-  box-shadow: none !important;
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-}
-.share-video-preview-ayah { }
-.share-video-preview-ayah span { transition: color 80ms linear; }
-.share-video-preview-translation { margin-top: 12px !important; display: block !important; overflow: visible !important; font-size: .84rem !important; -webkit-line-clamp: unset !important; }
-.share-video-preview-reference { margin-top: 12px; color: rgba(255,255,255,.76); font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-size: .92rem; font-weight: 600; line-height: 1.2; text-align: center; }
-.share-video-preview-controls { position: absolute !important; right: 5% !important; bottom: 4% !important; left: 5% !important; z-index: 8 !important; display: grid !important; grid-template-columns: 1fr !important; gap: 8px !important; min-height: 0 !important; border: 0 !important; padding: 24px 4px 2px !important; -webkit-backdrop-filter: none !important; }
-.share-video-preview-control-row { display: grid; grid-template-columns: 38px 1fr 38px; align-items: center; gap: 10px; }
-.share-video-preview-play, .share-video-preview-fullscreen { display: grid !important; width: 38px !important; height: 38px !important; place-items: center !important; border-radius: 999px !important; color: #fff !important; padding: 0 !important; }
-.share-video-preview-play:active, .share-video-preview-fullscreen:active { transform: scale(.94); }
-.share-video-preview-inline-time { color: rgba(255,255,255,.95); font-size: .76rem; font-variant-numeric: tabular-nums; text-align: left; }
-.share-video-preview-seek { width: 100% !important; height: 18px !important; margin: 0 !important; accent-color: #fff; }
-.share-video-preview-seek::-webkit-slider-runnable-track { height: 5px !important; border-radius: 999px !important; background: rgba(255,255,255,.46) !important; }
-.share-video-preview-seek::-webkit-slider-thumb { width: 15px !important; height: 15px !important; margin-top: -5px !important; border: 0 !important; border-radius: 50% !important; background: #fff !important; }
-.share-video-preview-seek::-moz-range-track { height: 5px !important; border-radius: 999px !important; background: rgba(255,255,255,.46) !important; }
-.share-video-preview-seek::-moz-range-thumb { width: 15px !important; height: 15px !important; border: 0 !important; border-radius: 50% !important; background: #fff !important; }
-.share-media-live-preview.is-video.is-landscape .share-video-preview-header { }
-.share-media-live-preview.is-video.is-landscape .share-video-preview-ayah-card { border-radius: 16px !important; }
-.share-media-live-preview.is-video.is-landscape .share-video-preview-translation { margin-top: 6px !important; font-size: .70rem !important; }
-.share-media-live-preview.is-video.is-landscape .share-video-preview-reference { margin-top: 5px; font-size: .62rem; }
-.share-media-live-preview.is-video.is-landscape .share-video-preview-controls { right: 5% !important; bottom: 3% !important; left: 5% !important; padding-top: 18px !important; }
-.share-video-preview-stage:fullscreen { width: 100vw !important; height: 100vh !important; border-radius: 0 !important; background: #000 !important; }
-.share-video-preview-stage:fullscreen .share-video-preview-background { object-fit: cover !important; }
-.share-video-preview-stage:fullscreen .share-video-preview-ayah-card { right: 8% !important; left: 8% !important; }
-.share-video-preview-stage:fullscreen .share-video-preview-controls { right: 4% !important; bottom: 3% !important; left: 4% !important; }
-.share-video-preview-seek-wrap, .share-video-preview-time { display: none !important; }
-
-
-/* Share Quran reference-style selector + text controls */
-.quran-share-generated-image.is-background-placeholder {
-  opacity: 1 !important;
-  object-fit: cover !important;
-}
-
-.quran-share-preview-loading {
-  display: none !important;
-}
-
-.share-audio-settings-stack {
-  display: grid;
-  gap: 18px;
-}
-
-.share-reference-heading {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: baseline !important;
-  gap: 8px !important;
-}
-
-.share-reference-heading > span {
-  font-weight: 600;
-}
-
-.share-surah-field,
-.share-range-field,
-.share-reciter-picker {
-  position: relative;
-}
-
-.share-surah-trigger,
-.share-range-trigger,
-.share-reciter-trigger {
-  min-height: 58px !important;
-  border: 0 !important;
-  border-radius: 8px !important;
-  background: rgba(241, 242, 244, .72) !important;
-  box-shadow: none !important;
-}
-
-.share-surah-trigger {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 0 16px;
-  color: var(--theme-text, #202124);
-  font-size: 1rem;
-  text-align: left;
-}
-
-.share-reference-range-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-  align-items: end;
-  gap: 14px;
-}
-
-.share-range-to-label {
-  align-self: end;
-  padding-bottom: 17px;
-  color: var(--theme-text, #202124);
-  font-size: 1rem;
-}
-
-.share-range-field.is-compact > span {
-  display: none;
-}
-
-.share-range-field.is-compact .share-range-trigger {
-  width: 100%;
-  justify-content: space-between;
-  padding: 0 16px !important;
-}
-
-
-
-.share-surah-menu,
-.share-range-menu {
-  position: absolute !important;
-  top: calc(100% + 8px) !important;
-  bottom: auto !important;
-  left: 0 !important;
-  right: 0 !important;
-  z-index: 140 !important;
-  max-height: min(320px, 50vh) !important;
-  overflow-y: auto !important;
-  border: 1px solid rgba(201, 162, 75, .16) !important;
-  border-radius: 14px !important;
-  background: var(--theme-surface-solid, #fffdf8) !important;
-  box-shadow: 0 12px 28px rgba(31, 61, 43, .14) !important;
-  padding: 6px !important;
-}
-
-.share-surah-field.opens-up .share-surah-menu,
-.share-range-field.opens-up .share-range-menu {
-  top: auto !important;
-  bottom: calc(100% + 8px) !important;
-}
-
-.share-surah-menu > button,
-.share-range-menu > button {
-  width: 100%;
-  min-height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  border-radius: 10px;
-  padding: 0 12px;
-  text-align: left;
-}
-
-.share-surah-menu > button.is-selected,
-.share-range-menu > button.is-selected {
-  background: rgba(47, 125, 104, .10);
-  color: var(--theme-accent, #2f7d68);
-}
-
-.share-reference-reciter-heading {
-  margin-top: 8px;
-}
-
-.share-text-reference-controls {
-  display: grid;
-  gap: 28px;
-  padding: 4px 2px 8px;
-}
-
-.share-font-stepper-group {
-  display: grid;
-  gap: 18px;
-}
-
-.share-font-stepper-group > strong {
-  font-size: .95rem;
-  font-weight: 650;
-}
-
-.share-font-stepper {
-  width: min(240px, 72%);
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 52px 1fr 52px;
-  align-items: center;
-  gap: 10px;
-}
-
-.share-font-stepper > button {
-  width: 52px;
-  height: 52px;
-  border: 0 !important;
-  background: transparent !important;
-  color: var(--theme-text, #202124);
-  font-size: 2rem;
-  font-weight: 300;
-}
-
-.share-font-stepper > button:disabled {
-  opacity: .28;
-}
-
-.share-font-stepper > span {
-  text-align: center;
-  font-size: 1.1rem;
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-}
-
-.share-translation-inline-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  border-top: 1px solid rgba(31, 61, 43, .08);
-  border-bottom: 1px solid rgba(31, 61, 43, .08);
-  padding: 16px 0;
-}
-
-.share-translation-inline-row > div {
-  display: grid;
-  min-width: 0;
-  gap: 3px;
-}
-
-.share-translation-inline-row strong {
-  font-size: .95rem;
-}
-
-.share-translation-inline-row span,
-.share-translation-inline-row small {
-  color: var(--theme-text-muted, #777);
-  font-size: .76rem;
-}
-
-.share-video-preview-translation {
-
-}
-
-.share-media-live-preview.is-video.is-landscape .share-video-preview-translation {
-
-}
-
-[data-theme='dark'] .share-surah-trigger,
-[data-theme='dark'] .share-range-trigger,
-[data-theme='dark'] .share-reciter-trigger {
-  background: rgba(255,255,255,.055) !important;
-}
-
-@media (max-width: 380px) {
-  .share-reference-range-row { gap: 9px; }
-  .share-range-to-label { padding-bottom: 17px; }
-  .share-font-stepper { width: 82%; }
-}
-
-
-/* Share Quran dynamic content fit — title-safe composition */
-.share-video-preview-header {
-  top: 5.5% !important;
-  right: 7% !important;
-  left: 7% !important;
-  z-index: 7 !important;
-  pointer-events: none;
-}
-
-.share-video-preview-header strong,
-.share-video-preview-header span {
-  position: relative;
-  z-index: 1;
-}
-
-.share-video-preview-ayah-card {
-  top: var(--share-card-top, 96px) !important;
-  right: 6% !important;
-  bottom: auto !important;
-  left: 6% !important;
-  height: auto !important;
-  min-height: 0 !important;
-  max-height: var(--share-card-max-height, 360px) !important;
-  transform: none !important;
-  overflow: hidden !important;
-  display: block !important;
-  box-sizing: border-box;
-}
-
-.share-video-preview-ayah {
-  font-size: calc(clamp(1.18rem, 5.3vw, 2.05rem) * var(--share-text-scale, 1)) !important;
-  line-height: 1.48 !important;
-}
-
-.share-video-preview-translation {
-
-
-}
-
-.share-media-live-preview.is-video.is-landscape .share-video-preview-header {
-  top: 4.5% !important;
-}
-
-.share-media-live-preview.is-video.is-landscape .share-video-preview-ayah-card {
-  top: var(--share-card-top, 70px) !important;
-  right: 8% !important;
-  left: 8% !important;
-  max-height: var(--share-card-max-height, 220px) !important;
-  transform: none !important;
-  padding: 9px 15px 8px !important;
-}
-
-.share-media-live-preview.is-video.is-landscape .share-video-preview-ayah {
-  font-size: calc(clamp(.95rem, 3.2vw, 1.55rem) * var(--share-text-scale, 1)) !important;
-  line-height: 1.38 !important;
-}
-
-.share-media-live-preview.is-video.is-landscape .share-video-preview-translation {
-  font-size: calc(.70rem * var(--share-translation-scale, 1)) !important;
-  line-height: 1.28 !important;
-}
-
-.share-video-preview-stage:fullscreen .share-video-preview-ayah-card {
-  top: var(--share-card-top, 120px) !important;
-  max-height: var(--share-card-max-height, calc(100vh - 260px)) !important;
-  transform: none !important;
-}
-
-/* Share Quran verified final preview authority */
-.share-media-live-preview.is-image.is-portrait,
-.share-media-live-preview.is-video.is-portrait {
-  aspect-ratio: 9 / 16 !important;
-}
-
-.share-media-live-preview.is-image.is-landscape,
-.share-media-live-preview.is-video.is-landscape {
-  aspect-ratio: 16 / 9 !important;
-}
-
-.share-image-preview-stage,
-.share-video-preview-stage {
-  position: absolute !important;
-  inset: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  min-height: 0 !important;
-  max-height: none !important;
-}
-
-.share-image-preview-stage .quran-share-generated-image,
-.share-video-preview-background {
-  width: 100% !important;
-  height: 100% !important;
-}
-
-.share-image-preview-stage .quran-share-generated-image {
-  object-fit: contain !important;
-  object-position: center !important;
-}
-
-.share-video-preview-background {
-  object-fit: cover !important;
-  object-position: center !important;
-}
-
-/* Playback controls sit directly on the media; no transport background card. */
-.share-video-preview-controls {
-  background: transparent !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  padding: 0 4px 2px !important;
-}
-
-.share-video-preview-control-row,
-.share-video-preview-seek {
-  filter: drop-shadow(0 1px 2px rgba(0,0,0,.36));
-}
-
-.share-video-preview-play,
-.share-video-preview-fullscreen {
-  background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
-}
-
-/* App-controlled fullscreen avoids native browser fullscreen instruction banners. */
-.share-video-preview-stage.is-fullscreen {
-  position: fixed !important;
-  inset: 0 !important;
-  z-index: 10000 !important;
-  width: 100vw !important;
-  height: 100dvh !important;
-  max-width: none !important;
-  max-height: none !important;
-  aspect-ratio: auto !important;
-  border-radius: 0 !important;
-  background: #000 !important;
-}
-
-.share-video-preview-stage.is-fullscreen .share-video-preview-background {
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-}
-
-.share-video-preview-stage.is-fullscreen .share-video-preview-controls {
-  right: 4% !important;
-  bottom: max(18px, env(safe-area-inset-bottom)) !important;
-  left: 4% !important;
-}
-
-.share-video-preview-stage.is-fullscreen .share-video-preview-ayah-card {
-  right: 8% !important;
-  left: 8% !important;
-}
-
-
-/* Share Quran final image/video positioning authority. */
-.share-media-live-preview.is-video.is-portrait .share-video-preview-ayah-card,
-.share-media-live-preview.is-video.is-landscape .share-video-preview-ayah-card {
-  top: var(--share-card-top, 50%) !important;
-  bottom: auto !important;
-  max-height: var(--share-card-max-height, 58%) !important;
-  transform: none !important;
-}
-
-.share-media-live-preview.is-video .share-video-preview-controls,
-.share-video-preview-stage.is-fullscreen .share-video-preview-controls {
-  background: transparent !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-
-
-/* ==========================================================
-   Share Quran — export-faithful fullscreen preview
-   ========================================================== */
-
-/* Render fullscreen outside the Share Quran screen via a React portal.
-   This prevents page header, mode switch, tabs and settings cards from
-   appearing around the media even when app ancestors use transforms. */
-.share-video-fullscreen-shell {
-
-
-
-
-
-
-
-
-
-
-
-
-}
-
-.share-video-fullscreen-shell .share-video-preview-stage.is-fullscreen {
-
-
-
-  max-width: 100vw !important;
-  max-height: 100dvh !important;
-
-
-
-}
-
-/* Keep the exact downloaded-video aspect ratio instead of stretching the
-   composition to the device's screen ratio. */
-.share-video-fullscreen-shell.is-portrait .share-video-preview-stage.is-fullscreen {
-
-
-
-}
-
-.share-video-fullscreen-shell.is-landscape .share-video-preview-stage.is-fullscreen {
-
-
-
-}
-
-/* Match shareVideoExport.js geometry. */
-.share-video-preview-stage.is-portrait .share-video-preview-header {
-
-
-
-}
-
-.share-video-preview-stage.is-landscape .share-video-preview-header {
-
-
-
-}
-
-.share-video-preview-stage.is-portrait .share-video-preview-ayah-card {
-
-
-}
-
-.share-video-preview-stage.is-landscape .share-video-preview-ayah-card {
-
-
-}
-
-/* Controls are preview chrome, not part of the composition.
-   They disappear automatically so fullscreen becomes an unobstructed
-   representation of the downloaded video. Tap the video to reveal them. */
-.share-video-fullscreen-shell .share-video-preview-controls {
-
-}
-
-.share-video-fullscreen-shell
-.share-video-preview-stage.is-controls-hidden
-.share-video-preview-controls {
-
-
-}
-
-.share-video-fullscreen-shell .share-video-preview-background {
-
-
-
-
-}
-
-/* Playback controls never participate in text/card layout calculations. */
-.share-video-preview-stage .share-video-preview-controls {
-  z-index: 12 !important;
-  background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-
-
-/* ==========================================================
-   Share Quran — exact exported-video fullscreen preview
-   ========================================================== */
-
-/* Portal shell sits outside all Share Quran app chrome. */
-.share-video-fullscreen-shell {
-  position: fixed !important;
-  inset: 0 !important;
-  z-index: 2147483000 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: 100vw !important;
-  height: 100dvh !important;
-  overflow: hidden !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  background: #000 !important;
-}
-
-.share-video-fullscreen-shell .share-video-preview-stage.is-fullscreen {
-  position: relative !important;
-  inset: auto !important;
-  flex: none !important;
-  margin: 0 !important;
-  border-radius: 0 !important;
-  overflow: hidden !important;
-  background: #000 !important;
-}
-
-/* Exact export aspect ratios:
-   portrait export = 720×1280, landscape export = 1280×720. */
-.share-video-fullscreen-shell.is-portrait .share-video-preview-stage.is-fullscreen {
-  width: min(100vw, calc(100dvh * 9 / 16)) !important;
-  height: min(100dvh, calc(100vw * 16 / 9)) !important;
-  aspect-ratio: 9 / 16 !important;
-}
-
-.share-video-fullscreen-shell.is-landscape .share-video-preview-stage.is-fullscreen {
-  width: min(100vw, calc(100dvh * 16 / 9)) !important;
-  height: min(100dvh, calc(100vw * 9 / 16)) !important;
-  aspect-ratio: 16 / 9 !important;
-}
-
-/* Match exported-video title geometry. */
-.share-video-preview-stage.is-portrait .share-video-preview-header {
-  top: 4.5% !important;
-  right: 6% !important;
-  left: 6% !important;
-}
-
-.share-video-preview-stage.is-landscape .share-video-preview-header {
-  top: 4.5% !important;
-  right: 7% !important;
-  left: 7% !important;
-}
-
-/* Match exported-video card widths: 88% portrait / 86% landscape. */
-.share-video-preview-stage.is-portrait .share-video-preview-ayah-card {
-  right: 6% !important;
-  left: 6% !important;
-}
-
-.share-video-preview-stage.is-landscape .share-video-preview-ayah-card {
-  right: 7% !important;
-  left: 7% !important;
-}
-
-/* Player controls are preview chrome only. They never alter the export
-   composition geometry and auto-hide in fullscreen. */
-.share-video-fullscreen-shell .share-video-preview-controls {
-  transition: opacity 160ms ease !important;
-}
-
-.share-video-fullscreen-shell
-.share-video-preview-stage.is-controls-hidden
-.share-video-preview-controls {
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
-
-.share-video-fullscreen-shell .share-video-preview-background {
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-  object-position: center !important;
-}
-
-/* Remove any old background panel behind player controls. */
-.share-video-preview-stage .share-video-preview-controls,
-.share-video-fullscreen-shell .share-video-preview-controls {
-  z-index: 12 !important;
-  background: transparent !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
-
-/* Share Quran: three-tab layout after removing Style. */
-.share-media-tabs {
-  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-}
-
-.share-media-tabs > button {
-  width: 100%;
-  min-width: 0;
-}
-
-/* Share Quran — Bismillah pre-roll + reference sizing authority */
-.share-video-preview-bismillah {
-  position: absolute;
-  top: 19%;
-  right: 7%;
-  left: 7%;
-  z-index: 6;
-  color: #fff;
-  font-family: IndopakNastaleeq, serif;
-  font-size: calc(clamp(1.2rem, 5.1vw, 2rem) * var(--share-text-scale, 1));
-  line-height: 1.55;
-  text-align: center;
-  text-shadow: 0 1px 3px rgba(0,0,0,.28);
-  pointer-events: none;
-}
-
-.share-video-preview-stage.is-landscape .share-video-preview-bismillah {
-  top: 20%;
-  font-size: calc(clamp(1rem, 3.2vw, 1.5rem) * var(--share-text-scale, 1));
-}
-
-.share-video-preview-reference.is-arabic-sized {
-
-
-}
-
-.share-video-preview-reference.is-translation-sized {
-  font-size: calc(.84rem * var(--share-translation-scale, 1)) !important;
-  line-height: 1.3 !important;
-}
-
-.share-video-preview-stage.is-landscape .share-video-preview-reference.is-arabic-sized {
-
-}
-
-.share-video-preview-stage.is-landscape .share-video-preview-reference.is-translation-sized {
-  font-size: calc(.70rem * var(--share-translation-scale, 1)) !important;
-}
-
-/* Share Quran — Bismillah lives inside the same ayah card. */
-.share-video-preview-bismillah {
-  position: static !important;
-  inset: auto !important;
-  font-size: inherit !important;
-}
-
-/* Translation is intentionally more readable by default in both preview sizes. */
-.share-video-preview-translation {
-  font-size: calc(.96rem * var(--share-translation-scale, 1)) !important;
-  line-height: 1.48 !important;
-}
-
-.share-video-preview-inline-reference {
-  font: inherit;
-  color: inherit;
-  white-space: nowrap;
-}
-
-.share-media-live-preview.is-video.is-landscape .share-video-preview-translation,
-.share-video-preview-stage.is-landscape .share-video-preview-translation {
-  font-size: calc(.82rem * var(--share-translation-scale, 1)) !important;
-  line-height: 1.36 !important;
-}
-
-
-/* Share Quran — compact ayah references + Bismillah 1:1 marker */
-.share-video-preview-reference.is-arabic-sized {
-
-  line-height: 1.2 !important;
-
-}
-.share-video-preview-stage.is-landscape .share-video-preview-reference.is-arabic-sized {
-  font-size: calc(.58rem * var(--share-text-scale, 1)) !important;
-}
-.share-video-preview-bismillah-reference {
-  display: inline-block;
-  margin-inline-start: .45em;
-  color: rgba(255,255,255,.74);
-  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
-  font-size: .42em;
-  font-weight: 500;
-  line-height: 1;
-  direction: ltr;
-  vertical-align: .12em;
-  white-space: nowrap;
-}
-.share-video-preview-inline-reference {
-  font-size: .7em !important;
-}
-
-/* Share Quran: compact inline ayah references when translation is enabled. */
-.share-video-preview-translation .share-video-preview-inline-reference {
-  display: inline;
-  margin: 0;
-  white-space: nowrap;
-  font: inherit;
-  font-size: .72em;
-  font-weight: 500;
-  line-height: inherit;
-  color: rgba(255,255,255,.72);
-  vertical-align: baseline;
-}
-
-.share-video-preview-reference.is-arabic-sized {
-  font-size: calc(.52rem * var(--share-text-scale, 1)) !important;
-  font-weight: 500 !important;
-}
-
-/* Shared Tafsir references: circular, centered and stable in Urdu RTL layout. */
 .ayah-translation-inline-footnote {
   display: inline-flex;
   box-sizing: border-box;
@@ -5494,15 +1492,10 @@ body {
   vertical-align: middle;
   font-variant-numeric: lining-nums tabular-nums;
 }
-.ayah-translation-note-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-}
+
 .ayah-translation-note-number {
   display: inline-flex;
   box-sizing: border-box;
-  flex: 0 0 24px;
   inline-size: 24px;
   block-size: 24px;
   min-inline-size: 24px;
@@ -5511,78 +1504,1862 @@ body {
   justify-content: center;
   padding: 0;
   border-radius: 50%;
-  font-family: Arial, sans-serif;
-  font-size: 12px;
   font-weight: 600;
-  line-height: 1;
   direction: ltr;
   unicode-bidi: isolate;
   font-variant-numeric: lining-nums tabular-nums;
 }
-.ayah-translation-note-content { flex: 1 1 0%; }
 
-/* Selected inline Tafsir reference, shared by Reader and Reflect. */
 .ayah-translation-inline-footnote.is-active,
 .ayah-translation-inline-footnote[aria-pressed="true"] {
   background: #2d6e5e;
   color: #fff;
 }
 
-/* Reader phase: only panel containers and secondary sheet controls.
- * Do not change audio timing, waveforms, Mushaf lines, export frames or gestures. */
-.reader-audio-panel.reader-audio-panel-modern {
-  border: 1px solid var(--ui-card-border);
-  background: var(--ui-card-bg);
-  -webkit-backdrop-filter: var(--ui-card-blur);
-  backdrop-filter: var(--ui-card-blur);
-  box-shadow: 0 18px 48px rgba(0, 0, 0, .14);
-}
-/* Translation requires an opaque reading surface behind long Arabic/Urdu text.
- * The glass treatment belongs to the outer edge, not behind body typography. */
-.ayah-action-sheet.ayah-action-sheet-v2 {
-  background: var(--theme-surface-solid);
-  border-color: var(--ui-card-border);
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-}
-.reader-audio-panel-modern :is(button, input):focus-visible,
-.ayah-action-sheet-v2 :is(button, input):focus-visible,
-.share-sheet :is(button, input):focus-visible {
+.reader-audio-panel-modern :is(button, input):focus-visible, .ayah-action-sheet-v2 :is(button, input):focus-visible {
   outline: 2px solid var(--ui-primary);
   outline-offset: 2px;
 }
+
 @media (prefers-reduced-transparency: reduce) {
   .reader-audio-panel.reader-audio-panel-modern {
     background: var(--reader-surface-raised);
   }
 }
 
-
-/* Audio and Share reciter pickers consume the same picker tokens as Settings. */
-.share-reciter-trigger,.reader-reciter-picker {
+.reader-reciter-picker {
   border: 1px solid var(--ui-control-border);
   border-radius: var(--ui-picker-radius);
   background: var(--ui-control-bg);
   color: var(--theme-text);
   box-shadow: none;
 }
-.share-reciter-trigger:focus-visible,.reader-reciter-picker:focus-within {
+
+.reader-reciter-picker:focus-within {
   outline: 2px solid var(--ui-primary); outline-offset: 2px;
 }
-.share-reciter-menu,.share-reciter-list,.reader-reciter-list {
+
+.reader-reciter-list {
   background: var(--theme-surface-solid);
   border-color: var(--ui-control-border);
   border-radius: var(--ui-picker-radius);
   box-shadow: 0 14px 32px rgba(28,35,30,.15);
 }
-.share-reciter-option,.reader-reciter-list-item {
+
+.reader-reciter-list-item {
   border-radius: var(--ui-picker-option-radius);
   color: var(--theme-text);
 }
-.share-reciter-option.is-selected,.reader-reciter-list-item.selected {
+
+.reader-reciter-list-item.selected {
   background: var(--ui-picker-selected);
   color: var(--theme-text);
 }
-.share-reciter-option:active,.reader-reciter-list-item:active {
+
+.reader-reciter-list-item:active {
   background: var(--ui-picker-hover);
+}
+
+.ayah-translation-footnote-wrap {width:100%;max-width:none;min-width:0;margin:14px 0 0;padding:0}
+
+.ayah-translation-footnotes {box-sizing:border-box;width:100%;max-width:none;min-width:0;border-radius:18px}
+
+.ayah-translation-note-row {display:flex;flex-direction:row;direction:rtl;align-items:flex-start;justify-content:flex-start;gap:10px;width:100%;margin:0;text-align:start}
+
+.ayah-translation-note-number {flex:0 0 24px;align-self:flex-start;margin-top:.35em}
+
+.ayah-translation-note-content {flex:1 1 0%;min-width:0;text-align:start}
+
+.reader-passive-header {
+  height: calc(env(safe-area-inset-top, 0px) + 36px) !important;
+  padding-top: calc(env(safe-area-inset-top, 0px) + 5px) !important;
+  padding-left: max(12px, env(safe-area-inset-left, 0px)) !important;
+  padding-right: max(12px, env(safe-area-inset-right, 0px)) !important;
+  color: rgba(35, 35, 35, .58) !important;
+  font-size: clamp(12px, 3.8vw, 13px) !important;
+  font-weight: 500 !important;
+  line-height: 1.08 !important;
+  letter-spacing: -0.014em !important;
+}
+
+.reader-passive-header *,
+.reader-meta-label {
+  font-size: inherit !important;
+  line-height: inherit !important;
+  font-weight: inherit !important;
+  letter-spacing: inherit !important;
+}
+
+.reader-control-row {
+  gap: 10px !important;
+}
+
+.reader-back-pill {
+  gap: 5px;
+  font-size: .78rem;
+  background: var(--reader-surface-raised) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.reader-back-pill svg,
+.reader-top-icon svg {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.reader-top-actions {
+  border-radius: 18px;
+  background-color: var(--reader-surface-raised) !important;
+}
+
+.reader-footer-meta {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 4px) !important;
+  padding-left: max(12px, env(safe-area-inset-left, 0px)) !important;
+  padding-right: max(12px, env(safe-area-inset-right, 0px)) !important;
+  color: rgba(35, 35, 35, .54) !important;
+  font-size: clamp(12px, 3.8vw, 13px) !important;
+  font-weight: 500 !important;
+  line-height: 1.08 !important;
+  letter-spacing: -0.014em !important;
+}
+
+.reader-footer-meta * {
+  font-size: inherit !important;
+  line-height: inherit !important;
+  font-weight: inherit !important;
+  letter-spacing: inherit !important;
+}
+
+.reader-top-hit-zone,
+.reader-bottom-hit-zone {
+  position: absolute;
+  inset-inline: 0;
+  z-index: 9;
+  pointer-events: auto;
+  background: transparent;
+}
+
+.reader-top-hit-zone {
+  top: 0;
+  height: calc(env(safe-area-inset-top, 0px) + 42px) !important;
+}
+
+.reader-bottom-hit-zone {
+  bottom: 0;
+  height: calc(env(safe-area-inset-bottom, 0px) + 36px) !important;
+}
+
+.reader-listen-pill {
+  margin-bottom: 8px !important;
+  line-height: 1.1 !important;
+  background-color: var(--reader-surface-raised) !important;
+  box-shadow: 0 12px 32px rgba(28,23,16,.10) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.reader-listen-play {
+  border-radius: 18px !important;
+}
+
+.reader-listen-play svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.reader-bottom-sheet {
+  box-shadow: 0 10px 34px rgba(28, 23, 16, .10) !important;
+}
+
+.reader-bottom-meta {
+  font-size: .72rem !important;
+}
+
+.reader-wave-slider {
+  height: 42px !important;
+  margin: 6px 42px 0 !important;
+}
+
+.reader-wave-bars span {
+  width: 1.5px !important;
+  max-height: 34px !important;
+}
+
+.reader-wave-marker {
+  top: 2px !important;
+  width: 21px !important;
+  height: 40px !important;
+  border-radius: 13px 13px 6px 6px !important;
+}
+
+.reader-wave-marker::after {
+  display: none !important;
+}
+
+.reader-bottom-actions {
+  margin-top: 0 !important;
+  min-height: 30px !important;
+  gap: 9px;
+}
+
+.reader-bottom-actions button {
+  width: 34px !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  border-radius: 16px;
+  font-size: .8rem;
+}
+
+.reader-bottom-actions button svg {
+  width: 23px !important;
+  height: 23px !important;
+}
+
+.reader-bottom-actions span {
+  font-size: .75rem !important;
+}
+
+.reader-audio-panel-hidden {
+  opacity: 0 !important;
+  transform: translateY(110%) !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
+
+.reader-audio-panel-visible {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+@media (max-width: 380px) {
+  .reader-passive-header,
+.reader-footer-meta {
+    font-size: 12px !important;
+  }
+
+  .reader-top-hit-zone {
+    height: calc(env(safe-area-inset-top, 0px) + 40px) !important;
+  }
+
+  .reader-bottom-hit-zone {
+    height: calc(env(safe-area-inset-bottom, 0px) + 34px) !important;
+  }
+}
+
+.ayah-tafsir-block { border-radius: 16px; padding: 12px; }
+
+.ayah-tafsir-block h3 { font-size: 1rem; }
+
+.ayah-tafsir-block p { font-size: .88rem; line-height: 1.65; }
+
+@media (max-width: 639px) {
+
+  .ayah-tafsir-block h3 {
+    font-size: 1.18rem !important;
+  }
+
+  .ayah-tafsir-block p {
+    margin: 10px 0 6px !important;
+    font-size: .88rem !important;
+    line-height: 1.55 !important;
+  }
+
+  .ayah-tafsir-block button {
+    font-size: .88rem !important;
+  }
+}
+
+.reader-control-row {
+  min-width: 0;
+  gap: var(--ui-space-4);
+}
+
+.reader-back-pill {
+  width: 40px !important;
+  min-width: 40px !important;
+  height: 38px !important;
+  border-radius: var(--ui-radius-md) !important;
+}
+
+.reader-top-actions {
+  min-width: 0;
+  gap: var(--ui-space-3) !important;
+}
+
+.reader-top-icon {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: var(--ui-radius-md) !important;
+}
+
+.reader-top-icon svg,
+.reader-back-pill svg {
+  width: var(--ui-icon-md) !important;
+  height: var(--ui-icon-md) !important;
+}
+
+.reader-listen-pill {
+  max-width: calc(100vw - 32px) !important;
+  min-height: 46px !important;
+  gap: var(--ui-space-3) !important;
+  border-radius: var(--ui-radius-pill) !important;
+  padding: var(--ui-space-1) var(--ui-space-6) var(--ui-space-1) var(--ui-space-1) !important;
+  font-size: var(--ui-text-md) !important;
+}
+
+.reader-listen-play {
+  width: 44px !important;
+  height: 36px !important;
+}
+
+.reader-bottom-sheet {
+  border-radius: var(--ui-radius-xl) var(--ui-radius-xl) 0 0 !important;
+  padding: var(--ui-sheet-padding) var(--ui-space-7) calc(var(--safe-bottom) + var(--ui-space-4)) !important;
+}
+
+.reader-wave-slider {
+  max-width: calc(100% - 36px);
+  margin-inline: 18px !important;
+}
+
+.reader-wave-tooltip {
+  min-width: 0;
+  max-width: min(76vw, 240px);
+  overflow: hidden;
+}
+
+.reader-audio-panel-wrap {
+  max-width: 100vw;
+  padding-inline: var(--ui-space-4);
+}
+
+.reader-audio-panel {
+  min-width: 0;
+  max-width: 100%;
+  border-radius: var(--ui-radius-xl);
+  padding: var(--ui-sheet-padding);
+}
+
+.reader-audio-head {
+  min-width: 0;
+  font-size: var(--ui-text-md);
+}
+
+.reader-audio-head strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.reader-reciter-row {
+  min-width: 0;
+  border-radius: var(--ui-radius-md);
+}
+
+.reader-reciter-row select {
+  min-width: 0;
+  max-width: 100%;
+  font-size: var(--ui-text-md);
+  text-overflow: ellipsis;
+}
+
+.reader-transport-row {
+  min-width: 0;
+  gap: var(--ui-space-2);
+}
+
+.reader-transport-row button {
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
+}
+
+.reader-transport-row .transport-main {
+  width: 56px;
+  min-width: 56px;
+}
+
+.surah-short-copy {
+  display: inline;
+}
+
+.surah-short-copy p,
+.surah-short-copy h2,
+.surah-short-copy h3 {
+  display: inline;
+  margin: 0;
+  font: inherit;
+}
+
+[data-theme='dark'] .shared-back-button {
+  background: #272c29 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06) !important;
+}
+
+@media (max-width: 360px) {
+
+  .reader-transport-row button {
+    width: 34px;
+    min-width: 34px;
+    height: 34px;
+  }
+
+  .reader-transport-row .transport-main {
+    width: 48px;
+    min-width: 48px;
+  }
+}
+
+[data-theme='dark'] .reader-topbar {
+  background: linear-gradient(180deg, rgba(17, 20, 18, .98), rgba(17, 20, 18, .78), transparent);
+}
+
+[data-theme='dark'] .reader-back-pill,
+[data-theme='dark'] .reader-top-actions {
+  background: rgba(38, 43, 40, .93);
+  color: #f0f2ef;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+}
+
+[data-theme='dark'] .reader-listen-pill,
+[data-theme='dark'] .reader-bottom-sheet,
+[data-theme='dark'] .reader-audio-panel {
+  background: rgba(30, 35, 32, .98);
+  color: var(--theme-text);
+  box-shadow: 0 -18px 50px rgba(0, 0, 0, .3);
+}
+
+[data-theme='dark'] .reader-bottom-meta,
+[data-theme='dark'] .reader-bottom-actions span,
+[data-theme='dark'] .reader-audio-times,
+[data-theme='dark'] .reader-audio-status {
+  color: var(--theme-muted);
+}
+
+[data-theme='dark'] .reader-bottom-actions {
+  color: #e4e8e4;
+}
+
+[data-theme='dark'] .reader-wave-bars span {
+  background: #d9deda;
+}
+
+[data-theme='dark'] .reader-listen-play,
+[data-theme='dark'] .reader-transport-row .transport-main {
+  background: #f0f2ef;
+  color: #161916;
+}
+
+[data-theme='dark'] .reader-audio-head button,
+[data-theme='dark'] .reader-reciter-row,
+[data-theme='dark'] .reader-transport-row button {
+  background: var(--theme-soft);
+  color: #d8ddd9;
+}
+
+[data-theme='dark'] .reader-reciter-row select,
+[data-theme='dark'] .ayah-tafsir-block h3,
+[data-theme='dark'] .ayah-tafsir-block button {
+  color: var(--theme-text);
+}
+
+[data-theme='dark'] .reader-wave-marker {
+  background: #050505;
+}
+
+.reader-passive-header,
+.reader-footer-meta {
+  color: var(--reader-muted) !important;
+}
+
+.reader-back-pill,
+.reader-top-actions,
+.reader-listen-pill,
+.reader-bottom-sheet {
+  border-color: var(--reader-border) !important;
+  background: var(--reader-surface-raised) !important;
+  color: var(--reader-text) !important;
+}
+
+.reader-top-icon,
+.reader-bottom-actions,
+.reader-bottom-actions span,
+.reader-bottom-meta {
+  color: inherit !important;
+}
+
+.reader-bottom-meta {
+  color: var(--reader-muted) !important;
+}
+
+.reader-listen-play,
+.reader-transport-row .transport-main {
+  background: var(--reader-primary) !important;
+  color: var(--reader-primary-text) !important;
+}
+
+.reader-audio-panel {
+  border-color: var(--reader-border) !important;
+  background: var(--reader-surface-raised) !important;
+  color: var(--reader-text) !important;
+}
+
+.reader-audio-head button,
+.reader-reciter-row,
+.reader-transport-row button {
+  border-color: var(--reader-border) !important;
+  background: var(--reader-control-bg) !important;
+  color: var(--reader-control-text) !important;
+}
+
+.reader-reciter-row select,
+.reader-audio-head,
+.reader-audio-status,
+.reader-audio-times {
+  color: var(--reader-text) !important;
+}
+
+.reader-audio-status,
+.reader-audio-times {
+  color: var(--reader-muted) !important;
+}
+
+[data-theme='dark'] .reader-ayah-highlight-saved {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .10);
+}
+
+.reader-audio-panel.reader-audio-panel-modern {
+  border: 1px solid var(--audio-panel-border) !important;
+  background: var(--audio-panel-bg) !important;
+  color: var(--audio-panel-text) !important;
+  box-shadow: var(--audio-shadow) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.reader-reciter-picker {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.reader-reciter-picker.is-open .reader-reciter-pill {
+  margin-bottom: 6px !important;
+}
+
+.reader-reciter-inline-panel {
+  width: 100% !important;
+  max-width: 100% !important;
+  max-height: min(44dvh, 390px) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  border: 1px solid var(--audio-panel-border) !important;
+  border-radius: 19px !important;
+  background: var(--audio-control-bg) !important;
+  color: var(--audio-panel-text) !important;
+  padding: 7px !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+.reader-reciter-inline-panel .reader-reciter-list {
+  min-height: 0 !important;
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  padding: 0 1px 2px !important;
+  scrollbar-width: thin !important;
+}
+
+.reader-reciter-inline-panel .reader-reciter-list-item {
+  width: 100% !important;
+  border: 0 !important;
+  border-radius: 16px !important;
+  background: transparent !important;
+  transition: transform .14s ease, background .14s ease !important;
+}
+
+.reader-reciter-inline-panel .reader-reciter-list-item:active {
+  transform: scale(.985) !important;
+}
+
+.reader-reciter-inline-panel .reader-reciter-list-item .reader-reciter-avatar {
+  border-radius: 999px !important;
+  overflow: hidden !important;
+}
+
+.reader-reciter-inline-panel .reader-reciter-list-item .reader-reciter-avatar img {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  object-fit: cover !important;
+}
+
+.reader-reciter-inline-panel .reader-reciter-option-radio {
+  display: block !important;
+  width: 18px !important;
+  height: 18px !important;
+  border: 2px solid var(--audio-panel-muted) !important;
+  border-radius: 999px !important;
+}
+
+.reader-audio-panel-modern .reader-audio-head-centered strong,
+.reader-audio-panel-modern .reader-reciter-name-window,
+.reader-audio-panel-modern .reader-reciter-name-text,
+.reader-reciter-inline-panel .reader-reciter-list-item {
+  color: var(--audio-panel-text) !important;
+}
+
+.reader-audio-panel-modern .reader-audio-times-above,
+.reader-audio-panel-modern .reader-audio-status,
+.reader-reciter-inline-panel .reader-reciter-option-radio {
+  color: var(--audio-panel-muted) !important;
+}
+
+.reader-audio-panel-modern .reader-audio-head-centered button,
+.reader-audio-panel-modern .reader-transport-modern button,
+.reader-reciter-inline-panel .reader-reciter-list-item.selected {
+  border: 1px solid var(--audio-panel-border) !important;
+  background: var(--audio-control-bg) !important;
+  color: var(--audio-panel-text) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.reader-audio-panel-modern .reader-audio-head-centered button {
+  border: 0 !important;
+  background: var(--audio-close-bg) !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-row.reader-reciter-pill,
+.reader-reciter-inline-panel .reader-reciter-list-item {
+  display: grid !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  align-items: center !important;
+  text-align: left !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-row.reader-reciter-pill {
+  grid-template-columns: 48px minmax(0, 1fr) 54px !important;
+  gap: 14px !important;
+  min-height: 58px !important;
+  margin: 16px 0 9px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.reader-reciter-inline-panel .reader-reciter-list-item {
+  grid-template-columns: 40px minmax(0, 1fr) 24px !important;
+  gap: 12px !important;
+  min-height: 54px !important;
+  padding: 7px 10px !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-pill .reader-reciter-avatar {
+  width: 48px !important;
+  height: 48px !important;
+  border: 1px solid var(--audio-panel-border) !important;
+  background: var(--audio-control-bg) !important;
+  box-shadow: none !important;
+}
+
+.reader-reciter-inline-panel .reader-reciter-list-item .reader-reciter-avatar {
+  width: 40px !important;
+  height: 40px !important;
+  border: 1px solid var(--audio-panel-border) !important;
+  background: var(--audio-control-bg) !important;
+  box-shadow: none !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-name-window {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  color: var(--audio-panel-text) !important;
+  font-size: clamp(1.04rem, 4vw, 1.28rem) !important;
+  font-weight: 420 !important;
+  line-height: 1.2 !important;
+  letter-spacing: 0 !important;
+  text-align: left !important;
+  white-space: nowrap !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-name-text {
+  display: inline-block !important;
+  max-width: none !important;
+  white-space: nowrap !important;
+}
+
+.reader-reciter-inline-panel .reader-reciter-list-item > span:nth-child(2) {
+  display: block !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  color: var(--audio-panel-text) !important;
+  font-size: .98rem !important;
+  font-weight: 700 !important;
+  line-height: 1.15 !important;
+  letter-spacing: -.02em !important;
+  text-align: left !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.reader-reciter-inline-panel .reader-reciter-check {
+  justify-self: end !important;
+  color: var(--audio-panel-muted) !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-chevron {
+  background: var(--audio-chevron-bg) !important;
+  color: var(--audio-chevron-text) !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-chevron svg {
+  color: currentColor !important;
+}
+
+.reader-reciter-inline-panel .reader-reciter-list-item.selected {
+  background: var(--audio-control-active-bg) !important;
+  box-shadow: inset 0 0 0 1px var(--audio-accent-soft) !important;
+}
+
+.reader-reciter-inline-panel .reader-reciter-list-item.selected .reader-reciter-check {
+  color: var(--audio-accent) !important;
+}
+
+.reader-reciter-inline-panel .reader-reciter-option-radio {
+  border-color: var(--audio-panel-muted) !important;
+  box-shadow: none !important;
+}
+
+.reader-audio-panel-modern .reader-transport-modern .transport-main {
+  background: var(--audio-main-bg) !important;
+  color: var(--audio-main-text) !important;
+}
+
+.reader-audio-panel-modern .reader-transport-modern .transport-active {
+  background: transparent !important;
+  color: var(--audio-accent) !important;
+  border-color: transparent !important;
+}
+
+.reader-audio-panel-modern .reader-transport-modern button:not(.transport-main) {
+  background: transparent !important;
+  color: var(--audio-icon) !important;
+  box-shadow: none !important;
+}
+
+.reader-audio-panel-modern .reader-transport-modern button.transport-active {
+  color: var(--audio-accent) !important;
+}
+
+.reader-audio-panel-modern .reader-transport-modern .transport-speed {
+  border: 2px solid var(--audio-speed-border) !important;
+  color: var(--audio-speed-text) !important;
+}
+
+.reader-audio-panel-modern .reader-audio-wave-remaining {
+  position: absolute !important;
+  inset-inline: 0 !important;
+  top: 50% !important;
+  height: 5px !important;
+  border-radius: 999px !important;
+  transform: translateY(-50%) !important;
+  background: var(--audio-wave-bg) !important;
+}
+
+.reader-audio-panel-modern .reader-audio-wave-played,
+.reader-audio-panel-modern .reader-audio-wave-thumb {
+  background: var(--audio-accent) !important;
+}
+
+.reader-audio-panel-modern .reader-audio-wave-played {
+  position: absolute !important;
+  right: 0 !important;
+  top: 50% !important;
+  width: calc(var(--audio-progress, 0) * 100%) !important;
+  height: 5px !important;
+  border-radius: 999px !important;
+  transform: translateY(-50%) !important;
+  box-shadow: none !important;
+}
+
+.reader-audio-panel-modern .reader-audio-wave-thumb {
+  position: absolute !important;
+  top: 50% !important;
+  right: calc(var(--audio-progress, 0) * 100%) !important;
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 999px !important;
+  transform: translate(50%, -50%) !important;
+  box-shadow: 0 0 0 5px var(--audio-accent-soft) !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-picker {
+  position: relative !important;
+  z-index: 5 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-picker.is-open .reader-reciter-pill {
+  margin-bottom: 9px !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-inline-panel {
+  position: absolute !important;
+  inset-inline: 6px !important;
+  bottom: calc(100% + 12px) !important;
+  z-index: 20 !important;
+  width: auto !important;
+  max-width: none !important;
+  max-height: min(38dvh, 330px) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 10px 8px 12px !important;
+  border: 1px solid var(--audio-panel-border) !important;
+  border-radius: 23px !important;
+  background: var(--audio-control-bg) !important;
+  color: var(--audio-panel-text) !important;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, .28) !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(8px) scale(.985) !important;
+  transform-origin: bottom center !important;
+  transition: opacity .23s ease-out, transform .23s ease-out, visibility .23s ease-out !important;
+  visibility: hidden !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-picker.is-open .reader-reciter-inline-panel {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transform: translateY(0) scale(1) !important;
+  visibility: visible !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-inline-panel::before,
+.reader-audio-panel-modern .reader-reciter-inline-panel::after {
+  content: '' !important;
+  position: absolute !important;
+  inset-inline: 8px !important;
+  z-index: 2 !important;
+  height: 18px !important;
+  pointer-events: none !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-inline-panel::before {
+  top: 0 !important;
+  background: linear-gradient(to bottom, var(--audio-control-bg), transparent) !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-inline-panel::after {
+  bottom: 0 !important;
+  background: linear-gradient(to top, var(--audio-control-bg), transparent) !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-inline-panel .reader-reciter-list {
+  min-height: 0 !important;
+  max-height: calc(min(38dvh, 330px) - 22px) !important;
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+  -webkit-overflow-scrolling: touch !important;
+  padding: 3px 2px 4px !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: var(--audio-panel-muted) transparent !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-inline-panel .reader-reciter-list::-webkit-scrollbar {
+  width: 4px !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-inline-panel .reader-reciter-list::-webkit-scrollbar-thumb {
+  border-radius: 999px !important;
+  background: var(--audio-panel-muted) !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-inline-panel .reader-reciter-list-item {
+  grid-template-columns: 40px minmax(0, 1fr) 28px !important;
+  min-height: 56px !important;
+  gap: 12px !important;
+  padding: 7px 10px !important;
+  border-radius: 17px !important;
+  background: transparent !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-inline-panel .reader-reciter-list-item.selected {
+  background: var(--audio-control-active-bg) !important;
+  box-shadow: inset 0 0 0 1px var(--audio-accent-soft) !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-inline-panel .reader-reciter-list-item.selected > span:nth-child(2) {
+  font-weight: 760 !important;
+}
+
+.reader-audio-panel-modern .reader-reciter-inline-panel .reader-reciter-list-item.selected .reader-reciter-check,
+.reader-audio-panel-modern .reader-reciter-inline-panel .reader-reciter-list-item.selected .reader-reciter-option-radio {
+  color: var(--audio-accent) !important;
+  border-color: var(--audio-accent) !important;
+}
+
+.reader-audio-panel-modern .reader-audio-waveform,
+.reader-audio-panel-modern .reader-audio-times-above,
+.reader-audio-panel-modern .reader-transport-modern {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.reader-audio-over-reader {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 52px) !important;
+  padding-inline: 12px !important;
+}
+
+.reader-audio-over-reader .reader-audio-panel-modern {
+  width: min(calc(100vw - 24px), 430px) !important;
+  border-radius: 22px !important;
+  padding: 12px 14px 14px !important;
+  box-shadow: var(--audio-shadow) !important;
+}
+
+.reader-audio-over-reader .reader-audio-head-centered {
+  grid-template-columns: 32px minmax(0, 1fr) 32px !important;
+  gap: 6px !important;
+}
+
+.reader-audio-over-reader .reader-audio-head-centered strong {
+  overflow: hidden !important;
+  font-size: clamp(.96rem, 3.9vw, 1.08rem) !important;
+  font-weight: 620 !important;
+  line-height: 1.15 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.reader-audio-over-reader .reader-audio-head-centered button {
+  width: 32px !important;
+  height: 32px !important;
+}
+
+.reader-audio-over-reader .reader-audio-head-centered button svg {
+  width: 17px !important;
+  height: 17px !important;
+}
+
+.reader-audio-over-reader .reader-reciter-picker {
+  display: flex !important;
+  justify-content: center !important;
+}
+
+.reader-audio-over-reader .reader-reciter-row.reader-reciter-pill {
+  grid-template-columns: 36px minmax(0, 1fr) 32px !important;
+  width: min(100%, 224px) !important;
+  min-height: 40px !important;
+  gap: 5px !important;
+  justify-self: center !important;
+  margin: 10px auto 6px !important;
+}
+
+.reader-audio-over-reader .reader-reciter-pill .reader-reciter-avatar {
+  width: 36px !important;
+  height: 36px !important;
+  justify-self: start !important;
+}
+
+.reader-audio-over-reader .reader-reciter-name-window {
+  width: 100% !important;
+  max-width: 100% !important;
+  justify-self: center !important;
+  font-size: clamp(.9rem, 3.45vw, 1rem) !important;
+  font-weight: 500 !important;
+  text-align: center !important;
+}
+
+.reader-audio-over-reader .reader-reciter-name-text {
+  max-width: none !important;
+}
+
+.reader-audio-over-reader .reader-reciter-name-text.is-overflowing {
+  padding-right: 16px !important;
+  text-align: left !important;
+}
+
+.reader-audio-over-reader .reader-reciter-chevron {
+  width: 32px !important;
+  height: 32px !important;
+  justify-self: end !important;
+  border: 1px solid var(--audio-panel-border) !important;
+  background: var(--audio-chevron-bg) !important;
+  color: var(--audio-chevron-text) !important;
+}
+
+.reader-audio-over-reader .reader-reciter-chevron svg {
+  width: 15px !important;
+  height: 15px !important;
+}
+
+.reader-audio-over-reader .reader-audio-waveform,
+.reader-audio-over-reader .reader-audio-wave-line,
+.reader-audio-over-reader .reader-audio-wave-track,
+.reader-audio-over-reader .reader-audio-progress-overlay {
+  height: 30px !important;
+}
+
+.reader-audio-over-reader .reader-audio-waveform {
+  margin-top: 8px !important;
+}
+
+.reader-audio-over-reader .reader-audio-wave-remaining,
+.reader-audio-over-reader .reader-audio-wave-played {
+  height: 3px !important;
+}
+
+.reader-audio-over-reader .reader-audio-wave-thumb {
+  width: 14px !important;
+  height: 14px !important;
+  box-shadow: 0 0 0 4px var(--audio-accent-soft) !important;
+}
+
+.reader-audio-over-reader .reader-audio-times-above {
+  margin: -1px 0 10px !important;
+  font-size: .75rem !important;
+  font-weight: 520 !important;
+}
+
+.reader-audio-over-reader .reader-transport-modern {
+  width: min(100%, 310px) !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  justify-items: center !important;
+  gap: 0 !important;
+  margin: 0 auto !important;
+}
+
+.reader-audio-over-reader .reader-transport-modern button {
+  width: 38px !important;
+  min-width: 38px !important;
+  height: 38px !important;
+}
+
+.reader-audio-over-reader .reader-transport-modern button:not(.transport-main) {
+  background: transparent !important;
+}
+
+.reader-audio-over-reader .reader-transport-modern button svg {
+  width: 22px !important;
+  height: 22px !important;
+  stroke-width: 1.9 !important;
+}
+
+.reader-audio-over-reader .reader-transport-modern .transport-main {
+  width: 56px !important;
+  min-width: 56px !important;
+  height: 48px !important;
+}
+
+.reader-audio-over-reader .reader-transport-modern .transport-main svg {
+  width: 28px !important;
+  height: 28px !important;
+}
+
+.reader-audio-over-reader .reader-transport-modern .transport-speed {
+  border-width: 1px !important;
+  font-size: .78rem !important;
+  font-weight: 700 !important;
+}
+
+.reader-audio-over-reader .reader-audio-status {
+  display: none !important;
+}
+
+.reader-audio-over-reader .reader-reciter-inline-panel {
+  bottom: calc(100% + 8px) !important;
+  max-height: min(34dvh, 286px) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 14px 34px rgba(35, 33, 30, .18) !important;
+}
+
+[data-theme='dark'] .reader-audio-over-reader .reader-reciter-inline-panel {
+  box-shadow: 0 14px 34px rgba(0, 0, 0, .36) !important;
+}
+
+@media (max-width: 370px) {
+  .reader-audio-over-reader .reader-audio-panel-modern {
+    padding-inline: 12px !important;
+  }
+
+  .reader-audio-over-reader .reader-transport-modern {
+    width: min(100%, 286px) !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    gap: 0 !important;
+  }
+
+  .reader-audio-over-reader .reader-transport-modern button {
+    width: 36px !important;
+    min-width: 36px !important;
+    height: 36px !important;
+  }
+
+  .reader-audio-over-reader .reader-transport-modern .transport-main {
+    width: 54px !important;
+    min-width: 54px !important;
+    height: 46px !important;
+  }
+}
+
+.reader-topbar {
+  display: flex !important;
+  justify-content: center !important;
+  background: transparent !important;
+  padding: 0 !important;
+  transform: none !important;
+  transition: opacity .18s ease !important;
+}
+
+.reader-topbar-visible {
+  transform: none !important;
+}
+
+.reader-top-sheet {
+  pointer-events: auto !important;
+  width: min(100%, 576px) !important;
+  border-radius: 0 0 18px 18px !important;
+  background: var(--reader-surface, #fffaf1) !important;
+  box-shadow: 0 10px 34px rgba(28, 23, 16, .10) !important;
+
+  opacity: 0;
+  transform: translate3d(0, -100%, 0);
+  transition:
+    opacity .2s ease,
+    transform .32s cubic-bezier(.22, 1, .36, 1) !important;
+  will-change: opacity, transform;
+}
+
+.reader-topbar-visible .reader-top-sheet {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.shared-back-button,
+.reader-control-row,
+.reader-top-actions {
+  gap: var(--chrome-button-gap) !important;
+}
+
+.reader-control-row {
+  width: 100% !important;
+  min-height: var(--chrome-button-size) !important;
+  padding-inline: 2px !important;
+}
+
+.reader-top-actions {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.reader-top-sheet .reader-back-pill,
+.reader-top-sheet .reader-top-icon {
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: inherit !important;
+}
+
+.reader-top-sheet .reader-back-pill:active,
+.reader-top-sheet .reader-top-icon:active {
+  background: rgba(20, 24, 22, .06) !important;
+}
+
+.reader-top-icon svg,
+.reader-back-pill svg,
+.shared-back-button svg {
+  top: 12px !important;
+  right: 12px !important;
+}
+
+[data-theme='dark'] .shared-back-button,
+[data-theme='dark'] [data-theme='dark'] .reader-topbar {
+  background: transparent !important;
+}
+
+[data-theme='dark'] .reader-top-sheet {
+  background: var(--reader-surface, #1e2320) !important;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, .30) !important;
+}
+
+[data-theme='dark'] .reader-top-actions {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+[data-theme='dark'] .reader-top-sheet .reader-back-pill,
+[data-theme='dark'] .reader-top-sheet .reader-top-icon {
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+[data-theme='dark'] .reader-top-sheet .reader-back-pill:active,
+[data-theme='dark'] .reader-top-sheet .reader-top-icon:active {
+  background: rgba(255, 255, 255, .08) !important;
+}
+
+.reader-footer-meta {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 6px) !important;
+  min-height: 44px !important;
+  align-items: center !important;
+  padding-inline: 24px !important;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  z-index: 75 !important;
+}
+
+.reader-audio-native {
+  display: none !important;
+}
+
+.reader-audio-panel-wrap.reader-audio-panel-visible {
+  inset: 0 !important;
+  bottom: 0 !important;
+  display: block !important;
+  opacity: 1 !important;
+  pointer-events: none !important;
+  transform: translateY(0) !important;
+  transition: opacity .18s ease, visibility .18s ease !important;
+  visibility: visible !important;
+  will-change: opacity !important;
+}
+
+.reader-audio-panel-wrap.reader-audio-panel-collapsed {
+  z-index: 80 !important;
+  padding-inline: 0 !important;
+}
+
+.reader-audio-panel-wrap.reader-audio-panel-expanded {
+  z-index: 80 !important;
+}
+
+.reader-audio-panel-wrap .reader-audio-panel-modern {
+  position: absolute !important;
+  inset-inline: 0 !important;
+  margin-inline: auto !important;
+  pointer-events: auto !important;
+}
+
+.reader-audio-panel-wrap.reader-audio-over-reader .reader-audio-expanded-panel {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 52px) !important;
+}
+
+.reader-audio-panel-wrap.reader-audio-over-screen .reader-audio-expanded-panel {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 14px) !important;
+}
+
+.reader-audio-panel-wrap.reader-audio-over-reader .reader-audio-mini-panel {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 3px) !important;
+}
+
+.reader-audio-panel-wrap.reader-audio-over-screen .reader-audio-mini-panel {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 6px) !important;
+}
+
+.reader-audio-panel-modern.reader-audio-expanded-panel {
+  overflow: visible !important;
+}
+
+.reader-audio-panel-modern {
+  backface-visibility: hidden !important;
+  transform-origin: bottom center !important;
+}
+
+.reader-audio-panel-modern.reader-audio-expanded-panel,
+.reader-audio-panel-modern.reader-audio-mini-panel {
+  transition:
+    opacity .28s ease,
+    transform .34s cubic-bezier(.22, 1, .36, 1),
+    border-color .18s ease,
+    background .18s ease,
+    box-shadow .18s ease !important;
+  will-change: opacity, transform !important;
+}
+
+.reader-audio-panel-modern.is-active {
+  opacity: 1;
+  pointer-events: auto !important;
+  transform: translate3d(0, 0, 0) scale(1);
+  transition:
+    opacity .28s ease,
+    transform .34s cubic-bezier(.22, 1, .36, 1) !important;
+  visibility: visible !important;
+}
+
+.reader-audio-panel-modern.is-inactive {
+  opacity: 0;
+  pointer-events: none !important;
+  transition:
+    opacity .22s ease,
+    transform .3s cubic-bezier(.22, 1, .36, 1) !important;
+  visibility: visible !important;
+}
+
+.reader-audio-expanded-panel.is-inactive {
+  transform: translate3d(0, 12px, 0) scale(.992);
+}
+
+.reader-audio-mini-panel.is-inactive {
+  transform: translate3d(0, 6px, 0) scale(.992);
+}
+
+.reader-audio-panel-transitioning .reader-audio-expanded-panel.is-active {
+  animation: reader-audio-expanded-in .38s cubic-bezier(.22, 1, .36, 1) both !important;
+}
+
+.reader-audio-panel-transitioning .reader-audio-expanded-panel.is-inactive {
+  animation: reader-audio-expanded-out .28s cubic-bezier(.4, 0, .2, 1) both !important;
+}
+
+.reader-audio-panel-transitioning .reader-audio-mini-panel.is-active {
+  animation: reader-audio-mini-in .34s cubic-bezier(.22, 1, .36, 1) both !important;
+}
+
+.reader-audio-panel-transitioning .reader-audio-mini-panel.is-inactive {
+  animation: reader-audio-mini-out .24s cubic-bezier(.4, 0, .2, 1) both !important;
+}
+
+@keyframes reader-audio-expanded-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0) scale(.992);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes reader-audio-expanded-out {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0) scale(.992);
+  }
+}
+
+@keyframes reader-audio-mini-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0) scale(.992);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes reader-audio-mini-out {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0) scale(.992);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reader-audio-panel-transitioning .reader-audio-expanded-panel.is-active,
+.reader-audio-panel-transitioning .reader-audio-expanded-panel.is-inactive,
+.reader-audio-panel-transitioning .reader-audio-mini-panel.is-active,
+.reader-audio-panel-transitioning .reader-audio-mini-panel.is-inactive {
+    animation: none !important;
+  }
+}
+
+.reader-audio-panel-modern.reader-audio-mini-panel {
+  width: min(calc(100vw - 72px), 262px) !important;
+  min-height: 51px !important;
+  border-color: transparent !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+.reader-audio-expanded-content,
+.reader-audio-mini-content {
+  width: 100% !important;
+}
+
+.reader-audio-mini-content {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 0 !important;
+}
+
+.reader-audio-grabber {
+  display: grid !important;
+  width: 100% !important;
+  height: 16px !important;
+  min-height: 16px !important;
+  place-items: center !important;
+  border: 0 !important;
+  background: transparent !important;
+  padding: 0 !important;
+  color: inherit !important;
+  cursor: grab !important;
+  touch-action: none !important;
+}
+
+.reader-audio-expanded-content > .reader-audio-grabber {
+  margin: -5px 0 1px !important;
+}
+
+.reader-audio-mini-content > .reader-audio-grabber {
+  height: 10px !important;
+  min-height: 10px !important;
+  margin: -1px 0 0 !important;
+}
+
+.reader-audio-grabber:active {
+  cursor: grabbing !important;
+}
+
+.reader-audio-grabber span {
+  display: block !important;
+  width: 38px !important;
+  height: 4px !important;
+  border-radius: 999px !important;
+  background: var(--audio-panel-muted) !important;
+  opacity: .48 !important;
+}
+
+.reader-audio-mini-content > .reader-audio-grabber span {
+  width: 30px !important;
+  height: 3px !important;
+  opacity: .42 !important;
+}
+
+.reader-audio-mini-panel .reader-transport-modern,
+.reader-audio-over-reader .reader-audio-mini-panel .reader-transport-modern {
+  width: min(100%, 244px) !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  justify-items: center !important;
+  gap: 0 !important;
+  margin: 0 auto !important;
+}
+
+.reader-audio-mini-panel .reader-transport-modern button,
+.reader-audio-over-reader .reader-audio-mini-panel .reader-transport-modern button {
+  width: 32px !important;
+  min-width: 32px !important;
+  height: 32px !important;
+}
+
+.reader-audio-mini-panel .reader-transport-modern .transport-main,
+.reader-audio-over-reader .reader-audio-mini-panel .reader-transport-modern .transport-main {
+  width: 44px !important;
+  min-width: 44px !important;
+  height: 38px !important;
+}
+
+.reader-audio-mini-panel .reader-transport-modern .transport-main svg,
+.reader-audio-over-reader .reader-audio-mini-panel .reader-transport-modern .transport-main svg {
+  width: 23px !important;
+  height: 23px !important;
+}
+
+.reader-audio-mini-panel .reader-transport-modern button svg,
+.reader-audio-over-reader .reader-audio-mini-panel .reader-transport-modern button svg {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+.reader-audio-mini-panel .reader-transport-modern .transport-speed,
+.reader-audio-over-reader .reader-audio-mini-panel .reader-transport-modern .transport-speed {
+  border-width: 1px !important;
+  font-size: .66rem !important;
+  font-weight: 700 !important;
+}
+
+.ayah-translation-backdrop {
+  z-index: 120 !important;
+}
+
+body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel-visible {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(12px) !important;
+  visibility: hidden !important;
+}
+
+.reader-bottom-sheet {
+  background: var(--reader-surface) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.reader-wave-slider,
+.reader-wave-bars span,
+.reader-wave-marker {
+  opacity: 1 !important;
+}
+
+.reader-wave-bars span,
+.reader-wave-marker {
+  background: var(--reader-primary) !important;
+}
+
+@media (max-width: 370px) {
+  .reader-audio-panel-modern.reader-audio-mini-panel {
+    width: min(calc(100vw - 56px), 250px) !important;
+    padding-inline: 0 !important;
+  }
+
+  .reader-audio-mini-panel .reader-transport-modern,
+.reader-audio-over-reader .reader-audio-mini-panel .reader-transport-modern {
+    width: min(100%, 232px) !important;
+  }
+
+  .reader-audio-mini-panel .reader-transport-modern button,
+.reader-audio-over-reader .reader-audio-mini-panel .reader-transport-modern button {
+    width: 31px !important;
+    min-width: 31px !important;
+    height: 31px !important;
+  }
+
+  .reader-audio-mini-panel .reader-transport-modern .transport-main,
+.reader-audio-over-reader .reader-audio-mini-panel .reader-transport-modern .transport-main {
+    width: 42px !important;
+    min-width: 42px !important;
+    height: 37px !important;
+  }
+}
+
+.reader-bottom-controls {
+  left: 50% !important;
+  right: auto !important;
+  width: min(100vw, var(--app-responsive-reader-width)) !important;
+  max-width: var(--app-responsive-reader-width) !important;
+  transform: translateX(-50%) !important;
+}
+
+.reader-bottom-sheet {
+  width: 100% !important;
+  max-width: var(--app-responsive-reader-width) !important;
+}
+
+.reader-audio-panel-wrap.reader-audio-panel-visible.reader-audio-over-reader {
+  left: 50% !important;
+  right: auto !important;
+  width: min(100vw, var(--app-responsive-reader-width)) !important;
+  max-width: var(--app-responsive-reader-width) !important;
+  transform: translateX(-50%) !important;
+}
+
+.reader-audio-panel-wrap.reader-audio-over-reader .reader-audio-expanded-panel {
+  width: min(calc(100% - 24px), 548px) !important;
+}
+
+.reader-audio-panel-wrap.reader-audio-over-reader .reader-audio-mini-panel {
+  width: min(calc(100% - 72px), 262px) !important;
+}
+
+@keyframes reader-line-jump-flash {
+  0% {
+    opacity: .55;
+    background: rgba(218, 174, 82, .08);
+    box-shadow: inset 0 0 0 1px rgba(180, 135, 45, .10);
+  }
+  42% {
+    opacity: 1;
+    background: rgba(218, 174, 82, .20);
+    box-shadow: inset 0 0 0 1px rgba(180, 135, 45, .25);
+  }
+  100% {
+    opacity: .45;
+    background: rgba(218, 174, 82, .06);
+    box-shadow: inset 0 0 0 1px rgba(14, 165, 233, .16);
+  }
+}
+
+[data-theme='dark'] .ayah-translation-footnote-toggle {
+  border-color: rgba(87, 191, 161, .18);
+  background: rgba(87, 191, 161, .12);
+  color: #aef1dc;
+}
+
+[data-theme='dark'] .ayah-translation-footnotes {
+  background: rgba(87, 191, 161, .12);
+  color: #d9dee2;
+}
+
+[data-theme='dark'] .ayah-translation-note-number {
+  background: rgba(87, 191, 161, .18);
+  color: #aef1dc;
+}
+
+.ayah-translation-body[data-translation-language="Ur"] .ayah-translation-text {
+  font-family: var(--translation-urdu-font) !important;
+  font-size: clamp(1.2rem, 5vw, 1.36rem) !important;
+  line-height: 2.15 !important;
+  letter-spacing: 0 !important;
+}
+
+.ayah-translation-footnote-toggle {
+  font-family: var(--translation-english-font) !important;
+  font-size: .92rem !important;
+  min-height: 42px;
+  padding: 10px 16px !important;
+}
+
+.ayah-translation-footnotes {
+  font-size: clamp(.98rem, 4vw, 1.08rem) !important;
+  line-height: 1.85 !important;
+  padding: 14px !important;
+}
+
+.ayah-translation-body[data-translation-language="Ur"] .ayah-translation-footnotes {
+  font-family: var(--translation-urdu-font) !important;
+  font-size: clamp(1.1rem, 4.6vw, 1.24rem) !important;
+  line-height: 2.05 !important;
+  direction: rtl;
+  text-align: right;
+}
+
+.ayah-translation-footnotes p {
+  align-items: flex-start;
+}
+
+.ayah-translation-note-number {
+  font-family: var(--translation-english-font) !important;
+  width: 22px !important;
+  height: 22px !important;
+  font-size: .72rem !important;
+  line-height: 1 !important;
+}
+
+.shared-back-button,
+.shared-back-button:active,
+.shared-back-button svg,
+[data-theme='dark'] .shared-back-button,
+[data-theme='dark']
+.ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.n {
+  color: #4f8fc9 !important;
+}
+
+.ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.v {
+  color: #55a64f !important;
+}
+
+.ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.p {
+  color: #c45b58 !important;
+}
+
+.ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.pn {
+  color: #7457b8 !important;
+}
+
+.ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.paren {
+  color: var(--translation-card-secondary) !important;
+  opacity: .74;
+}
+
+.ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.punc {
+  color: var(--translation-card-secondary) !important;
+}
+
+[data-theme='dark'] .ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.n {
+  color: #7db7e8 !important;
+}
+
+[data-theme='dark'] .ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.v {
+  color: #83d17d !important;
+}
+
+[data-theme='dark'] .ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.p {
+  color: #ef8a86 !important;
+}
+
+[data-theme='dark'] .ayah-word-by-word.is-en .ayah-word-by-word-meaning.wbw-colored-meaning > span.pn {
+  color: #b59ae8 !important;
+}
+
+.ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.n {
+  color: #4f8fc9 !important;
+}
+
+.ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.v {
+  color: #55a64f !important;
+}
+
+.ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.p {
+  color: #c45b58 !important;
+}
+
+.ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.pn {
+  color: #7457b8 !important;
+}
+
+.ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.paren,
+.ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.punc {
+  color: currentColor !important;
+}
+
+[data-theme='dark'] .ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.n {
+  color: #7db7e8 !important;
+}
+
+[data-theme='dark'] .ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.v {
+  color: #83d17d !important;
+}
+
+[data-theme='dark'] .ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.p {
+  color: #ef8a86 !important;
+}
+
+[data-theme='dark'] .ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.pn {
+  color: #b59ae8 !important;
+}
+
+.shared-back-button {
+  position: static !important;
+  display: grid !important;
+  width: 40px !important;
+  min-width: 40px !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  place-items: center !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+
+  padding: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.shared-back-button:hover,
+.shared-back-button:focus-visible,
+.shared-back-button:active {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.shared-back-button svg {
+  position: static !important;
+  width: 20px !important;
+  height: 20px !important;
+  stroke-width: 2.2 !important;
+  transform: none !important;
+}
+
+.shared-back-button {
+  color: #202624 !important;
+  -webkit-tap-highlight-color: transparent !important;
+  touch-action: manipulation;
+}
+
+.shared-back-button:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--gold) 68%, transparent) !important;
+  outline-offset: 2px !important;
+  border-radius: 10px !important;
+}
+
+[data-theme='dark'] .shared-back-button {
+  color: #f3f0e8 !important;
+}
+
+@keyframes index-panel-in {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.shared-back-button,
+.reader-back-pill.shared-back-button {
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  color: #202624 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.shared-back-button:hover,
+.shared-back-button:active,
+.reader-back-pill.shared-back-button:hover,
+.reader-back-pill.shared-back-button:active {
+  border: 0 !important;
+  background: transparent !important;
+  color: #202624 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.shared-back-button svg,
+.reader-back-pill.shared-back-button svg {
+  color: inherit !important;
+  stroke: currentColor !important;
+}
+
+[data-theme='dark'] .shared-back-button,
+[data-theme='dark'] .reader-back-pill.shared-back-button {
+  border: 0 !important;
+  background: transparent !important;
+  color: #f3f0e8 !important;
+  box-shadow: none !important;
+}
+
+.reader-top-sheet {
+  padding: calc(env(safe-area-inset-top, 0px) + 9px) 24px 14px !important;
+}
+
+.reader-top-sheet .reader-top-icon svg {
+  width: 23px !important;
+  height: 23px !important;
+}
+
+[data-theme='dark'] .reader-header,
+[data-theme='dark'] .reader-footer,
+[data-theme='dark'] .audio-player-shell,
+[data-theme='dark'] .ayah-translation-card {
+  border-color: var(--reader-border) !important;
+  background-color: var(--reader-surface-raised) !important;
+  color: var(--reader-text) !important;
+}
+
+#root .reader-shell .reader-passive-header {
+  color: #6b655d !important;
+}
+
+[data-theme='dark'] #root .reader-shell .reader-passive-header {
+  color: var(--reader-muted) !important;
+}
+
+@keyframes indexPanelIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }

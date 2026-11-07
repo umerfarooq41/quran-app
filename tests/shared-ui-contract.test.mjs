@@ -3,14 +3,14 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 const load = (name) => readFile(new URL(`../src/styles/${name}.css`, import.meta.url), 'utf8');
 test('Index, Library and Reflect share a column-aware segmented control', async () => {
-  const [shared, tabs, index] = await Promise.all([load('shared-surfaces'), load('tabs'), load('index-refined')]);
+  const [shared, tabs, index] = await Promise.all([load('shared-surfaces'), load('tabs'), load('index')]);
   assert.match(shared, /repeat\(var\(--ui-segment-columns, 2\), minmax\(0, 1fr\)\)/);
-  assert.match(tabs, /--ui-segment-columns:\s*4/);
+  assert.match(shared, /--ui-segment-columns:\s*4/);
   assert.doesNotMatch(index, /\.share-like-segment\s*\{/);
   assert.match(shared, /button:not\(\.is-active\)/);
 });
 test('Reflect lesson fields and question cards use shared surface roles', async () => {
-  const [shared, tabs] = await Promise.all([load('shared-surfaces'), load('tabs')]);
+  const [shared, tabs] = await Promise.all([load('reflect'), load('tabs')]);
   for (const cls of ['reflect-question-card .tab-card-surface','reflect-question-answer','reflect-lesson-answer','reflect-lesson-title-input']) assert.ok(shared.includes(cls));
   assert.doesNotMatch(tabs, /background:\s*color-mix\(in srgb, var\(--accent-color[^\n]+white\)/);
 });

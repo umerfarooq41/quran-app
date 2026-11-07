@@ -20,7 +20,7 @@ export default function MyReflection({ active, finalQuestions, reflectionOpen, s
             <label htmlFor="reflect-focused-answer" className="mt-4 block text-sm font-semibold">{finalQuestions[reflectionIndex]}</label>
             <textarea id="reflect-focused-answer" className={field+' mt-3 min-h-28'} rows={4} placeholder="Write your reflection…" value={active.answers?.final?.[reflectionIndex]||''} onChange={e=>saveAnswer('final',reflectionIndex,e.target.value)} onBlur={flushAnswers}/>
             <div className="mt-3 flex items-center justify-between gap-3">
-              <button type="button" className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 disabled:opacity-40" disabled={reflectionIndex===0} onClick={()=>setReflectionIndex(i=>Math.max(0,i-1))}>‹ Previous</button>
+              <button type="button" className="reflect-secondary-button rounded-xl px-3 py-2 text-sm font-semibold disabled:opacity-40" disabled={reflectionIndex===0} onClick={()=>setReflectionIndex(i=>Math.max(0,i-1))}>‹ Previous</button>
               <button type="button" className="rounded-xl bg-[#2d6e5e] px-4 py-2 text-sm font-semibold text-white disabled:opacity-40" disabled={reflectionIndex===finalQuestions.length-1} onClick={()=>setReflectionIndex(i=>Math.min(finalQuestions.length-1,i+1))}>Next ›</button>
             </div>
           </div>}

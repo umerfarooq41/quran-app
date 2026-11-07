@@ -1,32 +1,115 @@
-/* Shared warm-glass design system.
- * Screen-scoped selectors deliberately avoid Mushaf glyphs, playback controls,
- * gesture hit targets, share export canvases and the Continue Reading gradient.
- * Loaded after legacy styles while they are migrated and audited.
- */
-:root {
-  --ui-primary: var(--brand-green, #2d6e5e);
-  --ui-gold: var(--brand-gold, #b8882a);
-  --ui-card-bg: rgba(255, 255, 255, .66);
-  --ui-card-border: rgba(255, 255, 255, .84);
-  --ui-control-bg: rgba(255, 255, 255, .42);
-  --ui-control-border: rgba(126, 110, 86, .23);
-  --ui-card-shadow: 0 8px 20px rgba(71, 54, 23, .045);
-  --ui-card-blur: blur(16px);
-  --ui-pressed-overlay: rgba(75, 61, 41, .055);
-  --ui-divider: rgba(126, 110, 86, .16);
+/* shared-surfaces: component-owned styles; responsive and theme states live with their owner. */
+
+.reflect-screen .reflect-tabs.library-tabs.share-like-segment {
+  display: grid;
+  --ui-segment-columns: 4;
+  min-width: 0;
+  height: auto;
 }
-:root[data-theme='dark'] {
-  --ui-segment-bg: color-mix(in srgb, var(--theme-surface-solid) 88%, transparent);
-  --ui-segment-border: var(--theme-border);
-  --ui-card-bg: rgba(31, 36, 33, .78);
-  --ui-card-border: rgba(255, 255, 255, .10);
-  --ui-control-bg: rgba(255, 255, 255, .065);
-  --ui-control-border: rgba(255, 255, 255, .17);
-  --ui-card-shadow: 0 8px 20px rgba(0, 0, 0, .14);
-  --ui-pressed-overlay: rgba(255, 255, 255, .065);
-  --ui-divider: rgba(255, 255, 255, .11);
+
+.app-segment button { min-height: 36px; }
+
+.app-header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  min-width: 0;
 }
-/* Semantic component primitives. Screen owners migrate to these directly. */
+
+.app-header-title {
+  min-width: 0;
+  overflow: hidden;
+  margin: 0;
+  font-size: var(--ui-title-sm);
+  font-weight: 560;
+  line-height: 1.2;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+[data-theme='dark'] .app-header-title {
+  color: var(--theme-text);
+}
+
+[data-theme='dark'] .app-segment {
+  border-color: var(--theme-border);
+  background: var(--theme-surface);
+  color: var(--theme-text);
+  box-shadow: 0 10px 28px var(--theme-shadow);
+}
+
+[data-theme='dark'] [data-theme='dark'] .surah-info-meta {
+  color: var(--theme-muted);
+}
+
+.app-header {
+  min-height: calc(var(--chrome-button-size) + 6px);
+  gap: var(--chrome-button-gap);
+}
+
+.app-header-spacer {
+  justify-content: center;
+  background: transparent;
+  padding: 0;
+  transform: none;
+  transition: opacity .18s ease;
+}
+
+.app-fixed-header > .app-header {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.app-fixed-header > .app-header,
+.app-header {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) 40px;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+}
+
+.app-header-title,
+.app-fixed-header .app-header-title {
+  min-width: 0;
+  overflow: hidden;
+  margin: 0;
+  color: var(--theme-text);
+  font-family: var(--ui-font);
+  font-size: 2rem;
+  font-weight: 560;
+  line-height: 1;
+  letter-spacing: -.045em;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-header-spacer {
+  display: block;
+  width: 40px;
+  height: 40px;
+}
+
+@media (max-width: 380px) {
+  .app-header-title,
+.app-fixed-header .app-header-title {
+    font-size: 1.85rem;
+  }
+}
+
 .ui-card {
   background: var(--ui-card-bg);
   border: 1px solid var(--ui-card-border);
@@ -35,18 +118,21 @@
   -webkit-backdrop-filter: var(--ui-card-blur);
   backdrop-filter: var(--ui-card-blur);
 }
+
 .ui-control {
   background: var(--ui-control-bg);
   border: 1px solid var(--ui-control-border);
   border-radius: var(--ui-radius-md, 14px);
   color: var(--theme-text);
 }
+
 .ui-sheet {
   background: var(--theme-surface-solid);
   border: 1px solid var(--ui-card-border);
   border-radius: var(--ui-radius-xl, 22px);
   color: var(--theme-text);
 }
+
 .ui-disclosure-trigger {
   display: flex;
   align-items: center;
@@ -54,11 +140,13 @@
   width: 100%;
   color: var(--theme-text);
 }
-.ui-control:focus-visible,.ui-disclosure-trigger:focus-visible {
+
+.ui-control:focus-visible,
+.ui-disclosure-trigger:focus-visible {
   outline: 2px solid var(--ui-primary);
   outline-offset: 2px;
 }
-/* Cards: shared surface, not a separate white or gold-framed design per screen. */
+
 :is(.search-result-card,.settings-card,.help-intro,.help-section,
     .about-card,.about-section,.tab-card-surface,.tabs-status,
     .home-action-chip,.home-favorite-row,.home-reflect-card,.home-favorites-empty,
@@ -69,7 +157,7 @@
   -webkit-backdrop-filter: var(--ui-card-blur);
   backdrop-filter: var(--ui-card-blur);
 }
-/* Controls are distinct from cards: translucent neutral fill, stronger neutral edge. */
+
 :is(.search-form,.search-recent-list button,.settings-picker-pill,
     .settings-theme-picker,.tabs-filter-row button:not(.active),
     .tabs-back-pill,.surah-info-topbar button) {
@@ -78,88 +166,36 @@
   -webkit-backdrop-filter: var(--ui-card-blur);
   backdrop-filter: var(--ui-card-blur);
 }
-.search-form {
-  border-radius: 18px;
-}
-.search-form input { color: var(--theme-text); }
-.search-form input::placeholder { color: var(--theme-muted); opacity: 1; }
-.search-form button:not(:disabled) {
-  background: var(--ui-primary);
-  color: #fff;
-}
-.search-result-card,
-.home-action-chip,
-.home-favorite-row,
-.help-section-trigger,
-.tab-card-hit {
-  transition: background-color .16s ease;
-}
+
 :is(.search-result-card,.home-action-chip,.home-favorite-row,
     .help-section-trigger,.tab-card-hit):active {
   background-color: var(--ui-pressed-overlay);
 }
-/* Primary green is for explicit selected controls, not green-tinted card fills. */
+
 :is(.tabs-filter-row button.active,.settings-theme-picker button.is-active) {
   background: var(--ui-primary);
   border-color: var(--ui-primary);
   color: #fff;
 }
-.settings-theme-picker button.is-active :is(svg,span) { color: inherit; }
-.settings-card > :is(.settings-toggle-row,.settings-picker-row) + :is(.settings-toggle-row,.settings-picker-row) {
-  border-top-color: var(--ui-divider);
-}
-.help-section-content { border-top-color: var(--ui-divider); }
-/* Keep text legible in both themes; do not touch Urdu/Arabic font metrics. */
+
 :is(.search-result-card,.search-result-reference strong,.search-recent-list button,
     .settings-card,.help-section,.about-screen,.tab-card-surface,.tafsir-card) {
   color: var(--theme-text);
 }
+
 :is(.search-result-reference small,.search-result-preview,.search-result-meta,
     .search-results-heading span,.search-recent-list button,.settings-row-copy small) {
   color: var(--theme-muted);
 }
-/* Tafsir and Surah Info: surfaces only; text/Arabic layout and numbering stay owned. */
-.tafsir-section { border-top-color: var(--ui-divider); }
-.tafsir-card-head p,
-.tafsir-section :is(p,div) { color: var(--theme-muted); }
-.tafsir-card-head button {
-  background: var(--ui-primary);
-  color: #fff;
-}
-.surah-info-icon { background: var(--ui-control-bg); }
+
 @media (prefers-reduced-motion: reduce) {
   :is(.search-result-card,.home-action-chip,.home-favorite-row,.help-section-trigger,.tab-card-hit) {
     transition: none;
   }
 }
-@media (prefers-reduced-transparency: reduce) {
-  :root {
-    --ui-card-bg: #faf7f0;
-    --ui-control-bg: #f1ede6;
-    --ui-card-blur: none;
-  }
-  :root[data-theme='dark'] {
-    --ui-card-bg: #202521;
-    --ui-control-bg: #292f2b;
-  }
-}
 
-
-/* Shared picker language — consistent triggers and option panels across the app.
-   Native Surah/ayah and Progress select popups remain OS-controlled for scrolling,
-   accessibility and reliable long-list selection. */
-:root {
-  --ui-picker-radius: 16px;
-  --ui-picker-option-radius: 11px;
-  --ui-picker-selected: color-mix(in srgb, var(--ui-primary) 11%, transparent);
-  --ui-picker-hover: rgba(75, 61, 41, .055);
-}
-:root[data-theme='dark'] {
-  --ui-picker-selected: color-mix(in srgb, var(--ui-primary) 26%, transparent);
-  --ui-picker-hover: rgba(255, 255, 255, .075);
-}
-/* Shared dropdown: scrollable options, one visual language on every platform. */
 .app-option-picker { position: relative; min-width: 0; }
+
 .app-option-trigger {
   display: flex; align-items: center; justify-content: space-between;
   gap: 12px; width: 100%; min-height: 52px;
@@ -167,10 +203,14 @@
   background: var(--ui-control-bg); border: 1px solid var(--ui-control-border);
   color: var(--theme-text); text-align: left; font: inherit;
 }
+
 .app-option-trigger:focus-visible,
 .app-option-item:focus-visible { outline: 2px solid var(--ui-primary); outline-offset: 2px; }
+
 .app-option-chevron { flex: 0 0 auto; transition: transform .18s ease; }
+
 .app-option-chevron.is-open { transform: rotate(180deg); }
+
 .app-option-menu {
   position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 100;
   max-height: min(44vh, 340px); overflow-y: auto; overscroll-behavior: contain;
@@ -178,135 +218,70 @@
   background: var(--theme-surface-solid); border: 1px solid var(--ui-control-border);
   box-shadow: 0 14px 32px rgba(28, 35, 30, .16);
 }
+
 .app-option-item {
   display: flex; width: 100%; min-height: 44px; align-items: center;
   justify-content: space-between; gap: 12px; padding: 9px 12px;
   border-radius: var(--ui-picker-option-radius); color: var(--theme-text);
   text-align: left;
 }
+
 .app-option-item.is-selected { background: var(--ui-picker-selected); font-weight: 650; }
+
 .app-option-item:active { background: var(--ui-picker-hover); }
+
 @media (prefers-reduced-motion: reduce) { .app-option-chevron { transition: none; } }
 
-
-/* Home cards use the shared surface primitive, except the Continue Reading hero. */
-.home-reflect-card,.home-favorite-row { min-height: 92px; padding: 17px 19px; border-radius: 23px; }
-.home-reflect-card .home-reflect-copy { gap: 4px; }
-@media(max-width:370px) {
-  .home-reflect-card,.home-favorite-row { min-height: 76px; padding: 12px 15px; }
-}
-
-/* Reflect surface and control primitives are maintained with other app surfaces. */
-.reflect-screen .reflect-panel,
-.reflect-screen .reflect-progress-metric,
-.reflect-screen .reflect-question-card .tab-card-surface,
-.reflect-screen .reflect-keyword-card,
-.reflect-screen .reflect-theme-group,
-.reflect-screen .reflect-theme-picker-group,
-.reflect-screen .tab-card-surface {
-  background: var(--ui-card-bg);
-  border: 1px solid var(--ui-card-border);
-  box-shadow: var(--ui-card-shadow);
-  -webkit-backdrop-filter: var(--ui-card-blur);
-  backdrop-filter: var(--ui-card-blur);
-}
-.reflect-screen .reflect-lesson-answer,
-.reflect-screen .reflect-question-answer,
-.reflect-screen .reflect-lesson-title-input,
-.reflect-screen .reflect-field,
-.reflect-screen textarea,
-.reflect-screen input[type='text'],
-.reflect-screen .reflect-keyword-chip,
-.reflect-screen .reflect-word-language {
-  background: var(--ui-control-bg);
-  border: 1px solid var(--ui-control-border);
-  color: var(--theme-text);
-}
-.reflect-screen .reflect-word-language {
-  display: inline-flex; align-items: center; gap: 3px;
-  padding: 3px; border-radius: 999px;
-}
-.reflect-screen .reflect-word-language-option {
-  border: 0; background: transparent; color: var(--theme-text);
-  border-radius: 999px; min-height: 34px; padding: 6px 12px;
-}
-.reflect-screen .reflect-word-language-option[aria-pressed='true'] {
-  background: var(--ui-primary); color: #fff;
-}
-.reflect-screen .reflect-lesson-answer:focus-visible,
-.reflect-screen .reflect-lesson-title-input:focus-visible,
-.reflect-screen .reflect-field:focus-visible,
-.reflect-screen textarea:focus-visible {
-  outline: 2px solid var(--ui-primary); outline-offset: 2px;
-}
-.reflect-screen .reflect-study-menu,
-.reflect-screen .reflect-delete-dialog {
-  background: var(--theme-surface-solid); color: var(--theme-text);
-  border: 1px solid var(--ui-control-border);
-}
-
-/* Progress secondary controls are neutral, never white or green-tinted. */
-.reflect-screen .reflect-secondary-button,
-.reflect-screen .reflect-recent-icon {
-  background: var(--ui-control-bg);
-  border: 1px solid var(--ui-control-border);
-  color: var(--theme-text);
-}
-.reflect-screen .reflect-secondary-button:focus-visible {
-  outline: 2px solid var(--ui-primary); outline-offset: 2px;
-}
-
-/* Shared segmented control for Index, Library and Reflect. */
 .share-like-segment {
-  display: grid !important;
-  grid-template-columns: repeat(var(--ui-segment-columns, 2), minmax(0, 1fr)) !important;
-  width: 100% !important;
-  min-height: 52px !important;
-  gap: 0 !important;
-  margin: 8px 0 16px !important;
-  padding: 4px !important;
-  border: 1px solid var(--ui-segment-border) !important;
-  border-radius: 999px !important;
-  background: var(--ui-segment-bg) !important;
-  box-shadow: none !important;
-  overflow: hidden !important;
+  display: grid;
+  grid-template-columns: repeat(var(--ui-segment-columns, 2), minmax(0, 1fr));
+  width: 100%;
+  min-height: 52px;
+  gap: 0;
+  margin: 8px 0 16px;
+  padding: 4px;
+  border: 1px solid var(--ui-segment-border);
+  border-radius: 999px;
+  background: var(--ui-segment-bg);
+  box-shadow: none;
+  overflow: hidden;
 }
 
 .share-like-segment > button {
-  display: inline-flex !important;
-  min-width: 0 !important;
-  min-height: 44px !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 7px !important;
-  margin: 0 !important;
-  padding: 0 14px !important;
-  border: 0 !important;
-  border-radius: 999px !important;
-  background: transparent !important;
-  color: var(--theme-muted) !important;
-  box-shadow: none !important;
-  font-family: var(--ui-font) !important;
-  font-size: .96rem !important;
-  font-weight: 600 !important;
-  line-height: 1 !important;
-  white-space: nowrap !important;
+  display: inline-flex;
+  min-width: 0;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin: 0;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--theme-muted);
+  box-shadow: none;
+  font-family: var(--ui-font);
+  font-size: .96rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
   /* Contrast must be valid on every frame, including immediately after navigation.
      Never tween white selected text over a partially blended accent background. */
-  transition: transform .15s ease !important;
+  transition: transform .15s ease;
 }
 
 .share-like-segment > button svg {
-  width: 20px !important;
-  height: 20px !important;
-  flex: 0 0 auto !important;
-  stroke-width: 2 !important;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  stroke-width: 2;
 }
 
 :is(.share-like-segment, .index-replica-shell .index-segment.share-like-segment, .tabs-screen .library-tabs.share-like-segment) > button.is-active {
-  background: var(--ui-segment-selected) !important;
-  color: #fff !important;
-  box-shadow: 0 4px 14px rgba(31,61,43,.14) !important;
+  background: var(--ui-segment-selected);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(31,61,43,.14);
 }
 
 .share-like-segment > button:active {
@@ -318,31 +293,30 @@
   outline-offset: 2px;
 }
 
-/* Explicitly neutralize older screen-specific tab rules. */
 .index-replica-shell .index-segment.share-like-segment,
 .tabs-screen .library-tabs.share-like-segment {
-  width: 100% !important;
-  max-width: none !important;
-  min-height: 52px !important;
-  gap: 0 !important;
-  margin: 8px 0 16px !important;
-  padding: 4px !important;
-  border: 1px solid var(--ui-segment-border) !important;
-  border-radius: 999px !important;
-  background: var(--ui-segment-bg) !important;
-  box-shadow: none !important;
+  width: 100%;
+  max-width: none;
+  min-height: 52px;
+  gap: 0;
+  margin: 8px 0 16px;
+  padding: 4px;
+  border: 1px solid var(--ui-segment-border);
+  border-radius: 999px;
+  background: var(--ui-segment-bg);
+  box-shadow: none;
 }
 
 [data-theme='dark'] .share-like-segment,
 [data-theme='dark'] .index-replica-shell .index-segment.share-like-segment,
 [data-theme='dark'] .tabs-screen .library-tabs.share-like-segment {
-  border-color: var(--theme-border) !important;
-  background: color-mix(in srgb, var(--theme-surface-solid) 88%, transparent) !important;
-  box-shadow: none !important;
+  border-color: var(--theme-border);
+  background: color-mix(in srgb, var(--theme-surface-solid) 88%, transparent);
+  box-shadow: none;
 }
 
 [data-theme='dark'] .share-like-segment > button:not(.is-active),
 [data-theme='dark'] .index-replica-shell .index-segment.share-like-segment > button:not(.is-active),
 [data-theme='dark'] .tabs-screen .library-tabs.share-like-segment > button:not(.is-active) {
-  color: var(--theme-muted) !important;
+  color: var(--theme-muted);
 }
