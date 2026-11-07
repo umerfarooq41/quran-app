@@ -4743,7 +4743,7 @@ body {
 .share-video-preview-seek::-moz-range-track { height: 5px !important; border-radius: 999px !important; background: rgba(255,255,255,.46) !important; }
 .share-video-preview-seek::-moz-range-thumb { width: 15px !important; height: 15px !important; border: 0 !important; border-radius: 50% !important; background: #fff !important; }
 .share-media-live-preview.is-video.is-landscape .share-video-preview-header { }
-.share-media-live-preview.is-video.is-landscape .share-video-preview-ayah-card { right: 8% !important; border-radius: 16px !important; }
+.share-media-live-preview.is-video.is-landscape .share-video-preview-ayah-card { border-radius: 16px !important; }
 .share-media-live-preview.is-video.is-landscape .share-video-preview-translation { margin-top: 6px !important; font-size: .70rem !important; }
 .share-media-live-preview.is-video.is-landscape .share-video-preview-reference { margin-top: 5px; font-size: .62rem; }
 .share-media-live-preview.is-video.is-landscape .share-video-preview-controls { right: 5% !important; bottom: 3% !important; left: 5% !important; padding-top: 18px !important; }

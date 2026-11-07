@@ -12,9 +12,9 @@
   align-items: center;
   gap: 8px;
   min-width: 0;
-  border: 1px solid var(--ui-control-border);
+
   border-radius: 18px;
-  background: var(--ui-control-bg);
+
   padding: 7px 8px 7px 12px;
   color: var(--theme-muted);
   box-shadow: 0 8px 24px rgba(31, 41, 55, .05);

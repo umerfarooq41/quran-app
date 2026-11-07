@@ -49,13 +49,13 @@
   gap: 10px;
   margin: 0 0 15px !important;
   padding: 0 14px !important;
-  border: 1px solid var(--ui-control-border);
+
   border-radius: 16px !important;
-  background: var(--ui-control-bg);
-  box-shadow: var(--ui-card-shadow);
+
+
   color: var(--theme-muted);
-  -webkit-backdrop-filter: var(--ui-card-blur);
-  backdrop-filter: var(--ui-card-blur);
+
+
 }
 .index-replica-shell .index-surah-search:focus-within {
   border-color: color-mix(in srgb, var(--brand-gold, #b68a35) 68%, var(--theme-border)) !important;
