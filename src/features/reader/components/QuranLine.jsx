@@ -1,4 +1,4 @@
-import React, { useMemo, useLayoutEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useLayoutEffect, useRef } from 'react';
 import { getDisplayLineText } from '../../../utils/quranLabels';
 import {
   getAyahRangeRects,
@@ -50,6 +50,7 @@ export const QuranLine = React.memo(function QuranLine({
   const pressedSelection = useRef(null);
   const capturedPointer = useRef(null);
   const blockedPress = useRef(false);
+  useEffect(() => () => window.clearTimeout(longPressTimer.current), []);
   const isBasmallah = line.type === 'basmallah' || line.type === 'bismillah';
   const centered = (
     forceCentered ||
@@ -410,7 +411,8 @@ export const QuranLine = React.memo(function QuranLine({
       onPointerDown={startLongPress}
       onPointerMove={handlePointerMove}
       onPointerUp={finishPress}
-      onPointerLeave={cancelLongPress}
+      // Pointer capture owns the press until up/cancel; leaving a glyph must not
+      // abort a stationary hold. Movement beyond 12px still cancels it.
       onPointerCancel={finishPress}
       onSelectStart={(event) => event.preventDefault()}
       onDragStart={(event) => event.preventDefault()}

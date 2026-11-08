@@ -359,12 +359,46 @@
 .app-search-field input::-webkit-search-cancel-button { display:none; }
 .app-search-field button { display:grid; place-items:center; flex:0 0 32px; width:32px; height:32px; border:0; background:transparent; color:var(--theme-muted); border-radius:50%; }
 
-/* Swipe geometry is shared by Library, Favorites and Reflect. The action
-   translates alongside the foreground instead of sitting below its glass. */
-.ui-swipe-actions { --swipe-offset:0px; position:relative; overflow:hidden; border-radius:18px; touch-action:pan-y; }
-.ui-swipe-actions.is-swiped { --swipe-offset:92px; }
-.ui-swipe-actions > :is(.tab-card-surface,.home-favorite-row) { transform:translateX(calc(-1 * var(--swipe-offset))); transition:transform .2s ease; }
-.ui-swipe-actions > :is(.tab-card-remove,.home-favorite-delete) { width:92px; border-radius:0 18px 18px 0; transform:translateX(calc(92px - var(--swipe-offset))); transition:transform .2s ease; opacity:1; pointer-events:auto; }
-.ui-swipe-actions:not(.is-swiped):not(.is-swiping) > :is(.tab-card-remove,.home-favorite-delete) { visibility:hidden; pointer-events:none; }
-.ui-swipe-actions.is-swiping > :is(.tab-card-surface,.home-favorite-row,.tab-card-remove,.home-favorite-delete) { transition:none; }
-@media(prefers-reduced-motion:reduce) { .ui-swipe-actions > :is(.tab-card-surface,.home-favorite-row,.tab-card-remove,.home-favorite-delete) { transition:none; } }
+/* One clipped red backing for Library, Favorites and Reflect. The delete
+   button stays at the trailing edge; only the foreground card translates.
+   This fills every exposed pixel, including the card's rounded outer end. */
+.ui-swipe-actions {
+  --swipe-offset: 0px;
+  --swipe-action-width: 92px;
+  --swipe-radius: 18px;
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--swipe-radius);
+  touch-action: pan-y;
+}
+.ui-swipe-actions.is-swiped { --swipe-offset: var(--swipe-action-width); }
+.ui-swipe-actions.is-swiped,
+.ui-swipe-actions.is-swiping,
+.tabs-screen.app-page-shell .ui-swipe-actions.is-swiped,
+.tabs-screen.app-page-shell .ui-swipe-actions.is-swiping {
+  background: var(--ui-danger-bg);
+}
+.ui-swipe-actions > :is(.tab-card-surface,.home-favorite-row) {
+  transform: translateX(calc(-1 * var(--swipe-offset)));
+  transition: transform .2s ease;
+}
+.ui-swipe-actions > :is(.tab-card-remove,.home-favorite-delete) {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  width: var(--swipe-action-width);
+  border: 0;
+  border-radius: 0 var(--swipe-radius) var(--swipe-radius) 0;
+  background: var(--ui-danger-bg);
+  transform: none;
+  opacity: 1;
+  pointer-events: auto;
+}
+.ui-swipe-actions:not(.is-swiped):not(.is-swiping) > :is(.tab-card-remove,.home-favorite-delete) {
+  visibility: hidden;
+  pointer-events: none;
+}
+.ui-swipe-actions.is-swiping > :is(.tab-card-surface,.home-favorite-row) { transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  .ui-swipe-actions > :is(.tab-card-surface,.home-favorite-row) { transition: none; }
+}

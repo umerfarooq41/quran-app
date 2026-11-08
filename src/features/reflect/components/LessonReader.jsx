@@ -40,7 +40,7 @@ export default function LessonReader({ active, verses, translationOption, toggle
 
   return (
     <>
-        <section className="reflect-passage-section">
+        <section className={`${card} reflect-passage-section`}>
           <div className="flex items-center justify-between gap-3">
             <h3 className="font-semibold">Read the passage</h3>
             <div className="reflect-word-language" role="group" aria-label="Word-by-word language">

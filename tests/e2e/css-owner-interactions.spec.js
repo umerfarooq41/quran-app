@@ -28,6 +28,10 @@ for (const theme of ['light','dark']) {
     await expect(card).toHaveCSS('background-color', await roleColor(page, '--ui-card-bg'));
     await page.getByRole('button', { name: 'QA saved lesson' }).click();
     await expect(page.locator('#reflect-lesson-title')).toBeVisible();
+    const passage = page.locator('.reflect-passage-section');
+    await expect(passage).toBeVisible();
+    await expect(passage).toHaveCSS('background-color', await roleColor(page, '--ui-card-bg'));
+    await expect(passage).toHaveCSS('border-top-left-radius', '16px');
     const answer = page.locator('#reflect-imagine');
     await expect(answer).toHaveCSS('background-color', await roleColor(page, '--ui-control-bg'));
     await answer.fill(`Neutral ${theme} answer`);

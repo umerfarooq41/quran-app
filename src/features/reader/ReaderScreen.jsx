@@ -158,9 +158,10 @@ export default function ReaderScreen() {
   });
   const topOverlay = overlayStack.at(-1)?.type;
   const ayahTooltipVisible = Boolean(selectedAyah && topOverlay === OVERLAY_TYPES.AYAH);
+  // Visible Reader chrome is not a modal: readers can long-press a word without
+  // first dismissing the header/footer. Actual overlays still block gestures.
   const readerInteractionsBlocked = Boolean(
-    controlsVisible ||
-      audioPlayerVisible ||
+    audioPlayerVisible ||
       translationTarget ||
       ayahTooltipVisible
   );

@@ -437,4 +437,6 @@
 
 .reflect-progress-period .app-option-menu { left: auto; min-width: 140px; }
 
-.reflect-passage-section { min-width: 0; padding: 16px 0; color: var(--theme-text); }
+/* Passage uses the same translucent reflect-panel surface as other cards.
+   Padding and rounded corners come from the shared card component. */
+.reflect-passage-section { min-width: 0; color: var(--theme-text); }

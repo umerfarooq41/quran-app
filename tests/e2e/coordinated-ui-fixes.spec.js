@@ -62,14 +62,40 @@ for (const theme of ['light','dark']) test(`swipe reveals only the trailing acti
   const box=await card.boundingBox(),x=box.x+box.width*.65,y=box.y+box.height*.5;
   await page.mouse.move(x,y);await page.mouse.down();await page.mouse.move(x-50,y,{steps:6});
   const front=await surface.boundingBox(),remove=await action.boundingBox();
-  expect(remove.x).toBeGreaterThanOrEqual(front.x+front.width-1);
+  // The stationary red action extends behind the moving card and reaches the
+  // exact trailing edge; the clipped wrapper also fills the rounded corner.
+  expect(remove.x).toBeLessThan(front.x+front.width);
+  expect(remove.x+remove.width).toBeCloseTo(box.x+box.width,1);
+  const colors=await card.evaluate(el=>({
+    backing:getComputedStyle(el).backgroundColor,
+    action:getComputedStyle(el.querySelector('.tab-card-remove')).backgroundColor,
+  }));
+  expect(colors.backing).toBe(colors.action);
   await page.mouse.move(x-100,y,{steps:6});await page.mouse.up();
   await expect(card).toHaveClass(/is-swiped/);
+  await expect(card).toHaveCSS('overflow','hidden');
+  await expect(card).toHaveCSS('border-top-right-radius','18px');
   await expect(action).toHaveCSS('border-top-right-radius','18px');
   await surface.click();await expect(card).not.toHaveClass(/is-swiped/);
   await page.mouse.move(x,y);await page.mouse.down();await page.mouse.move(x+4,y+45,{steps:6});await page.mouse.up();
   await expect(card).not.toHaveClass(/is-swiped/);
   await expect(page.getByRole('heading',{name:'Library',exact:true})).toBeVisible();
+});
+
+test('holding an ayah opens actions even when Reader chrome is visible',async({page})=>{
+  await openReader(page);
+  const chrome=page.locator('.reader-topbar-visible');
+  if (!await chrome.isVisible()) await page.locator('[data-reader-toggle-zone]').first().click({force:true});
+  await expect(chrome).toBeVisible();
+  const word=page.locator('.reader-page-slide-current .quran-line-ayah:not([aria-hidden="true"]) .quran-word[data-verse-key]').first();
+  await expect(word).toBeVisible();
+  const box=await word.boundingBox();
+  await page.mouse.move(box.x+box.width/2,box.y+box.height/2);
+  await page.mouse.down();
+  await page.waitForTimeout(500);
+  await expect(page.getByRole('toolbar',{name:'Ayah actions'})).toBeVisible();
+  await page.mouse.up();
+  await expect(page.getByRole('toolbar',{name:'Ayah actions'})).toBeVisible();
 });
 
 test('compact audio reciter picker preserves controls and elapsed/total labels',async({page})=>{
