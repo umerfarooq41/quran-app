@@ -372,15 +372,12 @@
   touch-action: pan-y;
 }
 .ui-swipe-actions.is-swiped { --swipe-offset: var(--swipe-action-width); }
-/* The red backing must occupy only the trailing action lane. A full-width
-   red background bleeds through the translucent glass foreground (pink card). */
+/* A full red backing fills the outer clipped silhouette throughout the
+   gesture. The foreground turns opaque while moving, so red is visible only
+   in the revealed strip and never bleeds through its translucent card. */
 .ui-swipe-actions.is-swiped,
 .ui-swipe-actions.is-swiping {
-  background: linear-gradient(to left,
-    var(--ui-danger-bg) 0,
-    var(--ui-danger-bg) var(--swipe-action-width),
-    transparent var(--swipe-action-width),
-    transparent 100%);
+  background: var(--ui-danger-bg);
 }
 .ui-swipe-actions > :is(.tab-card-surface,.home-favorite-row) {
   transform: translateX(calc(-1 * var(--swipe-offset)));
