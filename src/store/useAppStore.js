@@ -49,7 +49,6 @@ function persistFavoriteSurahs(favoriteSurahs) {
 
 export const DEFAULT_SETTINGS = Object.freeze({
   fontScale: 1,
-  readerLayout: 'auto',
   theme: getInitialTheme(),
   translation: DEFAULT_TRANSLATION_ID,
   translationLanguage: 'ur',
@@ -669,7 +668,6 @@ export function sanitizeSettings(value = {}) {
 
   return {
     fontScale: 1,
-    readerLayout: ['auto', 'single', 'double'].includes(value.readerLayout) ? value.readerLayout : 'auto',
     theme: value.theme === 'dark' || value.theme === 'light'
       ? value.theme
       : DEFAULT_SETTINGS.theme,

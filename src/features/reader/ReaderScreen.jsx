@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { AppOptionPicker } from '../../components/common/Dropdown';
 import { readerSpreadStart, useReaderLayout } from './hooks/useReaderLayout';
 import { AnimatePresence } from 'framer-motion';
 import { useShallow } from 'zustand/react/shallow';
@@ -34,7 +33,6 @@ export default function ReaderScreen() {
     controlsVisible,
     setControlsVisible,
     settings,
-    updateSettings,
     goBack,
     openBookmarks,
     openIndex,
@@ -71,7 +69,6 @@ export default function ReaderScreen() {
     controlsVisible: state.controlsVisible,
     setControlsVisible: state.setControlsVisible,
     settings: state.settings,
-    updateSettings: state.updateSettings,
     goBack: state.goBack,
     openBookmarks: state.openBookmarks,
     openIndex: state.openIndex,
@@ -111,9 +108,8 @@ export default function ReaderScreen() {
     followRecitation
     && (!audioPlayerActive || !audioTarget?.page || Number(audioTarget.page) === Number(page))
   ));
-  const layout = useReaderLayout(settings.readerLayout);
+  const layout = useReaderLayout();
   const spreadStart = readerSpreadStart(page);
-  const pageStep = layout.spread ? 2 : 1;
   const pageData = getPage(page);
   const meta = getPageMeta(page);
   const footerPage = sliderInteracting && sliderPreviewPage ? sliderPreviewPage : page;
@@ -259,7 +255,7 @@ export default function ReaderScreen() {
     return () => {
       mounted = false;
     };
-  }, [page, annotationVersion]);
+  }, [annotationVersion]);
 
   useEffect(() => {
     if (!pendingAyah) return undefined;
@@ -335,6 +331,8 @@ export default function ReaderScreen() {
       audioTarget?.page &&
       Number(audioTarget.page) !== Number(page)
     ) {
+      // Keep the exact active leaf for persistence and portrait rotation.
+      // startPageTransition already skips turns inside the visible spread.
       const keepControlsVisible = controlsVisible;
       goReaderPage(audioTarget.page, null, { navigationSource: 'audio' });
       if (keepControlsVisible) setControlsVisible(true);
@@ -393,7 +391,9 @@ export default function ReaderScreen() {
   }, [layout.spread, layout.pageWidth, layout.pageHeight]);
 
   function navigationPage(direction) {
-    const destination = (layout.spread ? spreadStart : page) + direction * pageStep;
+    const destination = layout.spread
+      ? spreadStart + direction * 2
+      : page + direction;
     return destination < 1 || destination > clampPage(9999) ? page : destination;
   }
 
@@ -794,7 +794,7 @@ export default function ReaderScreen() {
 
   function renderPageView(renderedPage, interactive = true) {
     const pages = layout.spread
-      ? [readerSpreadStart(renderedPage), readerSpreadStart(renderedPage) + 1]
+      ? [readerSpreadStart(renderedPage), readerSpreadStart(renderedPage) + 1].filter(number => number <= clampPage(9999))
       : [renderedPage];
     return <div className={`reader-page-view ${layout.spread ? 'reader-page-view-spread' : ''}`}>
       {pages.map(number => {
@@ -836,8 +836,6 @@ export default function ReaderScreen() {
           onBookmarks={openBookmarks}
           onIndex={openIndex}
           onSettings={openSettings}
-          onSearch={openSearch}
-          layoutControl={<AppOptionPicker label="Reader layout" value={settings.readerLayout || 'auto'} options={[{value:'auto',label:'Auto'},{value:'single',label:'Single page'},{value:'double',label:'Two pages'}]} onSelect={readerLayout => updateSettings({readerLayout})} />}
           onChromeTap={hideReaderChrome}
         />
       <div
@@ -915,7 +913,7 @@ export default function ReaderScreen() {
             onNext={() => goReaderPage(navigationPage(1), null, { keepControlsVisible: true })}
             onPrevious={() => goReaderPage(navigationPage(-1), null, { keepControlsVisible: true })}
             nextDisabled={page >= clampPage(9999) || (layout.spread && spreadStart + 2 > clampPage(9999))}
-            previousDisabled={page <= (layout.spread ? 2 : 1)}
+            previousDisabled={layout.spread ? spreadStart <= 1 : page <= 1}
             spread={layout.spread}
             onSearch={openSearch}
             onAudio={playFromPageStart}

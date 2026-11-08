@@ -23,7 +23,7 @@ for(const theme of ['light','dark']) {
     const panel = page.locator('.reader-audio-expanded-panel');
     await expect(panel).toBeVisible();
     await expect(panel).toHaveScreenshot(`audio-expanded-${theme}.png`,shot);
-    await page.locator('.reader-reciter-pill').click();
+    await page.getByRole('button',{name:/^Reciters:/}).click();
     await expect(page.getByRole('listbox',{name:'Reciters'})).toBeVisible();
     await expect(panel).toHaveScreenshot(`audio-reciter-picker-${theme}.png`,shot);
     await page.getByRole('option').nth(1).click();

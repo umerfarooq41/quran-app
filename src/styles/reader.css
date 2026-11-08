@@ -974,22 +974,6 @@
 }
 
 /* The toolbar belongs to the Reader viewport; its picker uses shared controls. */
-.reader-layout-control {
-  display: flex;
-  align-items: center;
-  gap: var(--ui-space-2);
-  font-size: var(--ui-text-sm);
-  justify-content: center;
-  margin-top: 6px;
-}
-
-.reader-layout-control .app-option-picker {
-  width: 160px;
-}
-
-.reader-layout-control .app-option-trigger {
-  min-height: 36px;
-}
 
 .reader-screen-spread {
   --reader-controls-top: 50%;

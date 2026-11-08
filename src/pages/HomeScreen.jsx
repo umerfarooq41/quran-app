@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react';
+import { SwipeActions } from '../components/common/SwipeActions';
+import React, { useState } from 'react';
 import { BookOpen, Library, List, Search, SlidersHorizontal, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useShallow } from 'zustand/react/shallow';
@@ -165,38 +166,8 @@ export default function HomeScreen() {
 
 function FavoriteSurahRow({ surah, onOpen, onRemove }) {
   const [isOpen, setIsOpen] = useState(false);
-  const swipeStart = useRef(null);
-  const suppressClick = useRef(false);
-
-  function startSwipe(event) {
-    const touch = event.touches[0];
-    swipeStart.current = touch ? { x: touch.clientX, y: touch.clientY } : null;
-  }
-
-  function finishSwipe(event) {
-    const start = swipeStart.current;
-    const touch = event.changedTouches[0];
-    swipeStart.current = null;
-    if (!start || !touch) return;
-
-    const deltaX = touch.clientX - start.x;
-    const deltaY = touch.clientY - start.y;
-    if (Math.abs(deltaX) < Math.abs(deltaY)) return;
-
-    if (deltaX < -44) {
-      suppressClick.current = true;
-      setIsOpen(true);
-    } else if (deltaX > 30) {
-      suppressClick.current = true;
-      setIsOpen(false);
-    }
-  }
 
   function handleOpen() {
-    if (suppressClick.current) {
-      suppressClick.current = false;
-      return;
-    }
     if (isOpen) {
       setIsOpen(false);
       return;
@@ -205,8 +176,8 @@ function FavoriteSurahRow({ surah, onOpen, onRemove }) {
   }
 
   return (
-    <motion.article
-      className={`home-favorite-swipe ${isOpen ? 'is-swiped' : ''}`}
+    <SwipeActions as={motion.article}
+      className="home-favorite-swipe" open={isOpen} onOpenChange={setIsOpen}
       layout
       exit={{ opacity: 0, height: 0, marginBottom: 0 }}
     >
@@ -223,8 +194,6 @@ function FavoriteSurahRow({ surah, onOpen, onRemove }) {
       <button
         type="button"
         className="home-favorite-row"
-        onTouchStart={startSwipe}
-        onTouchEnd={finishSwipe}
         onClick={handleOpen}
       >
         <span className="home-favorite-number">{surah.number}</span>
@@ -238,6 +207,6 @@ function FavoriteSurahRow({ surah, onOpen, onRemove }) {
           </small>
         </span>
       </button>
-    </motion.article>
+    </SwipeActions>
   );
 }

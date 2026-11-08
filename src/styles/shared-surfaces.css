@@ -124,8 +124,7 @@
   backdrop-filter: var(--ui-card-blur);
 }
 
-:is(.search-form,.search-recent-list button,.settings-picker-pill,
-    .settings-theme-picker) {
+:is(.search-recent-list button,.settings-theme-picker) {
   background: var(--ui-control-bg);
   border: 1px solid var(--ui-control-border);
   -webkit-backdrop-filter: var(--ui-card-blur);
@@ -177,10 +176,10 @@
 .app-option-chevron.is-open { transform: rotate(180deg); }
 
 .app-option-menu {
-  position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 100;
+  position: fixed; inset: auto; margin: 0; z-index: var(--z-overlay, 100);
   max-height: min(44vh, 340px); overflow-y: auto; overscroll-behavior: contain;
   padding: 6px; border-radius: var(--ui-picker-radius);
-  background: var(--theme-surface-solid); border: 1px solid var(--ui-control-border);
+  background: var(--ui-menu-bg); border: 1px solid var(--ui-control-border);
   box-shadow: 0 14px 32px rgba(28, 35, 30, .16);
 }
 
@@ -347,3 +346,25 @@
   color: #f3f0e8;
   box-shadow: none;
 }
+
+.app-option-avatar { width: 34px; height: 34px; flex: 0 0 34px; border-radius: 50%; object-fit: cover; }
+.app-option-label { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.app-option-picker-compact .app-option-trigger { border: 0; background: transparent; padding: 6px 0; min-height: 44px; }
+.app-option-description { display: block; margin-top: 4px; font-size: 11px; color: var(--theme-muted); }
+
+.app-search-field { display:flex; align-items:center; gap:10px; min-height:48px; width:100%; padding:8px 14px; border:1px solid var(--ui-control-border); border-radius:var(--ui-picker-radius); background:var(--ui-control-bg); color:var(--theme-muted); }
+.app-search-field:focus-within { border-color:var(--theme-muted); box-shadow:0 0 0 2px var(--ui-picker-hover); }
+.app-search-field input { flex:1; width:0; min-width:0; border:0; outline:none; padding:0; background:transparent; box-shadow:none; color:var(--theme-text); font:inherit; }
+.app-search-field input::placeholder { color:var(--theme-muted); opacity:1; }
+.app-search-field input::-webkit-search-cancel-button { display:none; }
+.app-search-field button { display:grid; place-items:center; flex:0 0 32px; width:32px; height:32px; border:0; background:transparent; color:var(--theme-muted); border-radius:50%; }
+
+/* Swipe geometry is shared by Library, Favorites and Reflect. The action
+   translates alongside the foreground instead of sitting below its glass. */
+.ui-swipe-actions { --swipe-offset:0px; position:relative; overflow:hidden; border-radius:18px; touch-action:pan-y; }
+.ui-swipe-actions.is-swiped { --swipe-offset:92px; }
+.ui-swipe-actions > :is(.tab-card-surface,.home-favorite-row) { transform:translateX(calc(-1 * var(--swipe-offset))); transition:transform .2s ease; }
+.ui-swipe-actions > :is(.tab-card-remove,.home-favorite-delete) { width:92px; border-radius:0 18px 18px 0; transform:translateX(calc(92px - var(--swipe-offset))); transition:transform .2s ease; opacity:1; pointer-events:auto; }
+.ui-swipe-actions:not(.is-swiped):not(.is-swiping) > :is(.tab-card-remove,.home-favorite-delete) { visibility:hidden; pointer-events:none; }
+.ui-swipe-actions.is-swiping > :is(.tab-card-surface,.home-favorite-row,.tab-card-remove,.home-favorite-delete) { transition:none; }
+@media(prefers-reduced-motion:reduce) { .ui-swipe-actions > :is(.tab-card-surface,.home-favorite-row,.tab-card-remove,.home-favorite-delete) { transition:none; } }

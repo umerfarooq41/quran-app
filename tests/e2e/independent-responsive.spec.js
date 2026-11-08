@@ -65,9 +65,9 @@ for (const theme of ['light','dark']) for (const width of [320,375,390,430,768])
         await healthy(page,'Surah introduction',info,width===390);
       }
       if (screen==='Search') {
-        await page.getByRole('textbox',{name:'Search the Quran'}).fill('zzzznotfoundaudit');
+        await page.getByRole('searchbox',{name:'Search the Quran'}).fill('zzzznotfoundaudit');
         await expect(page.getByText('No matching Surah or ayah found.')).toBeVisible();
-        await page.getByRole('textbox',{name:'Search the Quran'}).fill('2:255');
+        await page.getByRole('searchbox',{name:'Search the Quran'}).fill('2:255');
         await expect(page.locator('.search-result-card').first()).toBeVisible();
         await healthy(page,'Search results',info,width===390);
       }

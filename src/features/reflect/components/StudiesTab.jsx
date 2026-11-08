@@ -1,3 +1,4 @@
+import { SwipeActions } from '../../../components/common/SwipeActions';
 import React from 'react';
 import { BookOpen, MoreVertical, Trash2 } from 'lucide-react';
 import { Empty } from '../../../components/common/AppChrome';
@@ -5,7 +6,7 @@ import { getSurah } from '../../../lib/quran';
 import { studyDisplayTitle } from '../reflectPresentation';
 
 /** Saved lessons list, preserving the Library swipe-to-remove pattern. */
-export default function StudiesTab({ lessons, swipedStudy, setSwipedStudy, swipeStart, setPendingDelete, studyMenu, setStudyMenu, setActive, setMode, flushAnswers }) {
+export default function StudiesTab({ lessons, swipedStudy, setSwipedStudy, setPendingDelete, studyMenu, setStudyMenu, setActive, setMode, flushAnswers }) {
   return <>
 
         <div className="flex items-center justify-between"><h2 className="font-semibold">Lessons</h2><span className="text-xs text-slate-500">{lessons.length} saved</span></div>
@@ -13,12 +14,10 @@ export default function StudiesTab({ lessons, swipedStudy, setSwipedStudy, swipe
           const isSwiped = swipedStudy === lesson.id;
           const keywordCount = lesson.keywords?.length || 0;
           const questionCount = lesson.studyQuestions?.length || 0;
-          return <article key={lesson.id} className={'tab-card ' + (isSwiped ? 'is-swiped' : '')}>
+          return <SwipeActions key={lesson.id} className="tab-card" open={isSwiped} onOpenChange={open => setSwipedStudy(open ? lesson.id : null)}>
             <button type="button" className="tab-card-remove" onClick={() => { setPendingDelete(lesson.id); setSwipedStudy(null); }}><Trash2 size={19}/>Remove</button>
             <div className="tab-card-surface"
-              onClick={e => { if (e.target.closest("button")) return; if (isSwiped) { setSwipedStudy(null); return; } setStudyMenu(null); setActive(lesson); setMode("lesson"); }}
-              onTouchStart={e => {const t=e.touches[0]; swipeStart.current=t?{x:t.clientX,y:t.clientY,id:lesson.id}:null;}}
-              onTouchEnd={e => {const t=e.changedTouches[0],start=swipeStart.current;swipeStart.current=null;if(!t||!start||start.id!==lesson.id)return;const dx=t.clientX-start.x,dy=t.clientY-start.y;if(Math.abs(dx)>44&&Math.abs(dx)>Math.abs(dy))setSwipedStudy(dx<0?lesson.id:null);}}>
+              onClick={e => { if (e.target.closest("button")) return; if (isSwiped) { setSwipedStudy(null); return; } setStudyMenu(null); setActive(lesson); setMode("lesson"); }}>
               <div className="reflect-study-card-inner">
                 <div className="reflect-study-card-heading">
                   <button type="button" className="reflect-study-open" onClick={() => { if(isSwiped){setSwipedStudy(null);return;}flushAnswers();setActive(lesson);setMode("lesson"); }}>
@@ -35,7 +34,7 @@ export default function StudiesTab({ lessons, swipedStudy, setSwipedStudy, swipe
                 <p className="tab-saved-date">Saved: {new Date(lesson.updatedAt || lesson.createdAt).toLocaleDateString("en-GB", {day:"numeric",month:"short",year:"numeric"})}</p>
               </div>
             </div>
-          </article>;
+          </SwipeActions>;
         })}</div> : <Empty text="Your saved lessons will appear here."/>}
   </>;
 }

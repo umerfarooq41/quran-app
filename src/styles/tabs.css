@@ -82,10 +82,6 @@
   touch-action: pan-y;
 }
 
-.tab-card.is-swiped .tab-card-surface {
-  transform: translateX(-92px);
-}
-
 .tab-card-hit {
   display: block;
   width: 100%;
@@ -494,13 +490,6 @@
 }
 
 .tabs-screen.app-page-shell .tab-card-remove {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.tabs-screen.app-page-shell .tab-card.is-swiped .tab-card-remove {
-  opacity: 1;
-  pointer-events: auto;
 }
 
 .tabs-screen.app-page-shell .library-highlight-strip {

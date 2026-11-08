@@ -167,6 +167,11 @@ export function MushafPage({
     settings.fontScale,
   ]);
 
+  // Stable event bridges let unrelated lines skip React work on each timed word.
+  const handlers = useRef({ onSelectAyah, onTapAyah, onBlockedInteraction });
+  handlers.current = { onSelectAyah, onTapAyah, onBlockedInteraction };
+  const blockedInteraction = useMemo(() => () => handlers.current.onBlockedInteraction?.(), []);
+
   const isOpeningMushafPage = pageData.page === 1 || pageData.page === 2;
 
   const renderedLines = useMemo(() => {
@@ -211,6 +216,11 @@ export function MushafPage({
 
     return withoutSpacer;
   }, [pageData.page, pageData.lines]);
+
+  const lineHandlers = useMemo(() => renderedLines.map((line, index) => ({
+    select: selection => handlers.current.onSelectAyah?.(line, line.sourceIndex ?? index, selection),
+    tap: selection => handlers.current.onTapAyah?.(line, line.sourceIndex ?? index, selection),
+  })), [renderedLines]);
 
   const startsWithDoubleHeader = (
     renderedLines[0]?.type === 'surah_name' &&
@@ -289,6 +299,9 @@ export function MushafPage({
           isCombinedHeaderBasmallahLine(line, previousLine)
         );
 
+        const [recitedSurah, recitedAyah] = String(playingVerseKey || '').split(':').map(Number);
+        const recitesLine = line.type === 'ayah' && Number(line.surahNumber) === recitedSurah
+          && recitedAyah >= Number(line.ayahStart) && recitedAyah <= Number(line.ayahEnd || line.ayahStart);
         return (
           <QuranLine
             key={`${pageData.page}:${line.line}`}
@@ -298,13 +311,13 @@ export function MushafPage({
             forceCentered={isOpeningMushafPage && line.type === 'ayah'}
             interactionsBlocked={interactionsBlocked}
             isJuzStartLine={juzStartLines.has(line.line)}
-            onBlockedInteraction={onBlockedInteraction}
-            onSelect={(selection) => onSelectAyah(line, line.sourceIndex ?? index, selection)}
-            onTap={(selection) => onTapAyah?.(line, line.sourceIndex ?? index, selection)}
+            onBlockedInteraction={blockedInteraction}
+            onSelect={lineHandlers[index].select}
+            onTap={lineHandlers[index].tap}
             marked={!supportsTextHighlights && lineHasSavedHighlight(line, savedHighlights)}
-            playingVerseKey={playingVerseKey}
-            playingWordPosition={playingWordPosition}
-            playingWordOccurrenceIndex={playingWordOccurrenceIndex}
+            playingVerseKey={recitesLine ? playingVerseKey : null}
+            playingWordPosition={recitesLine ? playingWordPosition : null}
+            playingWordOccurrenceIndex={recitesLine ? playingWordOccurrenceIndex : null}
             quarterMarkers={quarterMarkersForPage}
             bookmarkMarkers={bookmarkMarkers}
             markerFlashTarget={quarterFlashTarget}

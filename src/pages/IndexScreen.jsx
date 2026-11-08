@@ -1,5 +1,6 @@
+import { SearchField } from '../components/common/SearchField';
 import React, { useEffect, useMemo, useState } from 'react';
-import { BookOpen, ChevronDown, List, Minus, Plus, Search, Star, X } from 'lucide-react';
+import { BookOpen, ChevronDown, List, Minus, Plus, Star } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../store/useAppStore';
 import { Header } from '../components/common/AppChrome';
@@ -365,21 +366,7 @@ function SurahIndex() {
 
   return (
     <>
-      <div className="index-surah-search" role="search">
-        <Search size={18} strokeWidth={2.1} aria-hidden="true" />
-        <input
-          type="search"
-          value={searchQuery}
-          onChange={(event) => setSearchQuery(event.target.value)}
-          placeholder="Search by name, meaning or number"
-          aria-label="Search Surahs"
-        />
-        {searchQuery && (
-          <button type="button" onClick={() => setSearchQuery('')} aria-label="Clear Surah search">
-            <X size={17} aria-hidden="true" />
-          </button>
-        )}
-      </div>
+      <SearchField value={searchQuery} onChange={setSearchQuery} label="Search Surahs" placeholder="Search by name, meaning or number" />
 
       <section id="index-panel-surahs" role="tabpanel" aria-labelledby="index-tab-surahs" className="index-list index-surah-list">
       {filteredSurahs.length === 0 && (

@@ -21,7 +21,7 @@ const MUSHAF_FONT_FAMILY = 'IndopakNastaleeq';
 const MUSHAF_FONT_SAMPLE = 'اللَّهُ';
 const LINE_REFIT_DELAYS = [60, 180, 420];
 
-export function QuranLine({
+export const QuranLine = React.memo(function QuranLine({
   line,
   onSelect,
   onTap,
@@ -538,7 +538,7 @@ export function QuranLine({
       )}
     </button>
   );
-}
+});
 
 function renderWordText(text = '', isMarkerToken = false, quarterMarkerId = null, bookmarkTone = '', markerFlashTone = '') {
   if (!isMarkerToken) return text;

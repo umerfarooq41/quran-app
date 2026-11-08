@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 const timings=JSON.parse(readFileSync(new URL('../../public/data/audio/full/mishari-rashid-al-afasy/segments.json',import.meta.url),'utf8'));
 
 async function seededReader(page, theme, number, annotations = false, readerLayout = 'single') {
-  if (readerLayout === 'double') await page.setViewportSize({width:1180,height:820});
+  await page.setViewportSize(readerLayout === 'double' ? {width:1180,height:820} : {width:390,height:844});
   await page.addInitScript(theme=>localStorage.setItem('quran-app-theme',theme),theme);
   await page.goto('/');await expect(page.getByRole('heading',{name:'Al Quran'})).toBeVisible();
   await page.evaluate(async({theme,number,annotations,readerLayout})=>{

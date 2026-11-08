@@ -75,3 +75,6 @@
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
+
+:root { --ui-menu-bg: #fffaf1; }
+[data-theme='dark'] { --ui-menu-bg: #202521; }

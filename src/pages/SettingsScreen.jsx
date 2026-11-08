@@ -1,9 +1,7 @@
-import React, { useEffect, useId, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import {
   BookOpen,
-  Check,
-  ChevronDown,
   Languages,
   ListTree,
   Mic2,
@@ -25,7 +23,7 @@ import { WORD_BY_WORD_LANGUAGES } from '../services/quranFoundation';
 import { useAppStore } from '../store/useAppStore';
 import { Header, Screen } from '../components/common/AppChrome';
 import { Card, Dialog } from '../components/common/Surfaces';
-import { focusSelectedOption, handleListboxKeyDown } from '../components/common/Dropdown';
+import { AppOptionPicker } from '../components/common/Dropdown';
 
 export default function SettingsScreen() {
   const { settings, updateSettings, resetSettings, openHelp, openAbout } = useAppStore(useShallow((state) => ({
@@ -258,161 +256,11 @@ function SettingPicker({
   onChange,
   fullWidth = false,
 }) {
-  const [open, setOpen] = useState(false);
-  const [openDirection, setOpenDirection] = useState('down');
-  const [panelMaxHeight, setPanelMaxHeight] = useState(280);
-  const pickerId = useId();
-  const pickerRef = useRef(null);
-  const triggerRef = useRef(null);
-  const selectedOption = options.find((option) => option.id === value) || options[0];
-  const selectedLabel = selectedOption ? getLabel(selectedOption) : 'Select';
-  const selectedAvatar = selectedOption && getAvatarSrc ? getAvatarSrc(selectedOption) : '';
-  const hasAvatars = Boolean(getAvatarSrc);
-
-  useEffect(() => {
-    if (!open) return undefined;
-
-    function handlePointerDown(event) {
-      if (!pickerRef.current?.contains(event.target)) setOpen(false);
-    }
-
-    function updateDirection() {
-      const trigger = triggerRef.current;
-      if (!trigger) return;
-      const rect = trigger.getBoundingClientRect();
-      const viewportHeight = window.visualViewport?.height || window.innerHeight;
-      const spaceBelow = viewportHeight - rect.bottom - 12;
-      const spaceAbove = rect.top - 12;
-      const preferredPanelHeight = 280;
-      const direction = spaceBelow >= preferredPanelHeight || spaceBelow >= spaceAbove ? 'down' : 'up';
-      const available = direction === 'down' ? spaceBelow : spaceAbove;
-      setOpenDirection(direction);
-      setPanelMaxHeight(Math.max(120, Math.min(preferredPanelHeight, available)));
-    }
-
-    updateDirection();
-    document.addEventListener('pointerdown', handlePointerDown);
-    window.addEventListener('resize', updateDirection);
-    window.addEventListener('scroll', updateDirection, true);
-    window.visualViewport?.addEventListener('resize', updateDirection);
-    window.visualViewport?.addEventListener('scroll', updateDirection);
-
-    return () => {
-      document.removeEventListener('pointerdown', handlePointerDown);
-      window.removeEventListener('resize', updateDirection);
-      window.removeEventListener('scroll', updateDirection, true);
-      window.visualViewport?.removeEventListener('resize', updateDirection);
-      window.visualViewport?.removeEventListener('scroll', updateDirection);
-    };
-  }, [open]);
-
-  useEffect(() => { if (open) focusSelectedOption(pickerRef.current); }, [open]);
-
-  function closePicker() { setOpen(false); triggerRef.current?.focus(); }
-
-  function togglePicker() {
-    if (open) {
-      setOpen(false);
-      return;
-    }
-
-    const trigger = triggerRef.current;
-    if (trigger) {
-      const rect = trigger.getBoundingClientRect();
-      const viewportHeight = window.visualViewport?.height || window.innerHeight;
-      const spaceBelow = viewportHeight - rect.bottom - 12;
-      const spaceAbove = rect.top - 12;
-      const preferredPanelHeight = 280;
-      const direction = spaceBelow >= preferredPanelHeight || spaceBelow >= spaceAbove ? 'down' : 'up';
-      const available = direction === 'down' ? spaceBelow : spaceAbove;
-      setOpenDirection(direction);
-      setPanelMaxHeight(Math.max(120, Math.min(preferredPanelHeight, available)));
-    }
-    setOpen(true);
-  }
-
-  function selectOption(option) {
-    onChange(option.id);
-    closePicker();
-  }
-
-  return (
-    <div className={[
-      'settings-picker-row',
-      fullWidth ? 'is-full-width' : '',
-      open ? 'is-open' : '',
-      openDirection === 'up' ? 'opens-up' : 'opens-down',
-    ].filter(Boolean).join(' ')} ref={pickerRef} style={{ '--settings-picker-max-height': `${panelMaxHeight}px` }}>
-      <span className="settings-row-icon"><Icon size={17} /></span>
-      <span className="settings-row-copy">
-        <strong>{label}</strong>
-        <small>{description}</small>
-      </span>
-      <button
-        type="button"
-        ref={triggerRef}
-        className={hasAvatars ? 'settings-picker-pill has-avatar' : 'settings-picker-pill'}
-        onClick={togglePicker}
-        aria-label={`${label}: ${selectedLabel}`}
-        aria-controls={open ? pickerId : undefined}
-        onKeyDown={event => {if (!open && ["ArrowDown", "ArrowUp"].includes(event.key)) {event.preventDefault(); togglePicker();}}}
-        aria-haspopup="listbox"
-        aria-expanded={open}
-      >
-        {hasAvatars && (
-          <span className="settings-picker-avatar" aria-hidden="true">
-            <img
-              src={selectedAvatar}
-              alt=""
-              onError={(event) => { event.currentTarget.style.display = 'none'; }}
-            />
-          </span>
-        )}
-        <span className="settings-picker-selected">{selectedLabel}</span>
-        <span className="settings-picker-chevron" aria-hidden="true"><ChevronDown size={17} /></span>
-      </button>
-
-      <div className="settings-picker-panel" aria-hidden={!open}>
-        <div id={pickerId} className="settings-picker-list" role="listbox" aria-label={label} onKeyDown={event => handleListboxKeyDown(event, closePicker)}>
-          {options.map((option) => {
-            const isSelected = option.id === selectedOption?.id;
-            const avatarSrc = getAvatarSrc ? getAvatarSrc(option) : '';
-
-            return (
-              <button
-                key={option.id}
-                type="button"
-                className={[
-                  'settings-picker-item',
-                  hasAvatars ? 'has-avatar' : '',
-                  isSelected ? 'selected' : '',
-                ].filter(Boolean).join(' ')}
-                onClick={() => selectOption(option)}
-                role="option"
-                tabIndex={open && isSelected ? 0 : -1}
-                aria-selected={isSelected}
-                tabIndex={open ? 0 : -1}
-              >
-                {hasAvatars && (
-                  <span className="settings-picker-avatar" aria-hidden="true">
-                    <img
-                      src={avatarSrc}
-                      alt=""
-                      onError={(event) => { event.currentTarget.style.display = 'none'; }}
-                    />
-                  </span>
-                )}
-                <span className="settings-picker-item-label">{getLabel(option)}</span>
-                <span className="settings-picker-check" aria-hidden="true">
-                  {isSelected ? <Check size={17} /> : <span className="settings-picker-option-radio" />}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
+  return <div className={'settings-picker-row' + (fullWidth ? ' is-full-width' : '')}>
+    <span className="settings-row-icon"><Icon size={17} /></span>
+    <span className="settings-row-copy"><strong>{label}</strong><small>{description}</small></span>
+    <AppOptionPicker label={label} value={value} options={options.map(option => ({ value: option.id, label: getLabel(option), avatar: getAvatarSrc?.(option) }))} onSelect={onChange} />
+  </div>;
 }
 
 function getReciterDisplayName(reciter) {

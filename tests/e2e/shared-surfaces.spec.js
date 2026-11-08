@@ -33,7 +33,7 @@ test('Index, Search and Settings retain warm glass surfaces', async ({ page }) =
   await expect(page.locator('.index-card').first()).toHaveCSS('backdrop-filter', /blur\(16px\)/);
   await page.getByRole('button', { name: 'Back from index' }).click();
   await page.getByRole('button', { name: 'Search', exact: true }).click();
-  await expect(page.locator('.search-form')).toHaveCSS('background-color', 'rgba(255, 255, 255, 0.42)');
+  await expect(page.locator('.app-search-field')).toHaveCSS('background-color', 'rgba(255, 255, 255, 0.42)');
   await page.getByRole('button', { name: 'Back', exact: true }).click();
   await page.getByRole('button', { name: 'Settings', exact: true }).click();
   await expect(page.locator('.settings-card').first()).toHaveCSS('background-color', 'rgba(255, 255, 255, 0.66)');

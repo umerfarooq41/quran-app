@@ -1,3 +1,4 @@
+import { SearchField } from '../../../components/common/SearchField';
 import React from 'react';
 import { ChevronDown, Plus, X } from 'lucide-react';
 import { reflectActionClass as action, reflectFieldClass as field } from '../reflectPresentation';
@@ -16,7 +17,7 @@ export default function ThemeEditorSheet({ themeCreation, setThemeCreation, setT
               <button type="button" className={action} disabled={!newThemeName.trim()} onClick={createTheme}>Create {themeCreation.type === 'main' ? 'Main Theme' : 'Subtheme'}</button>
             </div> : <>
               <div className="flex shrink-0 items-center justify-between gap-2 px-4 py-3"><h3 className="font-semibold">Themes</h3><div className="flex items-center gap-3"><button type="button" className="reflect-secondary-action inline-flex items-center gap-1 text-xs font-semibold" onClick={()=>{setThemeCreation({type:'main'});setNewThemeName('');}}><Plus size={14}/> Main Theme</button><button type="button" aria-label="Close themes" onClick={()=>setThemeSheet(false)}><X size={20}/></button></div></div>
-              <div className="shrink-0 px-4 pb-3"><input className={field} value={themeSearch} onChange={e=>setThemeSearch(e.target.value)} placeholder="Search themes…" aria-label="Search themes"/></div>
+              <div className="shrink-0 px-4 pb-3"><SearchField value={themeSearch} onChange={setThemeSearch} placeholder="Search themes…" label="Search themes"/></div>
               <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-3">
                 <div className="reflect-theme-picker-list">{Object.entries(themeGroups).filter(([main,subs])=>main.toLowerCase().includes(themeSearch.toLowerCase())||subs.some(sub=>sub.toLowerCase().includes(themeSearch.toLowerCase()))).map(([main,subs])=><div key={main} className="reflect-theme-picker-group">
                   <button type="button" className="reflect-theme-picker-heading" aria-expanded={expandedTheme===main} onClick={()=>setExpandedTheme(expandedTheme===main?null:main)}>{main}<ChevronDown size={17} className={expandedTheme===main?'reflect-theme-chevron is-open':'reflect-theme-chevron'}/></button>

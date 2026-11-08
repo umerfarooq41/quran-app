@@ -1,26 +1,5 @@
 /* share: canonical component/state rules. Conditional states stay with this owner. */
 
-
-.share-range-trigger[aria-expanded='true'] svg {
-  transform: rotate(180deg);
-}
-
-.share-range-menu::-webkit-scrollbar { width: 4px; }
-
-.share-range-menu::-webkit-scrollbar-thumb {
-  border-radius: 999px;
-  background: var(--theme-muted, #756f65);
-}
-
-.share-range-menu button.is-selected svg {
-  color: var(--brand-green, #2f7a68);
-}
-
-.share-range-menu button:active:not(.is-selected) {
-  background: rgba(201, 162, 75, .10);
-  background: color-mix(in srgb, var(--theme-border, #dfd3b5) 30%, transparent);
-}
-
 .share-range-field > span {
   display: block;
   margin-bottom: 7px;
@@ -29,13 +8,6 @@
   color: color-mix(in srgb, var(--theme-text, #252522) 58%, transparent);
   font-size: .78rem;
   font-weight: 600;
-}
-
-.share-range-trigger[aria-expanded='true'] {
-  background: var(--theme-surface-solid, #fffdf8);
-  border-color: rgba(182, 138, 53, .58);
-  background: color-mix(in srgb, var(--brand-gold, #b68a35) 8%, var(--theme-surface-solid, #fffdf8));
-  box-shadow: 0 0 0 3px rgba(182, 138, 53, .08);
 }
 
 .quran-share-generated-image {
@@ -188,41 +160,6 @@
   object-position: center;
 }
 
-.share-reciter-trigger > span {
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-
-.share-reciter-avatar {
-  width: 34px;
-  height: 34px;
-  flex: 0 0 34px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.share-reciter-menu button {
-  display: grid;
-  grid-template-columns: 36px minmax(0, 1fr) 20px;
-  width: 100%;
-  min-height: 50px;
-  align-items: center;
-  gap: 10px;
-  border-radius: 13px;
-  padding: 6px 9px;
-  color: var(--theme-text, #1f2421);
-  text-align: left;
-}
-
-.share-reciter-menu button.is-selected {
-  background: rgba(47, 125, 104, .10);
-  color: var(--theme-accent, #2f7d68);
-}
-
-.share-reciter-menu button > svg {
-  justify-self: end;
-}
-
 .share-media-live-preview.is-landscape .share-video-preview-ayah-card {
   right: 12%;
   left: 12%;
@@ -241,43 +178,6 @@
   place-items: center;
   background: transparent;
   box-shadow: none;
-}
-
-.share-range-trigger > span {
-  font-weight: 600;
-}
-
-.share-range-trigger:active {
-  transform: scale(.985);
-  border-color: rgba(182, 138, 53, .58);
-  box-shadow: 0 0 0 3px rgba(182, 138, 53, .08);
-  background: rgba(201,162,75,.10);
-}
-
-.share-range-menu button {
-  width: 100%;
-  border: 0;
-  font: inherit;
-  text-align: left;
-  display: flex;
-  min-height: 52px;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 8px 12px;
-  border-radius: 17px;
-  background: transparent;
-  color: var(--theme-text, #252522);
-  font-size: .94rem;
-}
-
-.share-range-menu button.is-selected {
-
-
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--brand-green, #2f7a68) 22%, transparent);
-  font-weight: 720;
-  background: rgba(47,125,104,.10);
-  color: var(--theme-accent, #2f7d68);
 }
 
 .share-background-grid {
@@ -389,34 +289,6 @@
   .share-quran-page-content {
     gap: 14px;
   }
-}
-
-.share-range-field:has(.share-range-menu) {
-  z-index: 80;
-}
-
-.share-range-trigger svg {
-  flex: 0 0 auto;
-  transition: transform .16s ease;
-}
-
-.share-range-field.opens-up .share-range-trigger svg {
-  transform: rotate(180deg);
-}
-
-.share-reciter-picker.opens-up .share-reciter-menu {
-  top: auto;
-  bottom: calc(100% + 8px);
-}
-
-.share-reciter-picker.opens-up .share-reciter-trigger > svg {
-  transform: rotate(180deg);
-}
-
-.share-reciter-trigger > svg {
-  justify-self: end;
-  color: var(--theme-text-muted, #777);
-  transition: transform .16s ease;
 }
 
 .share-media-live-preview.is-video.is-landscape.tab-text .share-video-preview-ayah-card {
@@ -552,65 +424,6 @@
   position: relative;
 }
 
-.share-reciter-picker {
-
-  display: grid;
-  gap: 10px;
-  isolation: isolate;
-  z-index: 30;
-  position: relative;
-}
-
-.share-range-trigger {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  font: inherit;
-  font-size: .98rem;
-  text-align: left;
-
-
-
-
-
-
-
-  opacity: 1;
-
-
-
-
-
-  color: var(--theme-text, #252522);
-
-  font-weight: 600;
-  padding: 0 12px;
-  min-height: 58px;
-  border: 0;
-  border-radius: 8px;
-  background: rgba(241, 242, 244, .72);
-  box-shadow: none;
-}
-
-.share-surah-trigger {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 0 16px;
-  color: var(--theme-text, #202124);
-  font-size: 1rem;
-  text-align: left;
-  min-height: 58px;
-  border: 0;
-  border-radius: 8px;
-  background: rgba(241, 242, 244, .72);
-  box-shadow: none;
-}
-
 .share-reference-range-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
@@ -627,80 +440,6 @@
 
 .share-range-field.is-compact > span {
   display: none;
-}
-
-.share-range-field.is-compact .share-range-trigger {
-  width: 100%;
-  justify-content: space-between;
-  padding: 0 16px;
-}
-
-.share-surah-menu {
-  position: absolute;
-  top: calc(100% + 8px);
-  bottom: auto;
-  left: 0;
-  right: 0;
-  z-index: 140;
-  max-height: min(320px, 50vh);
-  overflow-y: auto;
-  border: 1px solid rgba(201, 162, 75, .16);
-  border-radius: 14px;
-  background: var(--theme-surface-solid, #fffdf8);
-  box-shadow: 0 12px 28px rgba(31, 61, 43, .14);
-  padding: 6px;
-}
-
-.share-range-menu {
-  scrollbar-width: thin;
-  scrollbar-color: var(--theme-muted, #756f65) transparent;
-
-  overscroll-behavior: contain;
-
-  color: var(--theme-text, #252522);
-
-  opacity: 1;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  width: 100%;
-  position: absolute;
-  top: calc(100% + 8px);
-  bottom: auto;
-  left: 0;
-  right: 0;
-  z-index: 140;
-  max-height: min(320px, 50vh);
-  overflow-y: auto;
-  border: 1px solid rgba(201, 162, 75, .16);
-  border-radius: 14px;
-  background: var(--theme-surface-solid, #fffdf8);
-  box-shadow: 0 12px 28px rgba(31, 61, 43, .14);
-  padding: 6px;
-}
-
-.share-surah-field.opens-up .share-surah-menu,
-.share-range-field.opens-up .share-range-menu {
-  top: auto;
-  bottom: calc(100% + 8px);
-}
-
-.share-surah-menu > button,
-.share-range-menu > button {
-  width: 100%;
-  min-height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  border-radius: 10px;
-  padding: 0 12px;
-  text-align: left;
-}
-
-.share-surah-menu > button.is-selected,
-.share-range-menu > button.is-selected {
-  background: rgba(47, 125, 104, .10);
-  color: var(--theme-accent, #2f7d68);
 }
 
 .share-reference-reciter-heading {
@@ -1231,54 +970,6 @@
   outline-offset: 2px;
 }
 
-.share-reciter-trigger {
-  display: grid;
-  grid-template-columns: 36px minmax(0, 1fr) 20px;
-  width: 100%;
-  align-items: center;
-  gap: 10px;
-  padding: 7px 12px;
-  text-align: left;
-  font-weight: 600;
-  color: var(--theme-text);
-  min-height: 58px;
-  border: 0;
-  border-radius: 8px;
-  background: rgba(241, 242, 244, .72);
-  box-shadow: none;
-}
-
-.share-reciter-trigger:focus-visible {
-  outline: 2px solid var(--ui-primary); outline-offset: 2px;
-}
-
-.share-reciter-menu {
-  border: 1px solid rgba(201, 162, 75, .22);
-  padding: 6px;
-  overscroll-behavior: contain;
-  border-color: var(--ui-control-border);
-  position: absolute;
-
-  left: 0;
-  right: 0;
-  width: 100%;
-
-
-
-  border-radius: 18px;
-
-  box-shadow: 0 14px 34px rgba(31,61,43,.18);
-  top: calc(100% + 8px);
-  bottom: auto;
-  max-height: min(300px, 46vh);
-  overflow-y: auto;
-  opacity: 1;
-  background: #fffdf8;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  z-index: 120;
-}
-
 [data-theme='dark'] .share-sheet {
   background: rgba(30, 35, 32, .98);
   color: var(--theme-text);
@@ -1345,40 +1036,6 @@
 [data-theme='dark'] .share-translation-inline-row span,
 [data-theme='dark'] .share-translation-inline-row small {
   color: var(--theme-muted);
-}
-
-[data-theme='dark'] .share-surah-trigger,
-[data-theme='dark'] .share-range-trigger,
-[data-theme='dark'] .share-reciter-trigger {
-  border-color: color-mix(in srgb, var(--brand-gold) 30%, var(--theme-border));
-  background: var(--theme-soft);
-  color: var(--theme-text);
-  box-shadow: none;
-}
-
-[data-theme='dark'] .share-surah-menu,
-[data-theme='dark'] .share-range-menu,
-[data-theme='dark'] .share-reciter-menu {
-  border-color: var(--theme-border);
-  background: var(--theme-surface-solid);
-  color: var(--theme-text);
-  box-shadow: 0 12px 30px var(--theme-shadow);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
-[data-theme='dark'] .share-surah-menu > button,
-[data-theme='dark'] .share-range-menu > button,
-[data-theme='dark'] .share-reciter-menu > button {
-  color: var(--theme-text);
-  background: transparent;
-}
-
-[data-theme='dark'] .share-surah-menu > button.is-selected,
-[data-theme='dark'] .share-range-menu > button.is-selected,
-[data-theme='dark'] .share-reciter-menu > button.is-selected {
-  background: color-mix(in srgb, var(--theme-accent) 18%, transparent);
-  color: color-mix(in srgb, var(--theme-accent) 68%, #fff);
 }
 
 [data-theme='dark'] .share-text-reference-controls,

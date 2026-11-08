@@ -1,5 +1,6 @@
+import { SearchField } from '../components/common/SearchField';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Clock3, Search } from 'lucide-react';
+import { Clock3 } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { clearRecentSearches, getRecentSearches, saveRecentSearch } from '../lib/db';
 import { searchQuranImproved } from '../lib/quranSearch';
@@ -113,16 +114,8 @@ export default function SearchScreen() {
 
       <div className="app-scroll-content">
 
-      <form className="search-form" onSubmit={submitSearch}>
-        <Search size={19} aria-hidden="true" />
-        <input
-          autoFocus
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder="Surah, Arabic text, 2:255, page 12..."
-          aria-label="Search the Quran"
-        />
-        <button type="submit" disabled={!cleanQuery}>Search</button>
+      <form onSubmit={submitSearch}>
+        <SearchField autoFocus value={query} onChange={setQuery} label="Search the Quran" placeholder="Surah, Arabic text, 2:255, page 12..." />
       </form>
 
       {!cleanQuery && recentSearches.length > 0 && (

@@ -65,7 +65,6 @@ export default function ReflectScreen() {
   const [questionFilter,setQuestionFilter]=useState('All');
   const [questionExpanded,setQuestionExpanded]=useState(null);
   const [questionSwiped,setQuestionSwiped]=useState(null);
-  const questionTouch=useRef(null);
   const [themeGroups, setThemeGroups] = useState(DEFAULT_THEMES);
   const [themeSheet, setThemeSheet] = useState(false);
   const [themeSearch, setThemeSearch] = useState('');
@@ -83,7 +82,6 @@ export default function ReflectScreen() {
   const lessonScrollRef = useRef(null);
   const [swipedStudy, setSwipedStudy] = useState(null);
   const [expandedTafsir, setExpandedTafsir] = useState({});
-  const swipeStart = useRef(null);
   const { saveQueue, flushAnswers, queueAnswer } = useReflectAutosave(setError);
 
   const surah = getSurah(surahNumber);
@@ -354,10 +352,10 @@ export default function ReflectScreen() {
       <div className="app-scroll-content reflect-content" ref={lessonScrollRef}>
       {mode === 'hub' && <>
         <ReflectHubTabs tabs={['Lessons', 'Questions', 'Discover', 'Progress']} active={hubTab} onChange={setHubTab} className="reflect-tabs" label="Reflect library" />
-        {hubTab === 'Questions' && <QuestionsTab lessons={lessons} questionFilter={questionFilter} setQuestionFilter={setQuestionFilter} questionSearch={questionSearch} setQuestionSearch={setQuestionSearch} questionExpanded={questionExpanded} setQuestionExpanded={setQuestionExpanded} questionSwiped={questionSwiped} setQuestionSwiped={setQuestionSwiped} questionTouch={questionTouch} removeQuestion={removeQuestion} setQuestionJump={setQuestionJump} setActive={setActive} setMode={setMode} />}
+        {hubTab === 'Questions' && <QuestionsTab lessons={lessons} questionFilter={questionFilter} setQuestionFilter={setQuestionFilter} questionSearch={questionSearch} setQuestionSearch={setQuestionSearch} questionExpanded={questionExpanded} setQuestionExpanded={setQuestionExpanded} questionSwiped={questionSwiped} setQuestionSwiped={setQuestionSwiped} removeQuestion={removeQuestion} setQuestionJump={setQuestionJump} setActive={setActive} setMode={setMode} />}
         {hubTab === 'Discover' && <DiscoverTab lessons={lessons} discoverTab={discoverTab} setDiscoverTab={setDiscoverTab} themeGroups={themeGroups} expandedTheme={expandedTheme} setExpandedTheme={setExpandedTheme} expandedSubtheme={expandedSubtheme} setExpandedSubtheme={setExpandedSubtheme} setKeywordJump={setKeywordJump} setActive={setActive} setMode={setMode} />}
         {hubTab === 'Progress' && <ProgressTab lessons={lessons} progressPeriod={progressPeriod} setProgressPeriod={setProgressPeriod} progressCommitment={progressCommitment} setProgressCommitment={setProgressCommitment} saveCommitmentReview={saveCommitmentReview} openProgressLesson={openProgressLesson} setHubTab={setHubTab} />}
-        {hubTab === 'Lessons' && <StudiesTab lessons={lessons} swipedStudy={swipedStudy} setSwipedStudy={setSwipedStudy} swipeStart={swipeStart} setPendingDelete={setPendingDelete} studyMenu={studyMenu} setStudyMenu={setStudyMenu} setActive={setActive} setMode={setMode} flushAnswers={flushAnswers} />}
+        {hubTab === 'Lessons' && <StudiesTab lessons={lessons} swipedStudy={swipedStudy} setSwipedStudy={setSwipedStudy} setPendingDelete={setPendingDelete} studyMenu={studyMenu} setStudyMenu={setStudyMenu} setActive={setActive} setMode={setMode} flushAnswers={flushAnswers} />}
               </>}
 
       {pendingDelete !== null && <DeleteLessonDialog onCancel={() => setPendingDelete(null)} onConfirm={async () => { const id = pendingDelete; setPendingDelete(null); await removeLesson(id); }} />}

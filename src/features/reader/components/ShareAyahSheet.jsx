@@ -1,8 +1,7 @@
+import { AppOptionPicker } from '../../../components/common/Dropdown';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
-  Check,
-  ChevronDown,
   Download,
   Headphones,
   Image as ImageIcon,
@@ -1099,39 +1098,6 @@ function AudioSettings({
   selectedReciter,
   onReciterChange,
 }) {
-  const [reciterOpen, setReciterOpen] = useState(false);
-  const [reciterOpensUp, setReciterOpensUp] = useState(false);
-  const pickerRef = useRef(null);
-  const selected = reciters.find((reciter) => reciter.id === selectedReciter) || reciters[0] || null;
-
-  useEffect(() => {
-    if (!reciterOpen || !pickerRef.current) return undefined;
-
-    const updateDirection = () => {
-      const rect = pickerRef.current.getBoundingClientRect();
-      const viewportHeight = window.visualViewport?.height || window.innerHeight;
-      const menuHeight = Math.min(300, Math.max(54, reciters.length * 54));
-      const roomBelow = viewportHeight - rect.bottom;
-      const roomAbove = rect.top;
-      setReciterOpensUp(roomBelow < menuHeight + 12 && roomAbove > roomBelow);
-    };
-
-    const closeOnOutsidePress = (event) => {
-      if (!pickerRef.current?.contains(event.target)) setReciterOpen(false);
-    };
-
-    updateDirection();
-    window.visualViewport?.addEventListener('resize', updateDirection);
-    window.addEventListener('resize', updateDirection);
-    document.addEventListener('pointerdown', closeOnOutsidePress);
-
-    return () => {
-      window.visualViewport?.removeEventListener('resize', updateDirection);
-      window.removeEventListener('resize', updateDirection);
-      document.removeEventListener('pointerdown', closeOnOutsidePress);
-    };
-  }, [reciterOpen, reciters.length]);
-
   return (
     <div className="share-audio-settings-stack">
       <div className="share-media-section-heading share-reference-heading">
@@ -1144,10 +1110,7 @@ function AudioSettings({
         label={selectedSurahName}
         options={surahOptions}
         open={openRangePicker === 'surah'}
-        onToggle={() => {
-          setReciterOpen(false);
-          onToggleRange((current) => current === 'surah' ? null : 'surah');
-        }}
+        onToggle={next => onToggleRange(next ? 'surah' : null)}
         onSelect={onSurahChange}
       />
 
@@ -1157,10 +1120,7 @@ function AudioSettings({
           value={fromAyah}
           options={fromOptions}
           open={openRangePicker === 'from'}
-          onToggle={() => {
-            setReciterOpen(false);
-            onToggleRange((current) => current === 'from' ? null : 'from');
-          }}
+          onToggle={next => onToggleRange(next ? 'from' : null)}
           onSelect={onChangeFrom}
           compact
         />
@@ -1170,64 +1130,16 @@ function AudioSettings({
           value={toAyah}
           options={toOptions}
           open={openRangePicker === 'to'}
-          onToggle={() => {
-            setReciterOpen(false);
-            onToggleRange((current) => current === 'to' ? null : 'to');
-          }}
+          onToggle={next => onToggleRange(next ? 'to' : null)}
           onSelect={onChangeTo}
           compact
         />
       </div>
 
-      {mode === SHARE_MEDIA_MODES.VIDEO && (
-        <div
-          ref={pickerRef}
-          className={`share-reciter-picker${reciterOpensUp ? ' opens-up' : ''}`}
-        >
-          <div className="share-media-section-heading share-reference-reciter-heading">
-            <strong>Reciter</strong>
-          </div>
-
-          <button
-            type="button"
-            className="share-reciter-trigger"
-            aria-expanded={reciterOpen}
-            onClick={() => {
-              onToggleRange(null);
-              setReciterOpen((value) => !value);
-            }}
-          >
-            {selected && (
-              <img className="share-reciter-avatar" src={getReciterImageUrl(selected)} alt="" />
-            )}
-            <span>{selected?.name || 'Select reciter'}</span>
-            <ChevronDown size={18} aria-hidden="true" />
-          </button>
-
-          {reciterOpen && (
-            <div className="share-reciter-menu">
-              {reciters.map((reciter) => {
-                const isSelected = reciter.id === selectedReciter;
-                return (
-                  <button
-                    key={reciter.id}
-                    type="button"
-                    className={isSelected ? 'is-selected' : ''}
-                    onClick={() => {
-                      onReciterChange(reciter.id);
-                      setReciterOpen(false);
-                    }}
-                  >
-                    <img className="share-reciter-avatar" src={getReciterImageUrl(reciter)} alt="" />
-                    <span>{reciter.name}</span>
-                    {isSelected && <Check size={17} aria-hidden="true" />}
-                  </button>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      )}
+      {mode === SHARE_MEDIA_MODES.VIDEO && <div>
+        <div className="share-media-section-heading"><strong>Reciter</strong></div>
+        <AppOptionPicker label="Share reciter" value={selectedReciter} options={reciters.map(reciter => ({value:reciter.id,label:reciter.name,avatar:getReciterImageUrl(reciter)}))} onSelect={onReciterChange}/>
+      </div>}
     </div>
   );
 }
@@ -1350,127 +1262,14 @@ function FontSizeStepper({
   );
 }
 
-function SurahField({ value, label, options, open, onToggle, onSelect }) {
-  const fieldRef = useRef(null);
-  const [opensUp, setOpensUp] = useState(false);
-
-  useEffect(() => {
-    if (!open || !fieldRef.current) return undefined;
-    const updateDirection = () => {
-      const rect = fieldRef.current.getBoundingClientRect();
-      const viewportHeight = window.visualViewport?.height || window.innerHeight;
-      const menuHeight = Math.min(320, Math.max(52, options.length * 52));
-      const roomBelow = viewportHeight - rect.bottom;
-      const roomAbove = rect.top;
-      setOpensUp(roomBelow < menuHeight + 12 && roomAbove > roomBelow);
-    };
-    updateDirection();
-    window.visualViewport?.addEventListener('resize', updateDirection);
-    window.addEventListener('resize', updateDirection);
-    return () => {
-      window.visualViewport?.removeEventListener('resize', updateDirection);
-      window.removeEventListener('resize', updateDirection);
-    };
-  }, [open, options.length]);
-
-  return (
-    <div ref={fieldRef} className={`share-surah-field${opensUp ? ' opens-up' : ''}`}>
-      <button type="button" className="share-surah-trigger" aria-expanded={open} onClick={onToggle}>
-        <span>{label}</span>
-        <ChevronDown size={18} aria-hidden="true" />
-      </button>
-      {open && (
-        <div className="share-surah-menu">
-          {options.map((option) => (
-            <button
-              key={option.value}
-              type="button"
-              className={Number(option.value) === Number(value) ? 'is-selected' : ''}
-              onClick={() => onSelect(option.value)}
-            >
-              <span>{option.label}</span>
-              {Number(option.value) === Number(value) && <Check size={17} aria-hidden="true" />}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
+function SurahField({ value, options, open, onToggle, onSelect }) {
+  return <AppOptionPicker label="Surah" value={value} options={options} open={open} onOpenChange={onToggle} onSelect={onSelect}/>;
 }
 
 function RangeField({ label, value, options, open, onToggle, onSelect, compact = false }) {
-  const fieldRef = useRef(null);
-  const selectedOptionRef = useRef(null);
-  const [opensUp, setOpensUp] = useState(false);
-
-  useEffect(() => {
-    if (!open || !fieldRef.current) return undefined;
-
-    const updateDirection = () => {
-      const rect = fieldRef.current.getBoundingClientRect();
-      const viewportHeight = window.visualViewport?.height || window.innerHeight;
-      const estimatedMenuHeight = Math.min(280, Math.max(48, options.length * 48));
-      const roomBelow = viewportHeight - rect.bottom;
-      const roomAbove = rect.top;
-
-      setOpensUp(
-        roomBelow < estimatedMenuHeight + 12 &&
-        roomAbove > roomBelow
-      );
-    };
-
-    updateDirection();
-    window.visualViewport?.addEventListener('resize', updateDirection);
-    window.addEventListener('resize', updateDirection);
-
-    return () => {
-      window.visualViewport?.removeEventListener('resize', updateDirection);
-      window.removeEventListener('resize', updateDirection);
-    };
-  }, [open, options.length]);
-
-  useEffect(() => {
-    if (!open) return undefined;
-    const frame = requestAnimationFrame(() => {
-      selectedOptionRef.current?.scrollIntoView({ block: 'center' });
-    });
-    return () => cancelAnimationFrame(frame);
-  }, [open, value]);
-
-  return (
-    <div
-      ref={fieldRef}
-      className={`share-range-field${opensUp ? ' opens-up' : ''}${compact ? ' is-compact' : ''}`}
-    >
-      <span>{label}</span>
-      <button
-        type="button"
-        className="share-range-trigger"
-        aria-expanded={open}
-        onClick={onToggle}
-      >
-        <span>{compact ? value : `Ayah ${value}`}</span>
-        <ChevronDown size={18} aria-hidden="true" />
-      </button>
-
-      {open && (
-        <div className="share-range-menu">
-          {options.map((item) => (
-            <button
-              key={item.ayahNumber}
-              ref={item.ayahNumber === value ? selectedOptionRef : null}
-              type="button"
-              className={item.ayahNumber === value ? 'is-selected' : ''}
-              onClick={() => onSelect(item.ayahNumber)}
-            >
-              <span>Ayah {item.ayahNumber}</span>
-              {item.ayahNumber === value && <Check size={17} aria-hidden="true" />}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
+  return <div className="share-range-field"><span>{label}</span>
+    <AppOptionPicker label={label} value={value} options={options.map(item => ({value:item.ayahNumber,label:compact ? String(item.ayahNumber) : `Ayah ${item.ayahNumber}`}))} open={open} onOpenChange={onToggle} onSelect={onSelect}/>
+  </div>;
 }
 
 function waitForMediaReady(media) {

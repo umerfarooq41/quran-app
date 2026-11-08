@@ -108,17 +108,10 @@
   color: #fff;
   font-size: .72rem;
   font-weight: 700;
-  opacity: 0;
-  pointer-events: none;
 }
 
 .home-favorite-delete svg {
   margin-inline: auto;
-}
-
-.home-favorite-swipe.is-swiped .home-favorite-delete {
-  opacity: 1;
-  pointer-events: auto;
 }
 
 .home-favorite-row {
@@ -133,10 +126,6 @@
   text-align: left;
   cursor: pointer;
   touch-action: pan-y;
-}
-
-.home-favorite-swipe.is-swiped .home-favorite-row {
-  transform: translateX(-92px);
 }
 
 

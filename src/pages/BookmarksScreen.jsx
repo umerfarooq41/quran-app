@@ -1,3 +1,4 @@
+import { SwipeActions } from '../components/common/SwipeActions';
 import React, { useEffect, useRef, useState } from 'react';
 import { Bookmark, Highlighter, MapPin, MoreVertical, Pencil, Trash2, X } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
@@ -39,7 +40,6 @@ export default function BookmarksScreen() {
   const [swipedCard, setSwipedCard] = useState(null);
   const [editor, setEditor] = useState(null);
   const [status, setStatus] = useState('');
-  const swipeStart = useRef(null);
   const suppressCardClick = useRef(false);
 
   async function loadItems() {
@@ -118,32 +118,6 @@ export default function BookmarksScreen() {
     setEditor(null);
     setSwipedCard(null);
     goAyah(item.surahNumber, item.ayahNumber, itemPage);
-  }
-
-  function startSwipe(event, menuKey) {
-    const touch = event.touches[0];
-    swipeStart.current = touch ? { menuKey, x: touch.clientX, y: touch.clientY } : null;
-  }
-
-  function finishSwipe(event, menuKey) {
-    const start = swipeStart.current;
-    const touch = event.changedTouches[0];
-    swipeStart.current = null;
-    if (!start || !touch || start.menuKey !== menuKey) return;
-
-    const deltaX = touch.clientX - start.x;
-    const deltaY = touch.clientY - start.y;
-    if (Math.abs(deltaX) < Math.abs(deltaY)) return;
-
-    if (deltaX < -44) {
-      suppressCardClick.current = true;
-      setOpenMenu(null);
-      setEditor(null);
-      setSwipedCard(menuKey);
-    } else if (deltaX > 30) {
-      suppressCardClick.current = true;
-      setSwipedCard(null);
-    }
   }
 
   async function deleteBookmark(item) {
@@ -227,11 +201,9 @@ export default function BookmarksScreen() {
             suppressCardClick={suppressCardClick}
             onDelete={deleteBookmark}
             onEditorChange={setEditor}
-            onFinishSwipe={finishSwipe}
             onJump={jumpToBookmark}
             onMenuChange={setOpenMenu}
             onSaveNote={saveNote}
-            onStartSwipe={startSwipe}
             onSwipedCardChange={setSwipedCard}
           />
         ) : (
@@ -239,8 +211,6 @@ export default function BookmarksScreen() {
             items={highlights}
             openMenu={openMenu}
             swipedCard={swipedCard}
-            onStartSwipe={startSwipe}
-            onFinishSwipe={finishSwipe}
             onSwipedCardChange={setSwipedCard}
             suppressCardClick={suppressCardClick}
             onDelete={deleteHighlight}
@@ -261,11 +231,9 @@ function BookmarkList({
   suppressCardClick,
   onDelete,
   onEditorChange,
-  onFinishSwipe,
   onJump,
   onMenuChange,
   onSaveNote,
-  onStartSwipe,
   onSwipedCardChange,
 }) {
   if (items.length === 0) {
@@ -290,10 +258,7 @@ function BookmarkList({
         const reference = formatReference(item);
 
         return (
-          <article
-            key={menuKey}
-            className={`tab-card ${swipedCard === menuKey ? 'is-swiped' : ''}`}
-          >
+          <SwipeActions key={menuKey} className="tab-card" open={swipedCard === menuKey} onOpenChange={open => onSwipedCardChange(open ? menuKey : null)}>
             <button
               type="button"
               className="tab-card-remove"
@@ -305,8 +270,6 @@ function BookmarkList({
 
             <div
               className="tab-card-surface"
-              onTouchStart={(event) => onStartSwipe(event, menuKey)}
-              onTouchEnd={(event) => onFinishSwipe(event, menuKey)}
             >
               <button
                 type="button"
@@ -385,7 +348,7 @@ function BookmarkList({
                 </div>
               )}
             </div>
-          </article>
+          </SwipeActions>
         );
       })}
     </div>
@@ -396,8 +359,6 @@ function HighlightList({
   items,
   openMenu,
   swipedCard,
-  onStartSwipe,
-  onFinishSwipe,
   onSwipedCardChange,
   suppressCardClick,
   onDelete,
@@ -425,12 +386,12 @@ function HighlightList({
         const tone = getHighlightTone(item.color);
 
         return (
-          <article key={menuKey} className={`tab-card library-highlight-card ${swipedCard === menuKey ? 'is-swiped' : ''}`}>
+          <SwipeActions key={menuKey} className="tab-card library-highlight-card" open={swipedCard === menuKey} onOpenChange={open => onSwipedCardChange(open ? menuKey : null)}>
             <button type="button" className="tab-card-remove" onClick={() => onDelete(item)}>
               <Trash2 size={19} />Remove
             </button>
             <div className={`library-highlight-strip library-highlight-${tone}`} aria-hidden="true" />
-            <div className="tab-card-surface" onTouchStart={event => onStartSwipe(event, menuKey)} onTouchEnd={event => onFinishSwipe(event, menuKey)}>
+            <div className="tab-card-surface">
               <button
                 type="button"
                 className="tab-card-hit"
@@ -476,7 +437,7 @@ function HighlightList({
                 </div>
               )}
             </div>
-          </article>
+          </SwipeActions>
         );
       })}
     </div>
