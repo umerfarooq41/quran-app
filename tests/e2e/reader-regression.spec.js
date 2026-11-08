@@ -1,3 +1,4 @@
+import { holdWord } from './fixtures/reader-ui.js';
 import { test, expect } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 const timings=JSON.parse(readFileSync(new URL('../../public/data/audio/full/mishari-rashid-al-afasy/segments.json',import.meta.url),'utf8'));
@@ -56,7 +57,7 @@ for (const readerLayout of ['single','double']) for(const theme of ['light','dar
     });
     await seededReader(page,theme,238,false,readerLayout);
     const word=page.locator('[data-verse-key="15:60"]').first();await expect(word).toBeVisible();
-    await word.evaluate(el=>{const r=el.getBoundingClientRect();el.dispatchEvent(new MouseEvent('contextmenu',{bubbles:true,cancelable:true,clientX:r.x+r.width/2,clientY:r.y+r.height/2}));});
+    await holdWord(page, word);
     await expect(page.getByRole('toolbar',{name:'Ayah actions'})).toBeVisible();
     await page.getByRole('button',{name:'Play',exact:true}).click();
     const audio=page.locator('audio.reader-audio-native');

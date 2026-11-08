@@ -1,3 +1,4 @@
+import { holdWord } from './fixtures/reader-ui.js';
 import { test, expect } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 const timings=JSON.parse(readFileSync(new URL('../../public/data/audio/full/mishari-rashid-al-afasy/segments.json',import.meta.url),'utf8'));
@@ -75,7 +76,7 @@ for(const theme of ['light','dark']) for(const target of [{ayah:54,start:7,posit
     wav.write('RIFF',0);wav.writeUInt32LE(36+length,4);wav.write('WAVEfmt ',8);wav.writeUInt32LE(16,16);wav.writeUInt16LE(1,20);wav.writeUInt16LE(1,22);wav.writeUInt32LE(8000,24);wav.writeUInt32LE(8000,28);wav.writeUInt16LE(1,32);wav.writeUInt16LE(8,34);wav.write('data',36);wav.writeUInt32LE(length,40);
     await page.route('https://audio-cdn.tarteel.ai/**',route=>{const r=route.request().headers().range?.match(/bytes=(\d+)-(\d*)/),start=Number(r?.[1]||0),end=r?.[2]?Number(r[2]):wav.length-1;return route.fulfill({status:r?206:200,contentType:'audio/wav',headers:{'accept-ranges':'bytes',...(r?{'content-range':`bytes ${start}-${end}/${wav.length}`}:{})},body:wav.subarray(start,end+1)});});
     await seed(page,theme,target.ayah,target.start);await page.getByRole('button',{name:/Continue Reading/}).click();await bothSaved(page,target.count);
-    const word=page.locator(`${current} [data-verse-key="2:${target.ayah}"]`).first();await word.evaluate(el=>{const r=el.getBoundingClientRect();el.dispatchEvent(new MouseEvent('contextmenu',{bubbles:true,cancelable:true,clientX:r.x+r.width/2,clientY:r.y+r.height/2}));});
+    const word=page.locator(`${current} [data-verse-key="2:${target.ayah}"]`).first();await holdWord(page, word);
     await page.getByRole('button',{name:'Play',exact:true}).click();const audio=page.locator('audio.reader-audio-native');
     await expect.poll(()=>audio.evaluate(el=>el.paused)).toBe(false);await expect.poll(()=>audio.evaluate(el=>el.readyState)).toBeGreaterThanOrEqual(3);
     await expect.poll(()=>audio.evaluate(el=>el.currentTime)).toBeGreaterThanOrEqual(timings[`2:${target.ayah}`].timestamp_from/1000);

@@ -1,3 +1,4 @@
+import { holdWord } from './fixtures/reader-ui.js';
 import { test, expect } from '@playwright/test';
 import { seedLocalRecords } from './fixtures/local-records.js';
 
@@ -57,17 +58,7 @@ test('Reader ayah actions open Share Quran and produce a PNG export', async ({ p
   await expect(word).toBeVisible();
   await page.evaluate(() => document.fonts.ready);
   await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
-  // The first gesture dismisses visible Reader chrome; its interaction guard
-  // deliberately suppresses ayah selection for 700 ms.
-  if (await page.locator('.reader-topbar-visible').isVisible()) {
-    await word.click();
-    await expect(page.locator('.reader-topbar-visible')).not.toBeVisible();
-    await page.waitForTimeout(750);
-  }
-  await word.evaluate(element => {
-    const rect = element.getBoundingClientRect();
-    element.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true, clientX: rect.x + rect.width / 2, clientY: rect.y + rect.height / 2 }));
-  });
+  await holdWord(page, word);
   await expect(page.getByRole('toolbar', { name: 'Ayah actions' })).toBeVisible();
   await page.getByRole('button', { name: 'Share', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Share Quran', exact: true })).toBeVisible();

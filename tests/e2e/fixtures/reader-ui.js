@@ -12,6 +12,14 @@ export async function openReader(page, theme = 'light') {
 }
 export async function wordEvent(page, type) {
   const word = page.locator('.quran-line-ayah:not([aria-hidden="true"]) .quran-word').first();
+  if (type === 'contextmenu') {
+    const box = await word.boundingBox();
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await expect(page.getByRole('toolbar', { name: 'Ayah actions' })).toBeVisible();
+    await page.mouse.up();
+    return;
+  }
   await word.evaluate((el, type) => {
     const r = el.getBoundingClientRect();
     el.dispatchEvent(new MouseEvent(type, { bubbles: true, cancelable: true, clientX: r.x + r.width / 2, clientY: r.y + r.height / 2 }));
@@ -43,4 +51,12 @@ export async function pauseRecitation(page, expectAutoplay = true) {
   await expect.poll(() => audio.evaluate(el => el.paused)).toBe(true);
   await audio.evaluate(el => { el.currentTime = 0; });
   await expect(page.getByRole('button', { name:'Play',exact:true })).toBeVisible();
+}
+
+export async function holdWord(page, word) {
+  const box = await word.boundingBox();
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.down();
+  await expect(page.getByRole('toolbar', { name: 'Ayah actions' })).toBeVisible();
+  await page.mouse.up();
 }

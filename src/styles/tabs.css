@@ -55,17 +55,12 @@
 }
 
 .tab-card-remove {
-  position: absolute;
-  inset-block: 0;
-  right: 0;
   display: grid;
-  width: 92px;
   place-content: center;
   gap: 5px;
   color: #fff;
   font-size: .72rem;
   font-weight: 700;
-  background: var(--ui-danger-bg);
 }
 
 .tab-card-remove svg {
@@ -78,7 +73,6 @@
   width: 100%;
   min-width: 0;
   border-radius: 18px;
-  transition: transform .2s ease;
   touch-action: pan-y;
 }
 
@@ -511,7 +505,6 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .tab-card.is-swiped,
 .tab-card:has(.tab-menu),
 .tab-card:has(.tab-inline-editor) {
     grid-column: 1 / -1;

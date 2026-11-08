@@ -85,26 +85,15 @@
 }
 
 .home-favorite-swipe {
-  position: relative;
+  --swipe-card-radius: 23px;
   min-width: 0;
-  overflow: hidden;
-  border-radius: 18px;
-  background: transparent;
   box-shadow: 0 7px 22px rgba(38, 52, 45, .07);
-  touch-action: pan-y;
 }
 
 .home-favorite-delete {
-  position: absolute;
-  inset-block: 0;
-  right: 0;
   display: grid;
-  width: 92px;
   place-content: center;
   gap: 5px;
-  border: 0;
-  border-radius: 0 18px 18px 0;
-  background: var(--ui-danger-bg);
   color: #fff;
   font-size: .72rem;
   font-weight: 700;

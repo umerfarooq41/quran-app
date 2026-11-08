@@ -1,6 +1,5 @@
 import { test, expect } from '@playwright/test';
 import { openReader, mockRecitation, pauseRecitation, wordEvent } from './fixtures/reader-ui.js';
-import { seedLocalRecords } from './fixtures/local-records.js';
 
 for (const [width,height,count] of [[390,844,1],[844,390,1],[768,1024,1],[1024,768,2],[1280,800,2],[1440,900,2]]) {
   test(`automatic Reader layout ${width}x${height}`, async ({page}) => {
@@ -52,36 +51,6 @@ for (const theme of ['light','dark']) {
     await page.getByRole('button',{name:'Clear search the quran'}).click();await expect(input).toHaveValue('');
   });
 }
-
-for (const theme of ['light','dark']) test(`swipe reveals only the trailing action ${theme}`, async({page})=>{
-  await page.addInitScript(theme=>localStorage.setItem('quran-app-theme',theme),theme);
-  await page.goto('/');await expect(page.getByRole('heading',{name:'Al Quran'})).toBeVisible();
-  await seedLocalRecords(page);
-  await page.getByRole('button',{name:'Library',exact:true}).click();
-  const card=page.locator('.tab-card').first(),surface=card.locator('.tab-card-surface'),action=card.locator('.tab-card-remove');
-  const box=await card.boundingBox(),x=box.x+box.width*.65,y=box.y+box.height*.5;
-  await page.mouse.move(x,y);await page.mouse.down();await page.mouse.move(x-50,y,{steps:6});
-  const front=await surface.boundingBox(),remove=await action.boundingBox();
-  // The stationary red action extends behind the moving card and reaches the
-  // exact trailing edge; the clipped wrapper also fills the rounded corner.
-  expect(remove.x).toBeLessThan(front.x+front.width);
-  expect(remove.x+remove.width).toBeCloseTo(box.x+box.width,1);
-  const colors=await card.evaluate(el=>({
-    backing:getComputedStyle(el).backgroundImage,
-    action:getComputedStyle(el.querySelector('.tab-card-remove')).backgroundColor,
-  }));
-  expect(colors.backing).toContain('linear-gradient');
-  expect(colors.backing).toContain(colors.action);
-  await page.mouse.move(x-100,y,{steps:6});await page.mouse.up();
-  await expect(card).toHaveClass(/is-swiped/);
-  await expect(card).toHaveCSS('overflow','hidden');
-  await expect(card).toHaveCSS('border-top-right-radius','18px');
-  await expect(action).toHaveCSS('border-top-right-radius','18px');
-  await surface.click();await expect(card).not.toHaveClass(/is-swiped/);
-  await page.mouse.move(x,y);await page.mouse.down();await page.mouse.move(x+4,y+45,{steps:6});await page.mouse.up();
-  await expect(card).not.toHaveClass(/is-swiped/);
-  await expect(page.getByRole('heading',{name:'Library',exact:true})).toBeVisible();
-});
 
 test('holding an ayah opens actions even when Reader chrome is visible',async({page})=>{
   await openReader(page);

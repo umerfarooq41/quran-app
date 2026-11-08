@@ -177,7 +177,7 @@ export function AyahActionSheet({ ayah, onClose, onPlay, onShare, onReflect, onA
   }
 
   return (
-    <div className="ayah-tooltip-backdrop" data-reader-ui onClick={closeTooltip}>
+    <div className="ayah-tooltip-backdrop" data-ayah-reference={reference} data-reader-ui onPointerDown={(event) => { if (event.target === event.currentTarget) closeTooltip(); }}>
       <motion.div
         initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: .94, y: placement.arrowPlacement === 'top' ? -4 : 4 }}
         animate={reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}

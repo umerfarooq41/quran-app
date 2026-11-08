@@ -359,62 +359,54 @@
 .app-search-field input::-webkit-search-cancel-button { display:none; }
 .app-search-field button { display:grid; place-items:center; flex:0 0 32px; width:32px; height:32px; border:0; background:transparent; color:var(--theme-muted); border-radius:50%; }
 
-/* Shared swipe geometry for Library, Favorites and Reflect.
-   The foreground retains its translucent card surface; only the exposed
-   trailing action lane is red. */
+/* Shared swipe geometry: one clip, one moving surface, one offset. */
 .ui-swipe-actions {
   --swipe-offset: 0px;
   --swipe-action-width: 92px;
-  --swipe-radius: 18px;
+  --swipe-radius: var(--swipe-card-radius, 18px);
+  --swipe-opacity: 0;
   position: relative;
+  isolation: isolate;
   overflow: hidden;
   border-radius: var(--swipe-radius);
   touch-action: pan-y;
 }
-.ui-swipe-actions.is-swiped { --swipe-offset: var(--swipe-action-width); }
-/* Only the physically exposed swipe width is red. At offset 0 there is
-   no red underneath the rounded foreground corners, even during a closing
-   gesture. The same offset drives both the reveal and the foreground slide. */
-.ui-swipe-actions.is-swiped,
-.ui-swipe-actions.is-swiping {
-  background: linear-gradient(to left,
-    var(--ui-danger-bg) 0,
-    var(--ui-danger-bg) var(--swipe-offset),
-    transparent var(--swipe-offset));
-}
-/* Home cards use a larger radius than Library cards. The clip must match
-   the actual foreground rather than cutting off its curved corners. */
-.ui-swipe-actions.home-favorite-swipe {
-  --swipe-radius: 23px;
+.ui-swipe-actions::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--ui-danger-bg);
+  clip-path: var(--swipe-reveal, inset(0 0 0 100%));
+  pointer-events: none;
 }
 .ui-swipe-actions > :is(.tab-card-surface,.home-favorite-row) {
+  border-radius: var(--swipe-radius);
   transform: translateX(calc(-1 * var(--swipe-offset)));
-  transition: transform .2s ease, background-color .2s ease;
+  transition: none;
+  isolation: isolate;
 }
-/* Opaque foreground only while swiping, so the red action never tints
-   the glass card. The normal translucent surface returns when closed. */
-.ui-swipe-actions:is(.is-swiped,.is-swiping) > :is(.tab-card-surface,.home-favorite-row) {
+.ui-swipe-actions > :is(.tab-card-surface,.home-favorite-row)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
   background: var(--theme-surface-solid);
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
+  opacity: var(--swipe-opacity);
+  pointer-events: none;
 }
 .ui-swipe-actions > :is(.tab-card-remove,.home-favorite-delete) {
   position: absolute;
   inset-block: 0;
-  inset-inline-end: 0;
+  right: 0;
   width: var(--swipe-action-width);
   border: 0;
-  border-radius: 0 var(--swipe-radius) var(--swipe-radius) 0;
+  border-radius: 0;
   background: transparent;
   transform: none;
-  opacity: 1;
-  pointer-events: auto;
+  clip-path: inset(0 0 0 max(0px, calc(var(--swipe-action-width) - var(--swipe-offset))));
 }
-.ui-swipe-actions:not(.is-swiped):not(.is-swiping) > :is(.tab-card-remove,.home-favorite-delete) {
+.ui-swipe-actions:not([data-revealed='true']) > :is(.tab-card-remove,.home-favorite-delete) {
   visibility: hidden;
   pointer-events: none;
-}
-.ui-swipe-actions.is-swiping > :is(.tab-card-surface,.home-favorite-row) { transition: none; }
-@media (prefers-reduced-motion: reduce) {
-  .ui-swipe-actions > :is(.tab-card-surface,.home-favorite-row) { transition: none; }
 }

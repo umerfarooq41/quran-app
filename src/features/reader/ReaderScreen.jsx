@@ -144,10 +144,6 @@ export default function ReaderScreen() {
   const pageTransitionTimer = useRef(0);
   const playbackStartTargetRef = useRef(null);
   const {
-    handleTouchStart,
-    handleTouchMove,
-    handleTouchEnd,
-    handleTouchCancel,
     handlePointerDown,
   } = useReaderGestures({
     page,
@@ -853,10 +849,6 @@ export default function ReaderScreen() {
           className={pageSlideClasses}
           style={{ '--reader-page-slide-x': `${pageSlide.offset}px` }}
           onPointerDown={handlePointerDown}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-          onTouchCancel={handleTouchCancel}
         >
           {pageTransitionActive && (
             <div className="reader-page-slide reader-page-slide-leaving" aria-hidden="true" inert>

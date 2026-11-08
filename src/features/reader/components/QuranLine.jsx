@@ -42,16 +42,8 @@ export const QuranLine = React.memo(function QuranLine({
 }) {
   const lineRef = useRef(null);
   const textRef = useRef(null);
-  const longPressTimer = useRef(null);
-  const longPressed = useRef(false);
-  const ignoreNextClick = useRef(false);
-  const pressMoved = useRef(false);
-  const pressPoint = useRef(null);
-  const pressedSelection = useRef(null);
-  const capturedPointer = useRef(null);
-  const touchPress = useRef(null);
-  const blockedPress = useRef(false);
-  useEffect(() => () => window.clearTimeout(longPressTimer.current), []);
+  const press = useRef({ phase: 'idle' });
+  useEffect(() => () => window.clearTimeout(press.current.timer), []);
   const isBasmallah = line.type === 'basmallah' || line.type === 'bismillah';
   const centered = (
     forceCentered ||
@@ -263,124 +255,44 @@ export const QuranLine = React.memo(function QuranLine({
     };
   }, [centered, line.line, line.type, text]);
 
+  // Pointer Events own the entire press. Native pan-y cancellation terminates
+  // pending selection; releasing an activated press never dismisses its overlay.
   function startLongPress(event) {
-    // Touch has its own lifecycle: Android can cancel Pointer Events when a
-    // pan-y ancestor takes ownership, even for a deliberate long hold.
-    if (event.pointerType === 'touch') return;
-    beginLongPress(event);
-  }
-
-  function beginLongPress(event) {
-    if (line.type !== 'ayah') return;
-
+    if (event.button !== 0 || !event.isPrimary || line.type !== 'ayah') return;
+    window.clearTimeout(press.current.timer);
     if (interactionsBlocked) {
-      blockedPress.current = true;
-      ignoreNextClick.current = true;
+      press.current = { phase: 'cancelled' };
       onBlockedInteraction?.();
       return;
     }
-
     const selection = getSelectionFromEvent(event);
     if (!Number.isInteger(selection?.wordIndex)) return;
-
-    longPressed.current = false;
-    ignoreNextClick.current = false;
-    pressMoved.current = false;
-    pressPoint.current = { x: event.clientX, y: event.clientY };
-    pressedSelection.current = selection;
-    capturedPointer.current = Number.isInteger(event.pointerId) ? event.pointerId : null;
-    if (capturedPointer.current !== null) {
-      event.currentTarget.setPointerCapture?.(capturedPointer.current);
-    }
-    window.clearTimeout(longPressTimer.current);
-
-    longPressTimer.current = window.setTimeout(() => {
-      longPressed.current = true;
-      ignoreNextClick.current = true;
-
+    const state = { phase: 'pending', id: event.pointerId, x: event.clientX, y: event.clientY, selection };
+    press.current = state;
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+    state.timer = window.setTimeout(() => {
+      if (press.current !== state || state.phase !== 'pending') return;
+      state.phase = 'activated';
       triggerHaptic('longPress');
-
-      onSelect({
-        surahNumber: pressedSelection.current?.surahNumber || line.surahNumber,
-        ayahNumber: pressedSelection.current?.ayahNumber || line.ayahStart,
-        wordIndex: pressedSelection.current?.wordIndex,
-        selectedWord: pressedSelection.current?.selectedWord || '',
-        selectedWordId: pressedSelection.current?.selectedWordId || '',
-        selectedWordRect: pressedSelection.current?.selectedWordRect || null,
-        ayahRect: pressedSelection.current?.ayahRect || null,
-        pointer: pressedSelection.current?.pointer || null,
-      });
+      onSelect(state.selection);
     }, 430);
   }
 
-  function startTouchPress(event) {
-    if (event.touches.length !== 1) return;
-    const touch = event.touches[0];
-    touchPress.current = { id: touch.identifier, x: touch.clientX, y: touch.clientY };
-    beginLongPress({
-      clientX: touch.clientX,
-      clientY: touch.clientY,
-      currentTarget: event.currentTarget,
-    });
-  }
-
-  function moveTouchPress(event) {
-    const start = touchPress.current;
-    if (!start) return;
-    const touch = Array.from(event.touches).find(item => item.identifier === start.id);
-    if (!touch || Math.hypot(touch.clientX - start.x, touch.clientY - start.y) > 12) {
-      touchPress.current = null;
-      pressMoved.current = true;
-      cancelLongPress();
-    }
-  }
-
-  function finishTouchPress() {
-    touchPress.current = null;
-    cancelLongPress(false);
-    if (longPressed.current) ignoreNextClick.current = true;
-  }
-
-  function cancelLongPress(clearBlockedPress = true) {
-    window.clearTimeout(longPressTimer.current);
-    pressPoint.current = null;
-    if (clearBlockedPress && blockedPress.current) {
-      blockedPress.current = false;
-      ignoreNextClick.current = false;
+  function handlePointerMove(event) {
+    const state = press.current;
+    if (state.id !== event.pointerId || state.phase !== 'pending') return;
+    if (Math.hypot(event.clientX - state.x, event.clientY - state.y) > 12) {
+      window.clearTimeout(state.timer);
+      state.phase = 'scrolling';
     }
   }
 
   function finishPress(event) {
-    const hadLongPress = longPressed.current;
-    cancelLongPress(false);
-
-    if (capturedPointer.current !== null && event.currentTarget.hasPointerCapture?.(capturedPointer.current)) {
-      event.currentTarget.releasePointerCapture(capturedPointer.current);
-    }
-
-    capturedPointer.current = null;
-    if (hadLongPress) ignoreNextClick.current = true;
-    if (blockedPress.current) {
-      window.setTimeout(() => {
-        blockedPress.current = false;
-        ignoreNextClick.current = false;
-      }, 80);
-    }
-    window.setTimeout(() => {
-      longPressed.current = false;
-    }, 0);
-  }
-
-  function handlePointerMove(event) {
-    if (!pressPoint.current) return;
-
-    const deltaX = event.clientX - pressPoint.current.x;
-    const deltaY = event.clientY - pressPoint.current.y;
-
-    if (Math.hypot(deltaX, deltaY) > 12) {
-      pressMoved.current = true;
-      cancelLongPress();
-    }
+    const state = press.current;
+    if (state.id !== event.pointerId) return;
+    window.clearTimeout(state.timer);
+    state.phase = state.phase === 'pending' && event.type !== 'pointercancel'
+      ? 'completed' : 'cancelled';
   }
 
   function getSelectionFromEvent(event) {
@@ -451,33 +363,23 @@ export const QuranLine = React.memo(function QuranLine({
       onPointerMove={handlePointerMove}
       onPointerUp={finishPress}
       onPointerCancel={finishPress}
-      onTouchStart={startTouchPress}
-      onTouchMove={moveTouchPress}
-      onTouchEnd={finishTouchPress}
-      onTouchCancel={finishTouchPress}
       onSelectStart={(event) => event.preventDefault()}
       onDragStart={(event) => event.preventDefault()}
       onClick={(event) => {
+        // Consume the opening gesture before consulting newly rendered overlay
+        // state: that state now blocks presses and must not dismiss itself.
+        if (['activated', 'cancelled', 'scrolling'].includes(press.current.phase)) {
+          event.preventDefault();
+          event.stopPropagation();
+          press.current = { phase: 'idle' };
+          return;
+        }
         if (interactionsBlocked) {
           event.preventDefault();
           event.stopPropagation();
-          blockedPress.current = false;
-          ignoreNextClick.current = false;
-          pressMoved.current = false;
           onBlockedInteraction?.();
           return;
         }
-
-        if (longPressed.current || ignoreNextClick.current || pressMoved.current) {
-          event.preventDefault();
-          event.stopPropagation();
-          longPressed.current = false;
-          blockedPress.current = false;
-          ignoreNextClick.current = false;
-          pressMoved.current = false;
-          return;
-        }
-
         if (line.type === 'ayah') {
           const selection = getSelectionFromEvent(event);
           if (!Number.isInteger(selection?.wordIndex)) return;
@@ -487,21 +389,7 @@ export const QuranLine = React.memo(function QuranLine({
           onTap?.(selection);
         }
       }}
-      onContextMenu={(event) => {
-        event.preventDefault();
-        if (longPressed.current) return;
-        ignoreNextClick.current = true;
-
-        if (interactionsBlocked) {
-          onBlockedInteraction?.();
-          return;
-        }
-
-        if (line.type === 'ayah') {
-          const selection = getSelectionFromEvent(event);
-          if (Number.isInteger(selection?.wordIndex)) onSelect(selection);
-        }
-      }}
+      onContextMenu={(event) => event.preventDefault()}
       className={`quran-line quran-line-${isBasmallah ? 'basmallah' : line.type} ${marked ? 'quran-line-marked' : ''} ${jumped ? 'quran-line-jumped' : ''} ${isJuzStartLine ? 'quran-line--juz-start' : ''} ${line.type === 'spacer' ? 'opacity-0' : ''} ${coveredByCombinedHeader ? 'quran-line--combined-header-covered' : ''} ${centered ? 'quran-line-centered' : 'quran-line-normal'}`}
       aria-label={line.type === 'spacer' ? 'Blank line' : undefined}
       aria-hidden={coveredByCombinedHeader ? true : undefined}
