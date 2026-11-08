@@ -6,6 +6,7 @@ import { getTranslationOption, loadTranslationEntry } from '../lib/translations'
 import { parseQuranInternalHref, sanitizeSurahHtml } from '../lib/sanitizeHtml';
 import { useAppStore } from '../store/useAppStore';
 import { Empty, Header, Screen } from '../components/common/AppChrome';
+import { Card } from '../components/common/Surfaces';
 
 export default function TafsirScreen() {
   const { tafsirTarget, goBack, goAyah, openSurahInfo, settings } = useAppStore(useShallow((state) => ({

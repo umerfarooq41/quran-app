@@ -1,0 +1,2169 @@
+[
+  {
+    "file": "src/styles/app.css",
+    "selector": ".app-shell",
+    "property": "padding-left",
+    "removed": "max(var(--app-inline), env(safe-area-inset-left, 0px))",
+    "retained": "max(var(--ui-screen-inline), env(safe-area-inset-left, 0px))"
+  },
+  {
+    "file": "src/styles/app.css",
+    "selector": ".app-shell",
+    "property": "padding-right",
+    "removed": "max(var(--app-inline), env(safe-area-inset-right, 0px))",
+    "retained": "max(var(--ui-screen-inline), env(safe-area-inset-right, 0px))"
+  },
+  {
+    "file": "src/styles/app.css",
+    "selector": "[data-theme='dark'] .app-shell",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/app.css",
+    "selector": "[data-theme='dark'] .bg-fluent",
+    "property": "background",
+    "removed": "var(--brand-bg-dark)",
+    "retained": "var(--brand-bg-dark)"
+  },
+  {
+    "file": "src/styles/app.css",
+    "selector": ".app-shell",
+    "property": "padding-left",
+    "removed": "max(var(--ui-screen-inline), env(safe-area-inset-left, 0px))",
+    "retained": "max(var(--app-responsive-inline), env(safe-area-inset-left, 0px))"
+  },
+  {
+    "file": "src/styles/app.css",
+    "selector": ".app-shell",
+    "property": "padding-right",
+    "removed": "max(var(--ui-screen-inline), env(safe-area-inset-right, 0px))",
+    "retained": "max(var(--app-responsive-inline), env(safe-area-inset-right, 0px))"
+  },
+  {
+    "file": "src/styles/home.css",
+    "selector": ".home-favorite-row",
+    "property": "transition",
+    "removed": "transform .2s ease",
+    "retained": "background-color .16s ease"
+  },
+  {
+    "file": "src/styles/home.css",
+    "selector": ".home-reflect-card",
+    "property": "min-height",
+    "removed": "74px",
+    "retained": "92px"
+  },
+  {
+    "file": "src/styles/home.css",
+    "selector": ".home-reflect-card",
+    "property": "padding",
+    "removed": "11px 18px",
+    "retained": "17px 19px"
+  },
+  {
+    "file": "src/styles/home.css",
+    "selector": ".home-reflect-card",
+    "property": "border-radius",
+    "removed": "18px",
+    "retained": "23px"
+  },
+  {
+    "file": "src/styles/home.css",
+    "selector": ".home-favorite-row",
+    "property": "min-height",
+    "removed": "74px",
+    "retained": "92px"
+  },
+  {
+    "file": "src/styles/home.css",
+    "selector": ".home-favorite-row",
+    "property": "padding",
+    "removed": "14px 18px",
+    "retained": "17px 19px"
+  },
+  {
+    "file": "src/styles/home.css",
+    "selector": ".home-favorite-row",
+    "property": "border-radius",
+    "removed": "18px",
+    "retained": "23px"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-list",
+    "property": "gap",
+    "removed": "14px",
+    "retained": "8px"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-surah-stack",
+    "property": "gap",
+    "removed": "14px",
+    "retained": "8px"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-card-title",
+    "property": "min-width",
+    "removed": "0",
+    "retained": "0"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-card-title",
+    "property": "font-weight",
+    "removed": "400",
+    "retained": "450"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-card-title",
+    "property": "letter-spacing",
+    "removed": "-.045em",
+    "retained": "-.015em"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-quarter-btn strong",
+    "property": "display",
+    "removed": "block",
+    "retained": "block"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-card-title",
+    "property": "letter-spacing",
+    "removed": "-.035em",
+    "retained": "-.015em"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": "[data-theme='dark'] .index-replica-shell",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-replica-shell",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-replica-header h1",
+    "property": "color",
+    "removed": "var(--theme-text, #24262b)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-card-title",
+    "property": "color",
+    "removed": "var(--theme-text, #111315)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-section-title",
+    "property": "color",
+    "removed": "var(--theme-text, #111315)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-surah-text strong",
+    "property": "color",
+    "removed": "var(--theme-text, #08090a)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-number-badge",
+    "property": "color",
+    "removed": "var(--theme-text, #17181b)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-quarter-btn",
+    "property": "color",
+    "removed": "var(--theme-text, #111315)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-surah-text small",
+    "property": "color",
+    "removed": "var(--theme-muted, #9c9da1)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-quarter-btn span",
+    "property": "color",
+    "removed": "var(--theme-muted, #8c8d91)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-surah-info-preview p",
+    "property": "color",
+    "removed": "var(--theme-muted, #747b88)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-surah-info-preview button",
+    "property": "color",
+    "removed": "var(--theme-text, #1f2937)",
+    "retained": "var(--brand-gold)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-surah-info-preview p",
+    "property": "line-height",
+    "removed": "1.45",
+    "retained": "2.02"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-surah-info-preview p",
+    "property": "letter-spacing",
+    "removed": "-.02em",
+    "retained": "0"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-surah-info-copy",
+    "property": "line-height",
+    "removed": "1.52",
+    "retained": "2.02"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-list",
+    "property": "gap",
+    "removed": "8px",
+    "retained": "12px"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-surah-stack",
+    "property": "gap",
+    "removed": "8px",
+    "retained": "12px"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-surah-collapse",
+    "property": "gap",
+    "removed": "8px",
+    "retained": "12px"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-surah-info-preview",
+    "property": "padding",
+    "removed": "20px 18px 18px",
+    "retained": "17px 17px 14px"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-surah-info-copy",
+    "property": "display",
+    "removed": "-webkit-box",
+    "retained": "-webkit-box"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-surah-info-copy",
+    "property": "overflow",
+    "removed": "hidden",
+    "retained": "hidden"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-surah-info-copy",
+    "property": "-webkit-box-orient",
+    "removed": "vertical",
+    "retained": "vertical"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-surah-info-copy",
+    "property": "-webkit-line-clamp",
+    "removed": "5",
+    "retained": "5"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-surah-info-copy",
+    "property": "line-clamp",
+    "removed": "5",
+    "retained": "5"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-surah-card",
+    "property": "grid-template-columns",
+    "removed": "auto minmax(0, 1fr) auto",
+    "retained": "auto minmax(0, 1fr) auto auto"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-replica-shell.app-page-shell .index-surah-collapse",
+    "property": "background",
+    "removed": "color-mix(in srgb, var(--theme-surface) 86%, transparent)",
+    "retained": "color-mix(in srgb, var(--theme-surface) 94%, transparent)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-replica-shell.app-page-shell .index-ayah-jump",
+    "property": "backdrop-filter",
+    "removed": "none",
+    "retained": "none"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-replica-shell.app-page-shell .index-surah-info-preview",
+    "property": "box-shadow",
+    "removed": "none",
+    "retained": "none"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-replica-shell.app-page-shell .index-ayah-jump",
+    "property": "border",
+    "removed": "0",
+    "retained": "0"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-replica-shell.app-page-shell .index-ayah-jump",
+    "property": "box-shadow",
+    "removed": "none",
+    "retained": "none"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": "[data-theme='dark'] .index-replica-shell .index-collapse-panel",
+    "property": "box-shadow",
+    "removed": "0 9px 24px var(--theme-shadow)",
+    "retained": "none"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": "[data-theme='dark'] .index-replica-shell .index-surah-info-preview",
+    "property": "box-shadow",
+    "removed": "0 9px 24px var(--theme-shadow)",
+    "retained": "none"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": "[data-theme='dark'] .index-replica-shell .index-ayah-jump",
+    "property": "box-shadow",
+    "removed": "0 9px 24px var(--theme-shadow)",
+    "retained": "none"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-replica-shell .index-surah-info-preview .index-surah-text-action",
+    "property": "color",
+    "removed": "var(--brand-gold, #b68a35)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-replica-shell .index-ayah-stepper",
+    "property": "background",
+    "removed": "color-mix(in srgb, var(--theme-muted) 6%, var(--theme-surface))",
+    "retained": "var(--ui-control-bg)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-replica-shell .index-ayah-stepper:focus-within",
+    "property": "border-color",
+    "removed": "var(--brand-gold, #b68a35)",
+    "retained": "var(--ui-primary)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-replica-shell .index-ayah-stepper:focus-within",
+    "property": "box-shadow",
+    "removed": "0 0 0 3px color-mix(in srgb, var(--brand-gold, #b68a35) 12%, transparent)",
+    "retained": "0 0 0 2px color-mix(in srgb, var(--ui-primary) 18%, transparent)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-replica-shell .index-surah-search:focus-within",
+    "property": "border-color",
+    "removed": "color-mix(in srgb, var(--brand-gold, #b68a35) 68%, var(--theme-border))",
+    "retained": "var(--ui-primary)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-replica-shell .index-surah-search:focus-within",
+    "property": "box-shadow",
+    "removed": "0 0 0 3px color-mix(in srgb, var(--brand-gold, #b68a35) 12%, transparent)",
+    "retained": "0 0 0 2px color-mix(in srgb, var(--ui-primary) 18%, transparent)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-replica-shell .index-surah-info-preview",
+    "property": "background",
+    "removed": "transparent",
+    "retained": "transparent"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-replica-shell .index-surah-info-preview",
+    "property": "border",
+    "removed": "0",
+    "retained": "0"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-replica-shell .index-surah-info-preview",
+    "property": "box-shadow",
+    "removed": "none",
+    "retained": "none"
+  },
+  {
+    "file": "src/styles/index.css",
+    "selector": ".index-replica-shell .index-surah-search:focus-within",
+    "property": "border-color",
+    "removed": "var(--ui-primary)",
+    "retained": "var(--ui-primary)"
+  },
+  {
+    "file": "src/styles/reader-audio.css",
+    "selector": ".reader-audio-over-reader",
+    "property": "bottom",
+    "removed": "calc(env(safe-area-inset-bottom, 0px) + 14px)",
+    "retained": "calc(env(safe-area-inset-bottom, 0px) + 76px)"
+  },
+  {
+    "file": "src/styles/reader-audio.css",
+    "selector": ".reader-audio-over-reader",
+    "property": "bottom",
+    "removed": "calc(env(safe-area-inset-bottom, 0px) + 76px)",
+    "retained": "calc(env(safe-area-inset-bottom, 0px) + 52px)"
+  },
+  {
+    "file": "src/styles/reader.css",
+    "selector": ".reader-passive-header",
+    "property": "height",
+    "removed": "calc(env(safe-area-inset-top, 0px) + 58px)",
+    "retained": "calc(env(safe-area-inset-top, 0px) + 62px)"
+  },
+  {
+    "file": "src/styles/reader.css",
+    "selector": ".reader-passive-header",
+    "property": "height",
+    "removed": "calc(env(safe-area-inset-top, 0px) + 62px)",
+    "retained": "calc(env(safe-area-inset-top, 0px) + 72px)"
+  },
+  {
+    "file": "src/styles/reader.css",
+    "selector": ".reader-passive-header",
+    "property": "padding-top",
+    "removed": "calc(env(safe-area-inset-top, 0px) + 22px)",
+    "retained": "calc(env(safe-area-inset-top, 0px) + 28px)"
+  },
+  {
+    "file": "src/styles/reader.css",
+    "selector": ".reader-passive-header",
+    "property": "height",
+    "removed": "calc(env(safe-area-inset-top, 0px) + 72px)",
+    "retained": "calc(env(safe-area-inset-top, 0px) + 36px)"
+  },
+  {
+    "file": "src/styles/reader.css",
+    "selector": ".reader-passive-header",
+    "property": "padding-top",
+    "removed": "calc(env(safe-area-inset-top, 0px) + 28px)",
+    "retained": "calc(env(safe-area-inset-top, 0px) + 5px)"
+  },
+  {
+    "file": "src/styles/reader.css",
+    "selector": "[data-theme='dark'] .reader-topbar",
+    "property": "background",
+    "removed": "linear-gradient(180deg, rgba(17, 20, 18, .98), rgba(17, 20, 18, .78), transparent)",
+    "retained": "transparent"
+  },
+  {
+    "file": "src/styles/reader.css",
+    "selector": ".reader-footer-meta",
+    "property": "bottom",
+    "removed": "calc(env(safe-area-inset-bottom, 0px) + 18px)",
+    "retained": "18px"
+  },
+  {
+    "file": "src/styles/reader.css",
+    "selector": ".reader-footer-meta",
+    "property": "bottom",
+    "removed": "calc(env(safe-area-inset-bottom, 0px) + 16px)",
+    "retained": "calc(env(safe-area-inset-bottom, 0px) + 4px)"
+  },
+  {
+    "file": "src/styles/reader.css",
+    "selector": ".reader-footer-meta",
+    "property": "bottom",
+    "removed": "calc(env(safe-area-inset-bottom, 0px) + 4px)",
+    "retained": "calc(env(safe-area-inset-bottom, 0px) + 6px)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "selector": ".reflect-screen .reflect-lesson-ayah .reflect-ayah-reference",
+    "property": "background",
+    "removed": "var(--theme-surface-solid, #fff)",
+    "retained": "var(--reflect-surface)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "selector": ".reflect-screen .reflect-lesson-ayah .reflect-ayah-reference",
+    "property": "color",
+    "removed": "var(--theme-text, #242424)",
+    "retained": "var(--reflect-ink)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "selector": ".reflect-screen .reflect-lesson-ayah .reflect-ayah-body",
+    "property": "background",
+    "removed": "var(--theme-surface-solid, #fff)",
+    "retained": "var(--reflect-surface)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "selector": ".reflect-screen .reflect-lesson-ayah .reflect-ayah-body",
+    "property": "color",
+    "removed": "var(--theme-text, #242424)",
+    "retained": "var(--reflect-ink)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "selector": ".reflect-screen .reflect-range-label",
+    "property": "color",
+    "removed": "var(--theme-muted, #64748b)",
+    "retained": "var(--reflect-muted)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "selector": ".reflect-screen .reflect-keyword-card",
+    "property": "background",
+    "removed": "var(--ui-card-bg)",
+    "retained": "var(--ui-card-bg)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "selector": ".reflect-screen .reflect-theme-group",
+    "property": "background",
+    "removed": "var(--ui-card-bg)",
+    "retained": "var(--ui-card-bg)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "selector": ".reflect-screen .reflect-theme-group",
+    "property": "border",
+    "removed": "1px solid var(--ui-card-border)",
+    "retained": "1px solid var(--ui-card-border)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "selector": ".reflect-screen .reflect-theme-picker-group",
+    "property": "background",
+    "removed": "var(--reflect-surface)",
+    "retained": "var(--ui-card-bg)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "selector": ".reflect-screen .reflect-theme-picker-group",
+    "property": "border",
+    "removed": "1px solid var(--reflect-border)",
+    "retained": "1px solid var(--ui-card-border)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "selector": ".reflect-screen .reflect-question-answer",
+    "property": "background",
+    "removed": "var(--ui-control-bg)",
+    "retained": "var(--ui-control-bg)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "selector": ".reflect-screen .reflect-question-answer",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "selector": ".reflect-screen .reflect-keyword-chip",
+    "property": "background",
+    "removed": "var(--reflect-surface)",
+    "retained": "var(--ui-control-bg)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "selector": ".reflect-screen .reflect-keyword-chip",
+    "property": "color",
+    "removed": "var(--reflect-ink)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "selector": ".reflect-screen .reflect-word-language",
+    "property": "background",
+    "removed": "var(--theme-surface-solid, #fff)",
+    "retained": "var(--ui-control-bg)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "selector": ".reflect-screen .reflect-word-language",
+    "property": "background",
+    "removed": "color-mix(in srgb,var(--reflect-border) 25%,var(--reflect-surface))",
+    "retained": "var(--ui-control-bg)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "selector": ".reflect-screen .reflect-word-language",
+    "property": "border",
+    "removed": "1px solid var(--reflect-border)",
+    "retained": "1px solid var(--ui-control-border)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "selector": ".reflect-screen .reflect-lesson-title-input:focus-visible",
+    "property": "outline",
+    "removed": "2px solid var(--reflect-link)",
+    "retained": "2px solid var(--ui-primary)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "selector": ".reflect-screen .reflect-lesson-title-input:focus-visible",
+    "property": "outline-offset",
+    "removed": "1px",
+    "retained": "2px"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "selector": ".reflect-screen .reflect-field:focus-visible",
+    "property": "outline",
+    "removed": "2px solid var(--reflect-link)",
+    "retained": "2px solid var(--ui-primary)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "selector": ".reflect-screen .reflect-field:focus-visible",
+    "property": "outline-offset",
+    "removed": "1px",
+    "retained": "2px"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "selector": ".reflect-screen .reflect-study-menu",
+    "property": "background",
+    "removed": "var(--theme-surface-solid)",
+    "retained": "var(--theme-surface-solid)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "selector": ".reflect-screen .reflect-delete-dialog",
+    "property": "background",
+    "removed": "var(--theme-surface-solid)",
+    "retained": "var(--theme-surface-solid)"
+  },
+  {
+    "file": "src/styles/search.css",
+    "selector": ".search-result-reference",
+    "property": "min-width",
+    "removed": "0",
+    "retained": "0"
+  },
+  {
+    "file": "src/styles/search.css",
+    "selector": ".search-result-reference strong",
+    "property": "min-width",
+    "removed": "0",
+    "retained": "0"
+  },
+  {
+    "file": "src/styles/search.css",
+    "selector": "[data-theme='dark'] .search-form",
+    "property": "color",
+    "removed": "var(--theme-muted)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/search.css",
+    "selector": "[data-theme='dark'] .search-recent-list button",
+    "property": "color",
+    "removed": "var(--theme-muted)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/search.css",
+    "selector": "[data-theme='dark'] .search-result-card",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/search.css",
+    "selector": "[data-theme='dark'] .search-empty",
+    "property": "color",
+    "removed": "var(--theme-muted)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/search.css",
+    "selector": "[data-theme='dark'] .search-form input",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/search.css",
+    "selector": "[data-theme='dark'] .search-recent h2",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/search.css",
+    "selector": "[data-theme='dark'] .search-results-heading h2",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/search.css",
+    "selector": "[data-theme='dark'] .search-result-reference strong",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/search.css",
+    "selector": "[data-theme='dark'] .search-result-preview",
+    "property": "color",
+    "removed": "var(--theme-muted)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/search.css",
+    "selector": "[data-theme='dark'] .search-result-reference small",
+    "property": "color",
+    "removed": "var(--theme-muted)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/search.css",
+    "selector": "[data-theme='dark'] .search-result-meta",
+    "property": "color",
+    "removed": "var(--theme-muted)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/search.css",
+    "selector": "[data-theme='dark'] .search-empty",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/search.css",
+    "selector": "[data-theme='dark'] .search-recent-list button",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/search.css",
+    "selector": "[data-theme='dark'] .search-form input",
+    "property": "color",
+    "removed": "var(--theme-muted)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/search.css",
+    "selector": "[data-theme='dark'] .search-empty",
+    "property": "color",
+    "removed": "var(--theme-muted)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": ".settings-section-heading small",
+    "property": "color",
+    "removed": "var(--theme-muted)",
+    "retained": "var(--theme-text-secondary, #666c69)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": ".settings-row-copy small",
+    "property": "color",
+    "removed": "var(--theme-muted)",
+    "retained": "#596168"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": ".settings-picker-item",
+    "property": "text-align",
+    "removed": "left",
+    "retained": "left"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": ".settings-row-copy strong",
+    "property": "font-weight",
+    "removed": "720",
+    "retained": "560"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-row-copy strong",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-dialog",
+    "property": "background",
+    "removed": "var(--theme-surface-solid)",
+    "retained": "#222724"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-theme-picker",
+    "property": "background",
+    "removed": "var(--theme-soft)",
+    "retained": "var(--theme-surface-solid)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-toggle-row",
+    "property": "background",
+    "removed": "var(--theme-soft)",
+    "retained": "var(--theme-surface-solid)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-dialog",
+    "property": "border-color",
+    "removed": "var(--theme-border)",
+    "retained": "var(--theme-border)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-dialog",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-section-heading span",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-row-copy strong",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-section-heading small",
+    "property": "color",
+    "removed": "var(--theme-muted)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-row-copy small",
+    "property": "color",
+    "removed": "var(--theme-muted)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-dialog p",
+    "property": "color",
+    "removed": "var(--theme-muted)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-theme-picker button.is-active",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "#ffffff"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-dialog-close",
+    "property": "background",
+    "removed": "var(--theme-soft)",
+    "retained": "var(--theme-soft)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-dialog .secondary",
+    "property": "background",
+    "removed": "var(--theme-soft)",
+    "retained": "var(--theme-soft)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-picker-pill",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "#eef2f3"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-section-heading strong",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-section-heading small",
+    "property": "color",
+    "removed": "var(--theme-muted)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-row-copy small",
+    "property": "color",
+    "removed": "var(--theme-muted)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-row-icon",
+    "property": "background",
+    "removed": "rgba(52, 112, 94, .22)",
+    "retained": "rgba(52, 112, 94, .22)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-row-icon",
+    "property": "color",
+    "removed": "#8bc7b4",
+    "retained": "#8bc7b4"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-theme-picker",
+    "property": "background",
+    "removed": "var(--theme-surface-solid)",
+    "retained": "var(--theme-soft)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-theme-picker",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-picker-panel",
+    "property": "border-color",
+    "removed": "var(--theme-border)",
+    "retained": "var(--theme-border)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-picker-panel",
+    "property": "background",
+    "removed": "var(--theme-surface-solid)",
+    "retained": "var(--theme-surface-solid)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-picker-item",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": ".settings-toggle-row",
+    "property": "min-width",
+    "removed": "0",
+    "retained": "0"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": ".settings-toggle-row",
+    "property": "padding",
+    "removed": "var(--ui-space-3)",
+    "retained": "11px 2px"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-toggle-row",
+    "property": "background",
+    "removed": "var(--theme-surface-solid)",
+    "retained": "transparent"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-picker-row",
+    "property": "background",
+    "removed": "rgba(34, 39, 45, .82)",
+    "retained": "transparent"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-row-copy strong",
+    "property": "color",
+    "removed": "var(--theme-muted)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-section-heading strong",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-row-copy small",
+    "property": "color",
+    "removed": "var(--theme-muted)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-section-heading small",
+    "property": "color",
+    "removed": "var(--theme-muted)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-picker-panel",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "selector": "[data-theme='dark'] .settings-picker-item",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/share.css",
+    "selector": ".share-range-menu button:active:not(.is-selected)",
+    "property": "background",
+    "removed": "color-mix(in srgb, var(--brand-gold, #b68a35) 10%, transparent)",
+    "retained": "color-mix(in srgb, var(--theme-border, #dfd3b5) 30%, transparent)"
+  },
+  {
+    "file": "src/styles/share.css",
+    "selector": ".share-range-field > span",
+    "property": "color",
+    "removed": "var(--theme-muted, rgba(37, 37, 34, .55))",
+    "retained": "var(--theme-muted, #756f65)"
+  },
+  {
+    "file": "src/styles/share.css",
+    "selector": ".share-sheet",
+    "property": "max-height",
+    "removed": "94dvh",
+    "retained": "92dvh"
+  },
+  {
+    "file": "src/styles/shared-surfaces.css",
+    "selector": ".app-fixed-header > .app-header",
+    "property": "width",
+    "removed": "100%",
+    "retained": "100%"
+  },
+  {
+    "file": "src/styles/shared-surfaces.css",
+    "selector": ".app-fixed-header > .app-header",
+    "property": "height",
+    "removed": "100%",
+    "retained": "100%"
+  },
+  {
+    "file": "src/styles/shared-surfaces.css",
+    "selector": ".app-fixed-header > .app-header",
+    "property": "min-height",
+    "removed": "100%",
+    "retained": "100%"
+  },
+  {
+    "file": "src/styles/shared-surfaces.css",
+    "selector": ".app-header",
+    "property": "display",
+    "removed": "grid",
+    "retained": "grid"
+  },
+  {
+    "file": "src/styles/shared-surfaces.css",
+    "selector": ".app-header",
+    "property": "grid-template-columns",
+    "removed": "auto minmax(0, 1fr) auto",
+    "retained": "40px minmax(0, 1fr) 40px"
+  },
+  {
+    "file": "src/styles/shared-surfaces.css",
+    "selector": ".app-header",
+    "property": "align-items",
+    "removed": "center",
+    "retained": "center"
+  },
+  {
+    "file": "src/styles/shared-surfaces.css",
+    "selector": ".app-header",
+    "property": "min-height",
+    "removed": "calc(var(--chrome-button-size) + 6px)",
+    "retained": "100%"
+  },
+  {
+    "file": "src/styles/shared-surfaces.css",
+    "selector": ".app-header",
+    "property": "gap",
+    "removed": "var(--chrome-button-gap)",
+    "retained": "12px"
+  },
+  {
+    "file": "src/styles/shared-surfaces.css",
+    "selector": ".app-header-title",
+    "property": "min-width",
+    "removed": "0",
+    "retained": "0"
+  },
+  {
+    "file": "src/styles/shared-surfaces.css",
+    "selector": ".app-header-title",
+    "property": "overflow",
+    "removed": "hidden",
+    "retained": "hidden"
+  },
+  {
+    "file": "src/styles/shared-surfaces.css",
+    "selector": ".app-header-title",
+    "property": "margin",
+    "removed": "0",
+    "retained": "0"
+  },
+  {
+    "file": "src/styles/shared-surfaces.css",
+    "selector": ".app-header-title",
+    "property": "font-size",
+    "removed": "var(--ui-title-sm)",
+    "retained": "2rem"
+  },
+  {
+    "file": "src/styles/shared-surfaces.css",
+    "selector": ".app-header-title",
+    "property": "font-weight",
+    "removed": "560",
+    "retained": "560"
+  },
+  {
+    "file": "src/styles/shared-surfaces.css",
+    "selector": ".app-header-title",
+    "property": "line-height",
+    "removed": "1.2",
+    "retained": "1"
+  },
+  {
+    "file": "src/styles/shared-surfaces.css",
+    "selector": ".app-header-title",
+    "property": "text-align",
+    "removed": "center",
+    "retained": "center"
+  },
+  {
+    "file": "src/styles/shared-surfaces.css",
+    "selector": ".app-header-title",
+    "property": "text-overflow",
+    "removed": "ellipsis",
+    "retained": "ellipsis"
+  },
+  {
+    "file": "src/styles/shared-surfaces.css",
+    "selector": ".app-header-title",
+    "property": "white-space",
+    "removed": "nowrap",
+    "retained": "nowrap"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": "[data-theme='dark'] .tabs-status",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": "[data-theme='dark'] .tabs-status",
+    "property": "color",
+    "removed": "var(--theme-muted)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": "[data-theme='dark'] .tab-menu",
+    "property": "border-color",
+    "removed": "var(--theme-border)",
+    "retained": "var(--theme-border)"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": "[data-theme='dark'] .tab-inline-editor",
+    "property": "border-color",
+    "removed": "var(--theme-border)",
+    "retained": "var(--theme-border)"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": "[data-theme='dark'] .tab-card-surface",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": "[data-theme='dark'] .tab-more-button",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": "[data-theme='dark'] .tab-type",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": "[data-theme='dark'] .tab-surah",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": "[data-theme='dark'] .tab-note",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": "[data-theme='dark'] .tab-arabic",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": "[data-theme='dark'] .tabs-status",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": "[data-theme='dark'] .tab-saved-date",
+    "property": "color",
+    "removed": "var(--theme-muted)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": "[data-theme='dark'] .tab-inline-editor textarea",
+    "property": "border-color",
+    "removed": "var(--theme-border)",
+    "retained": "var(--theme-border)"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": "[data-theme='dark'] .tab-inline-editor textarea",
+    "property": "background",
+    "removed": "var(--theme-soft)",
+    "retained": "var(--theme-soft)"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": "[data-theme='dark'] .tab-inline-editor textarea",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": "[data-theme='dark'] .tab-menu",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": "[data-theme='dark'] .tab-menu button",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": "[data-theme='dark'] .tabs-status",
+    "property": "color",
+    "removed": "var(--theme-muted)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/tafsir.css",
+    "selector": ".surah-info-screen",
+    "property": "padding",
+    "removed": "calc(env(safe-area-inset-top, 0px) + 52px) 18px calc(env(safe-area-inset-bottom, 0px) + 34px)",
+    "retained": "calc(env(safe-area-inset-top, 0px) + 20px) 12px calc(env(safe-area-inset-bottom, 0px) + 20px)"
+  },
+  {
+    "file": "src/styles/tafsir.css",
+    "selector": ".surah-info-content",
+    "property": "padding",
+    "removed": "28px 28px 42px",
+    "retained": "18px 16px 28px"
+  },
+  {
+    "file": "src/styles/tafsir.css",
+    "selector": ".surah-info-screen",
+    "property": "background",
+    "removed": "radial-gradient(circle at top left, rgba(204, 185, 120, .24), transparent 34%),\n    linear-gradient(180deg, #f5f1df 0%, #faf8ee 34%, #f6f0dc 100%)",
+    "retained": "transparent"
+  },
+  {
+    "file": "src/styles/tafsir.css",
+    "selector": ".surah-info-screen",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/tafsir.css",
+    "selector": "[data-theme='dark'] .surah-info-screen",
+    "property": "background",
+    "removed": "radial-gradient(circle at top left, rgba(154, 120, 54, .13), transparent 34%),\n    linear-gradient(180deg, #151815 0%, #111412 100%)",
+    "retained": "transparent"
+  },
+  {
+    "file": "src/styles/tafsir.css",
+    "selector": "[data-theme='dark'] .surah-info-screen",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/tafsir.css",
+    "selector": "[data-theme='dark'] .tafsir-card-head h2",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/tafsir.css",
+    "selector": "[data-theme='dark'] .tafsir-section h3",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/tafsir.css",
+    "selector": "[data-theme='dark'] .tafsir-arabic",
+    "property": "color",
+    "removed": "var(--theme-text)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/tafsir.css",
+    "selector": "[data-theme='dark'] .tafsir-card-head p",
+    "property": "color",
+    "removed": "var(--theme-muted)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/tafsir.css",
+    "selector": "[data-theme='dark'] .tafsir-section p",
+    "property": "color",
+    "removed": "var(--theme-muted)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/tafsir.css",
+    "selector": "[data-theme='dark'] .tafsir-section div",
+    "property": "color",
+    "removed": "var(--theme-muted)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/tafsir.css",
+    "selector": "[data-theme='dark'] .surah-info-empty",
+    "property": "color",
+    "removed": "var(--theme-muted)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/tafsir.css",
+    "selector": ".tafsir-section[data-translation-language=\"Ur\"] .tafsir-translation-text",
+    "property": "font-family",
+    "removed": "var(--translation-urdu-font)",
+    "retained": "var(--translation-urdu-font)"
+  },
+  {
+    "file": "src/styles/tafsir.css",
+    "selector": ".surah-info-html p",
+    "property": "margin",
+    "removed": "0 0 18px",
+    "retained": "0 0 16px"
+  },
+  {
+    "file": "src/styles/tafsir.css",
+    "selector": "[data-theme='dark'] .surah-info-content",
+    "property": "background",
+    "removed": "var(--theme-surface-solid)",
+    "retained": "transparent"
+  },
+  {
+    "file": "src/styles/tafsir.css",
+    "selector": "[data-theme='dark'] .surah-info-content",
+    "property": "box-shadow",
+    "removed": "0 9px 28px var(--theme-shadow)",
+    "retained": "none"
+  },
+  {
+    "file": "src/styles/tafsir.css",
+    "selector": "[data-theme='dark'] .surah-info-meta",
+    "property": "color",
+    "removed": "var(--theme-muted)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": ".bg-fluent",
+    "property": "background",
+    "removed": "radial-gradient(circle at 15% 10%, rgba(212, 168, 67, 0.18), transparent 38%),\n    radial-gradient(circle at 85% 18%, rgba(45, 110, 94, 0.12), transparent 32%),\n    radial-gradient(circle at 50% 90%, rgba(212, 168, 67, 0.10), transparent 40%),\n    linear-gradient(160deg, #fdf8ef 0%, #f8f3e8 50%, #f4f0e6 100%)",
+    "retained": "var(--brand-bg-light)"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "[data-theme='dark'] .app-shell",
+    "property": "background",
+    "removed": "#111412",
+    "retained": "var(--brand-bg-dark)"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='light']",
+    "property": "--audio-panel-bg",
+    "removed": "#FFFFFF",
+    "retained": "#fffaf1"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='light']",
+    "property": "--audio-panel-text",
+    "removed": "#1F2933",
+    "retained": "#201c15"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='light']",
+    "property": "--audio-panel-muted",
+    "removed": "#64748B",
+    "retained": "#756f65"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='light']",
+    "property": "--audio-panel-border",
+    "removed": "rgba(15, 23, 42, .09)",
+    "retained": "#eadfce"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='light']",
+    "property": "--audio-control-bg",
+    "removed": "#F4F6F5",
+    "retained": "#f0ebe2"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='light']",
+    "property": "--audio-control-active-bg",
+    "removed": "#E8F0ED",
+    "retained": "#e3eee9"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='light']",
+    "property": "--audio-close-bg",
+    "removed": "#EEF0F0",
+    "retained": "#f0ebe2"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='light']",
+    "property": "--audio-chevron-bg",
+    "removed": "#1F2933",
+    "retained": "#f0ebe2"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='light']",
+    "property": "--audio-chevron-text",
+    "removed": "#FFFFFF",
+    "retained": "#201c15"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='light']",
+    "property": "--audio-icon",
+    "removed": "#111827",
+    "retained": "#201c15"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='light']",
+    "property": "--audio-main-bg",
+    "removed": "#000000",
+    "retained": "#171510"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='light']",
+    "property": "--audio-main-text",
+    "removed": "#FFFFFF",
+    "retained": "#fffaf1"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='light']",
+    "property": "--audio-speed-border",
+    "removed": "rgba(100, 116, 139, .58)",
+    "retained": "#d8cdbc"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='light']",
+    "property": "--audio-speed-text",
+    "removed": "#737373",
+    "retained": "#71695d"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='light']",
+    "property": "--audio-wave-bg",
+    "removed": "rgba(100, 116, 139, .28)",
+    "retained": "#ded6c8"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='light']",
+    "property": "--audio-shadow",
+    "removed": "0 18px 48px rgba(15, 23, 42, .16)",
+    "retained": "0 14px 38px rgba(35, 33, 30, .13)"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='dark']",
+    "property": "--audio-panel-bg",
+    "removed": "#181A19",
+    "retained": "#1e2320"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='dark']",
+    "property": "--audio-panel-text",
+    "removed": "#F5F5F3",
+    "retained": "#f1f3ef"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='dark']",
+    "property": "--audio-panel-muted",
+    "removed": "#A8AEA9",
+    "retained": "#aeb5ae"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='dark']",
+    "property": "--audio-panel-border",
+    "removed": "rgba(255, 255, 255, .09)",
+    "retained": "#333b36"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='dark']",
+    "property": "--audio-control-bg",
+    "removed": "#242826",
+    "retained": "#2b312d"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='dark']",
+    "property": "--audio-control-active-bg",
+    "removed": "#2B3330",
+    "retained": "#2e3e38"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='dark']",
+    "property": "--audio-close-bg",
+    "removed": "#252A27",
+    "retained": "#2b312d"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='dark']",
+    "property": "--audio-chevron-bg",
+    "removed": "#F5F5F3",
+    "retained": "#2b312d"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='dark']",
+    "property": "--audio-chevron-text",
+    "removed": "#181A19",
+    "retained": "#f1f3ef"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='dark']",
+    "property": "--audio-icon",
+    "removed": "#F5F5F3",
+    "retained": "#f1f3ef"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='dark']",
+    "property": "--audio-main-bg",
+    "removed": "#F5F5F3",
+    "retained": "#f1f3ef"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='dark']",
+    "property": "--audio-main-text",
+    "removed": "#181A19",
+    "retained": "#161916"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='dark']",
+    "property": "--audio-speed-border",
+    "removed": "rgba(168, 174, 169, .62)",
+    "retained": "#4a534d"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='dark']",
+    "property": "--audio-speed-text",
+    "removed": "#C8CECA",
+    "retained": "#c5cac5"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='dark']",
+    "property": "--audio-wave-bg",
+    "removed": "rgba(168, 174, 169, .28)",
+    "retained": "#454d47"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": "html[data-theme='dark']",
+    "property": "--audio-shadow",
+    "removed": "0 18px 48px rgba(0, 0, 0, .44)",
+    "retained": "0 16px 40px rgba(0, 0, 0, .36)"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": ".app-page-shell",
+    "property": "--app-page-inline-left",
+    "removed": "max(var(--ui-screen-inline), env(safe-area-inset-left, 0px))",
+    "retained": "max(var(--app-responsive-inline), env(safe-area-inset-left, 0px))"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": ".app-page-shell",
+    "property": "--app-page-inline-right",
+    "removed": "max(var(--ui-screen-inline), env(safe-area-inset-right, 0px))",
+    "retained": "max(var(--app-responsive-inline), env(safe-area-inset-right, 0px))"
+  },
+  {
+    "file": "src/styles/app.css",
+    "context": "",
+    "selector": ".app-page-shell",
+    "property": "--app-page-max-width",
+    "removed": "var(--ui-screen-width)",
+    "retained": "var(--app-responsive-page-width)"
+  },
+  {
+    "file": "src/styles/base.css",
+    "context": "",
+    "selector": "body",
+    "property": "background",
+    "removed": "#ffffff",
+    "retained": "var(--theme-bg)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "context": "",
+    "selector": ".index-card-wrap",
+    "property": "gap",
+    "removed": "8px",
+    "retained": "var(--ui-space-2)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "context": "",
+    "selector": ".index-card-title",
+    "property": "font-size",
+    "removed": "1rem",
+    "retained": "var(--ui-text-md)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "context": "media (max-width: 639px)",
+    "selector": ".index-list",
+    "property": "gap",
+    "removed": "10px",
+    "retained": "var(--ui-space-3)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "context": "media (max-width: 639px)",
+    "selector": ".index-surah-stack",
+    "property": "gap",
+    "removed": "10px",
+    "retained": "var(--ui-space-3)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "context": "media (max-width: 639px)",
+    "selector": ".index-card-wrap",
+    "property": "gap",
+    "removed": "10px",
+    "retained": "var(--ui-space-2)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "context": "media (max-width: 639px)",
+    "selector": ".index-card-title",
+    "property": "font-size",
+    "removed": "1.05rem",
+    "retained": "var(--ui-text-md)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "context": "",
+    "selector": ".index-quarter-btn",
+    "property": "border",
+    "removed": "1px solid rgba(77, 72, 65, .08)",
+    "retained": "1px solid var(--theme-border)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "context": "",
+    "selector": ".index-collapse-panel",
+    "property": "background",
+    "removed": "rgba(255,255,255,.76)",
+    "retained": "var(--theme-surface)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "context": "",
+    "selector": ".index-surah-info-preview",
+    "property": "background",
+    "removed": "#f0f1f3",
+    "retained": "var(--theme-surface)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "context": "",
+    "selector": ".index-quarter-btn",
+    "property": "background",
+    "removed": "#f5f3ef",
+    "retained": "var(--theme-soft)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "context": "",
+    "selector": "[data-theme='dark'] .index-quarter-btn",
+    "property": "border-color",
+    "removed": "rgba(255,255,255,.08)",
+    "retained": "var(--theme-border)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "context": "",
+    "selector": "[data-theme='dark'] .index-collapse-panel",
+    "property": "background",
+    "removed": "rgba(35, 40, 37, .84)",
+    "retained": "var(--theme-surface)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "context": "",
+    "selector": "[data-theme='dark'] .index-surah-info-preview",
+    "property": "background",
+    "removed": "#2b302d",
+    "retained": "var(--theme-surface)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "context": "",
+    "selector": "[data-theme='dark'] .index-quarter-btn",
+    "property": "background",
+    "removed": "#2b302d",
+    "retained": "var(--theme-soft)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "context": "",
+    "selector": ".index-surah-info-preview p",
+    "property": "font-size",
+    "removed": "var(--ui-text-sm)",
+    "retained": "clamp(1.08rem, 4.7vw, 1.22rem)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "context": "",
+    "selector": ".index-surah-info-copy",
+    "property": "font-size",
+    "removed": ".82rem",
+    "retained": "clamp(1.08rem, 4.7vw, 1.22rem)"
+  },
+  {
+    "file": "src/styles/index.css",
+    "context": "",
+    "selector": ".index-replica-shell .index-surah-info-preview .index-surah-text-action",
+    "property": "background",
+    "removed": "transparent",
+    "retained": "var(--ui-control-bg)"
+  },
+  {
+    "file": "src/styles/reader.css",
+    "context": "",
+    "selector": ".reader-footer-meta",
+    "property": "bottom",
+    "removed": "18px",
+    "retained": "calc(env(safe-area-inset-bottom, 0px) + 6px)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "context": "",
+    "selector": ".reflect-screen .reflect-passage-limit",
+    "property": "color",
+    "removed": "#64748b",
+    "retained": "var(--theme-muted, #64748b)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "context": "",
+    "selector": ".reflect-screen .reflect-passage-to",
+    "property": "color",
+    "removed": "#64748b",
+    "retained": "var(--theme-muted, #64748b)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "context": "",
+    "selector": ".reflect-screen .reflect-study-card-meta",
+    "property": "color",
+    "removed": "#64748b",
+    "retained": "var(--reflect-muted)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "context": "",
+    "selector": ".reflect-screen .reflect-theme-heading small",
+    "property": "color",
+    "removed": "#64748b",
+    "retained": "var(--reflect-muted)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "context": "",
+    "selector": ".reflect-screen .reflect-subtheme-count",
+    "property": "color",
+    "removed": "#64748b",
+    "retained": "var(--reflect-muted)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "context": "",
+    "selector": ".reflect-screen .reflect-keyword-refs",
+    "property": "color",
+    "removed": "#64748b",
+    "retained": "var(--reflect-muted)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "context": "",
+    "selector": ".reflect-screen .reflect-keyword-card",
+    "property": "box-shadow",
+    "removed": "0 2px 12px #0000000a",
+    "retained": "var(--ui-card-shadow)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "context": "",
+    "selector": ".reflect-screen .reflect-study-menu",
+    "property": "border",
+    "removed": "1px solid #ddd",
+    "retained": "1px solid var(--ui-control-border)"
+  },
+  {
+    "file": "src/styles/reflect.css",
+    "context": "",
+    "selector": ".reflect-screen .reflect-delete-dialog",
+    "property": "color",
+    "removed": "#242424",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "context": "",
+    "selector": ".settings-row-copy strong",
+    "property": "font-size",
+    "removed": ".80rem",
+    "retained": "var(--ui-text-sm)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "context": "",
+    "selector": ".settings-section-heading small",
+    "property": "font-size",
+    "removed": ".73rem",
+    "retained": "var(--ui-text-xs)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "context": "",
+    "selector": ".settings-row-copy small",
+    "property": "font-size",
+    "removed": ".73rem",
+    "retained": "var(--ui-text-xs)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "context": "",
+    "selector": ".settings-toggle-row",
+    "property": "gap",
+    "removed": "11px",
+    "retained": "var(--ui-space-3)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "context": "",
+    "selector": "[data-theme='dark'] .settings-dialog",
+    "property": "background",
+    "removed": "#222724",
+    "retained": "var(--theme-surface-solid)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "context": "",
+    "selector": "[data-theme='dark'] .settings-theme-picker button.is-active",
+    "property": "background",
+    "removed": "#3a413c",
+    "retained": "var(--theme-accent)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "context": "",
+    "selector": "[data-theme='dark'] .settings-dialog-close",
+    "property": "color",
+    "removed": "#d6dbd7",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "context": "",
+    "selector": "[data-theme='dark'] .settings-dialog .secondary",
+    "property": "color",
+    "removed": "#d6dbd7",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "context": "",
+    "selector": "[data-theme='dark'] .settings-picker-pill",
+    "property": "background",
+    "removed": "rgba(24, 29, 34, .96)",
+    "retained": "var(--theme-soft)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "context": "",
+    "selector": "[data-theme='dark'] .settings-picker-pill",
+    "property": "color",
+    "removed": "#eef2f3",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "context": "",
+    "selector": "[data-theme='dark'] .settings-picker-panel",
+    "property": "border-color",
+    "removed": "rgba(255, 255, 255, .08)",
+    "retained": "var(--theme-border)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "context": "",
+    "selector": "[data-theme='dark'] .settings-picker-panel",
+    "property": "background",
+    "removed": "rgba(24, 29, 34, .96)",
+    "retained": "var(--theme-surface-solid)"
+  },
+  {
+    "file": "src/styles/settings.css",
+    "context": "",
+    "selector": "[data-theme='dark'] .settings-picker-panel",
+    "property": "color",
+    "removed": "#eef2f3",
+    "retained": "var(--theme-text)"
+  },
+  {
+    "file": "src/styles/share.css",
+    "context": "",
+    "selector": ".share-range-field > span",
+    "property": "color",
+    "removed": "rgba(37, 37, 34, .55)",
+    "retained": "var(--theme-muted, #756f65)"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "context": "",
+    "selector": "[data-theme='dark'] .library-tabs",
+    "property": "background",
+    "removed": "rgba(255, 255, 255, .08)",
+    "retained": "var(--theme-surface-solid)"
+  },
+  {
+    "file": "src/styles/tafsir.css",
+    "context": "",
+    "selector": ".surah-info-content",
+    "property": "padding",
+    "removed": "18px 16px 28px",
+    "retained": "var(--ui-space-6)"
+  },
+  {
+    "file": "src/styles/tafsir.css",
+    "context": "",
+    "selector": ".surah-info-content",
+    "property": "padding",
+    "removed": "var(--ui-space-6)",
+    "retained": "0 2px calc(var(--safe-bottom, env(safe-area-inset-bottom, 0px)) + 24px)"
+  },
+  {
+    "file": "src/styles/tafsir.css",
+    "context": "",
+    "selector": ".tafsir-card-head p",
+    "property": "color",
+    "removed": "rgba(30, 30, 30, .48)",
+    "retained": "var(--theme-muted)"
+  },
+  {
+    "file": "src/styles/theme.css",
+    "context": "",
+    "selector": ":root",
+    "property": "--settings-icon-column",
+    "removed": "38px",
+    "retained": "38px"
+  },
+  {
+    "file": "src/styles/theme.css",
+    "context": "",
+    "selector": ":root",
+    "property": "--settings-row-gap",
+    "removed": "11px",
+    "retained": "11px"
+  },
+  {
+    "file": "src/styles/theme.css",
+    "context": "",
+    "selector": ":root",
+    "property": "--settings-row-min-height",
+    "removed": "72px",
+    "retained": "72px"
+  },
+  {
+    "file": "src/styles/theme.css",
+    "context": "",
+    "selector": ":root",
+    "property": "--settings-picker-height",
+    "removed": "44px",
+    "retained": "44px"
+  },
+  {
+    "file": "src/styles/theme.css",
+    "context": "media (max-width: 380px)",
+    "selector": ":root",
+    "property": "--settings-row-gap",
+    "removed": "9px",
+    "retained": "9px"
+  }
+]

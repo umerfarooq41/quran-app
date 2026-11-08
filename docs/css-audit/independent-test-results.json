@@ -1,0 +1,1548 @@
+{
+  "baseline": "d857f8802b61fafcb904441888b7db47f071716e",
+  "browser": {
+    "engine": "Chromium 153.0.8010.0",
+    "stats": {
+      "startTime": "2026-11-08T04:28:58.736Z",
+      "duration": 981638.067,
+      "expected": 137,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "errors": [],
+    "cases": [
+      {
+        "title": "Share controls light 320px",
+        "project": "responsive-audit",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 18707
+          }
+        ]
+      },
+      {
+        "title": "Share controls light 375px",
+        "project": "responsive-audit",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 18462
+          }
+        ]
+      },
+      {
+        "title": "Share controls light 390px",
+        "project": "responsive-audit",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 21380
+          }
+        ]
+      },
+      {
+        "title": "Share controls light 430px",
+        "project": "responsive-audit",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 17121
+          }
+        ]
+      },
+      {
+        "title": "Share controls light 768px",
+        "project": "responsive-audit",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 22264
+          }
+        ]
+      },
+      {
+        "title": "Share controls dark 320px",
+        "project": "responsive-audit",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 17755
+          }
+        ]
+      },
+      {
+        "title": "Share controls dark 375px",
+        "project": "responsive-audit",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 16764
+          }
+        ]
+      },
+      {
+        "title": "Share controls dark 390px",
+        "project": "responsive-audit",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 21114
+          }
+        ]
+      },
+      {
+        "title": "Share controls dark 430px",
+        "project": "responsive-audit",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 18742
+          }
+        ]
+      },
+      {
+        "title": "Share controls dark 768px",
+        "project": "responsive-audit",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 21670
+          }
+        ]
+      },
+      {
+        "title": "light 320px pages, lesson and keyboard controls",
+        "project": "responsive-audit",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 46421
+          }
+        ]
+      },
+      {
+        "title": "light 375px pages, lesson and keyboard controls",
+        "project": "responsive-audit",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 45735
+          }
+        ]
+      },
+      {
+        "title": "light 390px pages, lesson and keyboard controls",
+        "project": "responsive-audit",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 58818
+          }
+        ]
+      },
+      {
+        "title": "light 430px pages, lesson and keyboard controls",
+        "project": "responsive-audit",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 45786
+          }
+        ]
+      },
+      {
+        "title": "light 768px pages, lesson and keyboard controls",
+        "project": "responsive-audit",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 58066
+          }
+        ]
+      },
+      {
+        "title": "dark 320px pages, lesson and keyboard controls",
+        "project": "responsive-audit",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 46110
+          }
+        ]
+      },
+      {
+        "title": "dark 375px pages, lesson and keyboard controls",
+        "project": "responsive-audit",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 44776
+          }
+        ]
+      },
+      {
+        "title": "dark 390px pages, lesson and keyboard controls",
+        "project": "responsive-audit",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 58662
+          }
+        ]
+      },
+      {
+        "title": "dark 430px pages, lesson and keyboard controls",
+        "project": "responsive-audit",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 48775
+          }
+        ]
+      },
+      {
+        "title": "dark 768px pages, lesson and keyboard controls",
+        "project": "responsive-audit",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 57555
+          }
+        ]
+      },
+      {
+        "title": "Swipe exposure and lesson source surfaces light",
+        "project": "responsive-audit",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 13149
+          }
+        ]
+      },
+      {
+        "title": "Swipe exposure and lesson source surfaces dark",
+        "project": "responsive-audit",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 14363
+          }
+        ]
+      },
+      {
+        "title": "new lesson saves questions, themes, reflection and completed review",
+        "project": "responsive-audit",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 13235
+          }
+        ]
+      },
+      {
+        "title": "Home and Reader meet critical WCAG accessibility checks",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 10413
+          }
+        ]
+      },
+      {
+        "title": "Index, Reflect and Settings meet critical WCAG accessibility checks",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 18184
+          }
+        ]
+      },
+      {
+        "title": "Home and Reader meet critical WCAG accessibility checks",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 12315
+          }
+        ]
+      },
+      {
+        "title": "Index, Reflect and Settings meet critical WCAG accessibility checks",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 25036
+          }
+        ]
+      },
+      {
+        "title": "home renders the main actions and Reflect card without browser errors",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 5079
+          }
+        ]
+      },
+      {
+        "title": "Reflect opens and its passage selection controls are usable",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 9204
+          }
+        ]
+      },
+      {
+        "title": "Reflect Progress tab renders statistics without blanking the app",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 6998
+          }
+        ]
+      },
+      {
+        "title": "Index, Search, Library and Settings screens open and remain responsive",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 16496
+          }
+        ]
+      },
+      {
+        "title": "reader preserves the 16-row Mushaf grid and loads its Arabic font",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 6600
+          }
+        ]
+      },
+      {
+        "title": "mobile, narrow-mobile, tablet and desktop layouts have no horizontal overflow",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 5467
+          }
+        ]
+      },
+      {
+        "title": "home renders the main actions and Reflect card without browser errors",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 5529
+          }
+        ]
+      },
+      {
+        "title": "Reflect opens and its passage selection controls are usable",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 10903
+          }
+        ]
+      },
+      {
+        "title": "Reflect Progress tab renders statistics without blanking the app",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 9004
+          }
+        ]
+      },
+      {
+        "title": "Index, Search, Library and Settings screens open and remain responsive",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 19135
+          }
+        ]
+      },
+      {
+        "title": "reader preserves the 16-row Mushaf grid and loads its Arabic font",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 9496
+          }
+        ]
+      },
+      {
+        "title": "mobile, narrow-mobile, tablet and desktop layouts have no horizontal overflow",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 6575
+          }
+        ]
+      },
+      {
+        "title": "Reader audio loads, plays, pauses, seeks, repeats and changes speed",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 8693
+          }
+        ]
+      },
+      {
+        "title": "Reader audio loads, plays, pauses, seeks, repeats and changes speed",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 11448
+          }
+        ]
+      },
+      {
+        "title": "Settings keyboard controls, About and restored Translation light",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 13593
+          }
+        ]
+      },
+      {
+        "title": "Settings keyboard controls, About and restored Translation dark",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 13022
+          }
+        ]
+      },
+      {
+        "title": "Settings keyboard controls, About and restored Translation light",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 17313
+          }
+        ]
+      },
+      {
+        "title": "Settings keyboard controls, About and restored Translation dark",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 14568
+          }
+        ]
+      },
+      {
+        "title": "Home light styling baseline",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 6318
+          }
+        ]
+      },
+      {
+        "title": "Index light styling baseline",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 7629
+          }
+        ]
+      },
+      {
+        "title": "Search light styling baseline",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 7638
+          }
+        ]
+      },
+      {
+        "title": "Library light styling baseline",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 7490
+          }
+        ]
+      },
+      {
+        "title": "Reflect light styling baseline",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 6721
+          }
+        ]
+      },
+      {
+        "title": "Settings light styling baseline",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 8297
+          }
+        ]
+      },
+      {
+        "title": "Reader light styling baseline",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 6257
+          }
+        ]
+      },
+      {
+        "title": "Home dark styling baseline",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 7055
+          }
+        ]
+      },
+      {
+        "title": "Index dark styling baseline",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 6806
+          }
+        ]
+      },
+      {
+        "title": "Search dark styling baseline",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 6468
+          }
+        ]
+      },
+      {
+        "title": "Library dark styling baseline",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 7238
+          }
+        ]
+      },
+      {
+        "title": "Reflect dark styling baseline",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 5856
+          }
+        ]
+      },
+      {
+        "title": "Settings dark styling baseline",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 7446
+          }
+        ]
+      },
+      {
+        "title": "Reader dark styling baseline",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 5266
+          }
+        ]
+      },
+      {
+        "title": "Home light styling baseline",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 10566
+          }
+        ]
+      },
+      {
+        "title": "Index light styling baseline",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 8624
+          }
+        ]
+      },
+      {
+        "title": "Search light styling baseline",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 11588
+          }
+        ]
+      },
+      {
+        "title": "Library light styling baseline",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 10537
+          }
+        ]
+      },
+      {
+        "title": "Reflect light styling baseline",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 10773
+          }
+        ]
+      },
+      {
+        "title": "Settings light styling baseline",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 10230
+          }
+        ]
+      },
+      {
+        "title": "Reader light styling baseline",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 7785
+          }
+        ]
+      },
+      {
+        "title": "Home dark styling baseline",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 9182
+          }
+        ]
+      },
+      {
+        "title": "Index dark styling baseline",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 11236
+          }
+        ]
+      },
+      {
+        "title": "Search dark styling baseline",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 9177
+          }
+        ]
+      },
+      {
+        "title": "Library dark styling baseline",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 10732
+          }
+        ]
+      },
+      {
+        "title": "Reflect dark styling baseline",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 10850
+          }
+        ]
+      },
+      {
+        "title": "Settings dark styling baseline",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 11483
+          }
+        ]
+      },
+      {
+        "title": "Reader dark styling baseline",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 8440
+          }
+        ]
+      },
+      {
+        "title": "Reflect saved cards and editable answers use neutral light surfaces",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 8249
+          }
+        ]
+      },
+      {
+        "title": "Help disclosures use shared light surfaces",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 8156
+          }
+        ]
+      },
+      {
+        "title": "Reflect saved cards and editable answers use neutral dark surfaces",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 8408
+          }
+        ]
+      },
+      {
+        "title": "Help disclosures use shared dark surfaces",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 8740
+          }
+        ]
+      },
+      {
+        "title": "Reader ayah actions open Share Quran and produce a PNG export",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 9579
+          }
+        ]
+      },
+      {
+        "title": "Reflect saved cards and editable answers use neutral light surfaces",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 11395
+          }
+        ]
+      },
+      {
+        "title": "Help disclosures use shared light surfaces",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 10953
+          }
+        ]
+      },
+      {
+        "title": "Reflect saved cards and editable answers use neutral dark surfaces",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 12058
+          }
+        ]
+      },
+      {
+        "title": "Help disclosures use shared dark surfaces",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 12276
+          }
+        ]
+      },
+      {
+        "title": "Reader ayah actions open Share Quran and produce a PNG export",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 14273
+          }
+        ]
+      },
+      {
+        "title": "real Share Quran downloads contain valid PNG and MP4 audio/video streams",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 20140
+          }
+        ]
+      },
+      {
+        "title": "real Share Quran downloads contain valid PNG and MP4 audio/video streams",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 26479
+          }
+        ]
+      },
+      {
+        "title": "home screen renders its main actions and study card",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 5532
+          }
+        ]
+      },
+      {
+        "title": "Reflect card opens the Reflect screen",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 7956
+          }
+        ]
+      },
+      {
+        "title": "home screen remains within the viewport after resizing",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 3112
+          }
+        ]
+      },
+      {
+        "title": "home screen renders its main actions and study card",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 7567
+          }
+        ]
+      },
+      {
+        "title": "Reflect card opens the Reflect screen",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 11383
+          }
+        ]
+      },
+      {
+        "title": "home screen remains within the viewport after resizing",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 5450
+          }
+        ]
+      },
+      {
+        "title": "Library reads persisted bookmarks and highlights and supports removal",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 8491
+          }
+        ]
+      },
+      {
+        "title": "saved Reflect lesson and its personal notes survive reloads",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 12458
+          }
+        ]
+      },
+      {
+        "title": "Reflect bookmarks appear independently of saved Reflect studies",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 10770
+          }
+        ]
+      },
+      {
+        "title": "installed production service worker supports an offline cold reload",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 12671
+          }
+        ]
+      },
+      {
+        "title": "key screens produce reviewable visual evidence",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 13703
+          }
+        ]
+      },
+      {
+        "title": "visible interactive controls expose accessible names",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 3378
+          }
+        ]
+      },
+      {
+        "title": "Library reads persisted bookmarks and highlights and supports removal",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 12607
+          }
+        ]
+      },
+      {
+        "title": "saved Reflect lesson and its personal notes survive reloads",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 14426
+          }
+        ]
+      },
+      {
+        "title": "Reflect bookmarks appear independently of saved Reflect studies",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 12870
+          }
+        ]
+      },
+      {
+        "title": "installed production service worker supports an offline cold reload",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 15648
+          }
+        ]
+      },
+      {
+        "title": "key screens produce reviewable visual evidence",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 22769
+          }
+        ]
+      },
+      {
+        "title": "visible interactive controls expose accessible names",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 4356
+          }
+        ]
+      },
+      {
+        "title": "reduced-motion preferences suppress page and player phase animations",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 10267
+          }
+        ]
+      },
+      {
+        "title": "reduced-motion preferences suppress page and player phase animations",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 14341
+          }
+        ]
+      },
+      {
+        "title": "permanent quarter and bookmark capsules survive page turns light",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 8333
+          }
+        ]
+      },
+      {
+        "title": "long-press Play follows a timed word across page 238 to 239 light",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 9898
+          }
+        ]
+      },
+      {
+        "title": "permanent quarter and bookmark capsules survive page turns dark",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 8949
+          }
+        ]
+      },
+      {
+        "title": "long-press Play follows a timed word across page 238 to 239 dark",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 9906
+          }
+        ]
+      },
+      {
+        "title": "permanent quarter and bookmark capsules survive page turns light",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 11693
+          }
+        ]
+      },
+      {
+        "title": "long-press Play follows a timed word across page 238 to 239 light",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 11902
+          }
+        ]
+      },
+      {
+        "title": "permanent quarter and bookmark capsules survive page turns dark",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 12187
+          }
+        ]
+      },
+      {
+        "title": "long-press Play follows a timed word across page 238 to 239 dark",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 12005
+          }
+        ]
+      },
+      {
+        "title": "Reader chrome and annotations light",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 9749
+          }
+        ]
+      },
+      {
+        "title": "Reader player states light",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 11360
+          }
+        ]
+      },
+      {
+        "title": "Reader translation panel light",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 9430
+          }
+        ]
+      },
+      {
+        "title": "Share Quran UI states light",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 11293
+          }
+        ]
+      },
+      {
+        "title": "Reader chrome and annotations dark",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 9349
+          }
+        ]
+      },
+      {
+        "title": "Reader player states dark",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 10333
+          }
+        ]
+      },
+      {
+        "title": "Reader translation panel dark",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 9194
+          }
+        ]
+      },
+      {
+        "title": "Share Quran UI states dark",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 9308
+          }
+        ]
+      },
+      {
+        "title": "Reader chrome and annotations light",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 12322
+          }
+        ]
+      },
+      {
+        "title": "Reader player states light",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 13182
+          }
+        ]
+      },
+      {
+        "title": "Reader translation panel light",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 12489
+          }
+        ]
+      },
+      {
+        "title": "Share Quran UI states light",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 16183
+          }
+        ]
+      },
+      {
+        "title": "Reader chrome and annotations dark",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 13013
+          }
+        ]
+      },
+      {
+        "title": "Reader player states dark",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 14766
+          }
+        ]
+      },
+      {
+        "title": "Reader translation panel dark",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 12280
+          }
+        ]
+      },
+      {
+        "title": "Share Quran UI states dark",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 15743
+          }
+        ]
+      },
+      {
+        "title": "shared glass surfaces keep distinct card and control roles",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 3161
+          }
+        ]
+      },
+      {
+        "title": "Index, Search and Settings retain warm glass surfaces",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 15573
+          }
+        ]
+      },
+      {
+        "title": "Reader Mushaf stays sixteen lines after opening from Home",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 7349
+          }
+        ]
+      },
+      {
+        "title": "Reflect selected tabs do not animate through low-contrast intermediate colors",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 5747
+          }
+        ]
+      },
+      {
+        "title": "shared glass surfaces keep distinct card and control roles",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 4071
+          }
+        ]
+      },
+      {
+        "title": "Index, Search and Settings retain warm glass surfaces",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 19913
+          }
+        ]
+      },
+      {
+        "title": "Reader Mushaf stays sixteen lines after opening from Home",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 10067
+          }
+        ]
+      },
+      {
+        "title": "Reflect selected tabs do not animate through low-contrast intermediate colors",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "results": [
+          {
+            "status": "passed",
+            "durationMs": 7331
+          }
+        ]
+      }
+    ]
+  },
+  "unit": {
+    "passed": 23,
+    "failed": 0,
+    "skipped": 0
+  },
+  "lint": "passed",
+  "build": "passed",
+  "typescript": "not configured",
+  "readerGeometry": {
+    "comparisons": 50,
+    "matched": 50
+  },
+  "existingVisualReferences": {
+    "count": 76,
+    "modified": 0
+  },
+  "widths": [
+    320,
+    375,
+    390,
+    430,
+    768,
+    1365
+  ]
+}

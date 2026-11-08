@@ -13,7 +13,9 @@
     "qf:proxy": "node --env-file=.env server/qf-proxy.mjs",
     "audit:css": "node scripts/audit-ui-css.mjs",
     "test:e2e": "playwright test",
-    "test:visual": "playwright test css-architecture-visual"
+    "test:visual": "playwright test css-architecture-visual",
+    "lint": "eslint .",
+    "audit:architecture": "node scripts/audit-ui-architecture.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^5.0.4",
@@ -28,9 +30,17 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
+    "@eslint/js": "^9.39.5",
     "@playwright/test": "^1.62.1",
     "autoprefixer": "^10.4.20",
+    "eslint": "^9.39.5",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "espree": "^10.4.0",
+    "globals": "^17.14.0",
     "postcss": "^8.4.49",
+    "postcss-selector-parser": "^7.1.7",
+    "postcss-value-parser": "^4.2.0",
     "tailwindcss": "^3.4.17"
   }
 }

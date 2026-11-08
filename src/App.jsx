@@ -383,7 +383,8 @@ export default function App() {
 
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if (event.key === 'Escape') goBack();
+      // Pickers and dialogs own Escape before app-level back navigation.
+      if (event.key === 'Escape' && !event.defaultPrevented) goBack();
     };
 
     window.addEventListener('keydown', handleKeyDown);

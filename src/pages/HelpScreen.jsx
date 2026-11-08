@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import {
-  BookOpen, Bookmark, CircleHelp, Headphones, Home,
-  Image, Library, List, Search, Settings, Share2, SlidersHorizontal,
-} from 'lucide-react';
+import { BookOpen, Bookmark, CircleHelp, Headphones, Home, Library, List, Search, Settings, Share2, SlidersHorizontal } from "lucide-react";
 import { Header, Screen } from '../components/common/AppChrome';
 import { Card, Disclosure } from '../components/common/Surfaces';
 

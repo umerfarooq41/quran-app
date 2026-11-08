@@ -240,9 +240,7 @@ function renderTranslationText(translation, onFootnoteOpen, openFootnote) {
   });
 }
 
-function getNotesButtonLabel() {
-  return 'Show Tafsir';
-}
+
 
 function normalizeTarget(target) {
   const surahNumber = Number(target?.surahNumber);

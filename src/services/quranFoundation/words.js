@@ -1,5 +1,5 @@
 import quranWords from '../../data/quranWords.json';
-import { qfGet } from './client';
+
 
 export const WORD_BY_WORD_LANGUAGES = Object.freeze([
   { id: 'en', label: 'English', direction: 'ltr' },
@@ -187,89 +187,11 @@ async function getLocalWords(surah, ayah, language, signal) {
   };
 }
 
-async function getApiWords(surah, ayah, language, signal) {
-  const data = await qfGet(`/verses/by_key/${surah}:${ayah}`, {
-    words: true,
-    language,
-    word_fields: [
-      'text_indopak',
-      'text_uthmani',
-      'translation',
-      'transliteration',
-      'location',
-      'char_type_name',
-      'position',
-    ].join(','),
-  }, { signal });
 
-  const verse = data?.verse || data?.verses?.[0] || data;
-  const rawWords = Array.isArray(verse?.words) ? verse.words : [];
-  const words = rawWords
-    .filter((word) => !word?.char_type_name || word.char_type_name === 'word')
-    .map((word, index) => normalizeApiWord(word, index, language))
-    .filter((word) => word.arabic || word.meaning);
 
-  return {
-    verseKey: verse?.verse_key || `${surah}:${ayah}`,
-    language,
-    direction: getWordLanguage(language).direction,
-    source: 'api',
-    words,
-  };
-}
 
-function normalizeApiWord(word, index, requestedLanguage) {
-  const translation = word?.translation;
-  const translationLanguage = normalizeReturnedLanguage(
-    translation?.language_name || translation?.language || requestedLanguage,
-  );
 
-  return {
-    id: String(word?.location || word?.id || `word-${index + 1}`),
-    position: Number(word?.position) || index + 1,
-    arabic: extractRenderableText(
-      word?.text_indopak || word?.text_uthmani || word?.text || '',
-    ),
-    // Some Quran Foundation word responses contain a translation object whose
-    // visible value is nested or absent. Never pass that object into JSX: React
-    // throws and unmounts the Reader (observed on 54:48 in Urdu WBW mode).
-    meaning: extractRenderableText(translation),
-    meaningHtml: '',
-    transliteration: extractRenderableText(word?.transliteration),
-    language: translationLanguage,
-  };
-}
 
-function extractRenderableText(value, depth = 0) {
-  if (value == null || depth > 3) return '';
-  if (typeof value === 'string' || typeof value === 'number') {
-    return String(value).trim();
-  }
-  if (Array.isArray(value)) {
-    return value
-      .map((item) => extractRenderableText(item, depth + 1))
-      .filter(Boolean)
-      .join(' ')
-      .trim();
-  }
-  if (typeof value !== 'object') return '';
-
-  const preferredKeys = [
-    'text',
-    'translation',
-    'translated_text',
-    'meaning',
-    'value',
-    'name',
-  ];
-
-  for (const key of preferredKeys) {
-    const text = extractRenderableText(value?.[key], depth + 1);
-    if (text) return text;
-  }
-
-  return '';
-}
 
 function sanitizeEnglishMeaningHtml(value) {
   const input = String(value || '');
@@ -340,12 +262,7 @@ function escapeHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
-function normalizeReturnedLanguage(language) {
-  const value = String(language || '').toLowerCase();
-  if (value === 'urdu' || value === 'ur') return 'ur';
-  if (value === 'english' || value === 'en') return 'en';
-  return value || null;
-}
+
 
 function validateReference(surah, ayah) {
   if (!Number.isInteger(surah) || surah < 1 || surah > 114) {

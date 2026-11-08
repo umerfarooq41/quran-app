@@ -153,7 +153,7 @@ const ayahs = [...wordsByAyah.entries()].map(([key, words]) => {
 
 writeFileSync(pagesOutPath, `${JSON.stringify(pageList, null, 2)}\n`, 'utf8');
 writeFileSync(wordsOutPath, `${JSON.stringify(ayahs, null, 2)}\n`, 'utf8');
-writeFileSync(ayahsOutPath, `${JSON.stringify(ayahs.map(({ words, ...ayah }) => ayah), null, 2)}\n`, 'utf8');
+writeFileSync(ayahsOutPath, `${JSON.stringify(ayahs.map(({ ...ayah }) => ayah), null, 2)}\n`, 'utf8');
 
 if (errors.length > 0) {
   console.error('\nValidation notes:');

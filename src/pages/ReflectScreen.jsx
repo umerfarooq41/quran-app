@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ChevronDown, Loader2, Plus } from 'lucide-react';
-import { Screen, Empty, Header } from '../components/common/AppChrome';
+import { Screen, Header } from "../components/common/AppChrome";
 import ReflectHubTabs from '../features/reflect/components/ReflectHubTabs';
 import DeleteLessonDialog from '../features/reflect/components/DeleteLessonDialog';
 import FinishAndRevisit from '../features/reflect/components/FinishAndRevisit';

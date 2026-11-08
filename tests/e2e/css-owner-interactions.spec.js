@@ -49,7 +49,7 @@ for (const theme of ['light','dark']) {
 test('Reader ayah actions open Share Quran and produce a PNG export', async ({ page }) => {
   await home(page);
   await page.getByRole('button', { name: /Continue Reading/i }).click();
-  const word = page.locator('.quran-line-ayah:not([aria-hidden=\"true\"]) .quran-word').first();
+  const word = page.locator('.quran-line-ayah:not([aria-hidden="true"]) .quran-word').first();
   await expect(word).toBeVisible();
   await page.evaluate(() => document.fonts.ready);
   await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));

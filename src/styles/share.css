@@ -18,14 +18,11 @@
 
 .share-range-menu button:active:not(.is-selected) {
   background: rgba(201, 162, 75, .10);
-  background: color-mix(in srgb, var(--brand-gold, #b68a35) 10%, transparent);
   background: color-mix(in srgb, var(--theme-border, #dfd3b5) 30%, transparent);
 }
 
 .share-range-field > span {
   display: block;
-  color: rgba(37, 37, 34, .55);
-  color: var(--theme-muted, rgba(37, 37, 34, .55));
   margin-bottom: 7px;
   color: var(--theme-muted, #756f65);
   margin: 0 0 7px;
@@ -313,10 +310,6 @@
 
 .share-background-grid button:active {
   transform: scale(.97);
-}
-
-.share-media-range-card:has(.share-range-menu) {
-  z-index: 80;
 }
 
 .share-quran-page-content {
@@ -685,28 +678,13 @@
   padding: 6px;
 }
 
-.share-surah-field.opens-up .share-surah-menu {
-  top: auto;
-  bottom: calc(100% + 8px);
-}
-
+.share-surah-field.opens-up .share-surah-menu,
 .share-range-field.opens-up .share-range-menu {
   top: auto;
   bottom: calc(100% + 8px);
 }
 
-.share-surah-menu > button {
-  width: 100%;
-  min-height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  border-radius: 10px;
-  padding: 0 12px;
-  text-align: left;
-}
-
+.share-surah-menu > button,
 .share-range-menu > button {
   width: 100%;
   min-height: 48px;
@@ -719,11 +697,7 @@
   text-align: left;
 }
 
-.share-surah-menu > button.is-selected {
-  background: rgba(47, 125, 104, .10);
-  color: var(--theme-accent, #2f7d68);
-}
-
+.share-surah-menu > button.is-selected,
 .share-range-menu > button.is-selected {
   background: rgba(47, 125, 104, .10);
   color: var(--theme-accent, #2f7d68);
@@ -799,11 +773,7 @@
   font-size: .95rem;
 }
 
-.share-translation-inline-row span {
-  color: var(--theme-text-muted, #777);
-  font-size: .76rem;
-}
-
+.share-translation-inline-row span,
 .share-translation-inline-row small {
   color: var(--theme-text-muted, #777);
   font-size: .76rem;
@@ -920,10 +890,7 @@
   aspect-ratio: 9 / 16;
 }
 
-.share-media-live-preview.is-image.is-landscape {
-  aspect-ratio: 16 / 9;
-}
-
+.share-media-live-preview.is-image.is-landscape,
 .share-media-live-preview.is-video.is-landscape {
   aspect-ratio: 16 / 9;
 }
@@ -1203,15 +1170,6 @@
   min-width: 0;
 }
 
-.share-video-preview-reference.is-translation-sized {
-  font-size: calc(.84rem * var(--share-translation-scale, 1));
-  line-height: 1.3;
-}
-
-.share-video-preview-stage.is-landscape .share-video-preview-reference.is-translation-sized {
-  font-size: calc(.70rem * var(--share-translation-scale, 1));
-}
-
 .share-video-preview-translation {
   width: 100%;
   color: rgba(255,255,255,.92);
@@ -1329,7 +1287,6 @@
 
 .share-sheet {
   width: min(100%, 576px);
-  max-height: 94dvh;
   overflow-y: auto;
   padding: 18px 16px calc(env(safe-area-inset-bottom, 0px) + 18px);
   box-shadow: 0 -24px 70px rgba(0, 0, 0, .20);
@@ -1355,20 +1312,8 @@
   color: var(--theme-text);
 }
 
-[data-theme='dark'] .share-media-mode-switch {
-  border-color: var(--theme-border);
-  background: var(--theme-surface-solid);
-  color: var(--theme-text);
-  box-shadow: none;
-}
-
-[data-theme='dark'] .share-media-tabs {
-  border-color: var(--theme-border);
-  background: var(--theme-surface-solid);
-  color: var(--theme-text);
-  box-shadow: none;
-}
-
+[data-theme='dark'] .share-media-mode-switch,
+[data-theme='dark'] .share-media-tabs,
 [data-theme='dark'] .share-media-settings-card {
   border-color: var(--theme-border);
   background: var(--theme-surface-solid);
@@ -1376,74 +1321,34 @@
   box-shadow: none;
 }
 
-[data-theme='dark'] .share-media-mode-switch button {
-  color: var(--theme-muted);
-}
-
+[data-theme='dark'] .share-media-mode-switch button,
 [data-theme='dark'] .share-media-tabs button {
   color: var(--theme-muted);
 }
 
-[data-theme='dark'] .share-media-mode-switch button.is-active {
-  background: var(--theme-accent);
-  color: #fff;
-}
-
+[data-theme='dark'] .share-media-mode-switch button.is-active,
 [data-theme='dark'] .share-media-tabs button.is-active {
   background: var(--theme-accent);
   color: #fff;
 }
 
-[data-theme='dark'] .share-media-section-heading strong {
-  color: var(--theme-text);
-}
-
-[data-theme='dark'] .share-reference-heading {
-  color: var(--theme-text);
-}
-
-[data-theme='dark'] .share-font-stepper-group > strong {
-  color: var(--theme-text);
-}
-
+[data-theme='dark'] .share-media-section-heading strong,
+[data-theme='dark'] .share-reference-heading,
+[data-theme='dark'] .share-font-stepper-group > strong,
 [data-theme='dark'] .share-translation-inline-row strong {
   color: var(--theme-text);
 }
 
-[data-theme='dark'] .share-media-section-heading span {
-  color: var(--theme-muted);
-}
-
-[data-theme='dark'] .share-range-field > span {
-  color: var(--theme-muted);
-}
-
-[data-theme='dark'] .share-range-to-label {
-  color: var(--theme-muted);
-}
-
-[data-theme='dark'] .share-translation-inline-row span {
-  color: var(--theme-muted);
-}
-
+[data-theme='dark'] .share-media-section-heading span,
+[data-theme='dark'] .share-range-field > span,
+[data-theme='dark'] .share-range-to-label,
+[data-theme='dark'] .share-translation-inline-row span,
 [data-theme='dark'] .share-translation-inline-row small {
   color: var(--theme-muted);
 }
 
-[data-theme='dark'] .share-surah-trigger {
-  border-color: color-mix(in srgb, var(--brand-gold) 30%, var(--theme-border));
-  background: var(--theme-soft);
-  color: var(--theme-text);
-  box-shadow: none;
-}
-
-[data-theme='dark'] .share-range-trigger {
-  border-color: color-mix(in srgb, var(--brand-gold) 30%, var(--theme-border));
-  background: var(--theme-soft);
-  color: var(--theme-text);
-  box-shadow: none;
-}
-
+[data-theme='dark'] .share-surah-trigger,
+[data-theme='dark'] .share-range-trigger,
 [data-theme='dark'] .share-reciter-trigger {
   border-color: color-mix(in srgb, var(--brand-gold) 30%, var(--theme-border));
   background: var(--theme-soft);
@@ -1451,24 +1356,8 @@
   box-shadow: none;
 }
 
-[data-theme='dark'] .share-surah-menu {
-  border-color: var(--theme-border);
-  background: var(--theme-surface-solid);
-  color: var(--theme-text);
-  box-shadow: 0 12px 30px var(--theme-shadow);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
-[data-theme='dark'] .share-range-menu {
-  border-color: var(--theme-border);
-  background: var(--theme-surface-solid);
-  color: var(--theme-text);
-  box-shadow: 0 12px 30px var(--theme-shadow);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
+[data-theme='dark'] .share-surah-menu,
+[data-theme='dark'] .share-range-menu,
 [data-theme='dark'] .share-reciter-menu {
   border-color: var(--theme-border);
   background: var(--theme-surface-solid);
@@ -1478,48 +1367,23 @@
   -webkit-backdrop-filter: none;
 }
 
-[data-theme='dark'] .share-surah-menu > button {
-  color: var(--theme-text);
-  background: transparent;
-}
-
-[data-theme='dark'] .share-range-menu > button {
-  color: var(--theme-text);
-  background: transparent;
-}
-
+[data-theme='dark'] .share-surah-menu > button,
+[data-theme='dark'] .share-range-menu > button,
 [data-theme='dark'] .share-reciter-menu > button {
   color: var(--theme-text);
   background: transparent;
 }
 
-[data-theme='dark'] .share-surah-menu > button.is-selected {
-  background: color-mix(in srgb, var(--theme-accent) 18%, transparent);
-  color: color-mix(in srgb, var(--theme-accent) 68%, #fff);
-}
-
-[data-theme='dark'] .share-range-menu > button.is-selected {
-  background: color-mix(in srgb, var(--theme-accent) 18%, transparent);
-  color: color-mix(in srgb, var(--theme-accent) 68%, #fff);
-}
-
+[data-theme='dark'] .share-surah-menu > button.is-selected,
+[data-theme='dark'] .share-range-menu > button.is-selected,
 [data-theme='dark'] .share-reciter-menu > button.is-selected {
   background: color-mix(in srgb, var(--theme-accent) 18%, transparent);
   color: color-mix(in srgb, var(--theme-accent) 68%, #fff);
 }
 
-[data-theme='dark'] .share-text-reference-controls {
-  color: var(--theme-text);
-}
-
-[data-theme='dark'] .share-font-stepper-group {
-  color: var(--theme-text);
-}
-
-[data-theme='dark'] .share-font-stepper > button {
-  color: var(--theme-text);
-}
-
+[data-theme='dark'] .share-text-reference-controls,
+[data-theme='dark'] .share-font-stepper-group,
+[data-theme='dark'] .share-font-stepper > button,
 [data-theme='dark'] .share-font-stepper > span {
   color: var(--theme-text);
 }
@@ -1562,14 +1426,8 @@
   background: var(--theme-accent);
 }
 
-[data-theme='dark'] .share-media-live-preview {
-  color: inherit;
-}
-
-[data-theme='dark'] .share-video-preview-stage {
-  color: inherit;
-}
-
+[data-theme='dark'] .share-media-live-preview,
+[data-theme='dark'] .share-video-preview-stage,
 [data-theme='dark'] .share-video-fullscreen-shell {
   color: inherit;
 }

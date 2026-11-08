@@ -1,20 +1,11 @@
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import {
-  createAyahDomRange,
-  createTextDomRange,
-  createWordDomRange,
-  getAyahEndMarkerOffset,
-  getAyahHighlightRects,
-  getRangeHighlightRects,
-} from '../utils/ayahDomRange';
+import React, { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { createWordDomRange, getAyahHighlightRects, getRangeHighlightRects } from "../utils/ayahDomRange";
 import { QuranLine } from './QuranLine';
 import indoPakParaQuarters from '../../../data/indoPakParaQuarters';
 
 const SAVED_HIGHLIGHTS = ['amber', 'emerald', 'rose', 'sky', 'violet'];
-const BOOKMARK_TONES = ['reading', 'memorize', 'tadabbur', 'notes'];
-const MANAGED_HIGHLIGHTS = [
-  ...SAVED_HIGHLIGHTS.map((color) => `reader-highlight-${color}`),
- ];
+
+
 const LINE_FIT_EVENT = 'quran-line-fit';
 const MUSHAF_FONT_FAMILY = 'IndopakNastaleeq';
 const MUSHAF_FONT_SAMPLE = 'اللَّهُ';
@@ -52,8 +43,7 @@ export function MushafPage({
     recitation: [],
     navigation: [],
   });
-  const [quarterMarkerFlashRect, setQuarterMarkerFlashRect] = useState(null);
-  const [bookmarkMarkerRings, setBookmarkMarkerRings] = useState([]);
+
   const supportsTextHighlights = enableTextHighlights && typeof CSS !== 'undefined' && Boolean(CSS.highlights) && typeof Highlight !== 'undefined';
   const juzStartLines = useMemo(() => getJuzStartLineNumbers(pageData), [pageData]);
   // Match permanent quarter landmarks by their authoritative surah/ayah,
@@ -176,65 +166,6 @@ export function MushafPage({
     playingVerseKey,
     settings.fontScale,
   ]);
-
-  useLayoutEffect(() => {
-    const pageElement = pageRef.current;
-    if (!pageElement) {
-      setBookmarkMarkerRings([]);
-      return undefined;
-    }
-
-    let frame = 0;
-    let disposed = false;
-
-    const measureBookmarks = () => {
-      if (disposed) return;
-      const pageRect = pageElement.getBoundingClientRect();
-      const rings = [];
-
-      bookmarkMarkers.forEach((category, reference) => {
-        const tone = getBookmarkTone(category);
-        if (!tone) return;
-        const { surahNumber, ayahNumber } = parseReference(reference);
-        const markerRange = getAyahMarkerRange(pageElement, pageData, surahNumber, ayahNumber);
-        const markerRect = markerRange?.getBoundingClientRect();
-        if (!markerRect?.width || !markerRect?.height) return;
-
-        const padding = 3;
-        rings.push({
-          reference,
-          tone,
-          page: pageData.page,
-          left: markerRect.left - pageRect.left - padding,
-          top: markerRect.top - pageRect.top - padding,
-          width: markerRect.width + padding * 2,
-          height: markerRect.height + padding * 2,
-        });
-      });
-
-      setBookmarkMarkerRings(rings);
-    };
-
-    const scheduleMeasure = () => {
-      window.cancelAnimationFrame(frame);
-      frame = window.requestAnimationFrame(measureBookmarks);
-    };
-
-    scheduleMeasure();
-    pageElement.addEventListener(LINE_FIT_EVENT, scheduleMeasure);
-    window.addEventListener('resize', scheduleMeasure);
-    window.addEventListener('orientationchange', scheduleMeasure);
-    document.fonts?.addEventListener?.('loadingdone', scheduleMeasure);
-
-    return () => {
-      disposed = true;
-      window.cancelAnimationFrame(frame);
-      pageElement.removeEventListener(LINE_FIT_EVENT, scheduleMeasure);
-      window.removeEventListener('resize', scheduleMeasure);
-      window.removeEventListener('orientationchange', scheduleMeasure);
-      document.fonts?.removeEventListener?.('loadingdone', scheduleMeasure);
-    };
-  }, [pageData, bookmarkMarkers, settings.fontScale]);
 
   const isOpeningMushafPage = pageData.page === 1 || pageData.page === 2;
 
@@ -574,42 +505,11 @@ function getSavedWordHighlightRects(pageElement, pageData, savedHighlights) {
   return rects;
 }
 
-function getAyahRanges(pageElement, pageData, surahNumber, ayahNumber) {
-  return pageData.lines.flatMap((line) => {
-    if (!lineContainsReference(line, surahNumber, ayahNumber)) return [];
 
-    const textElement = getLineTextElement(pageElement, line.line);
-    const range = createAyahDomRange(line, textElement, ayahNumber);
-    return range ? [range] : [];
-  });
-}
 
-function getAyahMarkerRange(pageElement, pageData, surahNumber, ayahNumber) {
-  for (const line of pageData.lines) {
-    if (!lineContainsReference(line, surahNumber, ayahNumber)) continue;
 
-    const textElement = getLineTextElement(pageElement, line.line);
-    const markerOffset = getAyahEndMarkerOffset(line, ayahNumber);
-    if (!textElement || markerOffset === null) continue;
 
-    return createTextDomRange(textElement, markerOffset, markerOffset + 1);
-  }
 
-  return null;
-}
-
-function getAyahMarkerVisualRect(pageElement, pageData, surahNumber, ayahNumber) {
-  const markerRange = getAyahMarkerRange(pageElement, pageData, surahNumber, ayahNumber);
-  if (!markerRange) return null;
-
-  const markerNode = markerRange.startContainer?.parentElement;
-  const markerElement = markerNode?.closest?.('.quran-ayah-marker');
-  const glyphElement = markerElement?.querySelector?.('.quran-ayah-marker-glyph');
-  const rect = (glyphElement || markerElement)?.getBoundingClientRect?.();
-
-  if (rect?.width && rect?.height) return rect;
-  return markerRange.getBoundingClientRect();
-}
 
 function getSavedWordRange(
   pageElement,
@@ -690,10 +590,7 @@ function lineHasSavedHighlight(line, savedHighlights) {
   return false;
 }
 
-function addRanges(groups, name, ranges) {
-  if (!ranges.length) return;
-  groups.set(name, [...(groups.get(name) || []), ...ranges]);
-}
+
 
 function loadMushafFont() {
   if (typeof document === 'undefined' || !document.fonts?.load) {
@@ -708,27 +605,9 @@ function loadMushafFont() {
     .catch(() => undefined);
 }
 
-function getMarkerRingRect(markerRect, pageRect, extraSize = 0) {
-  const size = Math.max(markerRect.width, markerRect.height) + extraSize;
-  const centerX = markerRect.left - pageRect.left + markerRect.width / 2;
-  const centerY = markerRect.top - pageRect.top + markerRect.height / 2;
 
-  return {
-    left: centerX - size / 2,
-    top: centerY - size / 2,
-    size,
-  };
-}
 
 function parseReference(reference) {
   const [surahNumber, ayahNumber] = String(reference).split(':').map(Number);
   return { surahNumber, ayahNumber };
-}
-
-function getBookmarkTone(category) {
-  if (category === 'Reading' || category === 'Recitation') return 'reading';
-  if (category === 'Memorize') return 'memorize';
-  if (category === 'Reflect' || category === 'Tadabbur') return 'tadabbur';
-  if (category === 'Notes') return 'notes';
-  return '';
 }

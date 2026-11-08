@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useId, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import {
   BookOpen,
@@ -24,7 +24,8 @@ import {
 import { WORD_BY_WORD_LANGUAGES } from '../services/quranFoundation';
 import { useAppStore } from '../store/useAppStore';
 import { Header, Screen } from '../components/common/AppChrome';
-import { Card } from '../components/common/Surfaces';
+import { Card, Dialog } from '../components/common/Surfaces';
+import { focusSelectedOption, handleListboxKeyDown } from '../components/common/Dropdown';
 
 export default function SettingsScreen() {
   const { settings, updateSettings, resetSettings, openHelp, openAbout } = useAppStore(useShallow((state) => ({
@@ -189,14 +190,8 @@ export default function SettingsScreen() {
       </div>
 
       {confirmReset && (
-        <div className="settings-dialog-backdrop" role="presentation" onClick={() => setConfirmReset(false)}>
-          <section
-            className="settings-dialog"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="reset-settings-title"
-            onClick={(event) => event.stopPropagation()}
-          >
+        <div className="settings-dialog-backdrop" role="presentation" onClick={event => {if(event.target === event.currentTarget) setConfirmReset(false);}}>
+          <Dialog className="settings-dialog" labelledBy="reset-settings-title" onClose={() => setConfirmReset(false)}>
             <button
               type="button"
               className="settings-dialog-close"
@@ -211,7 +206,7 @@ export default function SettingsScreen() {
               <button type="button" className="secondary" onClick={() => setConfirmReset(false)}>Cancel</button>
               <button type="button" className="danger" onClick={resetAllSettings}>Reset</button>
             </div>
-          </section>
+          </Dialog>
         </div>
       )}
     </Screen>
@@ -266,6 +261,7 @@ function SettingPicker({
   const [open, setOpen] = useState(false);
   const [openDirection, setOpenDirection] = useState('down');
   const [panelMaxHeight, setPanelMaxHeight] = useState(280);
+  const pickerId = useId();
   const pickerRef = useRef(null);
   const triggerRef = useRef(null);
   const selectedOption = options.find((option) => option.id === value) || options[0];
@@ -310,6 +306,10 @@ function SettingPicker({
     };
   }, [open]);
 
+  useEffect(() => { if (open) focusSelectedOption(pickerRef.current); }, [open]);
+
+  function closePicker() { setOpen(false); triggerRef.current?.focus(); }
+
   function togglePicker() {
     if (open) {
       setOpen(false);
@@ -333,7 +333,7 @@ function SettingPicker({
 
   function selectOption(option) {
     onChange(option.id);
-    setOpen(false);
+    closePicker();
   }
 
   return (
@@ -353,6 +353,9 @@ function SettingPicker({
         ref={triggerRef}
         className={hasAvatars ? 'settings-picker-pill has-avatar' : 'settings-picker-pill'}
         onClick={togglePicker}
+        aria-label={`${label}: ${selectedLabel}`}
+        aria-controls={open ? pickerId : undefined}
+        onKeyDown={event => {if (!open && ["ArrowDown", "ArrowUp"].includes(event.key)) {event.preventDefault(); togglePicker();}}}
         aria-haspopup="listbox"
         aria-expanded={open}
       >
@@ -370,7 +373,7 @@ function SettingPicker({
       </button>
 
       <div className="settings-picker-panel" aria-hidden={!open}>
-        <div className="settings-picker-list" role="listbox" aria-label={label}>
+        <div id={pickerId} className="settings-picker-list" role="listbox" aria-label={label} onKeyDown={event => handleListboxKeyDown(event, closePicker)}>
           {options.map((option) => {
             const isSelected = option.id === selectedOption?.id;
             const avatarSrc = getAvatarSrc ? getAvatarSrc(option) : '';
@@ -386,6 +389,7 @@ function SettingPicker({
                 ].filter(Boolean).join(' ')}
                 onClick={() => selectOption(option)}
                 role="option"
+                tabIndex={open && isSelected ? 0 : -1}
                 aria-selected={isSelected}
                 tabIndex={open ? 0 : -1}
               >

@@ -16,12 +16,13 @@ export async function wordEvent(page, type) {
     el.dispatchEvent(new MouseEvent(type, { bubbles: true, cancelable: true, clientX: r.x + r.width / 2, clientY: r.y + r.height / 2 }));
   }, type);
 }
-export async function mockRecitation(page) {
+export async function mockRecitation(page, { toneHz = 0 } = {}) {
   const length = 60 * 8000, wav = Buffer.alloc(44 + length, 128);
   wav.write('RIFF',0); wav.writeUInt32LE(36+length,4);wav.write('WAVEfmt ',8);
   wav.writeUInt32LE(16,16);wav.writeUInt16LE(1,20);wav.writeUInt16LE(1,22);
   wav.writeUInt32LE(8000,24);wav.writeUInt32LE(8000,28);wav.writeUInt16LE(1,32);wav.writeUInt16LE(8,34);
   wav.write('data',36);wav.writeUInt32LE(length,40);
+  if (toneHz) for (let index = 0; index < length; index++) wav[44 + index] = Math.round(128 + 60 * Math.sin(2 * Math.PI * toneHz * index / 8000));
   await page.route('https://audio-cdn.tarteel.ai/**', route => route.fulfill({ status:200, contentType:'audio/wav', body:wav }));
 }
 export async function pauseRecitation(page, expectAutoplay = true) {

@@ -1,0 +1,35 @@
+import { test, expect } from '@playwright/test';
+import { execFileSync, spawnSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
+import { openReader, wordEvent, mockRecitation } from './fixtures/reader-ui.js';
+
+test('real Share Quran downloads contain valid PNG and MP4 audio/video streams',async({page},info)=>{
+  test.setTimeout(120000);
+  await mockRecitation(page, { toneHz: 440 }); await openReader(page); await wordEvent(page,'contextmenu');
+  await page.getByRole('button',{name:'Share',exact:true}).click();
+  await page.getByRole('button',{name:'Image',exact:true}).click();
+  await expect(page.locator('.quran-share-generated-image')).toBeVisible();
+  let pending=page.waitForEvent('download');
+  await page.getByRole('button',{name:'Download Image',exact:true}).click();
+  const png=await pending;const imagePath=info.outputPath('quran.png');await png.saveAs(imagePath);
+  expect(readFileSync(imagePath).subarray(0,8).toString('hex')).toBe('89504e470d0a1a0a');
+  const image=JSON.parse(execFileSync('ffprobe',['-v','error','-show_streams','-of','json',imagePath],{encoding:'utf8'}));
+  expect(image.streams[0].codec_name).toBe('png');expect(image.streams[0].width).toBeGreaterThan(500);
+  await page.getByRole('button',{name:'Video',exact:true}).click();
+  pending=page.waitForEvent('download',{timeout:90000});
+  await page.getByRole('button',{name:'Download Video',exact:true}).click();
+  const download=await pending;expect(download.suggestedFilename()).toMatch(/\.mp4$/);
+  const videoPath=info.outputPath('quran.mp4');await download.saveAs(videoPath);
+  const video=JSON.parse(execFileSync('ffprobe',['-v','error','-show_streams','-show_format','-of','json',videoPath],{encoding:'utf8'}));
+  expect(video.format.format_name).toMatch(/mp4/);
+  expect(Number(video.format.duration)).toBeGreaterThan(1);
+  const visual=video.streams.find(s=>s.codec_type==='video');const audio=video.streams.find(s=>s.codec_type==='audio');
+  expect([visual.width,visual.height]).toEqual([720,1280]);expect(audio).toBeTruthy();
+  const decoded = spawnSync('ffmpeg',['-v','info','-i',videoPath,'-vn','-af','volumedetect','-f','null','-'],{encoding:'utf8'});
+  expect(decoded.status).toBe(0);
+  const volume = decoded.stderr.match(/mean_volume:\s*(-?[\d.]+) dB/);
+  expect(volume, 'the exported audio must contain the fixture signal').toBeTruthy();
+  expect(Number(volume[1])).toBeGreaterThan(-45);
+  await info.attach('Decoded export audio',{body:decoded.stderr,contentType:'text/plain'});
+  await info.attach('MP4 container inspection',{body:JSON.stringify(video,null,2),contentType:'application/json'});
+});

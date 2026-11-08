@@ -21,15 +21,6 @@
   box-shadow: 0 10px 24px rgba(14, 116, 144, .26);
 }
 
-.prose h2 {
-  margin-top: 1.3em;
-  font-size: 1.25rem;
-}
-
-.prose a {
-  color: #0369a1;
-}
-
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -44,36 +35,6 @@
   margin: 0 auto 18px;
   border-radius: 999px;
   background: rgba(22, 22, 22, .14);
-}
-
-.gradient-check {
-  display: grid;
-  height: 46px;
-  width: 72px;
-  place-items: center;
-  border-radius: 999px;
-  background:
-    radial-gradient(circle at 30% 35%, #ff6b52, transparent 34%),
-    radial-gradient(circle at 74% 66%, #2ec7c2, transparent 38%),
-    radial-gradient(circle at 42% 78%, #f7c542, transparent 34%),
-    #151515;
-  color: #fff;
-  font-size: 2rem;
-  line-height: 1;
-  transform: rotate(180deg);
-}
-
-.brand-dot {
-  display: block;
-  width: 28px;
-  height: 28px;
-  border-radius: 999px;
-  background:
-    radial-gradient(circle at 32% 28%, #67e8f9, transparent 38%),
-    radial-gradient(circle at 70% 70%, #2563eb, transparent 42%),
-    radial-gradient(circle at 36% 76%, #facc15, transparent 36%),
-    #101827;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.35);
 }
 
 .transport-speed {
@@ -127,99 +88,6 @@
   color: #b59ae8;
 }
 
-.app-media-segment > button {
-  overflow: visible;
-
-
-  text-overflow: clip;
-}
-
-.app-media-segment > button:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--brand-gold, #b68a35) 72%, white);
-  outline-offset: 2px;
-}
-
-[data-theme='dark'] .app-media-segment {
-
-  background: color-mix(in srgb, var(--theme-surface-solid) 88%, transparent);
-}
-
-.app-media-segment {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  width: 100%;
-  min-height: 58px;
-  gap: 0;
-  margin: 8px 0 18px;
-  padding: 6px;
-  border: 1px solid rgba(201, 162, 75, .12);
-  border-radius: 999px;
-  background: rgba(255, 252, 246, .94);
-  box-shadow: 0 5px 18px rgba(31, 61, 43, .05);
-  overflow: hidden;
-}
-
-.app-media-segment > button {
-  display: inline-flex;
-  min-width: 0;
-  min-height: 46px;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  padding: 0 16px;
-  color: rgba(45, 45, 45, .62);
-  font-family: var(--ui-font);
-  font-size: .98rem;
-  font-weight: 600;
-  line-height: 1;
-  white-space: nowrap;
-  box-shadow: none;
-  transition: background-color .18s ease, color .18s ease, transform .14s ease, box-shadow .18s ease;
-}
-
-.app-media-segment > button svg {
-  width: 20px;
-  height: 20px;
-  flex: 0 0 auto;
-  stroke-width: 2;
-}
-
-.app-media-segment > button.is-active {
-  background: var(--theme-accent, #2f7d68);
-  color: #fff;
-  box-shadow: 0 5px 16px rgba(31, 61, 43, .13);
-}
-
-.app-media-segment > button:active {
-  transform: scale(.985);
-}
-
-[data-theme='dark'] .app-media-segment {
-  border-color: var(--theme-border);
-  background: color-mix(in srgb, var(--theme-surface-solid) 92%, transparent);
-  box-shadow: none;
-}
-
-[data-theme='dark'] .app-media-segment > button {
-  color: var(--theme-muted);
-}
-
-[data-theme='dark'] .app-media-segment > button.is-active {
-  background: var(--theme-accent, #2f7d68);
-  color: #fff;
-}
-
-.bg-fluent {
-  background:
-    radial-gradient(circle at 15% 10%, rgba(212, 168, 67, 0.18), transparent 38%),
-    radial-gradient(circle at 85% 18%, rgba(45, 110, 94, 0.12), transparent 32%),
-    radial-gradient(circle at 50% 90%, rgba(212, 168, 67, 0.10), transparent 40%),
-    linear-gradient(160deg, #fdf8ef 0%, #f8f3e8 50%, #f4f0e6 100%);
-}
-
 .nav-icon-btn {
   position: relative;
   display: grid;
@@ -240,11 +108,6 @@
 .nav-icon-btn.active { color: #fff; }
 
 .nav-icon-btn.active .nav-icon-active-bg { opacity: 1; transform: scale(1); }
-
-.app-shell {
-  padding-left: max(var(--app-inline), env(safe-area-inset-left, 0px));
-  padding-right: max(var(--app-inline), env(safe-area-inset-right, 0px));
-}
 
 .screen-shell { width: min(100%, 460px); }
 
@@ -296,7 +159,6 @@
     height: 5px;
     margin-bottom: 12px;
   }
-  .gradient-check { width: 48px; height: 34px; font-size: 1.35rem; }
 }
 
 @media (orientation: landscape) and (hover: none) and (pointer: coarse) and (max-height: 600px) {
@@ -336,8 +198,6 @@
 
 .app-shell {
   max-width: 100%;
-  padding-left: max(var(--ui-screen-inline), env(safe-area-inset-left, 0px));
-  padding-right: max(var(--ui-screen-inline), env(safe-area-inset-right, 0px));
 }
 
 .inline-read-more {
@@ -357,14 +217,9 @@
 }
 
 [data-theme='dark'] body,
-[data-theme='dark'] #root,
-[data-theme='dark'] .app-shell {
+[data-theme='dark'] #root {
   background: #111412;
   color: var(--theme-text);
-}
-
-[data-theme='dark'] .bg-fluent {
-  background: var(--brand-bg-dark);
 }
 
 [data-theme='dark'] .bg-reader {
@@ -469,93 +324,8 @@
   color: var(--theme-text);
 }
 
-html[data-theme='light'] {
-  --audio-panel-bg: #FFFFFF;
-  --audio-panel-text: #1F2933;
-  --audio-panel-muted: #64748B;
-  --audio-panel-border: rgba(15, 23, 42, .09);
-  --audio-control-bg: #F4F6F5;
-  --audio-control-active-bg: #E8F0ED;
-  --audio-accent: #2F7462;
-  --audio-accent-soft: rgba(47, 116, 98, .14);
-  --audio-accent-border: rgba(47, 116, 98, .30);
-  --audio-close-bg: #EEF0F0;
-  --audio-chevron-bg: #1F2933;
-  --audio-chevron-text: #FFFFFF;
-  --audio-icon: #111827;
-  --audio-main-bg: #000000;
-  --audio-main-text: #FFFFFF;
-  --audio-speed-border: rgba(100, 116, 139, .58);
-  --audio-speed-text: #737373;
-  --audio-wave-bg: rgba(100, 116, 139, .28);
-  --audio-shadow: 0 18px 48px rgba(15, 23, 42, .16);
-}
-
-html[data-theme='dark'] {
-  --audio-panel-bg: #181A19;
-  --audio-panel-text: #F5F5F3;
-  --audio-panel-muted: #A8AEA9;
-  --audio-panel-border: rgba(255, 255, 255, .09);
-  --audio-control-bg: #242826;
-  --audio-control-active-bg: #2B3330;
-  --audio-accent: #8BC7B4;
-  --audio-accent-soft: rgba(139, 199, 180, .16);
-  --audio-accent-border: rgba(139, 199, 180, .30);
-  --audio-close-bg: #252A27;
-  --audio-chevron-bg: #F5F5F3;
-  --audio-chevron-text: #181A19;
-  --audio-icon: #F5F5F3;
-  --audio-main-bg: #F5F5F3;
-  --audio-main-text: #181A19;
-  --audio-speed-border: rgba(168, 174, 169, .62);
-  --audio-speed-text: #C8CECA;
-  --audio-wave-bg: rgba(168, 174, 169, .28);
-  --audio-shadow: 0 18px 48px rgba(0, 0, 0, .44);
-}
-
-html[data-theme='light'] {
-  --audio-panel-bg: #fffaf1;
-  --audio-panel-text: #201c15;
-  --audio-panel-muted: #756f65;
-  --audio-panel-border: #eadfce;
-  --audio-control-bg: #f0ebe2;
-  --audio-control-active-bg: #e3eee9;
-  --audio-close-bg: #f0ebe2;
-  --audio-chevron-bg: #f0ebe2;
-  --audio-chevron-text: #201c15;
-  --audio-icon: #201c15;
-  --audio-main-bg: #171510;
-  --audio-main-text: #fffaf1;
-  --audio-speed-border: #d8cdbc;
-  --audio-speed-text: #71695d;
-  --audio-wave-bg: #ded6c8;
-  --audio-shadow: 0 14px 38px rgba(35, 33, 30, .13);
-}
-
-html[data-theme='dark'] {
-  --audio-panel-bg: #1e2320;
-  --audio-panel-text: #f1f3ef;
-  --audio-panel-muted: #aeb5ae;
-  --audio-panel-border: #333b36;
-  --audio-control-bg: #2b312d;
-  --audio-control-active-bg: #2e3e38;
-  --audio-close-bg: #2b312d;
-  --audio-chevron-bg: #2b312d;
-  --audio-chevron-text: #f1f3ef;
-  --audio-icon: #f1f3ef;
-  --audio-main-bg: #f1f3ef;
-  --audio-main-text: #161916;
-  --audio-speed-border: #4a534d;
-  --audio-speed-text: #c5cac5;
-  --audio-wave-bg: #454d47;
-  --audio-shadow: 0 16px 40px rgba(0, 0, 0, .36);
-}
-
 .app-page-shell {
   --app-fixed-header-height: 52px;
-  --app-page-inline-left: max(var(--ui-screen-inline), env(safe-area-inset-left, 0px));
-  --app-page-inline-right: max(var(--ui-screen-inline), env(safe-area-inset-right, 0px));
-  --app-page-max-width: var(--ui-screen-width);
   position: fixed;
   inset: 0;
   display: block;

@@ -105,6 +105,11 @@ export default function BookmarksScreen() {
   function jumpToHighlight(item, menuKey, fromMenu = false) {
     if (!fromMenu && suppressCardClick.current) {
       suppressCardClick.current = false;
+      if (swipedCard === menuKey) setSwipedCard(null);
+      return;
+    }
+    if (!fromMenu && swipedCard === menuKey) {
+      setSwipedCard(null);
       return;
     }
 
@@ -155,6 +160,7 @@ export default function BookmarksScreen() {
     await loadItems();
     setStatus('Highlight removed');
     setOpenMenu(null);
+    setSwipedCard(null);
     setEditor(null);
   }
 
@@ -232,6 +238,10 @@ export default function BookmarksScreen() {
           <HighlightList
             items={highlights}
             openMenu={openMenu}
+            swipedCard={swipedCard}
+            onStartSwipe={startSwipe}
+            onFinishSwipe={finishSwipe}
+            onSwipedCardChange={setSwipedCard}
             suppressCardClick={suppressCardClick}
             onDelete={deleteHighlight}
             onJump={jumpToHighlight}
@@ -302,7 +312,6 @@ function BookmarkList({
                 type="button"
                 className="tab-card-hit"
                 onClick={() => onJump(item, menuKey)}
-                aria-label={`Open ${reference}`}
               >
                 <div className="tab-card-top">
                   <span className="tab-card-type">
@@ -386,6 +395,10 @@ function BookmarkList({
 function HighlightList({
   items,
   openMenu,
+  swipedCard,
+  onStartSwipe,
+  onFinishSwipe,
+  onSwipedCardChange,
   suppressCardClick,
   onDelete,
   onJump,
@@ -412,14 +425,16 @@ function HighlightList({
         const tone = getHighlightTone(item.color);
 
         return (
-          <article key={menuKey} className="tab-card library-highlight-card">
+          <article key={menuKey} className={`tab-card library-highlight-card ${swipedCard === menuKey ? 'is-swiped' : ''}`}>
+            <button type="button" className="tab-card-remove" onClick={() => onDelete(item)}>
+              <Trash2 size={19} />Remove
+            </button>
             <div className={`library-highlight-strip library-highlight-${tone}`} aria-hidden="true" />
-            <div className="tab-card-surface">
+            <div className="tab-card-surface" onTouchStart={event => onStartSwipe(event, menuKey)} onTouchEnd={event => onFinishSwipe(event, menuKey)}>
               <button
                 type="button"
                 className="tab-card-hit"
                 onClick={() => onJump(item, menuKey)}
-                aria-label={`Open ${reference}`}
               >
                 <div className="tab-card-top">
                   <span className="tab-card-type">
@@ -440,6 +455,7 @@ function HighlightList({
                 className="tab-more-button"
                 onClick={() => {
                   suppressCardClick.current = false;
+                  onSwipedCardChange(null);
                   onMenuChange(openMenu === menuKey ? null : menuKey);
                 }}
                 aria-label="Highlight actions"

@@ -11,14 +11,9 @@
 .index-replica-header h1 {
   margin: 0;
   letter-spacing: -.055em;
-  color: var(--theme-text, #24262b);
 }
 
-.index-list {
-  display: grid;
-  gap: 14px;
-}
-
+.index-list,
 .index-card-wrap {
   display: grid;
 }
@@ -39,16 +34,8 @@
   place-items: center;
   border: 2px solid var(--theme-border, #d6d7d9);
   border-radius: 999px;
-  color: var(--theme-text, #17181b);
   font-weight: 400;
   line-height: 1;
-}
-
-.index-card-title {
-  min-width: 0;
-  color: var(--theme-text, #111315);
-  font-weight: 400;
-  letter-spacing: -.045em;
 }
 
 .index-chevron {
@@ -57,14 +44,12 @@
 }
 
 .index-section-title {
-  color: var(--theme-text, #111315);
   line-height: 1;
   letter-spacing: -.025em;
 }
 
 .index-surah-stack {
   display: grid;
-  gap: 14px;
 }
 
 .index-surah-text {
@@ -74,7 +59,6 @@
 
 .index-surah-text strong {
   overflow: hidden;
-  color: var(--theme-text, #08090a);
   font-weight: 650;
   letter-spacing: -.045em;
   text-overflow: ellipsis;
@@ -83,7 +67,6 @@
 
 .index-surah-text small {
   overflow: hidden;
-  color: var(--theme-muted, #9c9da1);
   font-weight: 400;
   line-height: 1.08;
   letter-spacing: -.035em;
@@ -91,11 +74,6 @@
   white-space: nowrap;
 }
 
-.index-quarter-btn {
-  color: var(--theme-text, #111315);
-}
-
-.index-quarter-btn strong,
 .index-quarter-btn span {
   display: block;
 }
@@ -106,7 +84,6 @@
 
 .index-quarter-btn span {
   margin-top: 3px;
-  color: var(--theme-muted, #8c8d91);
 }
 
 .index-surah-collapse {
@@ -115,9 +92,7 @@
 
 .index-surah-info-preview p {
   margin: 0;
-  color: var(--theme-muted, #747b88);
   font-weight: 400;
-  letter-spacing: -.02em;
 }
 
 .index-surah-info-label {
@@ -130,7 +105,6 @@
   display: inline;
   border: 0;
   background: transparent;
-  color: var(--theme-text, #1f2937);
   padding: 0;
   font: inherit;
   font-weight: 650;
@@ -185,17 +159,10 @@
   }
 }
 
-.index-list,
-.index-surah-stack,
-.index-card-wrap,
-.index-surah-collapse { gap: 8px; }
-
 .index-juz-card,
 .index-surah-card {
   display: grid;
 }
-
-.index-card-title { font-size: 1rem; }
 
 .index-surah-text { gap: 2px; }
 
@@ -219,8 +186,7 @@
 
 .index-surah-info-preview p { min-height: calc(1em * 1.58 * 4); }
 
-.index-surah-info-preview p.index-surah-info-copy,
-.index-surah-info-copy {
+.index-surah-info-preview p.index-surah-info-copy {
   display: -webkit-box;
   margin: 0;
   overflow: hidden;
@@ -233,18 +199,10 @@
   overflow-wrap: anywhere;
 }
 
-.index-surah-read-more {
-  display: inline-flex;
-  margin-top: 8px;
-  border: 0;
-  background: transparent;
-  color: var(--theme-text);
-  padding: 0;
-  font-size: .82rem;
-  font-weight: 700;
-  line-height: 1.2;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+.index-surah-info-copy {
+  margin: 0;
+  color: var(--theme-muted);
+  overflow-wrap: anywhere;
 }
 
 @media (min-width: 640px) {
@@ -257,12 +215,8 @@
 @media (max-width: 639px) {
 
   .index-replica-inner { max-width: 100%; }
-  .index-list,
-.index-surah-stack,
-.index-card-wrap { gap: 10px; }
 
-  .index-card-title,
-.index-surah-text strong {
+  .index-surah-text strong {
     font-size: 1.05rem;
     letter-spacing: -.035em;
   }
@@ -274,11 +228,6 @@
   .index-collapse-panel {
     margin-inline: 2px;
   }
-}
-
-.index-header-spacer {
-  width: 40px;
-  height: 1px;
 }
 
 .index-replica-inner {
@@ -314,15 +263,17 @@
 
 .index-card {
   min-width: 0;
-  border: 0;
   border-radius: var(--ui-radius-lg);
-  background: #fff;
-  box-shadow: 0 5px 16px rgba(42, 45, 47, .045);
 }
 
-.index-juz-card,
-.index-surah-card {
+.index-juz-card {
   grid-template-columns: auto minmax(0, 1fr) auto;
+  min-width: 0;
+  column-gap: var(--ui-space-4);
+  padding: var(--ui-space-3) var(--ui-space-2);
+}
+
+.index-surah-card {
   min-width: 0;
   column-gap: var(--ui-space-4);
   padding: var(--ui-space-3) var(--ui-space-2);
@@ -367,7 +318,6 @@
   min-width: 0;
   margin: 0 var(--ui-space-1) var(--ui-space-2);
   border-radius: var(--ui-radius-lg);
-  background: rgba(255,255,255,.76);
 }
 
 .index-quarter-grid {
@@ -382,9 +332,7 @@
   height: 34px;
   min-height: 34px;
   overflow: hidden;
-  border: 1px solid rgba(77, 72, 65, .08);
   border-radius: 999px;
-  background: #f5f3ef;
   padding: 5px 8px;
   text-align: center;
 }
@@ -402,14 +350,11 @@
 .index-surah-info-preview {
   min-width: 0;
   border-radius: var(--ui-radius-sm);
-  background: #f0f1f3;
 }
 
 .index-surah-info-preview p {
   display: -webkit-box;
   overflow: hidden;
-  font-size: var(--ui-text-sm);
-  line-height: 1.45;
   overflow-wrap: anywhere;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
@@ -419,15 +364,6 @@
   display: block;
   font-size: .62rem;
   letter-spacing: .14em;
-}
-
-[data-theme='dark'] .index-card {
-  background: #202521;
-  box-shadow: 0 6px 18px rgba(0,0,0,.16);
-}
-
-[data-theme='dark'] .index-quarter-btn {
-  border-color: rgba(255,255,255,.08);
 }
 
 @media (max-width: 639px) {
@@ -456,7 +392,6 @@
   .index-card {
     min-height: 52px;
     border-radius: var(--ui-radius-lg);
-    background: #fff;
   }
 
   .index-juz-card,
@@ -496,10 +431,6 @@
     border-radius: 999px;
     padding: 5px 8px;
   }
-
-  [data-theme='dark'] .index-card {
-    background: #202521;
-  }
 }
 
 @media (max-width: 360px) {
@@ -507,10 +438,6 @@
   .index-quarter-grid {
     grid-template-columns: 1fr;
   }
-}
-
-[data-theme='dark'] .index-replica-shell {
-  color: var(--theme-text);
 }
 
 [data-theme='dark'] .index-replica-header h1,
@@ -523,11 +450,6 @@
   color: var(--theme-text);
 }
 
-[data-theme='dark'] .index-card {
-  background: #202521;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, .16);
-}
-
 [data-theme='dark'] .index-number-badge {
   border-color: #4b524d;
 }
@@ -538,28 +460,12 @@
   color: var(--theme-muted);
 }
 
-[data-theme='dark'] .index-collapse-panel {
-  background: rgba(35, 40, 37, .84);
-}
-
-[data-theme='dark'] .index-quarter-btn,
-[data-theme='dark'] .index-surah-info-preview {
-  background: #2b302d;
-}
-
 [data-theme='dark'] .index-surah-info-preview button {
   color: #dce2dd;
 }
 
+[data-theme='dark'] .index-replica-shell,
 .index-replica-shell,
-[data-theme='dark'] .index-replica-shell {
-  color: var(--theme-text);
-}
-
-.index-replica-shell {
-  color: var(--theme-text);
-}
-
 .index-replica-header h1,
 .index-card-title,
 .index-section-title,
@@ -575,15 +481,24 @@
   color: var(--theme-muted);
 }
 
-.index-card,
-.index-collapse-panel,
-.index-quarter-btn,
+
+.index-collapse-panel {
+  border: 1px solid var(--theme-border);
+}
+
+
+.index-quarter-btn {
+  border: 1px solid var(--theme-border);
+  box-shadow: 0 9px 28px var(--theme-shadow);
+}
+
+
 .index-surah-info-preview {
   border: 1px solid var(--theme-border);
   box-shadow: 0 9px 28px var(--theme-shadow);
 }
 
-.index-card,
+
 .index-collapse-panel,
 .index-surah-info-preview {
   background: var(--theme-surface);
@@ -598,19 +513,18 @@
   border-color: rgba(184, 136, 42, .42);
 }
 
-.index-surah-info-preview button,
-.index-surah-read-more {
+.index-surah-info-preview button {
   color: var(--brand-gold);
 }
 
-[data-theme='dark'] .index-card,
+
 [data-theme='dark'] .index-collapse-panel,
 [data-theme='dark'] .index-quarter-btn,
 [data-theme='dark'] .index-surah-info-preview {
   border-color: var(--theme-border);
 }
 
-[data-theme='dark'] .index-card,
+
 [data-theme='dark'] .index-collapse-panel,
 [data-theme='dark'] .index-surah-info-preview {
   background: var(--theme-surface);
@@ -618,15 +532,6 @@
 
 [data-theme='dark'] .index-quarter-btn {
   background: var(--theme-soft);
-}
-
-.index-header-spacer {
-  display: flex;
-  justify-content: center;
-  background: transparent;
-  padding: 0;
-  transform: none;
-  transition: opacity .18s ease;
 }
 
 .app-page-shell .index-replica-inner {
@@ -657,13 +562,22 @@
   -webkit-backdrop-filter: none;
 }
 
-.index-replica-shell.app-page-shell .index-card,
-.index-replica-shell.app-page-shell .index-collapse-panel,
-.index-replica-shell.app-page-shell .index-quarter-btn,
-.index-replica-shell.app-page-shell .index-surah-info-preview,
-[data-theme='dark'] .index-replica-shell.app-page-shell .index-card,
-[data-theme='dark'] .index-replica-shell.app-page-shell .index-collapse-panel,
-[data-theme='dark'] .index-replica-shell.app-page-shell .index-quarter-btn,
+
+.index-replica-shell.app-page-shell .index-collapse-panel {
+  box-shadow: none;
+}
+
+
+[data-theme='dark'] .index-replica-shell.app-page-shell .index-collapse-panel {
+  box-shadow: none;
+}
+
+
+[data-theme='dark'] .index-replica-shell.app-page-shell .index-quarter-btn {
+  box-shadow: none;
+}
+
+
 [data-theme='dark'] .index-replica-shell.app-page-shell .index-surah-info-preview {
   box-shadow: none;
 }
@@ -696,10 +610,6 @@
   letter-spacing: 0;
   text-align: right;
   direction: rtl;
-}
-
-.index-surah-info-preview {
-  padding: 20px 18px 18px;
 }
 
 .index-ayah-jump {
@@ -829,10 +739,6 @@
   transform: scale(.992);
 }
 
-.index-card-wrap.is-open > .index-card {
-  box-shadow: 0 10px 28px rgba(70, 52, 25, .07);
-}
-
 .index-surah-title-block {
   display: grid;
   min-width: 0;
@@ -893,15 +799,6 @@
 .index-surah-info-copy.is-en {
   line-height: 1.62;
   text-align: left;
-}
-
-.index-surah-info-preview .index-surah-read-more {
-  display: inline-flex;
-  margin-top: 10px;
-  color: var(--gold);
-  font-size: .86rem;
-  font-weight: 720;
-  text-decoration-thickness: 1px;
 }
 
 .index-surah-quick-actions {
@@ -1207,12 +1104,7 @@
   box-sizing: border-box;
 }
 
-.index-replica-shell.app-page-shell .index-ayah-input-wrap input {
-  width: 100%;
-  min-width: 0;
-  max-width: 100%;
-}
-
+.index-replica-shell.app-page-shell .index-ayah-input-wrap input,
 .index-replica-shell.app-page-shell .index-ayah-go {
   width: 100%;
   min-width: 0;
@@ -1235,7 +1127,6 @@
   overflow: visible;
   border-radius: 24px;
   padding: 12px;
-  background: color-mix(in srgb, var(--theme-surface) 86%, transparent);
   box-shadow: 0 14px 34px rgba(70, 52, 25, .055);
 }
 
@@ -1258,12 +1149,9 @@
 }
 
 .index-replica-shell.app-page-shell .index-ayah-jump {
-  border: 0;
   border-radius: 0;
   background: transparent;
   padding: 14px 4px 4px;
-  box-shadow: none;
-  backdrop-filter: none;
   overflow: visible;
 }
 
@@ -1316,11 +1204,6 @@
   color: var(--theme-muted);
 
 
-}
-
-.index-replica-shell .index-surah-search:focus-within {
-  border-color: color-mix(in srgb, var(--brand-gold, #b68a35) 68%, var(--theme-border));
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-gold, #b68a35) 12%, transparent);
 }
 
 .index-replica-shell .index-surah-search input {
@@ -1381,17 +1264,7 @@
   align-items: stretch;
   overflow: hidden;
   padding: 0;
-  border: 1px solid var(--ui-card-border);
   border-radius: 22px;
-  background: var(--ui-card-bg);
-  box-shadow: var(--ui-card-shadow);
-  -webkit-backdrop-filter: var(--ui-card-blur);
-  backdrop-filter: var(--ui-card-blur);
-}
-
-.index-replica-shell .index-card-wrap.is-open > .index-card {
-  border-color: var(--ui-card-border);
-  box-shadow: var(--ui-card-shadow);
 }
 
 .index-replica-shell .index-card,
@@ -1565,10 +1438,7 @@
   min-width: 0;
   margin: 0;
   padding: 18px 18px 8px;
-  border: 0;
   border-radius: 0;
-  background: transparent;
-  box-shadow: none;
 }
 
 .index-replica-shell .index-surah-info-label {
@@ -1622,19 +1492,6 @@
   text-align: right;
 }
 
-.index-replica-shell .index-surah-info-preview .index-surah-read-more {
-  display: inline;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: var(--brand-gold, #b68a35);
-  font: 700 .89rem/1.4 var(--ui-font);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  white-space: nowrap;
-}
-
 .index-replica-shell .index-surah-quick-actions {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -1654,8 +1511,6 @@
   padding: 8px 9px;
   border: 1px solid color-mix(in srgb, var(--brand-gold, #b68a35) 32%, var(--theme-border));
   border-radius: 14px;
-  background: transparent;
-  color: var(--brand-gold, #b68a35);
   font: 670 .84rem/1.25 var(--ui-font);
   text-decoration: none;
 }
@@ -1728,13 +1583,7 @@
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--brand-gold, #b68a35) 38%, var(--theme-border));
   border-radius: 15px;
-  background: color-mix(in srgb, var(--theme-muted) 6%, var(--theme-surface));
   box-shadow: none;
-}
-
-.index-replica-shell .index-ayah-stepper:focus-within {
-  border-color: var(--brand-gold, #b68a35);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-gold, #b68a35) 12%, transparent);
 }
 
 .index-replica-shell .index-ayah-stepper.is-invalid { border-color: #b94b4b; }
@@ -1900,11 +1749,28 @@
   .index-replica-shell .index-surah-arabic-name { font-size: .98rem; }
 }
 
-[data-theme='dark'] .index-replica-shell .index-surah-search,
-[data-theme='dark'] .index-replica-shell .index-card,
+[data-theme='dark'] .index-replica-shell .index-surah-search {
+  border-color: var(--theme-border);
+  background: var(--theme-surface-solid);
+  color: var(--theme-text);
+  box-shadow: 0 9px 24px var(--theme-shadow);
+}
+
+
+[data-theme='dark'] .index-replica-shell .index-card {
+  color: var(--theme-text);
+}
+
+
 [data-theme='dark'] .index-replica-shell .index-collapse-panel,
 [data-theme='dark'] .index-replica-shell .index-surah-info-preview,
-[data-theme='dark'] .index-replica-shell .index-ayah-jump,
+[data-theme='dark'] .index-replica-shell .index-ayah-jump {
+  border-color: var(--theme-border);
+  background: var(--theme-surface-solid);
+  color: var(--theme-text);
+}
+
+
 [data-theme='dark'] .index-replica-shell .index-quarter-grid {
   border-color: var(--theme-border);
   background: var(--theme-surface-solid);
@@ -1979,8 +1845,7 @@
 
 .index-replica-shell .index-ayah-stepper-button:last-child { border-left-color: var(--ui-divider); }
 
-.index-replica-shell .index-ayah-stepper:focus-within,
-.index-replica-shell .index-surah-search:focus-within {
+.index-replica-shell .index-ayah-stepper:focus-within {
   border-color: var(--ui-primary);
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--ui-primary) 18%, transparent);
 }
@@ -1994,14 +1859,17 @@
   max-width: 100%;
   margin: 12px 0 0;
   color: var(--theme-text);
-  line-height: 1.9;
+  font-family: var(--translation-english-font);
+  font-size: var(--surah-introduction-size-en);
+  line-height: var(--surah-introduction-leading-en);
   overflow-wrap: anywhere;
 }
 
 .index-replica-shell .index-surah-introduction-preview.is-ur {
-  font-family: inherit;
+  font-family: var(--translation-urdu-font);
+  font-size: var(--surah-introduction-size-ur);
   text-align: right;
-  line-height: 2.15;
+  line-height: var(--surah-introduction-leading-ur);
 }
 
 .index-replica-shell .index-surah-info-preview {

@@ -128,10 +128,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
     () => SHARE_BACKGROUND_ASSETS.find((item) => item.id === selectedBackgroundId) || null,
     [selectedBackgroundId],
   );
-  const selectedReciterMeta = useMemo(
-    () => reciters.find((item) => item.id === selectedReciter) || reciters[0] || null,
-    [reciters, selectedReciter],
-  );
+
 
   const composition = useMemo(() => buildShareComposition({
     mode,
@@ -572,7 +569,7 @@ export function ShareQuranScreen({ ayah, onClose }) {
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `quran-${selectedSurahNumber}-${fromAyah}-${toAyah}.webm`;
+      link.download = `quran-${selectedSurahNumber}-${fromAyah}-${toAyah}.mp4`;
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -1520,4 +1517,3 @@ function getTabIcon(id) {
   if (id === 'text') return Type;
   return Palette;
 }
-

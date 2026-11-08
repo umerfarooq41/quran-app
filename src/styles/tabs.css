@@ -1,8 +1,7 @@
 /* tabs: component-owned styles; responsive and theme states live with their owner. */
 
 
-.highlight-dot,
-.highlight-color-button {
+.highlight-dot {
   display: grid;
   width: 34px;
   height: 34px;
@@ -10,12 +9,6 @@
   border-radius: 999px;
   color: #fff;
   box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .8), 0 8px 18px rgba(0, 0, 0, .08);
-}
-
-.highlight-color-row {
-  display: flex;
-  gap: 14px;
-  padding: 10px 8px 4px;
 }
 
 .highlight-amber { background: #f3b83e; }
@@ -27,43 +20,6 @@
 .highlight-sky { background: #0284c7; }
 
 .highlight-violet { background: #7c3aed; }
-
-.bookmark-type {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 7px;
-  min-height: 44px;
-  border-radius: 15px;
-  padding: 8px 10px;
-  font-size: .76rem;
-  font-weight: 650;
-  text-align: left;
-}
-
-.bookmark-type span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.bookmark-type-emerald { background: #e4f7ef; color: #2f7462; }
-
-.bookmark-type-amber { background: #fff2d5; color: #a46f09; }
-
-.bookmark-type-rose { background: #fbe4eb; color: #a9365b; }
-
-.bookmark-type-sky { background: #e2f1f8; color: #286f91; }
-
-.bookmark-type.is-selected {
-  box-shadow: inset 0 0 0 2px currentColor;
-}
-
-@media (max-width: 420px) {
-
-  .bookmark-type {
-    font-size: .7rem;
-  }
-}
 
 .library-tabs {
   display: grid;
@@ -78,7 +34,6 @@
 .tabs-status {
   margin: 2px 0 10px;
   border-radius: 14px;
-  background: rgba(255, 255, 255, .72);
   padding: 8px 11px;
   color: #655d54;
   font-size: .78rem;
@@ -95,7 +50,7 @@
   max-width: 100%;
   overflow: hidden;
   border-radius: 18px;
-  background: #c83a35;
+  background: transparent;
   box-shadow: 0 9px 26px rgba(31, 24, 15, .07);
 }
 
@@ -110,6 +65,7 @@
   color: #fff;
   font-size: .72rem;
   font-weight: 700;
+  background: var(--ui-danger-bg);
 }
 
 .tab-card-remove svg {
@@ -324,14 +280,6 @@
   color: #544d45;
 }
 
-.tab-type-option-emerald { background: #e3f4ec; color: #2f7462; }
-
-.tab-type-option-amber { background: #fff1d0; color: #9a6808; }
-
-.tab-type-option-rose { background: #f9e1e8; color: #a9365b; }
-
-.tab-type-option-violet { background: #eee7fa; color: #704ba9; }
-
 .library-empty-copy {
   display: grid;
   gap: 4px;
@@ -374,10 +322,6 @@
 .library-highlight-violet { background: #C4B5FD; }
 
 .library-highlight-rose { background: #FDA4AF; }
-
-[data-theme='dark'] .library-tabs {
-  background: rgba(255, 255, 255, .08);
-}
 
 [data-theme='dark'] .tabs-screen .tab-type {
   background: rgba(255, 255, 255, .08);
@@ -461,40 +405,10 @@
 
 @media (max-width: 639px) {
 
-  .highlight-dot,
-.highlight-color-button {
+  .highlight-dot {
     width: 28px;
     height: 28px;
   }
-}
-
-[data-theme='dark'] .tabs-status {
-  border-color: var(--theme-border);
-  background: var(--theme-surface);
-  color: var(--theme-text);
-  box-shadow: 0 9px 28px var(--theme-shadow);
-}
-
-[data-theme='dark'] .tab-card-surface {
-  color: var(--theme-text);
-}
-
-[data-theme='dark'] .tab-more-button,
-[data-theme='dark'] .tab-type,
-[data-theme='dark'] .tab-surah,
-[data-theme='dark'] .tab-note,
-[data-theme='dark'] .tab-arabic {
-  color: var(--theme-text);
-}
-
-[data-theme='dark'] .tabs-status,
-[data-theme='dark'] .tab-saved-date {
-  color: var(--theme-muted);
-}
-
-[data-theme='dark'] .tab-menu,
-[data-theme='dark'] .tab-inline-editor {
-  border-color: var(--theme-border);
 }
 
 [data-theme='dark'] .tab-inline-editor label,
@@ -508,9 +422,21 @@
   color: var(--theme-text);
 }
 
-[data-theme='dark'] .library-tabs,
-[data-theme='dark'] .tabs-status,
-[data-theme='dark'] .tab-menu,
+[data-theme='dark'] .library-tabs {
+  border-color: var(--theme-border);
+  background: var(--theme-surface-solid);
+  color: var(--theme-text);
+  box-shadow: 0 9px 28px var(--theme-shadow);
+}
+
+
+[data-theme='dark'] .tab-menu {
+  border-color: var(--theme-border);
+  background: var(--theme-surface-solid);
+  box-shadow: 0 9px 28px var(--theme-shadow);
+}
+
+
 [data-theme='dark'] .tab-inline-editor {
   border-color: var(--theme-border);
   background: var(--theme-surface-solid);
@@ -527,13 +453,15 @@
 [data-theme='dark'] .tab-surah,
 [data-theme='dark'] .tab-note,
 [data-theme='dark'] .tab-arabic,
-[data-theme='dark'] .tabs-status,
 [data-theme='dark'] .tab-saved-date {
   color: var(--theme-muted);
 }
 
-[data-theme='dark'] .tab-menu button,
-[data-theme='dark'] .tab-inline-editor textarea,
+[data-theme='dark'] .tab-menu button {
+  border-color: var(--theme-border);
+  background: var(--theme-soft);
+}
+
 [data-theme='dark'] .tab-inline-editor .secondary {
   border-color: var(--theme-border);
   background: var(--theme-soft);
@@ -563,10 +491,6 @@
 
 .tabs-screen.app-page-shell .tab-card {
   box-shadow: none;
-}
-
-.tabs-screen.app-page-shell .tab-card.is-swiped {
-  background: #c83a35;
 }
 
 .tabs-screen.app-page-shell .tab-card-remove {
@@ -609,7 +533,6 @@
   }
 }
 
-[data-theme='dark'] .tabs-section-heading,
 [data-theme='dark'] .tab-card-title {
   color: var(--theme-text);
 }

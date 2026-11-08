@@ -19,10 +19,7 @@
   gap: 12px;
   align-items: center;
   padding: 16px;
-  border: 1px solid var(--ui-card-border);
   border-radius: 22px;
-  background: var(--ui-card-bg);
-  box-shadow: var(--ui-card-shadow);
 }
 
 .help-intro-icon,
@@ -211,10 +208,7 @@
 
 .about-section {
   overflow: hidden;
-  border: 1px solid var(--ui-card-border);
   border-radius: 20px;
-  background: var(--ui-card-bg);
-  box-shadow: var(--ui-card-shadow);
 }
 
 .about-section-trigger {

@@ -1,0 +1,34 @@
+[
+  {
+    "file": "src/styles/mushaf.css",
+    "context": "(max-width: 420px)",
+    "selector": ".reader-page",
+    "property": "--reader-page-x-padding",
+    "value": "16px",
+    "reason": "A later unconditional .reader-page definition already owns the horizontal inset; computed geometry is preserved."
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "context": "(max-width: 420px)",
+    "selector": ".reader-page",
+    "property": "padding-inline",
+    "value": "var(--reader-page-x-padding)",
+    "reason": "A later unconditional .reader-page definition already owns the horizontal inset; computed geometry is preserved."
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "context": "(max-width: 380px)",
+    "selector": ".reader-page",
+    "property": "--reader-page-x-padding",
+    "value": "14px",
+    "reason": "A later unconditional .reader-page definition already owns the horizontal inset; computed geometry is preserved."
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "context": "(max-width: 380px)",
+    "selector": ".reader-page",
+    "property": "padding-inline",
+    "value": "var(--reader-page-x-padding)",
+    "reason": "A later unconditional .reader-page definition already owns the horizontal inset; computed geometry is preserved."
+  }
+]

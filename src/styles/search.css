@@ -100,14 +100,12 @@
 
 .search-result-reference {
   display: flex;
-  min-width: 0;
   align-items: baseline;
   justify-content: space-between;
   gap: 10px;
 }
 
 .search-result-reference strong {
-  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -264,48 +262,52 @@
   overflow-wrap: anywhere;
 }
 
-[data-theme='dark'] .search-form input,
-[data-theme='dark'] .search-recent h2,
-[data-theme='dark'] .search-results-heading h2,
-[data-theme='dark'] .search-result-card,
-[data-theme='dark'] .search-result-reference strong {
-  color: var(--theme-text);
-}
-
-[data-theme='dark'] .search-form,
-[data-theme='dark'] .search-result-preview,
-[data-theme='dark'] .search-result-reference small,
-[data-theme='dark'] .search-result-meta,
-[data-theme='dark'] .search-empty,
-[data-theme='dark'] .search-recent-list button {
-  color: var(--theme-muted);
-}
-
 .search-screen,
 [data-theme='dark'] .search-screen {
   background: transparent;
   color: var(--theme-text);
 }
 
-[data-theme='dark'] .search-form,
-[data-theme='dark'] .search-recent-list button,
-[data-theme='dark'] .search-results-heading span,
-[data-theme='dark'] .search-result-card,
-[data-theme='dark'] .search-empty {
+[data-theme='dark'] .search-form {
   border-color: var(--theme-border);
   background: var(--theme-surface-solid);
   color: var(--theme-text);
   box-shadow: 0 9px 28px var(--theme-shadow);
 }
 
-[data-theme='dark'] .search-form input,
+
+[data-theme='dark'] .search-recent-list button {
+  border-color: var(--theme-border);
+  background: var(--theme-surface-solid);
+  box-shadow: 0 9px 28px var(--theme-shadow);
+}
+
+
+[data-theme='dark'] .search-results-heading span {
+  border-color: var(--theme-border);
+  background: var(--theme-surface-solid);
+  color: var(--theme-text);
+  box-shadow: 0 9px 28px var(--theme-shadow);
+}
+
+
+[data-theme='dark'] .search-result-card {
+  color: var(--theme-text);
+}
+
+
+[data-theme='dark'] .search-empty {
+  border-color: var(--theme-border);
+  background: var(--theme-surface-solid);
+  box-shadow: 0 9px 28px var(--theme-shadow);
+}
+
 [data-theme='dark'] .search-recent h2,
 [data-theme='dark'] .search-results-heading h2,
 [data-theme='dark'] .search-result-reference strong,
-[data-theme='dark'] [data-theme='dark'] .search-result-preview,
+[data-theme='dark'] .search-result-preview,
 [data-theme='dark'] .search-result-reference small,
 [data-theme='dark'] .search-result-meta,
-[data-theme='dark'] .search-empty,
 [data-theme='dark'] .search-recent-list button {
   color: var(--theme-muted);
 }

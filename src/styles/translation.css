@@ -202,22 +202,6 @@
   letter-spacing: .01em;
 }
 
-.ayah-translation-tafsir-section p {
-  display: block;
-  margin: 0;
-  white-space: pre-line;
-}
-
-.ayah-translation-tafsir-text {
-  display: block;
-  margin: 0;
-  white-space: pre-line;
-  max-height: 210px;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  padding-inline-end: 3px;
-}
-
 .ayah-translation-note-status {
   display: block;
   margin: 0;
@@ -256,11 +240,7 @@
   font-variant-numeric: lining-nums tabular-nums;
 }
 
-.ayah-translation-inline-footnote.is-active {
-  background: #2d6e5e;
-  color: #fff;
-}
-
+.ayah-translation-inline-footnote.is-active,
 .ayah-translation-inline-footnote[aria-pressed="true"] {
   background: #2d6e5e;
   color: #fff;
@@ -450,10 +430,7 @@
   color: #7457b8;
 }
 
-.ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.paren {
-  color: currentColor;
-}
-
+.ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.paren,
 .ayah-word-by-word.is-en .ayah-word-by-word-arabic.wbw-colored-arabic > span.punc {
   color: currentColor;
 }

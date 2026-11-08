@@ -1,6 +1,8 @@
 export default {
   testDir: './tests/e2e',
   fullyParallel: true,
+  // Bound software-rendered browser contention without relaxing test assertions.
+  workers: 2,
   reporter: [['list'], ['html', { outputFolder: 'playwright-report', open: 'never' }]],
   use: {
     baseURL: 'http://127.0.0.1:4173',
@@ -11,8 +13,10 @@ export default {
     video: 'retain-on-failure',
   },
   projects: [
+    { name: 'responsive-audit', testMatch: /independent-responsive/, use: { browserName: 'chromium', viewport: {width:390,height:844}, hasTouch:true } },
     {
       name: 'mobile-chrome',
+      testIgnore: /independent-responsive/,
       use: {
         browserName: 'chromium',
         viewport: { width: 390, height: 844 },
@@ -23,6 +27,7 @@ export default {
     },
     {
       name: 'desktop-chrome',
+      testIgnore: /independent-responsive/,
       use: {
         browserName: 'chromium',
         viewport: { width: 1365, height: 900 },

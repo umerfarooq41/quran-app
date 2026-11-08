@@ -32,6 +32,16 @@ test('Qur’an dataset has 114 ordered Surahs and intact 16-line Mushaf pages', 
       assert.equal(page.lines.length, 16, `Mushaf page ${page.page} line count`);
     }
 
+    const { default: quarters } = await vite.ssrLoadModule('/src/data/indoPakParaQuarters.js');
+    const permanent = Object.values(quarters).flat().filter(target => target.id !== 'start');
+    assert.equal(permanent.length, 90, 'Three permanent quarter landmarks per Juz');
+    assert.equal(new Set(permanent.map(target => `${target.surah}:${target.ayah}`)).size, 90);
+    for (const target of permanent) {
+      const markerPage = quran.getAyahMarkerPage(target.surah, target.ayah);
+      assert.ok(markerPage >= 1 && markerPage <= quran.totalPages,
+        `Quarter ${target.surah}:${target.ayah} has a rendered ayah-end marker`);
+    }
+
     for (const ayah of quran.quranAyahs) {
       const pageNumber = quran.findPageForReference(ayah.surahNumber, ayah.ayahNumber);
       assert.ok(pageNumber >= 1 && pageNumber <= quran.totalPages, `Page exists for ${ayah.surahNumber}:${ayah.ayahNumber}`);

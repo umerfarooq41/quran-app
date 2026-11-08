@@ -38,7 +38,6 @@ export function QuranLine({
   playingWordOccurrenceIndex = null,
   quarterMarkers = null,
   bookmarkMarkers = null,
-  savedHighlights = null,
   markerFlashTarget = null,
 }) {
   const lineRef = useRef(null);
@@ -504,13 +503,9 @@ export function QuranLine({
               && Number(markerFlashTarget.ayahNumber) === Number(markerAyahNumber)
             ) ? (markerFlashTarget.tone || 'quarter') : '';
             const wordMeta = wordMetadataByTokenIndex.get(token.wordIndex) || null;
-            const verseKey = !isMarker
-              ? (wordMeta?.verseKey || '')
-              : markerReference;
-            const savedHighlight = verseKey ? savedHighlights?.get(verseKey) : null;
-            const savedColor = typeof savedHighlight === 'string'
-              ? savedHighlight
-              : savedHighlight?.color || '';
+
+
+
             const isRecitedAyah = Boolean(
               !isMarker
               && wordMeta?.verseKey

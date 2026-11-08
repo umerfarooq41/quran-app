@@ -226,7 +226,6 @@ function FavoriteSurahRow({ surah, onOpen, onRemove }) {
         onTouchStart={startSwipe}
         onTouchEnd={finishSwipe}
         onClick={handleOpen}
-        aria-label={`Read ${surah.name} from the start`}
       >
         <span className="home-favorite-number">{surah.number}</span>
         <span className="home-favorite-copy">

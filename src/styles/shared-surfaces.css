@@ -1,31 +1,9 @@
 /* shared-surfaces: component-owned styles; responsive and theme states live with their owner. */
 
-.reflect-screen .reflect-tabs.library-tabs.share-like-segment {
-  display: grid;
-  --ui-segment-columns: 4;
-  min-width: 0;
-  height: auto;
-}
-
 .app-segment button { min-height: 36px; }
 
 .app-header {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
   min-width: 0;
-}
-
-.app-header-title {
-  min-width: 0;
-  overflow: hidden;
-  margin: 0;
-  font-size: var(--ui-title-sm);
-  font-weight: 560;
-  line-height: 1.2;
-  text-align: center;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 [data-theme='dark'] .app-header-title {
@@ -39,15 +17,6 @@
   box-shadow: 0 10px 28px var(--theme-shadow);
 }
 
-[data-theme='dark'] [data-theme='dark'] .surah-info-meta {
-  color: var(--theme-muted);
-}
-
-.app-header {
-  min-height: calc(var(--chrome-button-size) + 6px);
-  gap: var(--chrome-button-gap);
-}
-
 .app-header-spacer {
   justify-content: center;
   background: transparent;
@@ -57,9 +26,6 @@
 }
 
 .app-fixed-header > .app-header {
-  width: 100%;
-  height: 100%;
-  min-height: 100%;
   background: transparent;
   border: 0;
   border-bottom: 0;
@@ -147,10 +113,10 @@
   outline-offset: 2px;
 }
 
-:is(.search-result-card,.settings-card,.help-intro,.help-section,
+:is(.index-card,.search-result-card,.settings-card,.help-intro,.help-section,
     .about-card,.about-section,.tab-card-surface,.tabs-status,
     .home-action-chip,.home-favorite-row,.home-reflect-card,.home-favorites-empty,
-    .tafsir-card,.surah-info-content) {
+    .tafsir-card) {
   background: var(--ui-card-bg);
   border: 1px solid var(--ui-card-border);
   box-shadow: var(--ui-card-shadow);
@@ -159,8 +125,7 @@
 }
 
 :is(.search-form,.search-recent-list button,.settings-picker-pill,
-    .settings-theme-picker,.tabs-filter-row button:not(.active),
-    .tabs-back-pill,.surah-info-topbar button) {
+    .settings-theme-picker) {
   background: var(--ui-control-bg);
   border: 1px solid var(--ui-control-border);
   -webkit-backdrop-filter: var(--ui-card-blur);
@@ -172,7 +137,7 @@
   background-color: var(--ui-pressed-overlay);
 }
 
-:is(.tabs-filter-row button.active,.settings-theme-picker button.is-active) {
+.settings-theme-picker button.is-active {
   background: var(--ui-primary);
   border-color: var(--ui-primary);
   color: #fff;
@@ -355,14 +320,7 @@
   -webkit-backdrop-filter: none;
 }
 
-.shared-back-button:hover {
-  border: 0;
-  background: transparent;
-  color: #202624;
-  box-shadow: none;
-  transform: none;
-}
-
+.shared-back-button:hover,
 .shared-back-button:active {
   border: 0;
   background: transparent;

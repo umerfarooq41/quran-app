@@ -25,7 +25,8 @@ test('Responsive chrome and protected Share states live in their owners', async 
   assert.match(reader, /\.share-video-fullscreen-shell/);
   assert.match(reader, /\.share-video-preview-stage/);
   assert.match(app, /data-app-landscape-lock='counterclockwise'/);
-  assert.match(index, /\.index-surah-read-more\s*\{[^}]*color: var\(--theme-text\)/s);
+  assert.match(index, /\.index-surah-intro-more\s*\{[^}]*color:\s*var\(--brand-gold/s);
+  assert.doesNotMatch(index, /\.index-surah-read-more\b/);
 });
 
 test('Every component owner uses the normal cascade', async () => {

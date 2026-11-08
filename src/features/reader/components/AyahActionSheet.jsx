@@ -9,7 +9,7 @@ import {
   saveAyahHighlight,
 } from '../../../lib/db';
 import { findPageForReference, getSurah } from '../../../lib/quran';
-import { getJuzForReference } from '../../../data/quranMeta';
+
 
 const TOOLTIP_WIDTH = 248;
 const TOOLTIP_HEIGHT = 56;
@@ -38,15 +38,7 @@ const HIGHLIGHT_COLORS = [
   { id: 'rose', label: 'Pink', value: '#FDA4AF' },
 ];
 
-export function AyahActionSheet({
-  ayah,
-  onClose,
-  onPlay,
-  onShare,
-  onCopied,
-  onReflect,
-  onAnnotationsChanged,
-}) {
+export function AyahActionSheet({ ayah, onClose, onPlay, onShare, onReflect, onAnnotationsChanged }) {
   const [annotations, setAnnotations] = useState({ highlight: null, bookmarks: [] });
   const [highlightPaletteOpen, setHighlightPaletteOpen] = useState(false);
   const [bookmarkPickerOpen, setBookmarkPickerOpen] = useState(false);
@@ -378,11 +370,4 @@ function normalizeRect(rect) {
 
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
-}
-
-function cleanAyahText(text = '') {
-  return String(text)
-    .replace(/[\uE000-\uF8FF]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
 }

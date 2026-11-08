@@ -1,3 +1,5 @@
+> Current verification: [Independent post-refactor audit](POST-REFACTOR-AUDIT.md). This document records an earlier stage.
+
 # Coordinated CSS architecture audit
 
 **Current status:** the [UI follow-up](UI.md) resolves all remaining source CSS

@@ -1,3 +1,5 @@
+> Current verification: [Independent post-refactor audit](POST-REFACTOR-AUDIT.md). This document records an earlier stage.
+
 # Remaining UI cascade cleanup
 
 Baseline: `cd5a4fce158880a0ef052c2b3746a124b5a1da7d`, on

@@ -115,7 +115,7 @@ export default function ReaderScreen() {
   const footerPageData = footerPage === page ? pageData : getPage(footerPage);
   const footerMeta = footerPage === page ? meta : getPageMeta(footerPage);
   const footerDisplayPage = getMushafPageNumber(footerPage);
-  const firstPageAyah = pageData.lines.find((line) => line.surahNumber && line.ayahStart);
+
   const firstFooterAyah = footerPageData.lines.find((line) => line.surahNumber && line.ayahStart);
   const footerTarget = getFooterTarget({
     page: footerPage,
@@ -741,7 +741,7 @@ export default function ReaderScreen() {
   }
 
   function renderMushafPage(renderedPageData, { interactive = true } = {}) {
-    const renderedPage = renderedPageData.page;
+
     return (
       <MushafPage
         pageData={renderedPageData}
@@ -830,7 +830,7 @@ export default function ReaderScreen() {
         <ReaderFooterMeta displayPage={footerDisplayPage} progress={juzProgress} />
       </div>
 
-      
+
 
       {showReturnToAudioChip && (
         <button

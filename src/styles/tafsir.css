@@ -1,20 +1,4 @@
 /* tafsir: component-owned styles; responsive and theme states live with their owner. */
-
-
-.tafsir-preview-text {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.tafsir-card {
-  background: var(--ui-card-bg);
-  border: 1px solid var(--ui-card-border);
-  -webkit-backdrop-filter: var(--ui-card-blur);
-  backdrop-filter: var(--ui-card-blur);
-  box-shadow: var(--ui-card-shadow);
-}
 .tafsir-card-head {
   display: flex;
   align-items: flex-start;
@@ -22,7 +6,6 @@
 }
 .tafsir-card-head p {
   margin: 0;
-  color: rgba(30, 30, 30, .48);
 }
 .tafsir-card-head h2 {
   margin: 4px 0 0;
@@ -54,7 +37,6 @@
 .tafsir-translation-text {
   font-family: var(--translation-english-font);
 }
-.tafsir-section[data-translation-language="Ur"] .tafsir-translation-text,
 .tafsir-section[data-translation-language="Ur"] .tafsir-footnote-wrap {
   font-family: var(--translation-urdu-font);
 }
@@ -64,11 +46,6 @@
 .surah-info-screen {
   min-height: 100dvh;
   overflow-x: hidden;
-  background:
-    radial-gradient(circle at top left, rgba(204, 185, 120, .24), transparent 34%),
-    linear-gradient(180deg, #f5f1df 0%, #faf8ee 34%, #f6f0dc 100%);
-  color: var(--theme-text);
-  padding: calc(env(safe-area-inset-top, 0px) + 52px) 18px calc(env(safe-area-inset-bottom, 0px) + 34px);
 }
 .surah-info-topbar {
   width: min(100%, 430px);
@@ -88,7 +65,6 @@
 }
 .surah-info-content {
   margin: 0 auto;
-  padding: 28px 28px 42px;
 }
 .surah-info-title-row {
   align-items: flex-start;
@@ -115,9 +91,7 @@
   flex: 0 0 auto;
   color: var(--theme-accent);
 }
-.surah-info-html {
-  color: var(--theme-text);
-}
+.surah-info-html,
 .surah-info-html h2 {
   color: var(--theme-text);
 }
@@ -126,9 +100,6 @@
 }
 .surah-info-html h3 {
   color: var(--theme-text);
-}
-.surah-info-html p {
-  margin: 0 0 18px;
 }
 .surah-info-html ul,
 .surah-info-html ol {
@@ -190,11 +161,6 @@
 .tafsir-section div { font-size: .9rem; line-height: 1.65; }
 .surah-info-screen { padding: calc(env(safe-area-inset-top, 0px) + 20px) 12px calc(env(safe-area-inset-bottom, 0px) + 20px); }
 .surah-info-topbar button { width: 34px; height: 34px; }
-.surah-info-content { padding: 18px 16px 28px; }
-.surah-info-header-spacer {
-  width: 40px;
-  height: 1px;
-}
 .tafsir-surah-context {
   min-width: 0;
 }
@@ -235,9 +201,6 @@
 .surah-info-topbar .shared-back-button {
   width: 40px;
   height: 38px;
-}
-.surah-info-content {
-  padding: var(--ui-space-6);
 }
 .surah-info-title-row {
   gap: var(--ui-space-4);
@@ -326,27 +289,8 @@
   font-size: .62rem;
   font-weight: 800;
 }
-[data-theme='dark'] .tafsir-card-head p,
-[data-theme='dark'] .tafsir-section p,
-[data-theme='dark'] .tafsir-section div {
-  color: var(--theme-muted);
-}
-[data-theme='dark'] .tafsir-card-head h2,
-[data-theme='dark'] .tafsir-section h3,
-[data-theme='dark'] .tafsir-arabic {
-  color: var(--theme-text);
-}
 [data-theme='dark'] .tafsir-section {
   border-color: var(--theme-border);
-}
-[data-theme='dark'] .surah-info-screen {
-  background:
-    radial-gradient(circle at top left, rgba(154, 120, 54, .13), transparent 34%),
-    linear-gradient(180deg, #151815 0%, #111412 100%);
-  color: var(--theme-text);
-}
-[data-theme='dark'] .surah-info-empty {
-  color: var(--theme-muted);
 }
 [data-theme='dark'] .surah-info-icon {
   background: rgba(54, 122, 102, .22);
@@ -362,12 +306,13 @@
   background: transparent;
   color: var(--theme-text);
 }
-[data-theme='dark'] .tafsir-card,
+[data-theme='dark'] .tafsir-card {
+  color: var(--theme-text);
+}
+
 [data-theme='dark'] .surah-info-content {
   border-color: var(--theme-border);
-  background: var(--theme-surface-solid);
   color: var(--theme-text);
-  box-shadow: 0 9px 28px var(--theme-shadow);
 }
 [data-theme='dark'] .tafsir-card-head h2,
 [data-theme='dark'] .tafsir-section h3,
@@ -375,7 +320,6 @@
 [data-theme='dark'] .tafsir-card-head p,
 [data-theme='dark'] .tafsir-section p,
 [data-theme='dark'] .tafsir-section div,
-[data-theme='dark'] .surah-info-meta,
 [data-theme='dark'] .surah-info-empty {
   color: var(--theme-muted);
 }
@@ -405,12 +349,7 @@
   font-size: inherit;
   line-height: inherit;
 }
-.surah-info-html h2 {
-  font-family: var(--translation-urdu-font);
-
-
-  letter-spacing: 0;
-}
+.surah-info-html h2,
 .surah-info-html h3 {
   font-family: var(--translation-urdu-font);
 
@@ -437,7 +376,7 @@
 .tafsir-section[data-translation-language="Ur"] .tafsir-footnotes {
   font-family: var(--translation-urdu-font);
   font-size: clamp(1.1rem, 4.6vw, 1.24rem);
-  line-height: 2.05;
+  line-height: var(--surah-introduction-leading-ur);
   direction: rtl;
   text-align: right;
 }
@@ -480,8 +419,8 @@
   direction: rtl;
   text-align: right;
   font-family: var(--translation-urdu-font);
-  font-size: clamp(1.06rem, 4.35vw, 1.22rem);
-  line-height: 2.05;
+  font-size: var(--surah-introduction-size-ur);
+  line-height: var(--surah-introduction-leading-ur);
 }
 .surah-info-html.is-ur h2,
 .surah-info-html.is-ur h3 {
@@ -493,8 +432,8 @@
   direction: ltr;
   text-align: left;
   font-family: var(--translation-english-font);
-  font-size: clamp(.96rem, 3.9vw, 1.05rem);
-  line-height: 1.78;
+  font-size: var(--surah-introduction-size-en);
+  line-height: var(--surah-introduction-leading-en);
 }
 .surah-info-html.is-en h2,
 .surah-info-html.is-en h3 {
@@ -603,3 +542,5 @@
   color: #fff;
 }
 .surah-info-icon { background: var(--ui-control-bg); }
+
+[data-theme='dark'] .surah-info-meta { color: var(--theme-muted); }

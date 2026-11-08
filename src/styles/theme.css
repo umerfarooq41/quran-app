@@ -24,19 +24,6 @@
 }
 
 :root {
-  --settings-icon-column: 38px;
-  --settings-row-gap: 11px;
-  --settings-row-min-height: 72px;
-  --settings-picker-height: 44px;
-}
-
-@media (max-width: 380px) {
-  :root {
-    --settings-row-gap: 9px;
-  }
-}
-
-:root {
   --brand-bg-light: radial-gradient(circle at 15% 10%, rgba(212, 168, 67, 0.18), transparent 38%), radial-gradient(circle at 85% 18%, rgba(45, 110, 94, 0.12), transparent 32%), radial-gradient(circle at 50% 90%, rgba(212, 168, 67, 0.10), transparent 40%), linear-gradient(160deg, #fdf8ef 0%, #f8f3e8 50%, #f4f0e6 100%);
   --brand-bg-dark: radial-gradient(circle at 16% 8%, rgba(169, 129, 49, .12), transparent 34%), radial-gradient(circle at 85% 15%, rgba(50, 122, 103, .12), transparent 32%), linear-gradient(160deg, #151815 0%, #111412 58%, #171915 100%);
   --brand-green: #2d6e5e;
@@ -51,7 +38,7 @@
   --theme-muted: #747b84;
   --theme-subtle: #9aa0a8;
   --theme-shadow: rgba(31, 41, 55, .06);
-  --theme-accent: #2d6e5e;
+  --theme-accent: var(--brand-green);
   --reader-bg: #fffaf1;
   --reader-surface: #fffaf1;
   --reader-surface-raised: rgba(255, 250, 241, .98);
@@ -78,7 +65,7 @@
   --theme-muted: #abb2ac;
   --theme-subtle: #858d87;
   --theme-shadow: rgba(0, 0, 0, .28);
-  --theme-accent: #2d6e5e;
+  --theme-accent: var(--brand-green);
   --reader-bg: #111412;
   --reader-surface: #1e2320;
   --reader-surface-raised: rgba(30, 35, 32, .98);

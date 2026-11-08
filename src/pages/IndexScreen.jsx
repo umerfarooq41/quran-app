@@ -36,11 +36,7 @@ function stripHtml(value = '') {
     .trim();
 }
 
-function previewText(surahInfo) {
-  const source = stripHtml(surahInfo?.shortText || surahInfo?.text || '');
-  if (!source) return 'Surah information will be expanded soon.';
-  return source.length > 520 ? `${source.slice(0, 520).trim()}…` : source;
-}
+
 
 export default function IndexScreen() {
   const { tab, setTab, goBack } = useAppStore(useShallow((state) => ({
@@ -50,7 +46,7 @@ export default function IndexScreen() {
   })));
 
   return (
-    <main className="index-replica-shell app-page-shell bg-fluent">
+    <section className="index-replica-shell app-page-shell bg-fluent">
       <div className="index-replica-inner">
         <div className="app-fixed-header">
           <Header title="Index" onBack={() => goBack()} backLabel="Back from index" />
@@ -87,7 +83,7 @@ export default function IndexScreen() {
           {tab === 'juz' ? <JuzIndex /> : <SurahIndex />}
         </div>
       </div>
-    </main>
+    </section>
   );
 }
 
@@ -409,7 +405,6 @@ function SurahIndex() {
                       className="index-card-main index-surah-main"
                       onClick={() => goAyah(surah.number, 1, findPageForReference(surah.number, 1))}
                       type="button"
-                      aria-label={`Read ${surah.name} from the beginning`}
                     >
                       <NumberBadge>{surah.number}</NumberBadge>
                       <span className="index-surah-title-block">

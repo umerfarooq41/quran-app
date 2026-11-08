@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 const load = (name) => readFile(new URL(`../src/styles/${name}.css`, import.meta.url), 'utf8');
 test('Index, Library and Reflect share a column-aware segmented control', async () => {
-  const [shared, tabs, index] = await Promise.all([load('shared-surfaces'), load('tabs'), load('index')]);
+  const [shared, reflect, index] = await Promise.all([load('shared-surfaces'), load('reflect'), load('index')]);
   assert.match(shared, /repeat\(var\(--ui-segment-columns, 2\), minmax\(0, 1fr\)\)/);
-  assert.match(shared, /--ui-segment-columns:\s*4/);
+  assert.match(reflect, /--ui-segment-columns:\s*4/);
   assert.doesNotMatch(index, /\.share-like-segment\s*\{/);
   assert.match(shared, /button:not\(\.is-active\)/);
 });
