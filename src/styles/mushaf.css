@@ -76,6 +76,31 @@
   height: 100%;
 }
 
+.reader-page-view {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.reader-page-leaf {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 100%;
+}
+
+.reader-page-leaf > .reader-page {
+  flex: 1 1 auto;
+  height: 100%;
+}
+
+.reader-page-view-spread {
+  flex-direction: row-reverse;
+  gap: 24px;
+}
+
 .reader-page-slide-current {
   z-index: 2;
   transform: translate3d(var(--reader-page-slide-x, 0px), 0, 0);
@@ -95,11 +120,11 @@
 }
 
 .reader-page-slide-viewport.is-settling .reader-page-slide-current {
-  transition: transform .19s ease-out;
+  transition: transform .22s ease-out;
 }
 
 .reader-page-slide-viewport.is-settling .reader-page-slide-adjacent {
-  transition: transform .19s ease-out;
+  transition: transform .22s ease-out;
 }
 
 .reader-page-slide-viewport.is-transitioning .reader-page-slide {
@@ -107,19 +132,19 @@
 }
 
 .reader-page-slide-viewport.is-transitioning.is-next .reader-page-slide-current {
-  animation: readerPageEnterFromLeft .19s ease-out both;
+  animation: readerPageEnterFromLeft .22s ease-out both;
 }
 
 .reader-page-slide-viewport.is-transitioning.is-next .reader-page-slide-leaving {
-  animation: readerPageExitToRight .19s ease-out both;
+  animation: readerPageExitToRight .22s ease-out both;
 }
 
 .reader-page-slide-viewport.is-transitioning.is-previous .reader-page-slide-current {
-  animation: readerPageEnterFromRight .19s ease-out both;
+  animation: readerPageEnterFromRight .22s ease-out both;
 }
 
 .reader-page-slide-viewport.is-transitioning.is-previous .reader-page-slide-leaving {
-  animation: readerPageExitToLeft .19s ease-out both;
+  animation: readerPageExitToLeft .22s ease-out both;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -604,7 +629,7 @@
 }
 
 @media (min-width: 640px) {
-  .reader-shell {
+  .reader-shell:not(.reader-shell-spread) {
     width: min(100%, 576px);
     height: calc(100dvh - 20px);
     margin-block: 10px;
@@ -960,8 +985,15 @@
   background: var(--reader-bg);
   color: var(--reader-text);
   box-shadow: none;
-  width: min(100vw, var(--app-responsive-reader-width));
-  max-width: var(--app-responsive-reader-width);
+  width: var(--reader-spread-width, min(100vw, var(--app-responsive-reader-width)));
+  max-width: var(--reader-spread-width, var(--app-responsive-reader-width));
+}
+
+.reader-shell-spread {
+  height: var(--reader-spread-height);
+  margin-block: calc((100dvh - 64px - var(--reader-spread-height)) / 2);
+  border-radius: 0;
+  background: transparent;
 }
 
 .reader-page .reader-ayah-highlight-layer {

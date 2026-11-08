@@ -1,8 +1,8 @@
 import React from 'react';
-import { Bookmark, Menu, Settings } from 'lucide-react';
+import { Bookmark, Menu, Search, Settings } from 'lucide-react';
 import { BackButton } from '../../../components/common/AppChrome';
 
-export function ReaderTopControls({ visible, onBack, onBookmarks, onIndex, onSettings, onChromeTap }) {
+export function ReaderTopControls({ visible, onBack, onBookmarks, onIndex, onSettings, onSearch, layoutControl, onChromeTap }) {
   return (
     <header
       data-reader-ui
@@ -28,8 +28,10 @@ export function ReaderTopControls({ visible, onBack, onBookmarks, onIndex, onSet
             <button className="reader-top-icon" onClick={onSettings} aria-label="Settings">
               <Settings size={30} strokeWidth={1.7} />
             </button>
+            <button className="reader-top-icon" onClick={onSearch} aria-label="Search Quran"><Search size={23} /></button>
           </div>
         </div>
+        <div className="reader-layout-control"><span>Page layout</span>{layoutControl}</div>
       </div>
     </header>
   );

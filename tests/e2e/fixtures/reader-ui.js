@@ -1,6 +1,7 @@
 import { expect } from '@playwright/test';
 
 export async function openReader(page, theme = 'light') {
+  await page.addInitScript(theme => localStorage.setItem('quran-app-theme', theme), theme);
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'Al Quran' })).toBeVisible();
   await page.getByRole('button', { name: /Continue Reading/i }).click();
@@ -28,10 +29,13 @@ export async function mockRecitation(page, { toneHz = 0 } = {}) {
 export async function pauseRecitation(page, expectAutoplay = true) {
   const audio = page.locator('audio.reader-audio-native');
   await expect.poll(() => audio.evaluate(el => el.readyState)).toBeGreaterThanOrEqual(1);
-  // Wait for actual native playback, not the optimistic loading label, before
-  // using Pause. This prevents the fixture from clicking while play() is pending.
-  if(expectAutoplay) await expect.poll(() => audio.evaluate(el => el.paused)).toBe(false);
-  if(!await audio.evaluate(el => el.paused)) {
+  // The silent unlock clip can play before the recitation source is ready.
+  // Wait for real playback, then always issue Pause instead of sampling paused
+  // twice across a source handoff and accidentally skipping the user action.
+  if (expectAutoplay) await expect.poll(() => audio.evaluate(el => Boolean(
+    el.currentSrc && !el.currentSrc.startsWith('data:') && el.readyState >= 3 && !el.paused
+  ))).toBe(true);
+  if (expectAutoplay || !await audio.evaluate(el => el.paused)) {
     const pause = page.getByRole('button', { name:'Pause',exact:true });
     await expect(pause).toBeVisible();
     await pause.click();

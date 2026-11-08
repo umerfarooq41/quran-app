@@ -163,7 +163,7 @@
 
 @media (orientation: landscape) and (hover: none) and (pointer: coarse) and (max-height: 600px) {
 
-  .app-shell {
+  html:is([data-app-landscape-lock='clockwise'], [data-app-landscape-lock='counterclockwise']) .app-shell {
     position: absolute;
     top: 0;
     left: 0;

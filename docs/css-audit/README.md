@@ -1,3 +1,5 @@
+Reader enhancement: [adaptive spreads and verification](READER-SPREAD.md).
+
 > Current verification: [Independent post-refactor audit](POST-REFACTOR-AUDIT.md). This document records an earlier stage.
 
 # Coordinated CSS architecture audit

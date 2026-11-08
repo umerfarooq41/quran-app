@@ -1,0 +1,1922 @@
+{
+  "baseline": "36196ed4fbb938d1eaed7ead1a67f8fa1601ef39",
+  "browser": "Chromium 153.0.8010.0",
+  "runs": {
+    "fullBeforeFixtureCorrection": {
+      "stats": {
+        "startTime": "2026-11-08T10:58:53.529Z",
+        "duration": 1002603.404,
+        "expected": 181,
+        "skipped": 0,
+        "unexpected": 2,
+        "flaky": 0
+      },
+      "errors": [],
+      "failedCases": [
+        {
+          "key": "mobile-chrome|reader-reduced-motion.spec.js|reduced-motion preferences suppress page and player phase animations",
+          "file": "reader-reduced-motion.spec.js",
+          "title": "reduced-motion preferences suppress page and player phase animations",
+          "project": "mobile-chrome",
+          "status": "unexpected",
+          "durationMs": 11457
+        },
+        {
+          "key": "desktop-chrome|reader-reduced-motion.spec.js|reduced-motion preferences suppress page and player phase animations",
+          "file": "reader-reduced-motion.spec.js",
+          "title": "reduced-motion preferences suppress page and player phase animations",
+          "project": "desktop-chrome",
+          "status": "unexpected",
+          "durationMs": 11813
+        }
+      ]
+    },
+    "finalAffectedReaderRecheck": {
+      "stats": {
+        "startTime": "2026-11-08T11:20:21.700Z",
+        "duration": 98033.628,
+        "expected": 22,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "errors": [],
+      "cases": [
+        {
+          "key": "mobile-chrome|reader-pause-intent.spec.js|Pause during source loading remains paused when metadata arrives",
+          "file": "reader-pause-intent.spec.js",
+          "title": "Pause during source loading remains paused when metadata arrives",
+          "project": "mobile-chrome",
+          "status": "expected",
+          "durationMs": 6884
+        },
+        {
+          "key": "mobile-chrome|reader-pause-intent.spec.js|a delayed native play promise cannot override a newer Pause",
+          "file": "reader-pause-intent.spec.js",
+          "title": "a delayed native play promise cannot override a newer Pause",
+          "project": "mobile-chrome",
+          "status": "expected",
+          "durationMs": 6886
+        },
+        {
+          "key": "desktop-chrome|reader-pause-intent.spec.js|Pause during source loading remains paused when metadata arrives",
+          "file": "reader-pause-intent.spec.js",
+          "title": "Pause during source loading remains paused when metadata arrives",
+          "project": "desktop-chrome",
+          "status": "expected",
+          "durationMs": 8434
+        },
+        {
+          "key": "desktop-chrome|reader-pause-intent.spec.js|a delayed native play promise cannot override a newer Pause",
+          "file": "reader-pause-intent.spec.js",
+          "title": "a delayed native play promise cannot override a newer Pause",
+          "project": "desktop-chrome",
+          "status": "expected",
+          "durationMs": 9423
+        },
+        {
+          "key": "mobile-chrome|reader-reduced-motion.spec.js|reduced-motion preferences suppress page and player phase animations",
+          "file": "reader-reduced-motion.spec.js",
+          "title": "reduced-motion preferences suppress page and player phase animations",
+          "project": "mobile-chrome",
+          "status": "expected",
+          "durationMs": 5785
+        },
+        {
+          "key": "desktop-chrome|reader-reduced-motion.spec.js|reduced-motion preferences suppress page and player phase animations",
+          "file": "reader-reduced-motion.spec.js",
+          "title": "reduced-motion preferences suppress page and player phase animations",
+          "project": "desktop-chrome",
+          "status": "expected",
+          "durationMs": 8887
+        },
+        {
+          "key": "mobile-chrome|reader-ui-states.spec.js|Reader chrome and annotations light",
+          "file": "reader-ui-states.spec.js",
+          "title": "Reader chrome and annotations light",
+          "project": "mobile-chrome",
+          "status": "expected",
+          "durationMs": 6726
+        },
+        {
+          "key": "mobile-chrome|reader-ui-states.spec.js|Reader player states light",
+          "file": "reader-ui-states.spec.js",
+          "title": "Reader player states light",
+          "project": "mobile-chrome",
+          "status": "expected",
+          "durationMs": 8095
+        },
+        {
+          "key": "mobile-chrome|reader-ui-states.spec.js|Reader translation panel light",
+          "file": "reader-ui-states.spec.js",
+          "title": "Reader translation panel light",
+          "project": "mobile-chrome",
+          "status": "expected",
+          "durationMs": 6572
+        },
+        {
+          "key": "mobile-chrome|reader-ui-states.spec.js|Share Quran UI states light",
+          "file": "reader-ui-states.spec.js",
+          "title": "Share Quran UI states light",
+          "project": "mobile-chrome",
+          "status": "expected",
+          "durationMs": 8261
+        },
+        {
+          "key": "mobile-chrome|reader-ui-states.spec.js|Reader chrome and annotations dark",
+          "file": "reader-ui-states.spec.js",
+          "title": "Reader chrome and annotations dark",
+          "project": "mobile-chrome",
+          "status": "expected",
+          "durationMs": 6667
+        },
+        {
+          "key": "mobile-chrome|reader-ui-states.spec.js|Reader player states dark",
+          "file": "reader-ui-states.spec.js",
+          "title": "Reader player states dark",
+          "project": "mobile-chrome",
+          "status": "expected",
+          "durationMs": 8046
+        },
+        {
+          "key": "mobile-chrome|reader-ui-states.spec.js|Reader translation panel dark",
+          "file": "reader-ui-states.spec.js",
+          "title": "Reader translation panel dark",
+          "project": "mobile-chrome",
+          "status": "expected",
+          "durationMs": 6680
+        },
+        {
+          "key": "mobile-chrome|reader-ui-states.spec.js|Share Quran UI states dark",
+          "file": "reader-ui-states.spec.js",
+          "title": "Share Quran UI states dark",
+          "project": "mobile-chrome",
+          "status": "expected",
+          "durationMs": 7783
+        },
+        {
+          "key": "desktop-chrome|reader-ui-states.spec.js|Reader chrome and annotations light",
+          "file": "reader-ui-states.spec.js",
+          "title": "Reader chrome and annotations light",
+          "project": "desktop-chrome",
+          "status": "expected",
+          "durationMs": 9600
+        },
+        {
+          "key": "desktop-chrome|reader-ui-states.spec.js|Reader player states light",
+          "file": "reader-ui-states.spec.js",
+          "title": "Reader player states light",
+          "project": "desktop-chrome",
+          "status": "expected",
+          "durationMs": 11088
+        },
+        {
+          "key": "desktop-chrome|reader-ui-states.spec.js|Reader translation panel light",
+          "file": "reader-ui-states.spec.js",
+          "title": "Reader translation panel light",
+          "project": "desktop-chrome",
+          "status": "expected",
+          "durationMs": 9356
+        },
+        {
+          "key": "desktop-chrome|reader-ui-states.spec.js|Share Quran UI states light",
+          "file": "reader-ui-states.spec.js",
+          "title": "Share Quran UI states light",
+          "project": "desktop-chrome",
+          "status": "expected",
+          "durationMs": 12951
+        },
+        {
+          "key": "desktop-chrome|reader-ui-states.spec.js|Reader chrome and annotations dark",
+          "file": "reader-ui-states.spec.js",
+          "title": "Reader chrome and annotations dark",
+          "project": "desktop-chrome",
+          "status": "expected",
+          "durationMs": 9968
+        },
+        {
+          "key": "desktop-chrome|reader-ui-states.spec.js|Reader player states dark",
+          "file": "reader-ui-states.spec.js",
+          "title": "Reader player states dark",
+          "project": "desktop-chrome",
+          "status": "expected",
+          "durationMs": 11083
+        },
+        {
+          "key": "desktop-chrome|reader-ui-states.spec.js|Reader translation panel dark",
+          "file": "reader-ui-states.spec.js",
+          "title": "Reader translation panel dark",
+          "project": "desktop-chrome",
+          "status": "expected",
+          "durationMs": 8544
+        },
+        {
+          "key": "desktop-chrome|reader-ui-states.spec.js|Share Quran UI states dark",
+          "file": "reader-ui-states.spec.js",
+          "title": "Share Quran UI states dark",
+          "project": "desktop-chrome",
+          "status": "expected",
+          "durationMs": 8241
+        }
+      ]
+    }
+  },
+  "coverageRollup": {
+    "note": "Latest passing result per named case across the full suite and affected Reader rechecks; this is not a claim of one clean 183-case run after fixture correction. Production code was unchanged after the full run.",
+    "total": 183,
+    "passed": 183,
+    "failed": 0,
+    "skipped": 0,
+    "cases": [
+      {
+        "key": "responsive-audit|independent-responsive-share.spec.js|Share controls light 320px",
+        "file": "independent-responsive-share.spec.js",
+        "title": "Share controls light 320px",
+        "project": "responsive-audit",
+        "status": "expected",
+        "durationMs": 14507,
+        "run": "full"
+      },
+      {
+        "key": "responsive-audit|independent-responsive-share.spec.js|Share controls light 375px",
+        "file": "independent-responsive-share.spec.js",
+        "title": "Share controls light 375px",
+        "project": "responsive-audit",
+        "status": "expected",
+        "durationMs": 14482,
+        "run": "full"
+      },
+      {
+        "key": "responsive-audit|independent-responsive-share.spec.js|Share controls light 390px",
+        "file": "independent-responsive-share.spec.js",
+        "title": "Share controls light 390px",
+        "project": "responsive-audit",
+        "status": "expected",
+        "durationMs": 16677,
+        "run": "full"
+      },
+      {
+        "key": "responsive-audit|independent-responsive-share.spec.js|Share controls light 430px",
+        "file": "independent-responsive-share.spec.js",
+        "title": "Share controls light 430px",
+        "project": "responsive-audit",
+        "status": "expected",
+        "durationMs": 13484,
+        "run": "full"
+      },
+      {
+        "key": "responsive-audit|independent-responsive-share.spec.js|Share controls light 768px",
+        "file": "independent-responsive-share.spec.js",
+        "title": "Share controls light 768px",
+        "project": "responsive-audit",
+        "status": "expected",
+        "durationMs": 15345,
+        "run": "full"
+      },
+      {
+        "key": "responsive-audit|independent-responsive-share.spec.js|Share controls dark 320px",
+        "file": "independent-responsive-share.spec.js",
+        "title": "Share controls dark 320px",
+        "project": "responsive-audit",
+        "status": "expected",
+        "durationMs": 13384,
+        "run": "full"
+      },
+      {
+        "key": "responsive-audit|independent-responsive-share.spec.js|Share controls dark 375px",
+        "file": "independent-responsive-share.spec.js",
+        "title": "Share controls dark 375px",
+        "project": "responsive-audit",
+        "status": "expected",
+        "durationMs": 13345,
+        "run": "full"
+      },
+      {
+        "key": "responsive-audit|independent-responsive-share.spec.js|Share controls dark 390px",
+        "file": "independent-responsive-share.spec.js",
+        "title": "Share controls dark 390px",
+        "project": "responsive-audit",
+        "status": "expected",
+        "durationMs": 16164,
+        "run": "full"
+      },
+      {
+        "key": "responsive-audit|independent-responsive-share.spec.js|Share controls dark 430px",
+        "file": "independent-responsive-share.spec.js",
+        "title": "Share controls dark 430px",
+        "project": "responsive-audit",
+        "status": "expected",
+        "durationMs": 13611,
+        "run": "full"
+      },
+      {
+        "key": "responsive-audit|independent-responsive-share.spec.js|Share controls dark 768px",
+        "file": "independent-responsive-share.spec.js",
+        "title": "Share controls dark 768px",
+        "project": "responsive-audit",
+        "status": "expected",
+        "durationMs": 16279,
+        "run": "full"
+      },
+      {
+        "key": "responsive-audit|independent-responsive.spec.js|light 320px pages, lesson and keyboard controls",
+        "file": "independent-responsive.spec.js",
+        "title": "light 320px pages, lesson and keyboard controls",
+        "project": "responsive-audit",
+        "status": "expected",
+        "durationMs": 37309,
+        "run": "full"
+      },
+      {
+        "key": "responsive-audit|independent-responsive.spec.js|light 375px pages, lesson and keyboard controls",
+        "file": "independent-responsive.spec.js",
+        "title": "light 375px pages, lesson and keyboard controls",
+        "project": "responsive-audit",
+        "status": "expected",
+        "durationMs": 36180,
+        "run": "full"
+      },
+      {
+        "key": "responsive-audit|independent-responsive.spec.js|light 390px pages, lesson and keyboard controls",
+        "file": "independent-responsive.spec.js",
+        "title": "light 390px pages, lesson and keyboard controls",
+        "project": "responsive-audit",
+        "status": "expected",
+        "durationMs": 46365,
+        "run": "full"
+      },
+      {
+        "key": "responsive-audit|independent-responsive.spec.js|light 430px pages, lesson and keyboard controls",
+        "file": "independent-responsive.spec.js",
+        "title": "light 430px pages, lesson and keyboard controls",
+        "project": "responsive-audit",
+        "status": "expected",
+        "durationMs": 36667,
+        "run": "full"
+      },
+      {
+        "key": "responsive-audit|independent-responsive.spec.js|light 768px pages, lesson and keyboard controls",
+        "file": "independent-responsive.spec.js",
+        "title": "light 768px pages, lesson and keyboard controls",
+        "project": "responsive-audit",
+        "status": "expected",
+        "durationMs": 43796,
+        "run": "full"
+      },
+      {
+        "key": "responsive-audit|independent-responsive.spec.js|dark 320px pages, lesson and keyboard controls",
+        "file": "independent-responsive.spec.js",
+        "title": "dark 320px pages, lesson and keyboard controls",
+        "project": "responsive-audit",
+        "status": "expected",
+        "durationMs": 37080,
+        "run": "full"
+      },
+      {
+        "key": "responsive-audit|independent-responsive.spec.js|dark 375px pages, lesson and keyboard controls",
+        "file": "independent-responsive.spec.js",
+        "title": "dark 375px pages, lesson and keyboard controls",
+        "project": "responsive-audit",
+        "status": "expected",
+        "durationMs": 35955,
+        "run": "full"
+      },
+      {
+        "key": "responsive-audit|independent-responsive.spec.js|dark 390px pages, lesson and keyboard controls",
+        "file": "independent-responsive.spec.js",
+        "title": "dark 390px pages, lesson and keyboard controls",
+        "project": "responsive-audit",
+        "status": "expected",
+        "durationMs": 46617,
+        "run": "full"
+      },
+      {
+        "key": "responsive-audit|independent-responsive.spec.js|dark 430px pages, lesson and keyboard controls",
+        "file": "independent-responsive.spec.js",
+        "title": "dark 430px pages, lesson and keyboard controls",
+        "project": "responsive-audit",
+        "status": "expected",
+        "durationMs": 38421,
+        "run": "full"
+      },
+      {
+        "key": "responsive-audit|independent-responsive.spec.js|dark 768px pages, lesson and keyboard controls",
+        "file": "independent-responsive.spec.js",
+        "title": "dark 768px pages, lesson and keyboard controls",
+        "project": "responsive-audit",
+        "status": "expected",
+        "durationMs": 47539,
+        "run": "full"
+      },
+      {
+        "key": "responsive-audit|independent-responsive.spec.js|Swipe exposure and lesson source surfaces light",
+        "file": "independent-responsive.spec.js",
+        "title": "Swipe exposure and lesson source surfaces light",
+        "project": "responsive-audit",
+        "status": "expected",
+        "durationMs": 11194,
+        "run": "full"
+      },
+      {
+        "key": "responsive-audit|independent-responsive.spec.js|Swipe exposure and lesson source surfaces dark",
+        "file": "independent-responsive.spec.js",
+        "title": "Swipe exposure and lesson source surfaces dark",
+        "project": "responsive-audit",
+        "status": "expected",
+        "durationMs": 11674,
+        "run": "full"
+      },
+      {
+        "key": "responsive-audit|independent-responsive.spec.js|new lesson saves questions, themes, reflection and completed review",
+        "file": "independent-responsive.spec.js",
+        "title": "new lesson saves questions, themes, reflection and completed review",
+        "project": "responsive-audit",
+        "status": "expected",
+        "durationMs": 11506,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|accessibility.spec.js|Home and Reader meet critical WCAG accessibility checks",
+        "file": "accessibility.spec.js",
+        "title": "Home and Reader meet critical WCAG accessibility checks",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 8245,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|accessibility.spec.js|Index, Reflect and Settings meet critical WCAG accessibility checks",
+        "file": "accessibility.spec.js",
+        "title": "Index, Reflect and Settings meet critical WCAG accessibility checks",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 13638,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|accessibility.spec.js|Home and Reader meet critical WCAG accessibility checks",
+        "file": "accessibility.spec.js",
+        "title": "Home and Reader meet critical WCAG accessibility checks",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 9678,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|accessibility.spec.js|Index, Reflect and Settings meet critical WCAG accessibility checks",
+        "file": "accessibility.spec.js",
+        "title": "Index, Reflect and Settings meet critical WCAG accessibility checks",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 19107,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|app-qa.spec.js|home renders the main actions and Reflect card without browser errors",
+        "file": "app-qa.spec.js",
+        "title": "home renders the main actions and Reflect card without browser errors",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 4606,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|app-qa.spec.js|Reflect opens and its passage selection controls are usable",
+        "file": "app-qa.spec.js",
+        "title": "Reflect opens and its passage selection controls are usable",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 6460,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|app-qa.spec.js|Reflect Progress tab renders statistics without blanking the app",
+        "file": "app-qa.spec.js",
+        "title": "Reflect Progress tab renders statistics without blanking the app",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 6089,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|app-qa.spec.js|Index, Search, Library and Settings screens open and remain responsive",
+        "file": "app-qa.spec.js",
+        "title": "Index, Search, Library and Settings screens open and remain responsive",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 14429,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|app-qa.spec.js|reader preserves the 16-row Mushaf grid and loads its Arabic font",
+        "file": "app-qa.spec.js",
+        "title": "reader preserves the 16-row Mushaf grid and loads its Arabic font",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 5635,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|app-qa.spec.js|mobile, narrow-mobile, tablet and desktop layouts have no horizontal overflow",
+        "file": "app-qa.spec.js",
+        "title": "mobile, narrow-mobile, tablet and desktop layouts have no horizontal overflow",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 3919,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|app-qa.spec.js|home renders the main actions and Reflect card without browser errors",
+        "file": "app-qa.spec.js",
+        "title": "home renders the main actions and Reflect card without browser errors",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 3687,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|app-qa.spec.js|Reflect opens and its passage selection controls are usable",
+        "file": "app-qa.spec.js",
+        "title": "Reflect opens and its passage selection controls are usable",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 8416,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|app-qa.spec.js|Reflect Progress tab renders statistics without blanking the app",
+        "file": "app-qa.spec.js",
+        "title": "Reflect Progress tab renders statistics without blanking the app",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 7498,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|app-qa.spec.js|Index, Search, Library and Settings screens open and remain responsive",
+        "file": "app-qa.spec.js",
+        "title": "Index, Search, Library and Settings screens open and remain responsive",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 15386,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|app-qa.spec.js|reader preserves the 16-row Mushaf grid and loads its Arabic font",
+        "file": "app-qa.spec.js",
+        "title": "reader preserves the 16-row Mushaf grid and loads its Arabic font",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 6787,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|app-qa.spec.js|mobile, narrow-mobile, tablet and desktop layouts have no horizontal overflow",
+        "file": "app-qa.spec.js",
+        "title": "mobile, narrow-mobile, tablet and desktop layouts have no horizontal overflow",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 4776,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|audio-playback.spec.js|Reader audio loads, plays, pauses, seeks, repeats and changes speed",
+        "file": "audio-playback.spec.js",
+        "title": "Reader audio loads, plays, pauses, seeks, repeats and changes speed",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 6958,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|audio-playback.spec.js|Reader audio loads, plays, pauses, seeks, repeats and changes speed",
+        "file": "audio-playback.spec.js",
+        "title": "Reader audio loads, plays, pauses, seeks, repeats and changes speed",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 8796,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|auxiliary-ui.spec.js|Settings keyboard controls, About and restored Translation light",
+        "file": "auxiliary-ui.spec.js",
+        "title": "Settings keyboard controls, About and restored Translation light",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 12231,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|auxiliary-ui.spec.js|Settings keyboard controls, About and restored Translation dark",
+        "file": "auxiliary-ui.spec.js",
+        "title": "Settings keyboard controls, About and restored Translation dark",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 10510,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|auxiliary-ui.spec.js|Settings keyboard controls, About and restored Translation light",
+        "file": "auxiliary-ui.spec.js",
+        "title": "Settings keyboard controls, About and restored Translation light",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 14403,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|auxiliary-ui.spec.js|Settings keyboard controls, About and restored Translation dark",
+        "file": "auxiliary-ui.spec.js",
+        "title": "Settings keyboard controls, About and restored Translation dark",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 11785,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|css-architecture-visual.spec.js|Home light styling baseline",
+        "file": "css-architecture-visual.spec.js",
+        "title": "Home light styling baseline",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 5546,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|css-architecture-visual.spec.js|Index light styling baseline",
+        "file": "css-architecture-visual.spec.js",
+        "title": "Index light styling baseline",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 5436,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|css-architecture-visual.spec.js|Search light styling baseline",
+        "file": "css-architecture-visual.spec.js",
+        "title": "Search light styling baseline",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 6429,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|css-architecture-visual.spec.js|Library light styling baseline",
+        "file": "css-architecture-visual.spec.js",
+        "title": "Library light styling baseline",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 5028,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|css-architecture-visual.spec.js|Reflect light styling baseline",
+        "file": "css-architecture-visual.spec.js",
+        "title": "Reflect light styling baseline",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 6375,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|css-architecture-visual.spec.js|Settings light styling baseline",
+        "file": "css-architecture-visual.spec.js",
+        "title": "Settings light styling baseline",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 4627,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|css-architecture-visual.spec.js|Reader light styling baseline",
+        "file": "css-architecture-visual.spec.js",
+        "title": "Reader light styling baseline",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 4284,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|css-architecture-visual.spec.js|Home dark styling baseline",
+        "file": "css-architecture-visual.spec.js",
+        "title": "Home dark styling baseline",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 5170,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|css-architecture-visual.spec.js|Index dark styling baseline",
+        "file": "css-architecture-visual.spec.js",
+        "title": "Index dark styling baseline",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 5700,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|css-architecture-visual.spec.js|Search dark styling baseline",
+        "file": "css-architecture-visual.spec.js",
+        "title": "Search dark styling baseline",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 5492,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|css-architecture-visual.spec.js|Library dark styling baseline",
+        "file": "css-architecture-visual.spec.js",
+        "title": "Library dark styling baseline",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 5941,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|css-architecture-visual.spec.js|Reflect dark styling baseline",
+        "file": "css-architecture-visual.spec.js",
+        "title": "Reflect dark styling baseline",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 5384,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|css-architecture-visual.spec.js|Settings dark styling baseline",
+        "file": "css-architecture-visual.spec.js",
+        "title": "Settings dark styling baseline",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 6758,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|css-architecture-visual.spec.js|Reader dark styling baseline",
+        "file": "css-architecture-visual.spec.js",
+        "title": "Reader dark styling baseline",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 4945,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|css-architecture-visual.spec.js|Home light styling baseline",
+        "file": "css-architecture-visual.spec.js",
+        "title": "Home light styling baseline",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 6956,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|css-architecture-visual.spec.js|Index light styling baseline",
+        "file": "css-architecture-visual.spec.js",
+        "title": "Index light styling baseline",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 6684,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|css-architecture-visual.spec.js|Search light styling baseline",
+        "file": "css-architecture-visual.spec.js",
+        "title": "Search light styling baseline",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 7365,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|css-architecture-visual.spec.js|Library light styling baseline",
+        "file": "css-architecture-visual.spec.js",
+        "title": "Library light styling baseline",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 4996,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|css-architecture-visual.spec.js|Reflect light styling baseline",
+        "file": "css-architecture-visual.spec.js",
+        "title": "Reflect light styling baseline",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 8490,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|css-architecture-visual.spec.js|Settings light styling baseline",
+        "file": "css-architecture-visual.spec.js",
+        "title": "Settings light styling baseline",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 8154,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|css-architecture-visual.spec.js|Reader light styling baseline",
+        "file": "css-architecture-visual.spec.js",
+        "title": "Reader light styling baseline",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 5439,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|css-architecture-visual.spec.js|Home dark styling baseline",
+        "file": "css-architecture-visual.spec.js",
+        "title": "Home dark styling baseline",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 6364,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|css-architecture-visual.spec.js|Index dark styling baseline",
+        "file": "css-architecture-visual.spec.js",
+        "title": "Index dark styling baseline",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 7850,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|css-architecture-visual.spec.js|Search dark styling baseline",
+        "file": "css-architecture-visual.spec.js",
+        "title": "Search dark styling baseline",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 7942,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|css-architecture-visual.spec.js|Library dark styling baseline",
+        "file": "css-architecture-visual.spec.js",
+        "title": "Library dark styling baseline",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 7726,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|css-architecture-visual.spec.js|Reflect dark styling baseline",
+        "file": "css-architecture-visual.spec.js",
+        "title": "Reflect dark styling baseline",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 6775,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|css-architecture-visual.spec.js|Settings dark styling baseline",
+        "file": "css-architecture-visual.spec.js",
+        "title": "Settings dark styling baseline",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 8689,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|css-architecture-visual.spec.js|Reader dark styling baseline",
+        "file": "css-architecture-visual.spec.js",
+        "title": "Reader dark styling baseline",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 6091,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|css-owner-interactions.spec.js|Reflect saved cards and editable answers use neutral light surfaces",
+        "file": "css-owner-interactions.spec.js",
+        "title": "Reflect saved cards and editable answers use neutral light surfaces",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 6716,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|css-owner-interactions.spec.js|Help disclosures use shared light surfaces",
+        "file": "css-owner-interactions.spec.js",
+        "title": "Help disclosures use shared light surfaces",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 7661,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|css-owner-interactions.spec.js|Reflect saved cards and editable answers use neutral dark surfaces",
+        "file": "css-owner-interactions.spec.js",
+        "title": "Reflect saved cards and editable answers use neutral dark surfaces",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 7091,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|css-owner-interactions.spec.js|Help disclosures use shared dark surfaces",
+        "file": "css-owner-interactions.spec.js",
+        "title": "Help disclosures use shared dark surfaces",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 7961,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|css-owner-interactions.spec.js|Reader ayah actions open Share Quran and produce a PNG export",
+        "file": "css-owner-interactions.spec.js",
+        "title": "Reader ayah actions open Share Quran and produce a PNG export",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 7575,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|css-owner-interactions.spec.js|Reflect saved cards and editable answers use neutral light surfaces",
+        "file": "css-owner-interactions.spec.js",
+        "title": "Reflect saved cards and editable answers use neutral light surfaces",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 8293,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|css-owner-interactions.spec.js|Help disclosures use shared light surfaces",
+        "file": "css-owner-interactions.spec.js",
+        "title": "Help disclosures use shared light surfaces",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 8690,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|css-owner-interactions.spec.js|Reflect saved cards and editable answers use neutral dark surfaces",
+        "file": "css-owner-interactions.spec.js",
+        "title": "Reflect saved cards and editable answers use neutral dark surfaces",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 9254,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|css-owner-interactions.spec.js|Help disclosures use shared dark surfaces",
+        "file": "css-owner-interactions.spec.js",
+        "title": "Help disclosures use shared dark surfaces",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 7899,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|css-owner-interactions.spec.js|Reader ayah actions open Share Quran and produce a PNG export",
+        "file": "css-owner-interactions.spec.js",
+        "title": "Reader ayah actions open Share Quran and produce a PNG export",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 9201,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|export-verification.spec.js|real Share Quran downloads contain valid PNG and MP4 audio/video streams",
+        "file": "export-verification.spec.js",
+        "title": "real Share Quran downloads contain valid PNG and MP4 audio/video streams",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 17949,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|export-verification.spec.js|real Share Quran downloads contain valid PNG and MP4 audio/video streams",
+        "file": "export-verification.spec.js",
+        "title": "real Share Quran downloads contain valid PNG and MP4 audio/video streams",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 20542,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|home.spec.js|home screen renders its main actions and study card",
+        "file": "home.spec.js",
+        "title": "home screen renders its main actions and study card",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 2906,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|home.spec.js|Reflect card opens the Reflect screen",
+        "file": "home.spec.js",
+        "title": "Reflect card opens the Reflect screen",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 8162,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|home.spec.js|home screen remains within the viewport after resizing",
+        "file": "home.spec.js",
+        "title": "home screen remains within the viewport after resizing",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 3311,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|home.spec.js|home screen renders its main actions and study card",
+        "file": "home.spec.js",
+        "title": "home screen renders its main actions and study card",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 4610,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|home.spec.js|Reflect card opens the Reflect screen",
+        "file": "home.spec.js",
+        "title": "Reflect card opens the Reflect screen",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 9497,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|home.spec.js|home screen remains within the viewport after resizing",
+        "file": "home.spec.js",
+        "title": "home screen remains within the viewport after resizing",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 3226,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|persistence-offline-visual.spec.js|Library reads persisted bookmarks and highlights and supports removal",
+        "file": "persistence-offline-visual.spec.js",
+        "title": "Library reads persisted bookmarks and highlights and supports removal",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 6809,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|persistence-offline-visual.spec.js|saved Reflect lesson and its personal notes survive reloads",
+        "file": "persistence-offline-visual.spec.js",
+        "title": "saved Reflect lesson and its personal notes survive reloads",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 8948,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|persistence-offline-visual.spec.js|Reflect bookmarks appear independently of saved Reflect studies",
+        "file": "persistence-offline-visual.spec.js",
+        "title": "Reflect bookmarks appear independently of saved Reflect studies",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 8507,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|persistence-offline-visual.spec.js|installed production service worker supports an offline cold reload",
+        "file": "persistence-offline-visual.spec.js",
+        "title": "installed production service worker supports an offline cold reload",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 9166,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|persistence-offline-visual.spec.js|key screens produce reviewable visual evidence",
+        "file": "persistence-offline-visual.spec.js",
+        "title": "key screens produce reviewable visual evidence",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 11451,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|persistence-offline-visual.spec.js|visible interactive controls expose accessible names",
+        "file": "persistence-offline-visual.spec.js",
+        "title": "visible interactive controls expose accessible names",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 2223,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|persistence-offline-visual.spec.js|Library reads persisted bookmarks and highlights and supports removal",
+        "file": "persistence-offline-visual.spec.js",
+        "title": "Library reads persisted bookmarks and highlights and supports removal",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 9851,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|persistence-offline-visual.spec.js|saved Reflect lesson and its personal notes survive reloads",
+        "file": "persistence-offline-visual.spec.js",
+        "title": "saved Reflect lesson and its personal notes survive reloads",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 12582,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|persistence-offline-visual.spec.js|Reflect bookmarks appear independently of saved Reflect studies",
+        "file": "persistence-offline-visual.spec.js",
+        "title": "Reflect bookmarks appear independently of saved Reflect studies",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 11645,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|persistence-offline-visual.spec.js|installed production service worker supports an offline cold reload",
+        "file": "persistence-offline-visual.spec.js",
+        "title": "installed production service worker supports an offline cold reload",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 11301,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|persistence-offline-visual.spec.js|key screens produce reviewable visual evidence",
+        "file": "persistence-offline-visual.spec.js",
+        "title": "key screens produce reviewable visual evidence",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 16102,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|persistence-offline-visual.spec.js|visible interactive controls expose accessible names",
+        "file": "persistence-offline-visual.spec.js",
+        "title": "visible interactive controls expose accessible names",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 3473,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|reader-pause-intent.spec.js|Pause during source loading remains paused when metadata arrives",
+        "file": "reader-pause-intent.spec.js",
+        "title": "Pause during source loading remains paused when metadata arrives",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 6884,
+        "run": "affectedReaderRecheck"
+      },
+      {
+        "key": "mobile-chrome|reader-pause-intent.spec.js|a delayed native play promise cannot override a newer Pause",
+        "file": "reader-pause-intent.spec.js",
+        "title": "a delayed native play promise cannot override a newer Pause",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 6886,
+        "run": "affectedReaderRecheck"
+      },
+      {
+        "key": "desktop-chrome|reader-pause-intent.spec.js|Pause during source loading remains paused when metadata arrives",
+        "file": "reader-pause-intent.spec.js",
+        "title": "Pause during source loading remains paused when metadata arrives",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 8434,
+        "run": "affectedReaderRecheck"
+      },
+      {
+        "key": "desktop-chrome|reader-pause-intent.spec.js|a delayed native play promise cannot override a newer Pause",
+        "file": "reader-pause-intent.spec.js",
+        "title": "a delayed native play promise cannot override a newer Pause",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 9423,
+        "run": "affectedReaderRecheck"
+      },
+      {
+        "key": "mobile-chrome|reader-reduced-motion.spec.js|reduced-motion preferences suppress page and player phase animations",
+        "file": "reader-reduced-motion.spec.js",
+        "title": "reduced-motion preferences suppress page and player phase animations",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 5785,
+        "run": "affectedReaderRecheck"
+      },
+      {
+        "key": "desktop-chrome|reader-reduced-motion.spec.js|reduced-motion preferences suppress page and player phase animations",
+        "file": "reader-reduced-motion.spec.js",
+        "title": "reduced-motion preferences suppress page and player phase animations",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 8887,
+        "run": "affectedReaderRecheck"
+      },
+      {
+        "key": "mobile-chrome|reader-regression.spec.js|permanent quarter and bookmark capsules survive page turns light single",
+        "file": "reader-regression.spec.js",
+        "title": "permanent quarter and bookmark capsules survive page turns light single",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 5447,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|reader-regression.spec.js|long-press Play follows a timed word across page 238 to 239 light single",
+        "file": "reader-regression.spec.js",
+        "title": "long-press Play follows a timed word across page 238 to 239 light single",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 6172,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|reader-regression.spec.js|permanent quarter and bookmark capsules survive page turns dark single",
+        "file": "reader-regression.spec.js",
+        "title": "permanent quarter and bookmark capsules survive page turns dark single",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 7010,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|reader-regression.spec.js|long-press Play follows a timed word across page 238 to 239 dark single",
+        "file": "reader-regression.spec.js",
+        "title": "long-press Play follows a timed word across page 238 to 239 dark single",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 6913,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|reader-regression.spec.js|permanent quarter and bookmark capsules survive page turns light double",
+        "file": "reader-regression.spec.js",
+        "title": "permanent quarter and bookmark capsules survive page turns light double",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 8557,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|reader-regression.spec.js|long-press Play follows a timed word across page 238 to 239 light double",
+        "file": "reader-regression.spec.js",
+        "title": "long-press Play follows a timed word across page 238 to 239 light double",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 8622,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|reader-regression.spec.js|permanent quarter and bookmark capsules survive page turns dark double",
+        "file": "reader-regression.spec.js",
+        "title": "permanent quarter and bookmark capsules survive page turns dark double",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 9832,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|reader-regression.spec.js|long-press Play follows a timed word across page 238 to 239 dark double",
+        "file": "reader-regression.spec.js",
+        "title": "long-press Play follows a timed word across page 238 to 239 dark double",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 8783,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|reader-regression.spec.js|permanent quarter and bookmark capsules survive page turns light single",
+        "file": "reader-regression.spec.js",
+        "title": "permanent quarter and bookmark capsules survive page turns light single",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 7330,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|reader-regression.spec.js|long-press Play follows a timed word across page 238 to 239 light single",
+        "file": "reader-regression.spec.js",
+        "title": "long-press Play follows a timed word across page 238 to 239 light single",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 10203,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|reader-regression.spec.js|permanent quarter and bookmark capsules survive page turns dark single",
+        "file": "reader-regression.spec.js",
+        "title": "permanent quarter and bookmark capsules survive page turns dark single",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 7611,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|reader-regression.spec.js|long-press Play follows a timed word across page 238 to 239 dark single",
+        "file": "reader-regression.spec.js",
+        "title": "long-press Play follows a timed word across page 238 to 239 dark single",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 9357,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|reader-regression.spec.js|permanent quarter and bookmark capsules survive page turns light double",
+        "file": "reader-regression.spec.js",
+        "title": "permanent quarter and bookmark capsules survive page turns light double",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 8664,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|reader-regression.spec.js|long-press Play follows a timed word across page 238 to 239 light double",
+        "file": "reader-regression.spec.js",
+        "title": "long-press Play follows a timed word across page 238 to 239 light double",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 9768,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|reader-regression.spec.js|permanent quarter and bookmark capsules survive page turns dark double",
+        "file": "reader-regression.spec.js",
+        "title": "permanent quarter and bookmark capsules survive page turns dark double",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 8797,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|reader-regression.spec.js|long-press Play follows a timed word across page 238 to 239 dark double",
+        "file": "reader-regression.spec.js",
+        "title": "long-press Play follows a timed word across page 238 to 239 dark double",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 8681,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|reader-spread-annotations.spec.js|spanning saved ayah and Index/Library destination flashes light 2:54",
+        "file": "reader-spread-annotations.spec.js",
+        "title": "spanning saved ayah and Index/Library destination flashes light 2:54",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 17342,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|reader-spread-annotations.spec.js|recited word crosses visible pages within a spread light",
+        "file": "reader-spread-annotations.spec.js",
+        "title": "recited word crosses visible pages within a spread light",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 9244,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|reader-spread-annotations.spec.js|spanning saved ayah and Index/Library destination flashes light 2:61",
+        "file": "reader-spread-annotations.spec.js",
+        "title": "spanning saved ayah and Index/Library destination flashes light 2:61",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 16573,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|reader-spread-annotations.spec.js|recited word crosses visible pages from page 8 to 9 light",
+        "file": "reader-spread-annotations.spec.js",
+        "title": "recited word crosses visible pages from page 8 to 9 light",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 9830,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|reader-spread-annotations.spec.js|spanning saved ayah and Index/Library destination flashes dark 2:54",
+        "file": "reader-spread-annotations.spec.js",
+        "title": "spanning saved ayah and Index/Library destination flashes dark 2:54",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 17186,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|reader-spread-annotations.spec.js|recited word crosses visible pages within a spread dark",
+        "file": "reader-spread-annotations.spec.js",
+        "title": "recited word crosses visible pages within a spread dark",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 9561,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|reader-spread-annotations.spec.js|spanning saved ayah and Index/Library destination flashes dark 2:61",
+        "file": "reader-spread-annotations.spec.js",
+        "title": "spanning saved ayah and Index/Library destination flashes dark 2:61",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 18208,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|reader-spread-annotations.spec.js|recited word crosses visible pages from page 8 to 9 dark",
+        "file": "reader-spread-annotations.spec.js",
+        "title": "recited word crosses visible pages from page 8 to 9 dark",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 9253,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|reader-spread-annotations.spec.js|spanning saved ayah and Index/Library destination flashes light 2:54",
+        "file": "reader-spread-annotations.spec.js",
+        "title": "spanning saved ayah and Index/Library destination flashes light 2:54",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 18087,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|reader-spread-annotations.spec.js|recited word crosses visible pages within a spread light",
+        "file": "reader-spread-annotations.spec.js",
+        "title": "recited word crosses visible pages within a spread light",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 9475,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|reader-spread-annotations.spec.js|spanning saved ayah and Index/Library destination flashes light 2:61",
+        "file": "reader-spread-annotations.spec.js",
+        "title": "spanning saved ayah and Index/Library destination flashes light 2:61",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 17941,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|reader-spread-annotations.spec.js|recited word crosses visible pages from page 8 to 9 light",
+        "file": "reader-spread-annotations.spec.js",
+        "title": "recited word crosses visible pages from page 8 to 9 light",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 10525,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|reader-spread-annotations.spec.js|spanning saved ayah and Index/Library destination flashes dark 2:54",
+        "file": "reader-spread-annotations.spec.js",
+        "title": "spanning saved ayah and Index/Library destination flashes dark 2:54",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 18749,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|reader-spread-annotations.spec.js|recited word crosses visible pages within a spread dark",
+        "file": "reader-spread-annotations.spec.js",
+        "title": "recited word crosses visible pages within a spread dark",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 9170,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|reader-spread-annotations.spec.js|spanning saved ayah and Index/Library destination flashes dark 2:61",
+        "file": "reader-spread-annotations.spec.js",
+        "title": "spanning saved ayah and Index/Library destination flashes dark 2:61",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 19195,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|reader-spread-annotations.spec.js|recited word crosses visible pages from page 8 to 9 dark",
+        "file": "reader-spread-annotations.spec.js",
+        "title": "recited word crosses visible pages from page 8 to 9 dark",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 9557,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|reader-spread.spec.js|adaptive spread preserves RTL pages, metadata and active page on rotation light",
+        "file": "reader-spread.spec.js",
+        "title": "adaptive spread preserves RTL pages, metadata and active page on rotation light",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 8411,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|reader-spread.spec.js|central controls and persisted single-page preference light",
+        "file": "reader-spread.spec.js",
+        "title": "central controls and persisted single-page preference light",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 12044,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|reader-spread.spec.js|adaptive spread preserves RTL pages, metadata and active page on rotation dark",
+        "file": "reader-spread.spec.js",
+        "title": "adaptive spread preserves RTL pages, metadata and active page on rotation dark",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 7135,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|reader-spread.spec.js|central controls and persisted single-page preference dark",
+        "file": "reader-spread.spec.js",
+        "title": "central controls and persisted single-page preference dark",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 12446,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|reader-spread.spec.js|mouse margin drag advances a spread and short drag returns without navigation",
+        "file": "reader-spread.spec.js",
+        "title": "mouse margin drag advances a spread and short drag returns without navigation",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 7530,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|reader-spread.spec.js|touch swipe advances spread and reduced motion changes pages immediately",
+        "file": "reader-spread.spec.js",
+        "title": "touch swipe advances spread and reduced motion changes pages immediately",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 7255,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|reader-spread.spec.js|small portrait controls fit and the page slider opens the exact last page without wrapping",
+        "file": "reader-spread.spec.js",
+        "title": "small portrait controls fit and the page slider opens the exact last page without wrapping",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 6540,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|reader-spread.spec.js|installed-app orientation policy permits tablet layout",
+        "file": "reader-spread.spec.js",
+        "title": "installed-app orientation policy permits tablet layout",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 6374,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|reader-spread.spec.js|installed-app orientation policy permits phone layout",
+        "file": "reader-spread.spec.js",
+        "title": "installed-app orientation policy permits phone layout",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 4864,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|reader-spread.spec.js|adaptive spread preserves RTL pages, metadata and active page on rotation light",
+        "file": "reader-spread.spec.js",
+        "title": "adaptive spread preserves RTL pages, metadata and active page on rotation light",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 7656,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|reader-spread.spec.js|central controls and persisted single-page preference light",
+        "file": "reader-spread.spec.js",
+        "title": "central controls and persisted single-page preference light",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 12468,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|reader-spread.spec.js|adaptive spread preserves RTL pages, metadata and active page on rotation dark",
+        "file": "reader-spread.spec.js",
+        "title": "adaptive spread preserves RTL pages, metadata and active page on rotation dark",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 8585,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|reader-spread.spec.js|central controls and persisted single-page preference dark",
+        "file": "reader-spread.spec.js",
+        "title": "central controls and persisted single-page preference dark",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 12179,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|reader-spread.spec.js|mouse margin drag advances a spread and short drag returns without navigation",
+        "file": "reader-spread.spec.js",
+        "title": "mouse margin drag advances a spread and short drag returns without navigation",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 8510,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|reader-spread.spec.js|touch swipe advances spread and reduced motion changes pages immediately",
+        "file": "reader-spread.spec.js",
+        "title": "touch swipe advances spread and reduced motion changes pages immediately",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 7329,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|reader-spread.spec.js|small portrait controls fit and the page slider opens the exact last page without wrapping",
+        "file": "reader-spread.spec.js",
+        "title": "small portrait controls fit and the page slider opens the exact last page without wrapping",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 7621,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|reader-spread.spec.js|installed-app orientation policy permits tablet layout",
+        "file": "reader-spread.spec.js",
+        "title": "installed-app orientation policy permits tablet layout",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 7049,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|reader-spread.spec.js|installed-app orientation policy permits phone layout",
+        "file": "reader-spread.spec.js",
+        "title": "installed-app orientation policy permits phone layout",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 5500,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|reader-ui-states.spec.js|Reader chrome and annotations light",
+        "file": "reader-ui-states.spec.js",
+        "title": "Reader chrome and annotations light",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 6726,
+        "run": "affectedReaderRecheck"
+      },
+      {
+        "key": "mobile-chrome|reader-ui-states.spec.js|Reader player states light",
+        "file": "reader-ui-states.spec.js",
+        "title": "Reader player states light",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 8095,
+        "run": "affectedReaderRecheck"
+      },
+      {
+        "key": "mobile-chrome|reader-ui-states.spec.js|Reader translation panel light",
+        "file": "reader-ui-states.spec.js",
+        "title": "Reader translation panel light",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 6572,
+        "run": "affectedReaderRecheck"
+      },
+      {
+        "key": "mobile-chrome|reader-ui-states.spec.js|Share Quran UI states light",
+        "file": "reader-ui-states.spec.js",
+        "title": "Share Quran UI states light",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 8261,
+        "run": "affectedReaderRecheck"
+      },
+      {
+        "key": "mobile-chrome|reader-ui-states.spec.js|Reader chrome and annotations dark",
+        "file": "reader-ui-states.spec.js",
+        "title": "Reader chrome and annotations dark",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 6667,
+        "run": "affectedReaderRecheck"
+      },
+      {
+        "key": "mobile-chrome|reader-ui-states.spec.js|Reader player states dark",
+        "file": "reader-ui-states.spec.js",
+        "title": "Reader player states dark",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 8046,
+        "run": "affectedReaderRecheck"
+      },
+      {
+        "key": "mobile-chrome|reader-ui-states.spec.js|Reader translation panel dark",
+        "file": "reader-ui-states.spec.js",
+        "title": "Reader translation panel dark",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 6680,
+        "run": "affectedReaderRecheck"
+      },
+      {
+        "key": "mobile-chrome|reader-ui-states.spec.js|Share Quran UI states dark",
+        "file": "reader-ui-states.spec.js",
+        "title": "Share Quran UI states dark",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 7783,
+        "run": "affectedReaderRecheck"
+      },
+      {
+        "key": "desktop-chrome|reader-ui-states.spec.js|Reader chrome and annotations light",
+        "file": "reader-ui-states.spec.js",
+        "title": "Reader chrome and annotations light",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 9600,
+        "run": "affectedReaderRecheck"
+      },
+      {
+        "key": "desktop-chrome|reader-ui-states.spec.js|Reader player states light",
+        "file": "reader-ui-states.spec.js",
+        "title": "Reader player states light",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 11088,
+        "run": "affectedReaderRecheck"
+      },
+      {
+        "key": "desktop-chrome|reader-ui-states.spec.js|Reader translation panel light",
+        "file": "reader-ui-states.spec.js",
+        "title": "Reader translation panel light",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 9356,
+        "run": "affectedReaderRecheck"
+      },
+      {
+        "key": "desktop-chrome|reader-ui-states.spec.js|Share Quran UI states light",
+        "file": "reader-ui-states.spec.js",
+        "title": "Share Quran UI states light",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 12951,
+        "run": "affectedReaderRecheck"
+      },
+      {
+        "key": "desktop-chrome|reader-ui-states.spec.js|Reader chrome and annotations dark",
+        "file": "reader-ui-states.spec.js",
+        "title": "Reader chrome and annotations dark",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 9968,
+        "run": "affectedReaderRecheck"
+      },
+      {
+        "key": "desktop-chrome|reader-ui-states.spec.js|Reader player states dark",
+        "file": "reader-ui-states.spec.js",
+        "title": "Reader player states dark",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 11083,
+        "run": "affectedReaderRecheck"
+      },
+      {
+        "key": "desktop-chrome|reader-ui-states.spec.js|Reader translation panel dark",
+        "file": "reader-ui-states.spec.js",
+        "title": "Reader translation panel dark",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 8544,
+        "run": "affectedReaderRecheck"
+      },
+      {
+        "key": "desktop-chrome|reader-ui-states.spec.js|Share Quran UI states dark",
+        "file": "reader-ui-states.spec.js",
+        "title": "Share Quran UI states dark",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 8241,
+        "run": "affectedReaderRecheck"
+      },
+      {
+        "key": "mobile-chrome|shared-surfaces.spec.js|shared glass surfaces keep distinct card and control roles",
+        "file": "shared-surfaces.spec.js",
+        "title": "shared glass surfaces keep distinct card and control roles",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 2126,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|shared-surfaces.spec.js|Index, Search and Settings retain warm glass surfaces",
+        "file": "shared-surfaces.spec.js",
+        "title": "Index, Search and Settings retain warm glass surfaces",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 12314,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|shared-surfaces.spec.js|Reader Mushaf stays sixteen lines after opening from Home",
+        "file": "shared-surfaces.spec.js",
+        "title": "Reader Mushaf stays sixteen lines after opening from Home",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 5182,
+        "run": "full"
+      },
+      {
+        "key": "mobile-chrome|shared-surfaces.spec.js|Reflect selected tabs do not animate through low-contrast intermediate colors",
+        "file": "shared-surfaces.spec.js",
+        "title": "Reflect selected tabs do not animate through low-contrast intermediate colors",
+        "project": "mobile-chrome",
+        "status": "expected",
+        "durationMs": 4891,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|shared-surfaces.spec.js|shared glass surfaces keep distinct card and control roles",
+        "file": "shared-surfaces.spec.js",
+        "title": "shared glass surfaces keep distinct card and control roles",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 2881,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|shared-surfaces.spec.js|Index, Search and Settings retain warm glass surfaces",
+        "file": "shared-surfaces.spec.js",
+        "title": "Index, Search and Settings retain warm glass surfaces",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 16810,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|shared-surfaces.spec.js|Reader Mushaf stays sixteen lines after opening from Home",
+        "file": "shared-surfaces.spec.js",
+        "title": "Reader Mushaf stays sixteen lines after opening from Home",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 7998,
+        "run": "full"
+      },
+      {
+        "key": "desktop-chrome|shared-surfaces.spec.js|Reflect selected tabs do not animate through low-contrast intermediate colors",
+        "file": "shared-surfaces.spec.js",
+        "title": "Reflect selected tabs do not animate through low-contrast intermediate colors",
+        "project": "desktop-chrome",
+        "status": "expected",
+        "durationMs": 6731,
+        "run": "full"
+      }
+    ]
+  },
+  "unit": {
+    "passed": 25,
+    "failed": 0,
+    "skipped": 0
+  },
+  "lint": "passed",
+  "productionBuild": "passed",
+  "typescript": "not configured",
+  "readerGeometry": {
+    "comparisons": 50,
+    "matched": 50
+  },
+  "visualReferences": {
+    "total": 76,
+    "updated": 13,
+    "unchanged": 63,
+    "updatedFiles": [
+      "tests/e2e/css-architecture-visual.spec.js-snapshots/reader-dark-desktop-chrome-linux.png",
+      "tests/e2e/css-architecture-visual.spec.js-snapshots/reader-light-desktop-chrome-linux.png",
+      "tests/e2e/reader-ui-states.spec.js-snapshots/audio-collapsed-dark-desktop-chrome-linux.png",
+      "tests/e2e/reader-ui-states.spec.js-snapshots/audio-collapsed-dark-mobile-chrome-linux.png",
+      "tests/e2e/reader-ui-states.spec.js-snapshots/audio-collapsed-light-desktop-chrome-linux.png",
+      "tests/e2e/reader-ui-states.spec.js-snapshots/audio-selected-controls-dark-desktop-chrome-linux.png",
+      "tests/e2e/reader-ui-states.spec.js-snapshots/audio-selected-controls-dark-mobile-chrome-linux.png",
+      "tests/e2e/reader-ui-states.spec.js-snapshots/reader-annotations-dark-desktop-chrome-linux.png",
+      "tests/e2e/reader-ui-states.spec.js-snapshots/reader-annotations-light-desktop-chrome-linux.png",
+      "tests/e2e/reader-ui-states.spec.js-snapshots/reader-chrome-dark-desktop-chrome-linux.png",
+      "tests/e2e/reader-ui-states.spec.js-snapshots/reader-chrome-dark-mobile-chrome-linux.png",
+      "tests/e2e/reader-ui-states.spec.js-snapshots/reader-chrome-light-desktop-chrome-linux.png",
+      "tests/e2e/reader-ui-states.spec.js-snapshots/reader-chrome-light-mobile-chrome-linux.png"
+    ]
+  },
+  "css": {
+    "rules": 2040,
+    "declarations": 7201,
+    "important": 0,
+    "hardcodedHex": 481,
+    "fontSizes": 280
+  },
+  "missingImports": 0,
+  "inactiveStylesheets": 0,
+  "retiredDependencies": 0
+}

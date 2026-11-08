@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { AppOptionPicker } from '../../components/common/Dropdown';
+import { readerSpreadStart, useReaderLayout } from './hooks/useReaderLayout';
 import { AnimatePresence } from 'framer-motion';
 import { useShallow } from 'zustand/react/shallow';
 import { db } from '../../lib/db';
@@ -14,8 +16,7 @@ import { ReaderTopControls } from './components/ReaderTopControls';
 import { usePagePersistence } from './hooks/usePagePersistence';
 import { useReaderGestures } from './hooks/useReaderGestures';
 
-const PAGE_SLIDE_SETTLE_MS = 190;
-const EMPTY_ANNOTATIONS = new Map();
+const PAGE_SLIDE_SETTLE_MS = 220;
 const PAGE_SLIDE_IDLE = {
   active: false,
   settling: false,
@@ -33,6 +34,7 @@ export default function ReaderScreen() {
     controlsVisible,
     setControlsVisible,
     settings,
+    updateSettings,
     goBack,
     openBookmarks,
     openIndex,
@@ -69,6 +71,7 @@ export default function ReaderScreen() {
     controlsVisible: state.controlsVisible,
     setControlsVisible: state.setControlsVisible,
     settings: state.settings,
+    updateSettings: state.updateSettings,
     goBack: state.goBack,
     openBookmarks: state.openBookmarks,
     openIndex: state.openIndex,
@@ -108,9 +111,11 @@ export default function ReaderScreen() {
     followRecitation
     && (!audioPlayerActive || !audioTarget?.page || Number(audioTarget.page) === Number(page))
   ));
+  const layout = useReaderLayout(settings.readerLayout);
+  const spreadStart = readerSpreadStart(page);
+  const pageStep = layout.spread ? 2 : 1;
   const pageData = getPage(page);
   const meta = getPageMeta(page);
-  const displayPage = getMushafPageNumber(page);
   const footerPage = sliderInteracting && sliderPreviewPage ? sliderPreviewPage : page;
   const footerPageData = footerPage === page ? pageData : getPage(footerPage);
   const footerMeta = footerPage === page ? meta : getPageMeta(footerPage);
@@ -176,7 +181,8 @@ export default function ReaderScreen() {
       audioTarget?.pageIsAuthoritative &&
       playingVerseKey &&
       audioTarget?.page &&
-      Number(audioTarget.page) !== Number(page)
+      Number(audioTarget.page) !== Number(page) &&
+      !sameVisibleSpread(audioTarget.page, page)
   );
   const playingSurah = audioTarget?.surahNumber
     ? getSurah(audioTarget.surahNumber)
@@ -208,13 +214,14 @@ export default function ReaderScreen() {
       if (pageSlideBlocked()) return;
 
       event.preventDefault();
-      goReaderPage(event.key === 'ArrowLeft' ? page + 1 : page - 1);
+      goReaderPage(navigationPage(event.key === 'ArrowLeft' ? 1 : -1));
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [
     page,
+    layout.spread,
     translationTarget,
     ayahTooltipVisible,
     audioPlayerVisible,
@@ -378,19 +385,34 @@ export default function ReaderScreen() {
     }
   }, [followRecitation]);
 
+  useEffect(() => {
+    window.clearTimeout(pageSlideTimer.current);
+    window.clearTimeout(pageTransitionTimer.current);
+    setPageSlide(PAGE_SLIDE_IDLE);
+    setPageTransition(null);
+  }, [layout.spread, layout.pageWidth, layout.pageHeight]);
+
+  function navigationPage(direction) {
+    const destination = (layout.spread ? spreadStart : page) + direction * pageStep;
+    return destination < 1 || destination > clampPage(9999) ? page : destination;
+  }
+
+  function sameVisibleSpread(first, second) {
+    return layout.spread && readerSpreadStart(first) === readerSpreadStart(second);
+  }
+
   function getPageSlideWidth() {
     return readerShellRef.current?.getBoundingClientRect().width || window.innerWidth || 390;
   }
 
   function startPageTransition(nextPage) {
     const safeNextPage = clampPage(nextPage);
-    if (safeNextPage === page) return;
+    if (safeNextPage === page || sameVisibleSpread(safeNextPage, page)) return;
 
     window.clearTimeout(pageTransitionTimer.current);
     setPageSlide(PAGE_SLIDE_IDLE);
     setPageTransition({
       page,
-      pageData,
       direction: safeNextPage > page ? 1 : -1,
     });
     pageTransitionTimer.current = window.setTimeout(() => {
@@ -417,7 +439,7 @@ export default function ReaderScreen() {
     setAudioFollowEnabled(Boolean(
       audioTarget?.pageIsAuthoritative
       && audioTarget?.page
-      && Number(nextPage) === Number(audioTarget.page)
+      && (Number(nextPage) === Number(audioTarget.page) || sameVisibleSpread(nextPage, audioTarget.page))
     ));
   }
 
@@ -431,7 +453,7 @@ export default function ReaderScreen() {
 
     updateAudioFollowForDestination(safeNextPage, navigationSource);
 
-    if (!skipSlideTransition) {
+    if (!skipSlideTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       startPageTransition(safeNextPage);
     }
 
@@ -448,7 +470,7 @@ export default function ReaderScreen() {
   }
 
   function pageSlideBlocked() {
-    return Boolean(translationTarget || ayahTooltipVisible || audioPlayerVisible);
+    return Boolean(translationTarget || ayahTooltipVisible || audioPlayerVisible || window.getSelection()?.toString());
   }
 
   function handlePageSlideMove(deltaX) {
@@ -459,7 +481,7 @@ export default function ReaderScreen() {
 
     const width = getPageSlideWidth();
     const direction = deltaX >= 0 ? 1 : -1;
-    const targetPage = clampPage(page + direction);
+    const targetPage = navigationPage(direction);
     const boundedOffset = Math.max(-width, Math.min(width, deltaX));
     const offset = targetPage === page ? boundedOffset * 0.28 : boundedOffset;
 
@@ -479,8 +501,13 @@ export default function ReaderScreen() {
 
     const width = getPageSlideWidth();
     const direction = deltaX >= 0 ? 1 : -1;
-    const targetPage = clampPage(page + direction);
+    const targetPage = navigationPage(direction);
     const canCommit = committed && targetPage !== page && !pageSlideBlocked();
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (canCommit) goReaderPage(targetPage, null, { skipSlideTransition: true });
+      setPageSlide(PAGE_SLIDE_IDLE);
+      return true;
+    }
     const settleOffset = canCommit ? direction * width : 0;
 
     window.clearTimeout(pageSlideTimer.current);
@@ -619,7 +646,7 @@ export default function ReaderScreen() {
     }, 1300);
   }
 
-  function selectAyah(line, lineIndex, selection) {
+  function selectAyah(line, lineIndex, selection, renderedPage = page) {
     if (readerInteractionsBlocked || isAyahInteractionSuppressed()) {
       suppressTapUntil.current = Date.now() + 700;
       dismissVisibleReaderUi();
@@ -637,8 +664,9 @@ export default function ReaderScreen() {
 
     suppressTapUntil.current = Date.now() + 700;
     setTranslationTarget(null);
+    if (renderedPage !== page) goReaderPage(renderedPage, null, { skipSlideTransition: true });
     openAyahSheet({
-      page,
+      page: renderedPage,
       surah: surahNumber,
       ayah: ayahNumber,
       surahNumber,
@@ -656,7 +684,7 @@ export default function ReaderScreen() {
     });
   }
 
-  function openTranslationCard(line, lineIndex, selection) {
+  function openTranslationCard(line, lineIndex, selection, renderedPage = page) {
     if (line.type !== 'ayah' || !line.surahNumber || !line.ayahStart) return;
     if (readerInteractionsBlocked || isAyahInteractionSuppressed()) {
       dismissVisibleReaderUi();
@@ -665,8 +693,9 @@ export default function ReaderScreen() {
 
     const surahNumber = Number(selection?.surahNumber || line.surahNumber);
     const ayahNumber = Number(selection?.ayahNumber || line.ayahStart);
+    if (renderedPage !== page) goReaderPage(renderedPage, null, { skipSlideTransition: true });
     setTranslationTarget({
-      page,
+      page: renderedPage,
       surahNumber,
       ayahNumber,
       lineIndex,
@@ -746,8 +775,8 @@ export default function ReaderScreen() {
       <MushafPage
         pageData={renderedPageData}
         settings={settings}
-        savedHighlights={interactive ? savedHighlights : EMPTY_ANNOTATIONS}
-        bookmarkMarkers={interactive ? bookmarkMarkers : EMPTY_ANNOTATIONS}
+        savedHighlights={savedHighlights}
+        bookmarkMarkers={bookmarkMarkers}
         pendingAyah={interactive ? pendingAyah : null}
         quarterFlashTarget={interactive ? quarterFlashTarget : null}
         selectedAyah={interactive ? selectedAyah : null}
@@ -755,12 +784,32 @@ export default function ReaderScreen() {
         playingWordPosition={playingWordPosition}
         playingWordOccurrenceIndex={playingWordOccurrenceIndex}
         interactionsBlocked={!interactive || readerInteractionsBlocked}
-        enableTextHighlights={interactive}
+        enableTextHighlights
         onBlockedInteraction={interactive ? dismissVisibleReaderUi : undefined}
-        onSelectAyah={interactive ? selectAyah : () => {}}
-        onTapAyah={interactive ? openTranslationCard : () => {}}
+        onSelectAyah={interactive ? (line, index, selection) => selectAyah(line, index, selection, renderedPageData.page) : () => {}}
+        onTapAyah={interactive ? (line, index, selection) => openTranslationCard(line, index, selection, renderedPageData.page) : () => {}}
       />
     );
+  }
+
+  function renderPageView(renderedPage, interactive = true) {
+    const pages = layout.spread
+      ? [readerSpreadStart(renderedPage), readerSpreadStart(renderedPage) + 1]
+      : [renderedPage];
+    return <div className={`reader-page-view ${layout.spread ? 'reader-page-view-spread' : ''}`}>
+      {pages.map(number => {
+        const data = getPage(number);
+        const pageMeta = getPageMeta(number);
+        const first = data.lines.find(line => line.surahNumber && line.ayahStart);
+        const target = getFooterTarget({ page: number, firstPageAyah: first, pendingAyah: number === page ? pendingAyah : null, pendingQuarterFlash, selectedAyah, audioTarget });
+        const progress = getCurrentIndoPakJuzProgress(number, target?.surahNumber, target?.ayahNumber, pageMeta.juz);
+        return <div className="reader-page-leaf" role="group" key={number} data-reader-page={number} aria-label={`Mushaf page ${getMushafPageNumber(number)}`}>
+          <ReaderPassiveHeader meta={pageMeta} />
+          {renderMushafPage(data, { interactive })}
+          <ReaderFooterMeta displayPage={getMushafPageNumber(number)} progress={progress} />
+        </div>;
+      })}
+    </div>;
   }
 
   const pageSlideDirection = pageTransitionActive
@@ -777,26 +826,29 @@ export default function ReaderScreen() {
 
   return (
     <section
-      className="fixed inset-0 overflow-hidden bg-reader text-slate-950"
+      className={`reader-screen fixed inset-0 overflow-hidden bg-reader text-slate-950 ${layout.spread ? 'reader-screen-spread' : ''}`}
       onPointerDownCapture={handleReaderPointerDownCapture}
       onClick={handleReaderTap}
     >
-      <div
-        ref={readerShellRef}
-        className={`reader-shell relative mx-auto flex h-dvh max-w-[576px] flex-col overflow-hidden bg-[#fffaf1] text-[#13100a] shadow-2xl shadow-slate-900/10 ${audioPlayerActive ? 'reader-shell-audio-active' : ''} ${audioPlayerActive && !audioPlayerVisible ? 'reader-shell-audio-collapsed' : ''}`}
-      >
-        <div className="reader-top-hit-zone" data-reader-toggle-zone aria-hidden="true" />
-        <div className="reader-bottom-hit-zone" data-reader-toggle-zone aria-hidden="true" />
-        <ReaderPassiveHeader meta={meta} displayPage={displayPage} />
-
         <ReaderTopControls
           visible={controlsVisible}
           onBack={() => goBack()}
           onBookmarks={openBookmarks}
           onIndex={openIndex}
           onSettings={openSettings}
+          onSearch={openSearch}
+          layoutControl={<AppOptionPicker label="Reader layout" value={settings.readerLayout || 'auto'} options={[{value:'auto',label:'Auto'},{value:'single',label:'Single page'},{value:'double',label:'Two pages'}]} onSelect={readerLayout => updateSettings({readerLayout})} />}
           onChromeTap={hideReaderChrome}
         />
+      <div
+        ref={readerShellRef}
+        style={layout.spread ? { '--reader-spread-width': `${layout.pageWidth * 2 + 24}px`, '--reader-spread-height': `${layout.pageHeight}px` } : undefined}
+        className={`reader-shell relative mx-auto flex h-dvh max-w-[576px] flex-col overflow-hidden bg-[#fffaf1] text-[#13100a] shadow-2xl shadow-slate-900/10 ${layout.spread ? 'reader-shell-spread' : ''} ${audioPlayerActive ? 'reader-shell-audio-active' : ''} ${audioPlayerActive && !audioPlayerVisible ? 'reader-shell-audio-collapsed' : ''}`}
+      >
+        <div className="reader-top-hit-zone" data-reader-toggle-zone aria-hidden="true" />
+        <div className="reader-bottom-hit-zone" data-reader-toggle-zone aria-hidden="true" />
+
+
 
         <div
           className={pageSlideClasses}
@@ -808,26 +860,27 @@ export default function ReaderScreen() {
           onTouchCancel={handleTouchCancel}
         >
           {pageTransitionActive && (
-            <div className="reader-page-slide reader-page-slide-leaving" aria-hidden="true">
-              {renderMushafPage(pageTransition.pageData, { interactive: false })}
+            <div className="reader-page-slide reader-page-slide-leaving" aria-hidden="true" inert>
+              {renderPageView(pageTransition.page, false)}
             </div>
           )}
 
           <div className="reader-page-slide reader-page-slide-current">
-            {renderMushafPage(pageData)}
+            {renderPageView(page)}
           </div>
 
           {activeSlideTargetPageData && !pageTransitionActive && (
             <div
               className={`reader-page-slide reader-page-slide-adjacent ${pageSlide.direction > 0 ? 'is-next' : 'is-previous'}`}
               aria-hidden="true"
+              inert
             >
-              {renderMushafPage(activeSlideTargetPageData, { interactive: false })}
+              {renderPageView(activeSlideTargetPage, false)}
             </div>
           )}
         </div>
 
-        <ReaderFooterMeta displayPage={footerDisplayPage} progress={juzProgress} />
+
       </div>
 
 
@@ -859,6 +912,11 @@ export default function ReaderScreen() {
             displayPage={footerDisplayPage}
             goPage={goReaderPage}
             onPreviousPage={goPreviousReaderPageWithSlide}
+            onNext={() => goReaderPage(navigationPage(1), null, { keepControlsVisible: true })}
+            onPrevious={() => goReaderPage(navigationPage(-1), null, { keepControlsVisible: true })}
+            nextDisabled={page >= clampPage(9999) || (layout.spread && spreadStart + 2 > clampPage(9999))}
+            previousDisabled={page <= (layout.spread ? 2 : 1)}
+            spread={layout.spread}
             onSearch={openSearch}
             onAudio={playFromPageStart}
             compact={audioPlayerActive}

@@ -19,6 +19,7 @@ function summarize(themes) {
  }]));
 }
 const results=[];
+const outputPath = process.env.QURAN_GEOMETRY_OUTPUT || 'docs/css-audit/independent-reader-geometry.json';
 try {
  for (const width of [320,375,390,430,768]) for (const pageNumber of [1,7,238,239,548]) {
   const captures=[];
@@ -53,9 +54,9 @@ try {
    captures.push(themes);await context.close();
   }
   results.push({width,pageNumber,identical:JSON.stringify(captures[0])===JSON.stringify(captures[1]),before:summarize(captures[0]),after:summarize(captures[1])});
-  fs.writeFileSync('docs/css-audit/independent-reader-geometry.json',JSON.stringify({baseline:'33a2c4c',results},null,2));
+  fs.writeFileSync(outputPath,JSON.stringify({baseline:'33a2c4c',results},null,2));
   console.log(width,pageNumber,results.at(-1).identical?'MATCH':'DIFFERENCE');
  }
- fs.writeFileSync('docs/css-audit/independent-reader-geometry.json',JSON.stringify({baseline:'33a2c4c',results},null,2));
+ fs.writeFileSync(outputPath,JSON.stringify({baseline:'33a2c4c',results},null,2));
  if(results.some(r=>!r.identical))process.exitCode=1;
 } finally { await browser.close(); servers.forEach(server=>server.kill()); }

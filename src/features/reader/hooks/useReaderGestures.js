@@ -90,16 +90,6 @@ export function useReaderGestures({
       return;
     }
 
-    if (committed) {
-      const handled = onSlideEnd?.({ deltaX: delta, committed });
-      touchStart.current = null;
-
-      if (handled === true) return;
-
-      goPage(delta > 0 ? page + 1 : page - 1);
-      return;
-    }
-
     touchStart.current = null;
   }
 
@@ -115,6 +105,8 @@ export function useReaderGestures({
       return;
     }
 
+    if (event.target.closest('.quran-word, .quran-ayah-marker-glyph')) return;
+    removePointerListeners();
     pointerStart.current = {
       pointerId: event.pointerId,
       x: event.clientX,

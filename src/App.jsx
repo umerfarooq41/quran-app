@@ -25,6 +25,12 @@ import SurahInfoScreen from './pages/SurahInfoScreen';
 import { ShareQuranScreen } from './features/reader/components/ShareAyahSheet';
 import { ReaderAudioPanel } from './features/reader/components/ReaderAudioPanel';
 
+function allowsLandscapeOrientation() {
+  const width = window.screen?.width || window.innerWidth;
+  const height = window.screen?.height || window.innerHeight;
+  return Math.min(width, height) >= 600;
+}
+
 function syncPortraitFallbackState() {
   const root = document.documentElement;
   const landscapeQuery = window.matchMedia?.('(orientation: landscape)');
@@ -35,7 +41,7 @@ function syncPortraitFallbackState() {
   const angle = Number(angleValue) || 0;
 
   root.dataset.appOrientation = isLandscape ? 'landscape' : 'portrait';
-  root.dataset.appLandscapeLock = isLandscape
+  root.dataset.appLandscapeLock = isLandscape && !allowsLandscapeOrientation()
     ? (angle === -90 || angle === 270 ? 'counterclockwise' : 'clockwise')
     : 'none';
 }
@@ -46,6 +52,10 @@ function requestPortraitLock() {
   if (document.visibilityState === 'hidden') return;
 
   const orientation = window.screen?.orientation;
+  if (allowsLandscapeOrientation()) {
+    orientation?.unlock?.();
+    return;
+  }
   if (!orientation?.lock) return;
 
   Promise.resolve(orientation.lock('portrait')).catch(() => {

@@ -103,6 +103,7 @@ export function ReaderAudioPanel() {
   const currentSourceRef = useRef(null);
   const audioHandlersRef = useRef(new WeakMap());
   const loadTokenRef = useRef(0);
+  const playRequestRef = useRef(0);
   const loadingRef = useRef(null);
   const playIntentRef = useRef(playing);
   const repeatRef = useRef(repeat || 'off');
@@ -511,6 +512,10 @@ export function ReaderAudioPanel() {
       },
       play: () => {
         if (audio !== currentAudioRef.current) return;
+        if (!playIntentRef.current) {
+          audio.pause();
+          return;
+        }
         syncPlaybackStateForCurrentSource();
         setAudioPlaying(true);
         setStatus('');
@@ -645,15 +650,26 @@ export function ReaderAudioPanel() {
     const audio = currentAudioRef.current;
     if (!audio || !playIntentRef.current || unmountedRef.current) return false;
 
+    const request = ++playRequestRef.current;
+    const sourceLoad = loadTokenRef.current;
+    const isCurrentRequest = () => audio === currentAudioRef.current
+      && !unmountedRef.current
+      && request === playRequestRef.current
+      && sourceLoad === loadTokenRef.current;
+
     try {
       audio.playbackRate = playbackRateRef.current;
       await audio.play();
-      if (audio !== currentAudioRef.current) return false;
+      if (!isCurrentRequest()) return false;
+      if (!playIntentRef.current) {
+        audio.pause();
+        return false;
+      }
       setAudioPlaying(true);
       setStatus('');
       return true;
     } catch (error) {
-      if (audio !== currentAudioRef.current) return false;
+      if (!isCurrentRequest() || !playIntentRef.current) return false;
       if (
         currentSourceRef.current?.mode === 'full-surah'
         && (error?.name === 'NotSupportedError' || error?.name === 'NetworkError')
@@ -1154,6 +1170,15 @@ export function ReaderAudioPanel() {
     const audio = currentAudioRef.current;
     if (!audio) return;
 
+    // The displayed Pause action also applies while a source/play promise is
+    // loading. Native paused state alone cannot represent the user's intent.
+    if (playing) {
+      playIntentRef.current = false;
+      audio.pause();
+      setAudioPlaying(false);
+      return;
+    }
+
     if (!currentSourceRef.current) {
       const target = currentTargetRef.current || normalizeTarget(ayah);
       if (target) {
@@ -1161,13 +1186,6 @@ export function ReaderAudioPanel() {
         setAudioPlaying(true);
         loadTarget(target, selectedReciter, true);
       }
-      return;
-    }
-
-    if (!audio.paused) {
-      playIntentRef.current = false;
-      audio.pause();
-      setAudioPlaying(false);
       return;
     }
 

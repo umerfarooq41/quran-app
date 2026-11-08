@@ -28,11 +28,20 @@ for(const theme of ['light','dark']) {
     await expect(panel).toHaveScreenshot(`audio-reciter-picker-${theme}.png`,shot);
     await page.getByRole('option').nth(1).click();
     await pauseRecitation(page,false);
+    await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
     await page.getByRole('button',{name:'Repeat off'}).click();
     await page.getByRole('button',{name:'Playback speed'}).click();
     await expect(panel).toHaveScreenshot(`audio-selected-controls-${theme}.png`,shot);
     await page.getByRole('button',{name:'Collapse audio player'}).click();
     await expect(page.locator('.reader-audio-mini-panel')).toBeVisible();
+    if (await page.locator('.reader-screen-spread').count()) {
+      const player = await page.locator('.reader-audio-mini-panel').boundingBox();
+      for (const footer of await page.locator('.reader-page-slide-current .reader-footer-meta').all()) {
+        const box = await footer.boundingBox();
+        expect(box.y + box.height, 'spread metadata must remain above the shared media dock').toBeLessThanOrEqual(player.y);
+      }
+    }
+    await expect(page.locator('html')).toHaveAttribute('data-theme',theme);
     await expect(page).toHaveScreenshot(`audio-collapsed-${theme}.png`,shot);
     await page.getByRole('button',{name:'Expand audio player'}).click();
     await expect(page.getByRole('button',{name:'Close audio player'})).toBeVisible();
