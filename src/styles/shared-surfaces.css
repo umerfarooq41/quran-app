@@ -359,9 +359,9 @@
 .app-search-field input::-webkit-search-cancel-button { display:none; }
 .app-search-field button { display:grid; place-items:center; flex:0 0 32px; width:32px; height:32px; border:0; background:transparent; color:var(--theme-muted); border-radius:50%; }
 
-/* One clipped red backing for Library, Favorites and Reflect. The delete
-   button stays at the trailing edge; only the foreground card translates.
-   This fills every exposed pixel, including the card's rounded outer end. */
+/* Shared swipe geometry for Library, Favorites and Reflect.
+   The foreground retains its translucent card surface; only the exposed
+   trailing action lane is red. */
 .ui-swipe-actions {
   --swipe-offset: 0px;
   --swipe-action-width: 92px;
@@ -372,11 +372,15 @@
   touch-action: pan-y;
 }
 .ui-swipe-actions.is-swiped { --swipe-offset: var(--swipe-action-width); }
+/* The red backing must occupy only the trailing action lane. A full-width
+   red background bleeds through the translucent glass foreground (pink card). */
 .ui-swipe-actions.is-swiped,
-.ui-swipe-actions.is-swiping,
-.tabs-screen.app-page-shell .ui-swipe-actions.is-swiped,
-.tabs-screen.app-page-shell .ui-swipe-actions.is-swiping {
-  background: var(--ui-danger-bg);
+.ui-swipe-actions.is-swiping {
+  background: linear-gradient(to left,
+    var(--ui-danger-bg) 0,
+    var(--ui-danger-bg) var(--swipe-action-width),
+    transparent var(--swipe-action-width),
+    transparent 100%);
 }
 .ui-swipe-actions > :is(.tab-card-surface,.home-favorite-row) {
   transform: translateX(calc(-1 * var(--swipe-offset)));

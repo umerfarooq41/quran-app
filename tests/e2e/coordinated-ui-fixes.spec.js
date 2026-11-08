@@ -67,10 +67,11 @@ for (const theme of ['light','dark']) test(`swipe reveals only the trailing acti
   expect(remove.x).toBeLessThan(front.x+front.width);
   expect(remove.x+remove.width).toBeCloseTo(box.x+box.width,1);
   const colors=await card.evaluate(el=>({
-    backing:getComputedStyle(el).backgroundColor,
+    backing:getComputedStyle(el).backgroundImage,
     action:getComputedStyle(el.querySelector('.tab-card-remove')).backgroundColor,
   }));
-  expect(colors.backing).toBe(colors.action);
+  expect(colors.backing).toContain('linear-gradient');
+  expect(colors.backing).toContain(colors.action);
   await page.mouse.move(x-100,y,{steps:6});await page.mouse.up();
   await expect(card).toHaveClass(/is-swiped/);
   await expect(card).toHaveCSS('overflow','hidden');
@@ -96,6 +97,19 @@ test('holding an ayah opens actions even when Reader chrome is visible',async({p
   await expect(page.getByRole('toolbar',{name:'Ayah actions'})).toBeVisible();
   await page.mouse.up();
   await expect(page.getByRole('toolbar',{name:'Ayah actions'})).toBeVisible();
+});
+
+test('touch hold opens ayah actions without requiring a contextmenu',async({page})=>{
+  await openReader(page);
+  const word=page.locator('.reader-page-slide-current .quran-line-ayah:not([aria-hidden="true"]) .quran-word[data-verse-key]').first();
+  await expect(word).toBeVisible();
+  const rect=await word.boundingBox();
+  const x=rect.x+rect.width/2,y=rect.y+rect.height/2;
+  const client=await page.context().newCDPSession(page);
+  await client.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y}]});
+  await page.waitForTimeout(520);
+  await expect(page.getByRole('toolbar',{name:'Ayah actions'})).toBeVisible();
+  await client.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
 });
 
 test('compact audio reciter picker preserves controls and elapsed/total labels',async({page})=>{

@@ -49,6 +49,7 @@ export const QuranLine = React.memo(function QuranLine({
   const pressPoint = useRef(null);
   const pressedSelection = useRef(null);
   const capturedPointer = useRef(null);
+  const touchPress = useRef(null);
   const blockedPress = useRef(false);
   useEffect(() => () => window.clearTimeout(longPressTimer.current), []);
   const isBasmallah = line.type === 'basmallah' || line.type === 'bismillah';
@@ -263,6 +264,13 @@ export const QuranLine = React.memo(function QuranLine({
   }, [centered, line.line, line.type, text]);
 
   function startLongPress(event) {
+    // Touch has its own lifecycle: Android can cancel Pointer Events when a
+    // pan-y ancestor takes ownership, even for a deliberate long hold.
+    if (event.pointerType === 'touch') return;
+    beginLongPress(event);
+  }
+
+  function beginLongPress(event) {
     if (line.type !== 'ayah' || !line.ayahStart) return;
 
     if (interactionsBlocked) {
@@ -280,8 +288,10 @@ export const QuranLine = React.memo(function QuranLine({
     pressMoved.current = false;
     pressPoint.current = { x: event.clientX, y: event.clientY };
     pressedSelection.current = selection;
-    capturedPointer.current = event.pointerId;
-    event.currentTarget.setPointerCapture?.(event.pointerId);
+    capturedPointer.current = Number.isInteger(event.pointerId) ? event.pointerId : null;
+    if (capturedPointer.current !== null) {
+      event.currentTarget.setPointerCapture?.(capturedPointer.current);
+    }
     window.clearTimeout(longPressTimer.current);
 
     longPressTimer.current = window.setTimeout(() => {
@@ -300,6 +310,34 @@ export const QuranLine = React.memo(function QuranLine({
         pointer: pressedSelection.current?.pointer || null,
       });
     }, 430);
+  }
+
+  function startTouchPress(event) {
+    if (event.touches.length !== 1) return;
+    const touch = event.touches[0];
+    touchPress.current = { id: touch.identifier, x: touch.clientX, y: touch.clientY };
+    beginLongPress({
+      clientX: touch.clientX,
+      clientY: touch.clientY,
+      currentTarget: event.currentTarget,
+    });
+  }
+
+  function moveTouchPress(event) {
+    const start = touchPress.current;
+    if (!start) return;
+    const touch = Array.from(event.touches).find(item => item.identifier === start.id);
+    if (!touch || Math.hypot(touch.clientX - start.x, touch.clientY - start.y) > 12) {
+      touchPress.current = null;
+      pressMoved.current = true;
+      cancelLongPress();
+    }
+  }
+
+  function finishTouchPress() {
+    touchPress.current = null;
+    cancelLongPress(false);
+    if (longPressed.current) ignoreNextClick.current = true;
   }
 
   function cancelLongPress(clearBlockedPress = true) {
@@ -411,9 +449,11 @@ export const QuranLine = React.memo(function QuranLine({
       onPointerDown={startLongPress}
       onPointerMove={handlePointerMove}
       onPointerUp={finishPress}
-      // Pointer capture owns the press until up/cancel; leaving a glyph must not
-      // abort a stationary hold. Movement beyond 12px still cancels it.
       onPointerCancel={finishPress}
+      onTouchStart={startTouchPress}
+      onTouchMove={moveTouchPress}
+      onTouchEnd={finishTouchPress}
+      onTouchCancel={finishTouchPress}
       onSelectStart={(event) => event.preventDefault()}
       onDragStart={(event) => event.preventDefault()}
       onClick={(event) => {
@@ -448,6 +488,7 @@ export const QuranLine = React.memo(function QuranLine({
       }}
       onContextMenu={(event) => {
         event.preventDefault();
+        if (longPressed.current) return;
         ignoreNextClick.current = true;
 
         if (interactionsBlocked) {
