@@ -372,12 +372,20 @@
   touch-action: pan-y;
 }
 .ui-swipe-actions.is-swiped { --swipe-offset: var(--swipe-action-width); }
-/* A full red backing fills the outer clipped silhouette throughout the
-   gesture. The foreground turns opaque while moving, so red is visible only
-   in the revealed strip and never bleeds through its translucent card. */
+/* Only the physically exposed swipe width is red. At offset 0 there is
+   no red underneath the rounded foreground corners, even during a closing
+   gesture. The same offset drives both the reveal and the foreground slide. */
 .ui-swipe-actions.is-swiped,
 .ui-swipe-actions.is-swiping {
-  background: var(--ui-danger-bg);
+  background: linear-gradient(to left,
+    var(--ui-danger-bg) 0,
+    var(--ui-danger-bg) var(--swipe-offset),
+    transparent var(--swipe-offset));
+}
+/* Home cards use a larger radius than Library cards. The clip must match
+   the actual foreground rather than cutting off its curved corners. */
+.ui-swipe-actions.home-favorite-swipe {
+  --swipe-radius: 23px;
 }
 .ui-swipe-actions > :is(.tab-card-surface,.home-favorite-row) {
   transform: translateX(calc(-1 * var(--swipe-offset)));
@@ -397,7 +405,7 @@
   width: var(--swipe-action-width);
   border: 0;
   border-radius: 0 var(--swipe-radius) var(--swipe-radius) 0;
-  background: var(--ui-danger-bg);
+  background: transparent;
   transform: none;
   opacity: 1;
   pointer-events: auto;
