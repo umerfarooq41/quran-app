@@ -271,7 +271,7 @@ export const QuranLine = React.memo(function QuranLine({
   }
 
   function beginLongPress(event) {
-    if (line.type !== 'ayah' || !line.ayahStart) return;
+    if (line.type !== 'ayah') return;
 
     if (interactionsBlocked) {
       blockedPress.current = true;
@@ -301,6 +301,7 @@ export const QuranLine = React.memo(function QuranLine({
       triggerHaptic('longPress');
 
       onSelect({
+        surahNumber: pressedSelection.current?.surahNumber || line.surahNumber,
         ayahNumber: pressedSelection.current?.ayahNumber || line.ayahStart,
         wordIndex: pressedSelection.current?.wordIndex,
         selectedWord: pressedSelection.current?.selectedWord || '',
@@ -477,7 +478,7 @@ export const QuranLine = React.memo(function QuranLine({
           return;
         }
 
-        if (line.type === 'ayah' && line.ayahStart) {
+        if (line.type === 'ayah') {
           const selection = getSelectionFromEvent(event);
           if (!Number.isInteger(selection?.wordIndex)) return;
 
@@ -496,7 +497,7 @@ export const QuranLine = React.memo(function QuranLine({
           return;
         }
 
-        if (line.type === 'ayah' && line.ayahStart) {
+        if (line.type === 'ayah') {
           const selection = getSelectionFromEvent(event);
           if (Number.isInteger(selection?.wordIndex)) onSelect(selection);
         }

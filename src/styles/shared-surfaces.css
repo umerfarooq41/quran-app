@@ -384,7 +384,14 @@
 }
 .ui-swipe-actions > :is(.tab-card-surface,.home-favorite-row) {
   transform: translateX(calc(-1 * var(--swipe-offset)));
-  transition: transform .2s ease;
+  transition: transform .2s ease, background-color .2s ease;
+}
+/* Opaque foreground only while swiping, so the red action never tints
+   the glass card. The normal translucent surface returns when closed. */
+.ui-swipe-actions:is(.is-swiped,.is-swiping) > :is(.tab-card-surface,.home-favorite-row) {
+  background: var(--theme-surface-solid);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 .ui-swipe-actions > :is(.tab-card-remove,.home-favorite-delete) {
   position: absolute;
