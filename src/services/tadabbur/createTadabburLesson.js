@@ -5,7 +5,7 @@ import { saveTadabburLesson } from '../../lib/db';
 
 export const REFLECT_FINAL_QUESTIONS = Object.freeze([
   'What stood out to me?',
-  'What did I learn from the translation and Tafsir?',
+  'What did I learn from the translation and tafsir?',
   'How does this guidance relate to my life?',
 ]);
 
