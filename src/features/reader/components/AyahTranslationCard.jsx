@@ -13,6 +13,7 @@ import { WordByWordTranslation } from './WordByWordTranslation';
 const MISSING_TRANSLATION = 'Translation not available.';
 
 export function AyahTranslationCard({ target, translationId, onClose }) {
+  const updateSettings = useAppStore((state) => state.updateSettings);
   const wordByWordEnabled = useAppStore((state) => state.settings.wordByWordTranslation);
   const wordByWordLanguage = useAppStore((state) => state.settings.wordByWordLanguage);
   const [activeTarget, setActiveTarget] = useState(() => normalizeTarget(target));
@@ -142,8 +143,13 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
         aria-labelledby="ayah-translation-reference"
         onClick={(event) => event.stopPropagation()}
       >
-        <header id="ayah-translation-reference" className="ayah-translation-header">
-          {reference}
+        <header className="ayah-translation-header ayah-translation-card-header">
+          <span id="ayah-translation-reference">{reference}</span>
+          <button type="button" className="ayah-translation-wbw-toggle" role="switch"
+            aria-label="Word-by-word translation" aria-checked={wordByWordEnabled}
+            onClick={() => updateSettings({ wordByWordTranslation: !wordByWordEnabled })}>
+            WBW
+          </button>
         </header>
 
         <div

@@ -73,10 +73,6 @@ export function WordByWordTranslation({
       aria-label={`${languageOption.label} word-by-word translation`}
       data-word-language={languageOption.id}
     >
-      <div className="ayah-word-by-word-heading">
-        Word by word · {languageOption.label}
-      </div>
-
       {state.status === 'loading' && (
         <p className="ayah-word-by-word-status">Loading word meanings…</p>
       )}

@@ -61,12 +61,11 @@ export default function LessonReader({ active, verses, translationOption, toggle
                 {(() => {
                   const words = (wordLanguage === savedLanguage ? verse.wordByWordWords : wordOverrides[wordLanguage]?.[verse.ayahNumber])?.filter(word => word?.arabic && /[\p{L}\p{N}]/u.test(word.arabic) && !/^[۝۞﴿﴾٠-٩۰-۹0-9()]+$/u.test(word.arabic.trim()));
                   return (
-                  <section className={`ayah-word-by-word is-${wordLanguage} mt-4`} aria-label={`Ayah ${verse.ayahNumber} word-by-word translation`}>
-                    <div className="ayah-word-by-word-heading">Word by word · {wordLanguage === 'ur' ? 'Urdu' : 'English'}</div>
+                  <section className={`ayah-word-by-word is-${wordLanguage}`} aria-label={`Ayah ${verse.ayahNumber} word-by-word translation`}>
                     {words?.length > 0 ? (
                       <div className="ayah-word-by-word-list" dir="rtl">
                         {words.map((word, index) => (
-                          <button type="button" data-keyword-key={verse.ayahNumber + ':' + index} className={`ayah-word-by-word-item rounded-lg px-1 py-2 ${(active.keywords || []).some((item) => item.key === verse.ayahNumber + ':' + index) ? 'reflect-keyword-selected' : ''}`} key={word.id || index} aria-pressed={(active.keywords || []).some((item) => item.key === verse.ayahNumber + ':' + index)} aria-label={`Toggle keyword ${word.arabic || ''} ${word.meaning || ''}`} onClick={() => toggleKeyword(verse.ayahNumber, word, index)}>
+                          <button type="button" data-keyword-key={verse.ayahNumber + ':' + index} className={`ayah-word-by-word-item rounded-lg px-1 ${(active.keywords || []).some((item) => item.key === verse.ayahNumber + ':' + index) ? 'reflect-keyword-selected' : ''}`} key={word.id || index} aria-pressed={(active.keywords || []).some((item) => item.key === verse.ayahNumber + ':' + index)} aria-label={`Toggle keyword ${word.arabic || ''} ${word.meaning || ''}`} onClick={() => toggleKeyword(verse.ayahNumber, word, index)}>
                             <span className="ayah-word-by-word-arabic" dir="rtl" lang="ar">{word.arabic}</span>
                             <span className="ayah-word-by-word-meaning" dir={wordLanguage === 'ur' ? 'rtl' : 'ltr'} lang={wordLanguage}>{word.meaning}</span>
                           </button>
@@ -77,10 +76,10 @@ export default function LessonReader({ active, verses, translationOption, toggle
                   );
                 })()}
 
-                <section className="mt-4" aria-label={"Ayah " + verse.ayahNumber + " translation"}>
+                <section aria-label={"Ayah " + verse.ayahNumber + " translation"}>
                   <p className="ayah-translation-text" dir={translationOption.direction || "ltr"}>
                     {renderReflectTranslation(verse.translation, verse.tafsirNotes?.length ? verse.tafsirNotes : (verse.tafsir ? [{number:1,text:verse.tafsir}] : []),
-                      (number) => setExpandedTafsir(previous => ({...previous, [verse.ayahNumber]: previous[verse.ayahNumber] === number ? null : number})), expandedTafsir[verse.ayahNumber])}
+                      (number) => setExpandedTafsir(previous => (previous[verse.ayahNumber] === number ? {} : { [verse.ayahNumber]: number })), expandedTafsir[verse.ayahNumber])}
                   </p>
                 </section>
                 {(() => {
