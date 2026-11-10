@@ -172,7 +172,7 @@
 .reflect-screen .reflect-theme-empty{padding:4px 0 12px;color:#64748b;font-size:12px}
 @media(prefers-reduced-motion:reduce){.reflect-screen .reflect-theme-chevron{transition:none}}
 .reflect-screen .reflect-lesson-ayah { padding: 0; }
-.reflect-screen .reflect-lesson-ayah + .reflect-lesson-ayah { border-top: 1px solid var(--reflect-border); padding-top: 16px; }
+.reflect-screen .reflect-lesson-ayah + .reflect-lesson-ayah { border-top: 1px solid var(--ui-divider); padding-top: 16px; }
 .reflect-screen .reflect-ayah-reference {
   position: static;
   display: flex;

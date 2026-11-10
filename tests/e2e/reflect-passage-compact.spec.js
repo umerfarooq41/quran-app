@@ -35,6 +35,18 @@ for (const language of ['en','ur']) for (const theme of ['light','dark']) {
     await expect(ayahs.first().locator('.reflect-ayah-reference')).toHaveCSS('height','24px');
     await expect(ayahs.first()).toHaveCSS('border-top-width','0px');
     await expect(ayahs.nth(1)).toHaveCSS('border-top-width','1px');
+    // Internal dividers must not use the white glass-edge border on cream cards.
+    const divider = await ayahs.nth(1).evaluate(el => {
+      const probe = document.createElement('span');
+      probe.style.borderTop = '1px solid var(--ui-divider)';
+      el.append(probe);
+      const expected = getComputedStyle(probe).borderTopColor;
+      probe.remove();
+      return { actual: getComputedStyle(el).borderTopColor, expected };
+    });
+    expect(divider.actual).toBe(divider.expected);
+    expect(divider.actual).not.toBe('transparent');
+    if (theme === 'light') expect(divider.actual).not.toMatch(/^rgba?\(255, 255, 255/);
     const keyword=ayahs.first().getByRole('button',{name:/Toggle keyword/});
     await keyword.click();await expect(keyword).toHaveAttribute('aria-pressed','true');
     const one=ayahs.first().getByRole('button',{name:'Toggle Tafsir footnote 1'});
