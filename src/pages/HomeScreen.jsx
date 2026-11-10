@@ -1,11 +1,13 @@
 import { SwipeActions } from '../components/common/SwipeActions';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BookOpen, Library, List, Search, SlidersHorizontal, Trash2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../store/useAppStore';
 import { findPageForReference, getMushafPageNumber, getPage, getPageMeta, getSurah } from '../lib/quran';
 import { formatIndoPakQuarterLabel, getCurrentIndoPakJuzProgress } from '../data/indoPakParaQuarters';
+import { liveQuery } from 'dexie';
+import { getTadabburLessons } from '../lib/db';
 import { Screen } from '../components/common/AppChrome';
 import { getSurahNameMeta } from '../data/surahNames';
 
@@ -37,6 +39,19 @@ export default function HomeScreen() {
     goAyah: state.goAyah,
     lastReadTarget: state.lastReadTarget,
   })));
+  const [lessons, setLessons] = useState(null);
+  useEffect(() => {
+    const subscription = liveQuery(getTadabburLessons).subscribe({
+      next: setLessons,
+      error: () => setLessons(null),
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+  const unfinished = lessons?.find((lesson) => lesson.status !== 'completed');
+  const reflectTitle = unfinished ? 'Continue lesson' : lessons?.length ? 'Explore & revisit' : 'Begin reflecting';
+  const reflectDescription = unfinished
+    ? `${getSurah(unfinished.surahNumber)?.name || ''} ${unfinished.surahNumber}:${unfinished.startAyah}–${unfinished.endAyah}`
+    : lessons?.length ? 'Return to your reflections or begin a new lesson.' : 'Choose a passage and begin your first lesson.';
   const meta = getPageMeta(page);
   const continueSurah = getSurah(lastReadTarget?.surahNumber) || meta.surah;
   const pageData = getPage(page);
@@ -122,8 +137,8 @@ export default function HomeScreen() {
           whileTap={{ scale: 0.985 }}
         >
           <span className="home-favorite-copy home-reflect-copy">
-            <strong>Begin reflecting</strong>
-            <small>Explore your lessons and reflections</small>
+            <strong>{reflectTitle}</strong>
+            <small>{reflectDescription}</small>
           </span>
         </motion.button>
       </motion.section>

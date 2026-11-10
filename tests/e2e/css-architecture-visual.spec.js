@@ -8,7 +8,7 @@ for (const theme of ['light', 'dark']) {
       await expect(page.getByRole('heading', { name: 'Al Quran' })).toBeVisible({ timeout: 20000 });
       await page.evaluate(t => document.documentElement.setAttribute('data-theme', t), theme);
       if (screen === 'Reader') await page.getByRole('button', { name: /Continue Reading/i }).click();
-      else if (screen === 'Reflect') await page.getByRole('button', { name: /Begin reflecting/i }).click();
+      else if (screen === 'Reflect') await page.getByRole('button', { name: /Begin reflecting|Continue lesson|Explore & revisit/i }).click();
       else if (screen !== 'Home') await page.getByRole('button', { name: screen, exact: true }).click();
       if (screen === 'Reader') await expect(page.locator('.reader-page').first()).toBeVisible();
       else if (screen !== 'Home') await expect(page.getByRole('heading', { name: screen, exact: true })).toBeVisible();

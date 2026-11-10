@@ -80,7 +80,7 @@ for (const theme of ['light','dark']) for (const width of [320,375,390,430,768])
       }
     }
     await home(page);
-    await page.getByRole('button',{name:/Begin reflecting/i}).click();
+    await page.getByRole('button',{name:/Begin reflecting|Continue lesson|Explore & revisit/i}).click();
     await healthy(page,'Reflect lessons',info,width===390);
     await page.getByRole('tab',{name:'Progress',exact:true}).click();
     const period=page.getByRole('button',{name:/^Progress period:/});
@@ -142,7 +142,7 @@ for(const theme of ['light','dark']) test(`Swipe exposure and lesson source surf
     await wrapper.locator('.tab-card-remove').click();
     await expect(page.locator('.tab-card')).toHaveCount(0);
   }
-  await home(page);await page.getByRole('button',{name:/Begin reflecting/i}).click();
+  await home(page);await page.getByRole('button',{name:/Begin reflecting|Continue lesson|Explore & revisit/i}).click();
   const wrapper=page.locator('.tab-card').first();
   await neutralSwipe(page,wrapper,wrapper.locator('.tab-card-surface'),wrapper.locator('.tab-card-remove'));
   await wrapper.locator('.tab-card-remove').click();
@@ -162,7 +162,7 @@ for(const theme of ['light','dark']) test(`Swipe exposure and lesson source surf
 
 test('new lesson saves questions, themes, reflection and completed review',async({page})=>{
   test.setTimeout(120000);await home(page);
-  await page.getByRole('button',{name:/Begin reflecting/i}).click();
+  await page.getByRole('button',{name:/Begin reflecting|Continue lesson|Explore & revisit/i}).click();
   await page.getByRole('button',{name:'New lesson',exact:true}).click();
   await expect(page.getByText('3 ayahs selected',{exact:true})).toBeVisible();
   await page.getByRole('button',{name:'Create Lesson',exact:true}).click();

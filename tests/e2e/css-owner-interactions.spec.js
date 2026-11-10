@@ -23,7 +23,7 @@ for (const theme of ['light','dark']) {
     await page.reload();
     await expect(page.getByRole('heading', { name: 'Al Quran' })).toBeVisible();
     await page.evaluate(t => document.documentElement.dataset.theme = t, theme);
-    await page.getByRole('button', { name: /Begin reflecting/i }).click();
+    await page.getByRole('button', { name: /Begin reflecting|Continue lesson|Explore & revisit/i }).click();
     const card = page.locator('.reflect-screen .tab-card-surface').first();
     await expect(card).toBeVisible();
     await expect(card).toHaveCSS('background-color', await roleColor(page, '--ui-card-bg'));

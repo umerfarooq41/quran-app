@@ -172,6 +172,7 @@
 .reflect-screen .reflect-theme-empty{padding:4px 0 12px;color:#64748b;font-size:12px}
 @media(prefers-reduced-motion:reduce){.reflect-screen .reflect-theme-chevron{transition:none}}
 .reflect-screen .reflect-lesson-ayah { padding: 0; }
+.reflect-screen .reflect-lesson-ayah + .reflect-lesson-ayah { border-top: 1px solid var(--reflect-border); padding-top: 16px; }
 .reflect-screen .reflect-ayah-reference {
   position: static;
   display: flex;
@@ -269,7 +270,7 @@
 .reflect-screen .reflect-panel .reflect-lesson-inner { background:transparent; border:0; border-radius:0; padding:0; }
 .reflect-screen .reflect-panel .reflect-finish-content { background:transparent; border:0; padding:0; }
 .reflect-screen .reflect-panel .reflect-lesson-title-input { width:100%; }
-.reflect-screen .reflect-passage-verses { display: grid; gap: 24px; }
+.reflect-screen .reflect-passage-verses { display: grid; gap: 16px; }
 .reflect-screen .reflect-lesson-ayah .reflect-ayah-reference,
 .reflect-screen .reflect-lesson-ayah .reflect-ayah-body { background:transparent; color:var(--reflect-ink); }
 .reflect-screen .reflect-lesson-ayah .ayah-word-by-word-list { align-items:start; }

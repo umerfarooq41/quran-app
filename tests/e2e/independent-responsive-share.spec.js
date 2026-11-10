@@ -42,7 +42,7 @@ for(const theme of ['light','dark']) for(const width of [320,375,390,430,768]) t
   await capture(page,info,'Video preview');
   await page.evaluate(()=>sessionStorage.clear());await page.goto('/?discovery-audit');
   await expect(page.getByRole('heading',{name:'Al Quran'})).toBeVisible();
-  await page.getByRole('button',{name:/Begin reflecting/}).click();
+  await page.getByRole('button',{name:/Begin reflecting|Continue lesson|Explore & revisit/}).click();
   await page.getByRole('tab',{name:'Discover',exact:true}).click();
   await expect(page.getByRole('heading',{name:'Saved Keywords',exact:true})).toBeVisible();
   await capture(page,info,'Discover keywords','.reflect-screen');

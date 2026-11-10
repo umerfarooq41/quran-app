@@ -32,6 +32,6 @@ for(const theme of ['light','dark']) test(`shared swipe consumers ${theme}`,asyn
   await page.getByRole('button',{name:'Library',exact:true}).click();await check('bookmarks');
   await page.getByRole('tab',{name:'Highlights',exact:true}).click();await check('highlights');
   await page.getByRole('button',{name:'Back from library',exact:true}).click();
-  await page.getByRole('button',{name:/Begin reflecting/}).click();await check('lessons');
+  await page.getByRole('button',{name:/Begin reflecting|Continue lesson|Explore & revisit/}).click();await check('lessons');
   await page.getByRole('tab',{name:'Questions',exact:true}).click();await check('questions');
 });

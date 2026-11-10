@@ -21,7 +21,8 @@ for (const language of ['en','ur']) for (const theme of ['light','dark']) {
       };
       await new Promise(resolve=>{tx.oncomplete=resolve;});db.close();
     },language);
-    await page.getByRole('button',{name:/Begin reflecting/}).click();
+    await page.reload();
+    await page.getByRole('button',{name:/Continue lesson/}).click();
     await page.getByRole('button',{name:/^QA saved lesson/}).click();
     const passage=page.locator('.reflect-passage-section');
     const ayahs=passage.locator('.reflect-lesson-ayah');
@@ -32,7 +33,8 @@ for (const language of ['en','ur']) for (const theme of ['light','dark']) {
     await expect(ayahs.first().locator('.ayah-translation-text')).toHaveAttribute('dir',language==='ur'?'rtl':'ltr');
     await expect(ayahs.first().locator('.reflect-ayah-body')).toHaveCSS('padding','0px');
     await expect(ayahs.first().locator('.reflect-ayah-reference')).toHaveCSS('height','24px');
-    await expect(ayahs.nth(1)).toHaveCSS('border-top-width','0px');
+    await expect(ayahs.first()).toHaveCSS('border-top-width','0px');
+    await expect(ayahs.nth(1)).toHaveCSS('border-top-width','1px');
     const keyword=ayahs.first().getByRole('button',{name:/Toggle keyword/});
     await keyword.click();await expect(keyword).toHaveAttribute('aria-pressed','true');
     const one=ayahs.first().getByRole('button',{name:'Toggle Tafsir footnote 1'});
