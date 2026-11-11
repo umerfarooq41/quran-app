@@ -8,7 +8,7 @@
 @font-face {
   font-family: "App Nastaleeq Urdu";
   src: url('/fonts/Nastaleeq.ttf') format('truetype');
-  font-display: swap;
+  font-display: block;
 }
 
 :root {
