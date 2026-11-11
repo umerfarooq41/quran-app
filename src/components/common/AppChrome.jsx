@@ -24,7 +24,7 @@ export function Screen({ children, className = '' }) {
       initial={reduceMotion ? false : v.initial}
       animate={v.animate}
       exit={reduceMotion ? { ...v.animate, pointerEvents: 'none' } : { ...v.exit, pointerEvents: 'none' }}
-      transition={{ duration: reduceMotion ? 0 : 0.24, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: reduceMotion ? 0 : 0.2, ease: [0.22, 1, 0.36, 1], exit: { duration: reduceMotion ? 0 : 0.1, ease: 'easeOut' } }}
       className={`screen-shell mx-auto max-w-5xl ${className}`}
     >
       {children}
