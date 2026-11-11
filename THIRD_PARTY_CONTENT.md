@@ -18,7 +18,6 @@ This file records the provenance used for the current app release. It is an inte
 | Recitations and word/ayah timing segments | QUL Recitations & Segments; respective reciters | https://qul.tarteel.ai/resources/recitation |
 | Additional translations / tafsir requested at runtime | Quran Foundation API | https://api-docs.quran.foundation/ |
 | Background videos used in Share Quran | Pixabay | https://pixabay.com/service/license-summary/ |
-| Jameel Khushkhati font | Basharat Ali | SIL Open Font License 1.1 (embedded in font; notice copied to `public/legal/SIL-OFL-1.1.txt`) |
 | Noto Nastaliq Urdu font | The Noto Project Authors | SIL Open Font License 1.1 |
 
 ## QUL recitation resources already matched during the audit
