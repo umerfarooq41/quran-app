@@ -259,9 +259,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .ayah-highlight-chip-row,
-.ayah-bookmark-picker {
-    animation-name: ayahTooltipPanelFadeIn;
-    animation-duration: .08s;
+  .ayah-bookmark-picker {
+    animation: none;
     transform: none;
   }
 }
