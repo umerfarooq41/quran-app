@@ -14,9 +14,9 @@ export function Screen({ children, className = '' }) {
   const variants = {
     // Keep text and selected-control contrast stable during page transitions.
     // Opacity on the entire screen blended white labels into the page behind them.
-    forward: { initial: { x: 12 }, animate: { x: 0 }, exit: { x: -12 } },
-    back: { initial: { x: -12 }, animate: { x: 0 }, exit: { x: 12 } },
-    modal: { initial: { y: 20 }, animate: { y: 0 }, exit: { y: 16 } },
+    forward: { initial: { x: 6 }, animate: { x: 0 }, exit: { x: 0 } },
+    back: { initial: { x: -6 }, animate: { x: 0 }, exit: { x: 0 } },
+    modal: { initial: { y: 6 }, animate: { y: 0 }, exit: { y: 0 } },
   };
   const v = variants[navDirection] || variants.forward;
   return (
@@ -24,7 +24,7 @@ export function Screen({ children, className = '' }) {
       initial={reduceMotion ? false : v.initial}
       animate={v.animate}
       exit={reduceMotion ? { ...v.animate, pointerEvents: 'none' } : { ...v.exit, pointerEvents: 'none' }}
-      transition={{ duration: reduceMotion ? 0 : 0.2, ease: [0.22, 1, 0.36, 1], exit: { duration: reduceMotion ? 0 : 0.1, ease: 'easeOut' } }}
+      transition={{ duration: reduceMotion ? 0 : 0.14, ease: [0.22, 1, 0.36, 1] }}
       className={`screen-shell mx-auto max-w-5xl ${className}`}
     >
       {children}
