@@ -3,14 +3,12 @@ import { ChevronDown } from 'lucide-react';
 import { Empty } from '../../../components/common/AppChrome';
 import { getSurah } from '../../../lib/quran';
 import { assignmentsFor } from '../reflectPresentation';
-import ReflectHubTabs from './ReflectHubTabs';
 import ThemeStudyButton from './ThemeStudyButton';
 
 /** Keyword and hierarchical theme discovery across saved lessons. */
 export default function DiscoverTab({ lessons, discoverTab, setDiscoverTab, themeGroups, expandedTheme, setExpandedTheme, expandedSubtheme, setExpandedSubtheme, setKeywordJump, setActive, setMode }) {
   return (
 <div className="reflect-discover">
-          <ReflectHubTabs tabs={['Keywords', 'Themes']} active={discoverTab} onChange={setDiscoverTab} className="reflect-discover-tabs" label="Discover sections" />
 
           {discoverTab === 'Keywords' && (() => {
             const saved = lessons.flatMap(lesson => (lesson.keywords || []).filter(word => (word.arabic || '').trim()).map((word,index) => ({
