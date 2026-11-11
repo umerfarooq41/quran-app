@@ -149,6 +149,39 @@ export default function App() {
   })));
   const activeView = normalizeView(view);
   const reducePageMotion = useReducedMotion();
+  // Keep focused fields visible as the mobile visual viewport contracts.
+  // Scroll the nearest scrollable container, not the entire page or sheet.
+  useEffect(() => {
+    const viewport = window.visualViewport;
+    if (!viewport) return undefined;
+    let frame = 0;
+    const revealFocusedField = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(() => {
+        const field = document.activeElement;
+        if (!field?.matches?.('input, textarea, [contenteditable="true"]')) return;
+        const rect = field.getBoundingClientRect();
+        const visibleBottom = viewport.offsetTop + viewport.height - 16;
+        const visibleTop = viewport.offsetTop + 12;
+        if (rect.bottom > visibleBottom || rect.top < visibleTop) {
+          field.scrollIntoView({
+            behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+            block: 'nearest',
+          });
+        }
+      });
+    };
+    viewport.addEventListener('resize', revealFocusedField);
+    viewport.addEventListener('scroll', revealFocusedField);
+    document.addEventListener('focusin', revealFocusedField);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      viewport.removeEventListener('resize', revealFocusedField);
+      viewport.removeEventListener('scroll', revealFocusedField);
+      document.removeEventListener('focusin', revealFocusedField);
+    };
+  }, []);
+
   const [booted, setBooted] = useState(false);
   const historyReadyRef = useRef(false);
   const navigationFromPopRef = useRef(false);
