@@ -431,8 +431,8 @@
 ::view-transition-new(root) { animation: none; }
 ::view-transition-old(quran-page),
 ::view-transition-new(quran-page) {
-  animation-duration: 280ms;
-  animation-timing-function: cubic-bezier(.2, 0, 0, 1);
+  animation-duration: 380ms;
+  animation-timing-function: cubic-bezier(.35, 0, .2, 1);
   animation-fill-mode: both;
   mix-blend-mode: normal;
 }
