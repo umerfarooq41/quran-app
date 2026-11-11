@@ -409,10 +409,9 @@ function SurahIndex() {
                     >
                       <ChevronDown className="index-chevron" size={20} strokeWidth={2.35} />
                     </button>
-                  </div>
 
                   {isOpen && (
-                    <div id={`index-surah-panel-${surah.number}`} className="index-collapse-panel index-surah-collapse" aria-label={`${surah.name} details`}>
+                    <div id={`index-surah-panel-${surah.number}`} className="index-surah-collapse" aria-label={`${surah.name} details`}>
                       <div className="index-surah-info-preview">
                         <div className="index-surah-info-heading">
                           <span className="index-surah-info-label">Surah Introduction</span>
@@ -450,6 +449,7 @@ function SurahIndex() {
                       />
                     </div>
                   )}
+                  </div>
                 </article>
               );
             })}
