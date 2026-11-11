@@ -328,6 +328,9 @@
   background-image: url('/border/Border Quran-01.svg');
   background-position: center;
   background-size: calc(100% - 4px) 100%;
+  /* The lower stroke of SVG 1 duplicates the upper stroke of SVG 2.
+     Trim that stroke to make the two ornaments read as one frame. */
+  clip-path: inset(0 0 7% 0);
 }
 
 .surah-banner--double::after {
@@ -352,12 +355,13 @@
   overflow: hidden;
   text-align: center;
   box-sizing: border-box;
-  left: 4.2%;
+  /* SVG 1 has a narrower left text compartment than SVG 2. */
+  left: 6.6%;
   top: 0;
-  height: 48.5%;
-  padding: 3.1% 1.2% 0;
+  height: 46%;
+  padding: 0 0.5%;
   font-size: calc(clamp(.68rem, 1.60vh, .92rem) * var(--font-scale, 1));
-  width: 13.2%;
+  width: 10.8%;
 }
 
 .surah-banner--double .surah-banner-name {
@@ -369,11 +373,11 @@
   overflow: hidden;
   text-align: center;
   box-sizing: border-box;
-  left: 18.7%;
-  right: 18.7%;
+  left: 27%;
+  right: 27%;
   top: 0;
-  height: 48.5%;
-  padding: 2.2% 2% 0;
+  height: 46%;
+  padding: 0 1%;
   font-size: calc(clamp(.88rem, 2.02vh, 1.18rem) * var(--font-scale, 1));
   width: auto;
 }
@@ -689,12 +693,9 @@
   height: calc(200% - 2px);
 }
 
-.reader-page--starts-with-double-header .surah-banner--double .surah-banner-ayahs {
-  padding-top: calc(2.6% + 1px);
-}
-
+.reader-page--starts-with-double-header .surah-banner--double .surah-banner-ayahs,
 .reader-page--starts-with-double-header .surah-banner--double .surah-banner-name {
-  padding-top: calc(2.6% + 1px);
+  padding-top: 0;
 }
 
 .reader-page--starts-with-double-header .surah-banner--double .surah-banner-basmallah {
