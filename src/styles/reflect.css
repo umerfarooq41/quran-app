@@ -6,9 +6,9 @@
   display: grid; place-items: center;
 }
 .reflect-screen .reflect-tabs {
-  --ui-segment-columns: 4;
+  --ui-segment-columns: 2;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   width: 100%;
   min-width: 0;
   min-height: 52px;
@@ -21,8 +21,29 @@
   min-width: 0;
   min-height: 44px;
   padding: 0 4px;
-  font-size: clamp(11px, 2.9vw, 13px);
+  font-size: inherit;
   white-space: nowrap;
+}
+.reflect-screen .reflect-subtabs {
+  --ui-segment-columns: 3;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: 100%;
+  min-height: 46px;
+  height: 46px;
+  padding: 4px;
+  margin-bottom: 16px;
+  border-radius: 999px;
+}
+.reflect-screen .reflect-subtabs:has(> button:nth-child(2):last-child) {
+  --ui-segment-columns: 2;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.reflect-screen .reflect-subtabs.share-like-segment > button {
+  min-width: 0;
+  min-height: 38px;
+  padding: 0 6px;
+  font-size: 13px;
 }
 .reflect-screen .reflect-content { padding-bottom: calc(36px + env(safe-area-inset-bottom, 0px)); }
 .reflect-screen .reflect-content > .tabs-list { margin-top: 10px; }
