@@ -1786,19 +1786,19 @@
   line-clamp: 4;
   overflow: hidden;
   max-width: 100%;
-  margin: 12px 0 0;
+  margin: 10px 0 0;
   color: var(--theme-text);
   font-family: var(--translation-english-font);
-  font-size: var(--surah-introduction-size-en);
-  line-height: var(--surah-introduction-leading-en);
+  font-size: .94rem;
+  line-height: 1.65;
   overflow-wrap: anywhere;
 }
 
 .index-replica-shell .index-surah-introduction-preview.is-ur {
   font-family: var(--translation-urdu-font);
-  font-size: var(--surah-introduction-size-ur);
+  font-size: 1rem;
+  line-height: 1.8;
   text-align: right;
-  line-height: var(--surah-introduction-leading-ur);
 }
 
 .index-replica-shell .index-surah-info-preview {
@@ -1807,4 +1807,35 @@
   box-shadow: none;
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
+}
+
+/* Expanded Surah details: preserve the heading, compact the introduction and
+   keep navigation controls visually distinct from the reading preview. */
+.index-replica-shell .index-surah-info-heading {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  padding-bottom: 2px;
+}
+.index-replica-shell .index-surah-info-heading .index-surah-info-meta {
+  margin: 0;
+}
+.index-replica-shell .index-surah-intro-more {
+  margin-top: 8px;
+  padding: 5px 0;
+}
+.index-replica-shell .index-surah-quick-actions {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--ui-divider);
+}
+.index-replica-shell .index-ayah-jump {
+  padding-top: 14px;
+  padding-bottom: 18px;
+  border-top: 1px solid var(--ui-divider);
+}
+.index-replica-shell .index-ayah-preview {
+  margin-top: 15px;
+  padding-inline: 2px;
+  line-height: 1.9;
 }
