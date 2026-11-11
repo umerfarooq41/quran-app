@@ -35,6 +35,10 @@ const pageMotion = {
     x: direction === 'back' ? '100%' : '-8%',
     zIndex: direction === 'back' ? 2 : 0,
     pointerEvents: 'none',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
   }),
 };
 
