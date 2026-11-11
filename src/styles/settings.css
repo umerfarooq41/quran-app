@@ -131,7 +131,7 @@
 
 .settings-dialog-backdrop { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; background: rgba(16, 18, 20, .48); }
 
-.settings-dialog { position: relative; display: grid; width: min(100%, 340px); background: var(--theme-surface-solid, #fff); color: var(--text-primary, #292d32); box-shadow: 0 24px 70px rgba(0, 0, 0, .24); }
+.settings-dialog { position: relative; display: grid; width: min(100%, 340px); background: var(--ui-card-bg); color: var(--text-primary, #292d32); box-shadow: 0 24px 70px rgba(0, 0, 0, .24); }
 
 .settings-dialog h2 { margin: 0; }
 
@@ -320,7 +320,7 @@
 
 [data-theme='dark'] .settings-dialog {
   border-color: var(--theme-border);
-  background: var(--theme-surface-solid);
+  background: var(--ui-card-bg);
   color: var(--theme-text);
   box-shadow: 0 9px 28px var(--theme-shadow);
 }
