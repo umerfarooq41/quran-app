@@ -438,3 +438,38 @@
 /* Passage uses the same translucent reflect-panel surface as other cards.
    Padding and rounded corners come from the shared card component. */
 .reflect-passage-section { min-width: 0; color: var(--theme-text); }
+
+/* Lesson themes use the app's green accent, not unrelated slate pills. */
+.reflect-screen .reflect-lesson-theme-chip {
+  background: color-mix(in srgb, var(--ui-primary) 13%, var(--ui-card-bg));
+  border: 1px solid color-mix(in srgb, var(--ui-primary) 22%, var(--ui-card-bg));
+  color: var(--reflect-link);
+}
+.reflect-screen .reflect-theme-divider {
+  border-color: var(--ui-divider);
+}
+.reflect-screen .reflect-completion-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.reflect-screen .reflect-completion-status {
+  color: var(--reflect-link);
+  font-weight: 600;
+}
+.reflect-screen .reflect-reopen-button {
+  min-height: 44px;
+  border: 1px solid color-mix(in srgb, var(--ui-primary) 35%, var(--ui-card-bg));
+  border-radius: 14px;
+  background: var(--ui-card-bg);
+  padding: 10px 16px;
+  color: var(--reflect-link);
+  font-weight: 600;
+}
+.reflect-screen .reflect-reopen-button:focus-visible {
+  outline: 2px solid var(--ui-primary);
+  outline-offset: 2px;
+}
+.reflect-screen .reflect-reopen-button:disabled { opacity: .6; }
