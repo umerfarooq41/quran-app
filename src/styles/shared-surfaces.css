@@ -363,8 +363,8 @@
 .app-option-picker-compact .app-option-trigger { border: 0; background: transparent; padding: 6px 0; min-height: 44px; }
 .app-option-description { display: block; margin-top: 4px; font-size: 11px; color: var(--theme-muted); }
 
-.app-search-field { display:flex; align-items:center; gap:10px; min-height:48px; width:100%; padding:8px 14px; border:1px solid var(--ui-control-border); border-radius:var(--ui-picker-radius); background:var(--ui-control-bg); color:var(--theme-muted); }
-.app-search-field:focus-within { border-color:var(--theme-muted); box-shadow:0 0 0 2px var(--ui-picker-hover); }
+.app-search-field { display:flex; align-items:center; gap:10px; min-height:48px; width:100%; padding:8px 14px; border:1px solid var(--ui-control-border); border-radius:999px; background:var(--ui-control-bg); color:var(--theme-muted); }
+.app-search-field:focus-within { border-color:var(--ui-control-border); box-shadow:none; }
 .app-search-field input { flex:1; width:0; min-width:0; border:0; outline:none; padding:0; background:transparent; box-shadow:none; color:var(--theme-text); font:inherit; }
 .app-search-field input::placeholder { color:var(--theme-muted); opacity:1; }
 .app-search-field input::-webkit-search-cancel-button { display:none; }
