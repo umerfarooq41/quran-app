@@ -674,7 +674,7 @@
   background: transparent;
   padding: 0;
   transform: none;
-  transition: opacity .18s ease;
+  transition: opacity .17s cubic-bezier(.22, 1, .36, 1);
 }
 
 .reader-topbar-visible {
@@ -943,8 +943,8 @@
   background: var(--reader-surface, #fffaf1);
   box-shadow: 0 10px 34px rgba(28, 23, 16, .10);
   transition:
-    opacity .2s ease,
-    transform .32s cubic-bezier(.22, 1, .36, 1);
+    opacity .17s cubic-bezier(.22, 1, .36, 1),
+    transform .22s cubic-bezier(.22, 1, .36, 1);
   padding: calc(env(safe-area-inset-top, 0px) + 9px) 24px 14px;
 }
 
