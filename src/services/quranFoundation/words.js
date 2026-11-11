@@ -147,9 +147,10 @@ async function getLocalWords(surah, ayah, language, signal) {
     .map(([, value]) => htmlToPlainText(value))
     .filter(Boolean);
 
-  // Ayah-end ornaments belong to the Mushaf, not the word-by-word row.
+  // Ayah-end ornaments and their translated number are not WBW words.
+  // Filter by source word, retaining its original location for meaning alignment.
   const words = displayWords
-    .filter((word) => !/^[\\s\\u06dd\\u06de\\u06e9\\u0660-\\u0669\\u06f0-\\u06f9\\uf500-\\uf5ff]+$/u.test(String(word.text || '')))
+    .filter((word) => !isAyahMarker(word.text))
     .map((word, index) => {
       const location = word.location || `${verseKey}:${index + 1}`;
       const rawMeaning = wordMeanings[location] || '';
@@ -158,7 +159,7 @@ async function getLocalWords(surah, ayah, language, signal) {
         : escapeHtml(rawMeaning);
       const meaning = htmlToPlainText(meaningHtml);
       const grammarClass = getPrimaryGrammarClass(meaningHtml);
-      const arabic = String(word.text || '');
+      const arabic = stripAyahMarker(word.text);
       const arabicHtml = grammarClass
         ? `<span class="${grammarClass}">${escapeHtml(arabic)}</span>`
         : escapeHtml(arabic);
@@ -169,12 +170,12 @@ async function getLocalWords(surah, ayah, language, signal) {
         arabic,
         arabicHtml,
         grammarClass,
-        meaning,
-        meaningHtml,
+        meaning: isAyahMarker(meaning) ? '' : stripAyahMarker(meaning),
+        meaningHtml: isAyahMarker(meaning) ? '' : meaningHtml,
         transliteration: '',
         language,
       };
-    });
+    }).filter((word) => word.arabic);
 
   return {
     verseKey,
@@ -194,6 +195,17 @@ async function getLocalWords(surah, ayah, language, signal) {
 
 
 
+
+// The Mushaf uses a private-use ayah circle; other datasets use Quranic
+// end-of-ayah signs or a standalone numeral. None belongs in WBW.
+const AYAH_MARKER_ONLY = /^[\\s\\u06dd\\u06de\\u06e9\\uf500-\\uf5ff\\u0660-\\u0669\\u06f0-\\u06f9\\d]+$/u;
+const AYAH_MARKER_SUFFIX = /[\\s\\u06dd\\u06de\\u06e9\\uf500-\\uf5ff]+$/gu;
+function isAyahMarker(value) {
+  return AYAH_MARKER_ONLY.test(String(value || '').trim());
+}
+function stripAyahMarker(value) {
+  return String(value || '').replace(AYAH_MARKER_SUFFIX, '').trim();
+}
 
 function sanitizeEnglishMeaningHtml(value) {
   const input = String(value || '');
