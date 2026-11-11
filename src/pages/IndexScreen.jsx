@@ -1,6 +1,5 @@
 import { SearchField } from '../components/common/SearchField';
 import React, { useEffect, useMemo, useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
 import { BookOpen, ChevronDown, List, Minus, Plus, Star } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../store/useAppStore';
@@ -41,7 +40,6 @@ function stripHtml(value = '') {
 
 
 export default function IndexScreen() {
-  const reduceMotion = useReducedMotion();
   const { tab, setTab, goBack, navDirection } = useAppStore(useShallow((state) => ({
     tab: state.indexTab || 'juz',
     setTab: state.setIndexTab,
@@ -49,12 +47,8 @@ export default function IndexScreen() {
     navDirection: state.navDirection,
   })));
 
-  const direction = navDirection === 'back' ? -1 : 1;
   return (
-    <motion.section
-      initial={reduceMotion ? false : { x: direction * 6 }}
-      animate={{ x: 0 }}
-      transition={{ duration: reduceMotion ? 0 : 0.14, ease: [0.22, 1, 0.36, 1] }}
+    <section
       className="index-replica-shell app-page-shell bg-fluent">
       <div className="index-replica-inner">
         <div className="app-fixed-header">
@@ -92,7 +86,7 @@ export default function IndexScreen() {
           {tab === 'juz' ? <JuzIndex /> : <SurahIndex />}
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 }
 
