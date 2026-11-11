@@ -427,6 +427,8 @@
   isolation: isolate;
   view-transition-name: quran-page;
 }
+::view-transition-old(root),
+::view-transition-new(root) { animation: none; }
 ::view-transition-old(quran-page),
 ::view-transition-new(quran-page) {
   animation-duration: 280ms;
