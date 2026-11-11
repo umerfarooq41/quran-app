@@ -1797,8 +1797,12 @@
 .index-replica-shell .index-surah-introduction-preview.is-ur {
   font-family: var(--translation-urdu-font);
   font-size: .94rem;
-  line-height: 1.75;
+  line-height: 1.95;
   text-align: right;
+  /* Nastaleeq glyphs extend below their line boxes. Fade the preview at
+     the bottom instead of leaving a hard-clipped fragment of the next line. */
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 76%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 76%, transparent 100%);
 }
 
 .index-replica-shell .index-surah-info-preview {
