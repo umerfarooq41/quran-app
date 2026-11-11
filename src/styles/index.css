@@ -1300,22 +1300,19 @@
   box-shadow: none;
 }
 
-.index-replica-shell .index-quarter-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  padding: 14px;
-  justify-items: center;
+.index-replica-shell .index-juz-card:has(.index-quarter-grid) {
+  flex-wrap: wrap;
 }
 
-.index-replica-shell .index-quarter-heading {
-  grid-column: 1 / -1;
-  margin: 0 0 2px;
-  color: var(--theme-muted);
-  font: 500 .72rem/1.2 var(--ui-font);
-  letter-spacing: .08em;
-  text-align: center;
-  text-transform: uppercase;
+.index-replica-shell .index-quarter-grid {
+  display: grid;
+  flex: 0 0 100%;
+  width: 100%;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  padding: 14px 16px 16px;
+  justify-items: center;
+  border-top: 1px solid var(--ui-divider);
 }
 
 .index-replica-shell.app-page-shell .index-quarter-btn {
@@ -1683,9 +1680,7 @@
 
 [data-theme='dark'] .index-replica-shell .index-quarter-grid {
   border-color: var(--theme-border);
-  background: var(--theme-surface-solid);
   color: var(--theme-text);
-  box-shadow: 0 9px 24px var(--theme-shadow);
 }
 
 [data-theme='dark'] .index-replica-shell .index-collapse-panel,
