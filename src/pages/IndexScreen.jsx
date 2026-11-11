@@ -54,7 +54,7 @@ export default function IndexScreen() {
     <motion.section
       initial={reduceMotion ? false : { x: direction * 12 }}
       animate={{ x: 0 }}
-      exit={reduceMotion ? { x: 0 } : { x: -direction * 12 }}
+      exit={reduceMotion ? { x: 0, pointerEvents: 'none' } : { x: -direction * 12, pointerEvents: 'none' }}
       transition={{ duration: reduceMotion ? 0 : 0.24, ease: [0.22, 1, 0.36, 1] }}
       className="index-replica-shell app-page-shell bg-fluent">
       <div className="index-replica-inner">
