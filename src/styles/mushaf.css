@@ -279,9 +279,9 @@
   min-width: 0;
   overflow: hidden;
   text-align: center;
-  left: 20%;
+  left: 23%;
   font-size: calc(clamp(.66rem, 1.56vh, .90rem) * var(--font-scale, 1));
-  width: 13%;
+  width: 12%;
 }
 
 .surah-banner--single .surah-banner-name {
@@ -294,8 +294,8 @@
   min-width: 0;
   overflow: hidden;
   text-align: center;
-  left: 34%;
-  right: 20%;
+  left: 36%;
+  right: 36%;
   font-size: calc(clamp(.90rem, 2.12vh, 1.22rem) * var(--font-scale, 1));
   width: auto;
 }
@@ -355,8 +355,8 @@
   overflow: hidden;
   text-align: center;
   box-sizing: border-box;
-  /* Both labels stay within the new ornament's central clear panel. */
-  left: 20%;
+  /* Reserve the left portion of the central clear panel for the count. */
+  left: 23%;
   top: 0;
   height: 46%;
   padding: 0 0.5%;
@@ -373,8 +373,9 @@
   overflow: hidden;
   text-align: center;
   box-sizing: border-box;
-  left: 34%;
-  right: 20%;
+  /* Symmetric bounds keep the Surah name centered on the full banner. */
+  left: 36%;
+  right: 36%;
   top: 0;
   height: 46%;
   padding: 0 1%;
