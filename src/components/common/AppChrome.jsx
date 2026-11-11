@@ -1,6 +1,5 @@
 import React from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { motion, useReducedMotion } from 'framer-motion';
 import { useAppStore } from '../../store/useAppStore';
 import { panel } from './ui';
 
@@ -9,27 +8,9 @@ export function Shell({ children }) {
 }
 
 export function Screen({ children, className = '' }) {
-  const navDirection = useAppStore((state) => state.navDirection);
-  const reduceMotion = useReducedMotion();
-  const variants = {
-    // Keep text and selected-control contrast stable during page transitions.
-    // Opacity on the entire screen blended white labels into the page behind them.
-    forward: { initial: { x: 6 }, animate: { x: 0 }, exit: { x: 0 } },
-    back: { initial: { x: -6 }, animate: { x: 0 }, exit: { x: 0 } },
-    modal: { initial: { y: 6 }, animate: { y: 0 }, exit: { y: 0 } },
-  };
-  const v = variants[navDirection] || variants.forward;
-  return (
-    <motion.section
-      initial={reduceMotion ? false : v.initial}
-      animate={v.animate}
-      exit={reduceMotion ? { ...v.animate, pointerEvents: 'none' } : { ...v.exit, pointerEvents: 'none' }}
-      transition={{ duration: reduceMotion ? 0 : 0.14, ease: [0.22, 1, 0.36, 1] }}
-      className={`screen-shell mx-auto max-w-5xl ${className}`}
-    >
-      {children}
-    </motion.section>
-  );
+  // The app navigation layer owns horizontal movement. Do not animate the
+  // content a second time or shift text while a page is sliding.
+  return <section className={`screen-shell mx-auto max-w-5xl ${className}`}>{children}</section>;
 }
 
 export function NavIcon({ icon: Icon, active, onClick }) {
