@@ -26,19 +26,15 @@ import { ShareQuranScreen } from './features/reader/components/ShareAyahSheet';
 import { ReaderAudioPanel } from './features/reader/components/ReaderAudioPanel';
 
 const pageMotion = {
-  enter: (direction) => ({
-    x: direction === 'back' ? 0 : '100%',
+  enter: ({ direction, view }) => ({
+    x: view === VIEWS.READER || direction === 'back' ? '0%' : '100%',
     zIndex: direction === 'back' ? 0 : 2,
   }),
-  center: (direction) => ({ x: 0, zIndex: direction === 'back' ? 0 : 2 }),
-  exit: (direction) => ({
-    x: direction === 'back' ? '100%' : '-8%',
+  center: ({ direction }) => ({ x: '0%', zIndex: direction === 'back' ? 0 : 2 }),
+  exit: ({ direction, view }) => ({
+    x: view === VIEWS.READER || direction !== 'back' ? '0%' : '100%',
     zIndex: direction === 'back' ? 2 : 0,
     pointerEvents: 'none',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
   }),
 };
 
@@ -474,16 +470,17 @@ export default function App() {
 
   return (
     <Shell>
-      <AnimatePresence initial={false} custom={navDirection} mode="sync">
+      <div className="app-navigation-stack">
+      <AnimatePresence initial={false} custom={{ direction: navDirection, view: activeView }} mode="sync">
         <motion.div
           key={activeView}
           className="app-navigation-page"
-          custom={navDirection}
+          custom={{ direction: navDirection, view: activeView }}
           variants={pageMotion}
           initial={reducePageMotion ? false : 'enter'}
           animate="center"
           exit={reducePageMotion ? { x: 0, pointerEvents: 'none' } : 'exit'}
-          transition={{ duration: reducePageMotion ? 0 : 0.28, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: reducePageMotion || activeView === VIEWS.READER ? 0 : 0.28, ease: [0.22, 1, 0.36, 1] }}
         >
         {activeView === VIEWS.HOME && <HomeScreen key="home" />}
         {activeView === VIEWS.REFLECT && <ReflectScreen key="reflect" />}
@@ -502,6 +499,7 @@ export default function App() {
         )}
         </motion.div>
       </AnimatePresence>
+      </div>
       <ReaderAudioPanel />
    </Shell>
   );
