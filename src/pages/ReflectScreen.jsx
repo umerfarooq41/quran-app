@@ -372,7 +372,10 @@ export default function ReflectScreen() {
       </div>
       <div className="app-scroll-content reflect-content" ref={lessonScrollRef}>
       {mode === 'hub' && <>
-        <ReflectHubTabs tabs={['Lessons', 'Questions', 'Discover', 'Progress']} active={hubTab} onChange={setHubTab} className="reflect-tabs" label="Reflect library" />
+        <ReflectHubTabs tabs={['My Reflect', 'Discover']} active={hubTab === 'Discover' ? 'Discover' : 'My Reflect'} onChange={(tab) => { setHubTab(tab === 'Discover' ? 'Discover' : 'Lessons'); }} className="reflect-tabs" label="Reflect sections" />
+        {hubTab === 'Discover'
+          ? <ReflectHubTabs tabs={['Keywords', 'Themes']} active={discoverTab} onChange={setDiscoverTab} className="reflect-subtabs" label="Discover sections" />
+          : <ReflectHubTabs tabs={['Lessons', 'Questions', 'Progress']} active={hubTab} onChange={setHubTab} className="reflect-subtabs" label="My Reflect sections" />
         {hubTab === 'Questions' && <QuestionsTab lessons={lessons} questionFilter={questionFilter} setQuestionFilter={setQuestionFilter} questionSearch={questionSearch} setQuestionSearch={setQuestionSearch} questionExpanded={questionExpanded} setQuestionExpanded={setQuestionExpanded} questionSwiped={questionSwiped} setQuestionSwiped={setQuestionSwiped} removeQuestion={removeQuestion} setQuestionJump={setQuestionJump} setActive={setActive} setMode={setMode} />}
         {hubTab === 'Discover' && <DiscoverTab lessons={lessons} discoverTab={discoverTab} setDiscoverTab={setDiscoverTab} themeGroups={themeGroups} expandedTheme={expandedTheme} setExpandedTheme={setExpandedTheme} expandedSubtheme={expandedSubtheme} setExpandedSubtheme={setExpandedSubtheme} setKeywordJump={setKeywordJump} setActive={setActive} setMode={setMode} />}
         {hubTab === 'Progress' && <ProgressTab lessons={lessons} progressPeriod={progressPeriod} setProgressPeriod={setProgressPeriod} progressCommitment={progressCommitment} setProgressCommitment={setProgressCommitment} saveCommitmentReview={saveCommitmentReview} openProgressLesson={openProgressLesson} setHubTab={setHubTab} />}
