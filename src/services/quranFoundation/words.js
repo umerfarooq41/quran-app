@@ -147,7 +147,9 @@ async function getLocalWords(surah, ayah, language, signal) {
     .map(([, value]) => htmlToPlainText(value))
     .filter(Boolean);
 
+  // Ayah-end ornaments belong to the Mushaf, not the word-by-word row.
   const words = displayWords
+    .filter((word) => !/^[\\s\\u06dd\\u06de\\u06e9\\u0660-\\u0669\\u06f0-\\u06f9\\uf500-\\uf5ff]+$/u.test(String(word.text || '')))
     .map((word, index) => {
       const location = word.location || `${verseKey}:${index + 1}`;
       const rawMeaning = wordMeanings[location] || '';
