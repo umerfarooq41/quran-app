@@ -2,7 +2,7 @@
 
 
 .ayah-translation-card {
-  --translation-card-bg: var(--ui-card-bg, var(--reader-surface-raised));
+  --translation-card-bg: #faf7f0;
   --translation-card-text: #1F2933;
   --translation-card-secondary: #64748B;
   --translation-card-border: rgba(15,23,42,0.08);
@@ -449,7 +449,7 @@
 }
 
 [data-theme='dark'] .ayah-translation-card {
-  --translation-card-bg: var(--ui-card-bg, var(--reader-surface-raised));
+  --translation-card-bg: #202521;
   --translation-card-text: #F5F5F5;
   --translation-card-secondary: #A3A3A3;
   --translation-card-border: rgba(255,255,255,0.08);
