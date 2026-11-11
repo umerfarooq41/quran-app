@@ -300,7 +300,17 @@
 .reflect-screen .reflect-section-body{margin-top:12px}
 .reflect-screen .reflect-title-editor{width:100%;min-width:0}
 .reflect-screen .reflect-title-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.reflect-screen .reflect-study-summary{display:block}
+.reflect-screen .reflect-study-card-inner .reflect-study-summary {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  column-gap: 12px;
+  row-gap: 8px;
+}
+.reflect-screen .reflect-study-card-inner .reflect-study-summary .tab-type,
+.reflect-screen .reflect-study-card-inner .reflect-study-summary .reflect-study-card-meta {
+  margin: 0;
+}
 .reflect-screen .reflect-study-summary .reflect-lesson-title-input{width:100%;max-width:none}
 .reflect-screen .reflect-study-summary .reflect-study-translation{margin-top:12px;padding-top:0;border-top:0;color:var(--reflect-muted)}
 .reflect-screen .reflect-study-summary .reflect-guidance-trigger{color:var(--reflect-link);width:36px;height:36px;flex:0 0 36px}
