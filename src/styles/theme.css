@@ -131,12 +131,12 @@
 :root {
   --ui-primary: var(--brand-green, #2d6e5e);
   --ui-gold: var(--brand-gold, #b8882a);
-  --ui-card-bg: rgba(255, 255, 255, .66);
-  --ui-card-border: rgba(255, 255, 255, .84);
-  --ui-control-bg: rgba(255, 255, 255, .42);
+  --ui-card-bg: #faf7f0;
+  --ui-card-border: rgba(126, 110, 86, .15);
+  --ui-control-bg: #faf7f0;
   --ui-control-border: rgba(126, 110, 86, .23);
   --ui-card-shadow: 0 8px 20px rgba(71, 54, 23, .045);
-  --ui-card-blur: blur(16px);
+  --ui-card-blur: none;
   --ui-pressed-overlay: rgba(75, 61, 41, .055);
   --ui-divider: rgba(126, 110, 86, .16);
 }
@@ -144,9 +144,9 @@
 :root[data-theme='dark'] {
   --ui-segment-bg: color-mix(in srgb, var(--theme-surface-solid) 88%, transparent);
   --ui-segment-border: var(--theme-border);
-  --ui-card-bg: rgba(31, 36, 33, .78);
+  --ui-card-bg: #202521;
   --ui-card-border: rgba(255, 255, 255, .10);
-  --ui-control-bg: rgba(255, 255, 255, .065);
+  --ui-control-bg: #202521;
   --ui-control-border: rgba(255, 255, 255, .17);
   --ui-card-shadow: 0 8px 20px rgba(0, 0, 0, .14);
   --ui-pressed-overlay: rgba(255, 255, 255, .065);
