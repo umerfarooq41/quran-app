@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { useShallow } from 'zustand/react/shallow';
 import { getLastRead, getSettings, upsertSetting } from './lib/db';
@@ -134,7 +134,7 @@ export default function App() {
   const [displayedView, setDisplayedView] = useState(activeView);
   const transitionRef = useRef(null);
   const previousViewRef = useRef(activeView);
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (displayedView === activeView) return;
     const previousView = previousViewRef.current;
     previousViewRef.current = activeView;
