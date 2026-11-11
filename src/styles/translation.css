@@ -175,7 +175,7 @@
 }
 
 .ayah-word-by-word.is-ur .ayah-word-by-word-meaning {
-  font-family: var(--translation-urdu-font, "Noto Nastaliq Urdu", serif);
+  font-family: var(--translation-urdu-font, serif);
   font-size: 13px;
   line-height: 1.75;
 }
