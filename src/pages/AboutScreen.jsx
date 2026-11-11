@@ -60,7 +60,6 @@ const SECTIONS = [
         <p>Selected background videos used by Share Quran are sourced from Pixabay and used under the Pixabay Content License.</p>
 
         <h3>Fonts</h3>
-        <p><strong>Jameel Khushkhati</strong> — Copyright © 2017 Basharat Ali, licensed under the SIL Open Font License 1.1.</p>
         <p><strong>Noto Nastaliq Urdu</strong> — The Noto Project Authors, licensed under the SIL Open Font License 1.1.</p>
         <p><strong>IndoPak Nastaleeq Quran font</strong> — sourced through QUL.</p>
 
