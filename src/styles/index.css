@@ -962,14 +962,14 @@
 .index-replica-shell.app-page-shell .index-surah-info-label {
   display: block;
   margin: 0 0 6px;
-  color: color-mix(in srgb, var(--theme-muted) 86%, var(--theme-text));
-  font-family: inherit;
-  font-size: .84rem;
-  font-weight: 760;
-  line-height: 1.2;
-  letter-spacing: .14em;
+  color: var(--theme-text);
+  font-family: var(--ui-font);
+  font-size: .98rem;
+  font-weight: 720;
+  line-height: 1.25;
+  letter-spacing: 0;
   text-align: left;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .index-replica-shell.app-page-shell .index-surah-info-meta {
@@ -1378,8 +1378,10 @@
 .index-replica-shell .index-surah-info-label {
   display: block;
   margin: 0 0 4px;
-  color: color-mix(in srgb, var(--theme-text) 78%, var(--theme-muted));
-  font: 760 1rem/1.2 var(--ui-font);
+  color: var(--theme-text);
+  font: 720 .98rem/1.25 var(--ui-font);
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 .index-replica-shell .index-surah-info-meta {
@@ -1746,8 +1748,6 @@
   border-color: color-mix(in srgb, var(--brand-gold) 48%, var(--theme-border));
   color: var(--theme-text);
 }
-
-.index-replica-shell .index-surah-info-label{text-transform:none;letter-spacing:0;font-size:.94rem}
 
 .index-replica-shell .index-surah-introduction{background:transparent;border:0;box-shadow:none;padding:0;margin:12px 0 0;width:100%;max-width:none;color:var(--theme-text)}
 
