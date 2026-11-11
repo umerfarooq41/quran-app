@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { AnimatePresence } from 'framer-motion';
 import { useShallow } from 'zustand/react/shallow';
 import { getLastRead, getSettings, upsertSetting } from './lib/db';
 import { getContentSyncResourcesForTranslation } from './lib/translations';
@@ -423,7 +422,7 @@ export default function App() {
 
   return (
     <Shell>
-      <AnimatePresence mode="wait" initial={false}>
+      <>
         {activeView === VIEWS.HOME && <HomeScreen key="home" />}
         {activeView === VIEWS.REFLECT && <ReflectScreen key="reflect" />}
         {activeView === VIEWS.READER && <ReaderScreen key="reader" />}
@@ -439,7 +438,7 @@ export default function App() {
         {activeView === VIEWS.SHARE_QURAN && shareTarget && (
           <ShareQuranScreen key="shareQuran" ayah={shareTarget} onClose={closeSharePage} />
         )}
-      </AnimatePresence>
+      </>
       <ReaderAudioPanel />
    </Shell>
   );
