@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, ChevronDown } from 'lucide-react';
+import { BookOpen, CheckCircle2, ChevronDown, ChevronRight, CircleHelp } from 'lucide-react';
 import { AppOptionPicker } from '../../../components/common/Dropdown';
 import { getSurah } from '../../../lib/quran';
 import { reflectCardClass as card, reflectFieldClass as field, studyDisplayTitle } from '../reflectPresentation';
@@ -8,6 +8,11 @@ import { getReflectProgress } from '../reflectProgress';
 /** Progress dashboard and commitment review. */
 export default function ProgressTab({ lessons, progressPeriod, setProgressPeriod, progressCommitment, setProgressCommitment, saveCommitmentReview, openProgressLesson, setHubTab }) {
   const { filtered, completed, percentage, ayahCount, questions, answered, commitments, recent } = getReflectProgress(lessons, progressPeriod);
+  const activities = [
+    { label: 'Ayahs explored', detail: 'Across your Reflect lessons', value: ayahCount, Icon: BookOpen },
+    { label: 'Questions answered', detail: "Questions you've found answers to", value: answered, Icon: CheckCircle2 },
+    { label: 'Open questions', detail: "Questions you're still exploring", value: questions.length - answered, Icon: CircleHelp },
+  ];
           return <div className="reflect-progress space-y-4">
             <div className="flex items-center justify-between gap-3">
               <h2 className="text-base font-semibold">Lesson Progress</h2>
@@ -21,11 +26,23 @@ export default function ProgressTab({ lessons, progressPeriod, setProgressPeriod
                 </div>
               </div>
             </section>
-            <div className="grid grid-cols-3 gap-2 reflect-progress-metrics">
-              {[{value:ayahCount,label:'Ayahs studied'},{value:answered,label:'Answered'},{value:questions.length-answered,label:'Open questions'}].map(item=><div key={item.label} className="reflect-progress-metric px-2 py-3 text-center"><p className="text-xl font-semibold">{item.value}</p><p className="mt-1 text-[11px] leading-tight reflect-muted">{item.label}</p></div>)}
-            </div>
+            <section className={card + ' reflect-activity-card'}>
+              <h3 className="reflect-activity-title">Reflection Activity</h3>
+              <div className="reflect-activity-list">
+                {activities.map(({ label, detail, value, Icon }) => (
+                  <div key={label} className="reflect-activity-row">
+                    <span className="reflect-activity-icon"><Icon size={21} aria-hidden="true" /></span>
+                    <span className="reflect-activity-copy">
+                      <span className="reflect-activity-label">{label}</span>
+                      <span className="reflect-activity-detail">{detail}</span>
+                    </span>
+                    <strong className="reflect-activity-value">{value}</strong>
+                  </div>
+                ))}
+              </div>
+            </section>
             <section className={card}>
-              <div className="flex items-center justify-between"><h3 className="text-sm font-semibold">Continue &amp; Revisit</h3><span className="text-xs text-slate-500">{commitments.length} commitments</span></div>
+              <div className="flex items-center justify-between"><h3 className="text-sm font-semibold">Continue &amp; Revisit</h3><span className="text-xs text-slate-500">{commitments.length} {commitments.length === 1 ? 'commitment' : 'commitments'}</span></div>
               {commitments.length ? <div className="mt-3 space-y-2">{commitments.map(lesson => {
                 const open = progressCommitment === lesson.id;
                 const commitment = lesson.answers?.tadabbur?.commitment || lesson.answers?.tadabbur?.plan;
@@ -40,14 +57,14 @@ export default function ProgressTab({ lessons, progressPeriod, setProgressPeriod
                     <button type="button" className="reflect-secondary-button inline-flex items-center rounded-lg px-3 py-2 text-xs font-semibold" onClick={()=>openProgressLesson(lesson)}>Open Lesson →</button>
                   </div>}
                 </div>;
-              })}</div> : <p className="mt-3 text-sm text-slate-500">Commitments from completed lessons will appear here.</p>}
+              })}</div> : <p className="mt-3 text-sm text-slate-500">Commitments you make while reflecting will appear here.</p>}
             </section>
             <section className={card}>
-              <div className="flex items-center justify-between gap-2"><h3 className="text-sm font-semibold">Recent Lessons</h3><button type="button" className="text-xs font-semibold text-[#2d6e5e]" onClick={()=>{setHubTab('Lessons');setProgressCommitment(null);}}>View all →</button></div>
+              <div className="flex items-center justify-between gap-2"><h3 className="text-sm font-semibold">Recent Lessons</h3><button type="button" className="reflect-progress-view-all" onClick={()=>{setHubTab('Lessons');setProgressCommitment(null);}}>View all <ChevronRight size={16} aria-hidden="true" /></button></div>
               {recent.length ? <div className="mt-2 reflect-progress-recent">{recent.map(lesson=><button key={lesson.id} type="button" className="flex w-full items-center gap-3 py-3 text-left" onClick={()=>openProgressLesson(lesson)}>
-                <span className="reflect-recent-icon flex h-9 w-9 shrink-0 items-center justify-center rounded-lg">{lesson.status==='completed'?'✓':<BookOpen size={17}/>}</span>
-                <span className="min-w-0 flex-1"><span className="block truncate text-sm font-semibold text-slate-800">{studyDisplayTitle(lesson)}</span><span className="mt-0.5 block text-xs text-slate-500">{lesson.surahNumber}:{lesson.startAyah}–{lesson.endAyah} · {lesson.status==='completed'?'Completed':'In progress'}</span></span>
-                <span className="text-slate-400" aria-hidden="true">›</span>
+                <BookOpen className="reflect-recent-book" size={19} aria-hidden="true" />
+                <span className="min-w-0 flex-1"><span className="block truncate text-sm font-semibold text-slate-800">{studyDisplayTitle(lesson)}</span><span className="mt-0.5 block text-xs text-slate-500">{lesson.status==='completed'?'Completed':'In progress'}</span></span>
+                <ChevronRight className="reflect-recent-chevron" size={18} aria-hidden="true" />
               </button>)}</div> : <p className="mt-3 text-sm text-slate-500">No lessons in this period.</p>}
             </section>
           </div>;
