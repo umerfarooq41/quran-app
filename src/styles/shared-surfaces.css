@@ -416,3 +416,12 @@
   visibility: hidden;
   pointer-events: none;
 }
+
+
+/* Navigation layers share the same origin; outgoing pages leave normal flow. */
+.app-shell { position: relative; }
+.app-navigation-page { position: relative; width: 100%; min-width: 0; background: var(--theme-background, transparent); }
+.app-navigation-page[style*="position: absolute"] { inset: 0 auto auto 0; width: 100%; }
+@media (prefers-reduced-motion: reduce) {
+  .app-navigation-page { scroll-behavior: auto; }
+}
