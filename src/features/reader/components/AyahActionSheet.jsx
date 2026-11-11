@@ -179,10 +179,10 @@ export function AyahActionSheet({ ayah, onClose, onPlay, onShare, onReflect, onA
   return (
     <div className="ayah-tooltip-backdrop" data-ayah-reference={reference} data-reader-ui onPointerDown={(event) => { if (event.target === event.currentTarget) closeTooltip(); }}>
       <motion.div
-        initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: .94, y: placement.arrowPlacement === 'top' ? -4 : 4 }}
-        animate={reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
-        exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: .96 }}
-        transition={{ duration: reduceMotion ? .01 : .14, ease: 'easeOut' }}
+        initial={reduceMotion ? false : { opacity: 0, scale: .98, y: placement.arrowPlacement === 'top' ? -4 : 4 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={reduceMotion ? { opacity: 1 } : { opacity: 0, scale: .98 }}
+        transition={{ duration: reduceMotion ? 0 : .16, ease: [0.22, 1, 0.36, 1] }}
         className="ayah-action-tooltip-wrap"
         style={{
           left: `${placement.left}px`,

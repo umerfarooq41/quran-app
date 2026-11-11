@@ -1,6 +1,6 @@
 import React from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useAppStore } from '../../store/useAppStore';
 import { panel } from './ui';
 
@@ -10,20 +10,21 @@ export function Shell({ children }) {
 
 export function Screen({ children, className = '' }) {
   const navDirection = useAppStore((state) => state.navDirection);
+  const reduceMotion = useReducedMotion();
   const variants = {
     // Keep text and selected-control contrast stable during page transitions.
     // Opacity on the entire screen blended white labels into the page behind them.
-    forward: { initial: { x: 34 }, animate: { x: 0 }, exit: { x: -28 } },
-    back: { initial: { x: -34 }, animate: { x: 0 }, exit: { x: 28 } },
-    modal: { initial: { y: 46 }, animate: { y: 0 }, exit: { y: 36 } },
+    forward: { initial: { x: 12 }, animate: { x: 0 }, exit: { x: -12 } },
+    back: { initial: { x: -12 }, animate: { x: 0 }, exit: { x: 12 } },
+    modal: { initial: { y: 20 }, animate: { y: 0 }, exit: { y: 16 } },
   };
   const v = variants[navDirection] || variants.forward;
   return (
     <motion.section
-      initial={v.initial}
+      initial={reduceMotion ? false : v.initial}
       animate={v.animate}
-      exit={v.exit}
-      transition={{ type: 'spring', stiffness: 320, damping: 32 }}
+      exit={reduceMotion ? { ...v.animate, pointerEvents: 'none' } : { ...v.exit, pointerEvents: 'none' }}
+      transition={{ duration: reduceMotion ? 0 : 0.24, ease: [0.22, 1, 0.36, 1] }}
       className={`screen-shell mx-auto max-w-5xl ${className}`}
     >
       {children}

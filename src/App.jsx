@@ -423,7 +423,7 @@ export default function App() {
 
   return (
     <Shell>
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="sync" initial={false}>
         {activeView === VIEWS.HOME && <HomeScreen key="home" />}
         {activeView === VIEWS.REFLECT && <ReflectScreen key="reflect" />}
         {activeView === VIEWS.READER && <ReaderScreen key="reader" />}

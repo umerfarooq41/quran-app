@@ -1,7 +1,7 @@
 import { SwipeActions } from '../components/common/SwipeActions';
 import React, { useEffect, useState } from 'react';
 import { BookOpen, Library, List, Search, SlidersHorizontal, Trash2 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../store/useAppStore';
 import { findPageForReference, getMushafPageNumber, getPage, getPageMeta, getSurah } from '../lib/quran';
@@ -11,7 +11,13 @@ import { getTadabburLessons } from '../lib/db';
 import { Screen } from '../components/common/AppChrome';
 import { getSurahNameMeta } from '../data/surahNames';
 
+let homeEntranceShown = false;
+
 export default function HomeScreen() {
+  const reduceMotion = useReducedMotion();
+  const [firstHomeVisit] = useState(() => !homeEntranceShown);
+  const playEntrance = firstHomeVisit && !reduceMotion;
+  useEffect(() => { homeEntranceShown = true; }, []);
   const {
     page,
     goPage,
@@ -80,9 +86,9 @@ export default function HomeScreen() {
     <Screen className="space-y-5 pb-8">
       <motion.div
         className="home-branding-block pt-6 text-center"
-        initial={{ opacity: 0, y: -12 }}
+        initial={playEntrance ? { opacity: 0, y: -8 } : false}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.04 }}
+        transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
       >
         <p className="home-subtitle">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</p>
         <h1 className="home-title">Al Quran</h1>
@@ -92,9 +98,9 @@ export default function HomeScreen() {
         onClick={() => goPage(lastReadTarget?.page || page)}
         className="home-hero-card"
         whileTap={{ scale: 0.985 }}
-        initial={{ opacity: 0, y: 20 }}
+        initial={playEntrance ? { opacity: 0, y: 8 } : false}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, type: 'spring', stiffness: 280, damping: 28 }}
+        transition={{ duration: 0.22, delay: playEntrance ? 0.03 : 0, ease: [0.22, 1, 0.36, 1] }}
       >
         <div className="home-hero-content">
           <span className="home-hero-label">Continue Reading</span>
@@ -104,16 +110,16 @@ export default function HomeScreen() {
         <div className="home-hero-ornament"><BookOpen size={30} /></div>
       </motion.button>
 
-      <motion.div className="home-actions-row home-actions-row-spaced" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.18 }}>
+      <motion.div className="home-actions-row home-actions-row-spaced" initial={playEntrance ? { opacity: 0 } : false} animate={{ opacity: 1 }} transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}>
         {actions.map(([label, Icon, onClick], index) => (
           <motion.button
             key={label}
             className="home-action-chip"
             onClick={onClick}
             whileTap={{ scale: 0.94 }}
-            initial={{ opacity: 0, y: 14 }}
+            initial={playEntrance ? { opacity: 0, y: 8 } : false}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.18 + index * 0.045, type: 'spring' }}
+            transition={{ duration: 0.22, delay: playEntrance ? index * 0.03 : 0, ease: [0.22, 1, 0.36, 1] }}
           >
             <Icon size={20} className="home-action-icon" />
             <span>{label}</span>
@@ -123,9 +129,9 @@ export default function HomeScreen() {
 
       <motion.section
         className="home-favorites-section home-reflect-section"
-        initial={{ opacity: 0, y: 12 }}
+        initial={playEntrance ? { opacity: 0, y: 8 } : false}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.26 }}
+        transition={{ duration: 0.22, delay: playEntrance ? 0.06 : 0, ease: [0.22, 1, 0.36, 1] }}
       >
         <div className="home-section-heading">
           <h2>Reflect</h2>
@@ -145,9 +151,9 @@ export default function HomeScreen() {
 
       <motion.section
         className="home-favorites-section"
-        initial={{ opacity: 0, y: 16 }}
+        initial={playEntrance ? { opacity: 0, y: 8 } : false}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, type: 'spring', stiffness: 260, damping: 28 }}
+        transition={{ duration: 0.22, delay: playEntrance ? 0.09 : 0, ease: [0.22, 1, 0.36, 1] }}
       >
         <div className="home-section-heading">
           <h2>Favorite Surahs</h2>
@@ -194,7 +200,7 @@ function FavoriteSurahRow({ surah, onOpen, onRemove }) {
     <SwipeActions as={motion.article}
       className="home-favorite-swipe" open={isOpen} onOpenChange={setIsOpen}
       layout
-      exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+      exit={{ opacity: 0, x: -8 }}
     >
       <button
         type="button"

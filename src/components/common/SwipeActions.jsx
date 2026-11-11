@@ -2,7 +2,7 @@ import React, { useLayoutEffect, useRef } from 'react';
 
 const ACTION_WIDTH = 92;
 
-/** One animated offset drives the foreground and the curved reveal mask. */
+/** One animated offset drives the foreground and reveal; the outer card owns corner clipping. */
 export function SwipeActions({ as: Element = 'article', open, onOpenChange, className = '', children, ...props }) {
   const nodeRef = useRef(null);
   const gesture = useRef(null);
@@ -14,15 +14,7 @@ export function SwipeActions({ as: Element = 'article', open, onOpenChange, clas
     const node = nodeRef.current;
     if (!node) return;
     offset.current = value;
-    const width = node.clientWidth, height = node.clientHeight;
-    const radius = Math.min(parseFloat(getComputedStyle(node).borderTopRightRadius) || 0, height / 2);
-    const edge = width - value;
-    // Complement of the translated foreground's trailing rounded edge.
-    // The outer container supplies the other (stationary) rounded boundary.
-    const path = value === 0 ? 'M 0 0 Z' : `M ${edge-radius} 0 H ${width} V ${height} H ${edge-radius} A ${radius} ${radius} 0 0 0 ${edge} ${height-radius} V ${radius} A ${radius} ${radius} 0 0 0 ${edge-radius} 0 Z`;
     node.style.setProperty('--swipe-offset', `${value}px`);
-    node.style.setProperty('--swipe-reveal', `path('${path}')`);
-    node.style.setProperty('--swipe-opacity', Math.min(1, value / 24));
     node.dataset.revealed = value > 0 ? 'true' : 'false';
   }
 
@@ -42,11 +34,6 @@ export function SwipeActions({ as: Element = 'article', open, onOpenChange, clas
     settle(open ? ACTION_WIDTH : 0);
     return () => cancelAnimationFrame(frame.current);
   }, [open]);
-  useLayoutEffect(() => {
-    const observer = new ResizeObserver(() => paint(offset.current));
-    observer.observe(nodeRef.current);
-    return () => observer.disconnect();
-  }, []);
 
   return <Element {...props} ref={nodeRef} className={`ui-swipe-actions ${className} ${open ? 'is-swiped' : ''}`}
     onPointerDown={event => {

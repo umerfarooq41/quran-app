@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { getSurah, getSurahAyahs, surahs } from '../../../lib/quran';
 import {
@@ -13,6 +13,7 @@ import { WordByWordTranslation } from './WordByWordTranslation';
 const MISSING_TRANSLATION = 'Translation not available.';
 
 export function AyahTranslationCard({ target, translationId, onClose }) {
+  const reduceMotion = useReducedMotion();
   const updateSettings = useAppStore((state) => state.updateSettings);
   const wordByWordEnabled = useAppStore((state) => state.settings.wordByWordTranslation);
   const wordByWordLanguage = useAppStore((state) => state.settings.wordByWordLanguage);
@@ -133,10 +134,10 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
   return (
     <div className="ayah-translation-backdrop" data-reader-ui onClick={onClose}>
       <motion.section
-        initial={{ y: '100%' }}
+        initial={reduceMotion ? false : { y: '100%' }}
         animate={{ y: 0 }}
-        exit={{ y: '100%' }}
-        transition={{ type: 'spring', stiffness: 380, damping: 38, mass: .9 }}
+        exit={reduceMotion ? { y: 0 } : { y: '100%' }}
+        transition={{ duration: reduceMotion ? 0 : 0.28, ease: [0.22, 1, 0.36, 1] }}
         className={wordByWordEnabled ? 'ayah-translation-card has-word-by-word' : 'ayah-translation-card'}
         role="dialog"
         aria-modal="true"
