@@ -1303,8 +1303,9 @@
 .index-replica-shell .index-quarter-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  padding: 18px;
+  gap: 10px;
+  padding: 14px;
+  justify-items: center;
 }
 
 .index-replica-shell .index-quarter-heading {
@@ -1318,8 +1319,11 @@
 }
 
 .index-replica-shell.app-page-shell .index-quarter-btn {
-  min-height: 54px;
-  padding: 12px 10px;
+  width: 100%;
+  max-width: 174px;
+  min-height: 40px;
+  height: 40px;
+  padding: 8px 12px;
   border: 1.3px solid color-mix(in srgb, var(--brand-gold, #b68a35) 55%, transparent);
   border-radius: 999px;
   background: color-mix(in srgb, var(--theme-surface) 90%, var(--brand-gold, #b68a35) 10%);
