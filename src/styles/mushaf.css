@@ -305,7 +305,42 @@
   top: 0;
   bottom: auto;
   height: 200%;
+  background-image: none;
+}
+
+/* The Al-Fatihah-style two-row header is composed from the same
+   full-width single-row ornament used elsewhere and the Bismillah
+   compartment of the existing double-row ornament. Keep each half
+   clipped to its own row, rather than overlaying two complete SVGs. */
+.surah-banner--double::before,
+.surah-banner--double::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50%;
+  pointer-events: none;
+  background-repeat: no-repeat;
+}
+
+.surah-banner--double::before {
+  top: 0;
+  background-image: url('/border/Border Quran-01.svg');
+  background-position: center;
+  background-size: calc(100% - 4px) 100%;
+}
+
+.surah-banner--double::after {
+  bottom: 0;
   background-image: url('/border/Border Quran-02.svg');
+  background-position: center bottom;
+  background-size: calc(100% - 4px) 200%;
+}
+
+.surah-banner--double .surah-banner-ayahs,
+.surah-banner--double .surah-banner-name,
+.surah-banner--double .surah-banner-basmallah {
+  z-index: 1;
 }
 
 .surah-banner--double .surah-banner-ayahs {
