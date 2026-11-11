@@ -777,9 +777,9 @@ export default function ReaderScreen() {
         pendingAyah={interactive ? pendingAyah : null}
         quarterFlashTarget={interactive ? quarterFlashTarget : null}
         selectedAyah={interactive ? selectedAyah : null}
-        playingVerseKey={playingVerseKey}
-        playingWordPosition={playingWordPosition}
-        playingWordOccurrenceIndex={playingWordOccurrenceIndex}
+        playingVerseKey={interactive ? playingVerseKey : null}
+        playingWordPosition={interactive ? playingWordPosition : null}
+        playingWordOccurrenceIndex={interactive ? playingWordOccurrenceIndex : null}
         interactionsBlocked={!interactive || readerInteractionsBlocked}
         enableTextHighlights
         onBlockedInteraction={interactive ? dismissVisibleReaderUi : undefined}
