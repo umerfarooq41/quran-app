@@ -485,13 +485,6 @@
   outline: 2px solid var(--ui-primary); outline-offset: 2px;
 }
 
-.reflect-screen .reflect-tabs.library-tabs.share-like-segment {
-  display: grid;
-  --ui-segment-columns: 4;
-  min-width: 0;
-  height: auto;
-}
-
 /* The period picker is a compact control, never a nested card. */
 
 .reflect-progress-period { width: auto; flex: 0 0 auto; }
