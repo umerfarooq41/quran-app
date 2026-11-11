@@ -499,10 +499,12 @@
 }
 
 
-.index-collapse-panel,
+.index-collapse-panel {
+  background: var(--ui-card-bg);
+}
 .index-surah-info-preview {
-  background: var(--theme-surface);
-  backdrop-filter: blur(16px);
+  background: transparent;
+  backdrop-filter: none;
 }
 
 .index-quarter-btn {
@@ -525,9 +527,11 @@
 }
 
 
-[data-theme='dark'] .index-collapse-panel,
+[data-theme='dark'] .index-collapse-panel {
+  background: var(--ui-card-bg);
+}
 [data-theme='dark'] .index-surah-info-preview {
-  background: var(--theme-surface);
+  background: transparent;
 }
 
 [data-theme='dark'] .index-quarter-btn {
@@ -1069,15 +1073,15 @@
 }
 
 .index-replica-shell.app-page-shell .index-surah-collapse {
-  overflow: visible;
+  overflow: hidden;
   border-radius: 24px;
   padding: 12px;
   box-shadow: 0 14px 34px rgba(70, 52, 25, .055);
 }
 
 .index-replica-shell.app-page-shell .index-surah-info-preview {
-  border-radius: 20px;
-  overflow: hidden;
+  border-radius: 0;
+  overflow: visible;
 }
 
 .index-replica-shell.app-page-shell .index-surah-info-label {
@@ -1260,9 +1264,10 @@
 .index-replica-shell .index-collapse-panel {
   display: block;
   box-sizing: border-box;
-  width: calc(100% - 12px);
+  width: 100%;
+  max-width: 100%;
   min-width: 0;
-  margin: 6px 6px 0;
+  margin: 6px 0 0;
   padding: 0;
   overflow: hidden;
   border: 1px solid var(--ui-card-border);
@@ -1276,13 +1281,16 @@
 }
 
 .index-replica-shell .index-surah-collapse {
-  background: color-mix(in srgb, var(--theme-surface) 94%, transparent);
+  background: var(--ui-card-bg);
 }
 
-.index-replica-shell.app-page-shell .index-surah-collapse,
+.index-replica-shell.app-page-shell .index-surah-collapse {
+  background: var(--ui-card-bg);
+  backdrop-filter: none;
+}
 .index-replica-shell.app-page-shell .index-surah-info-preview,
 .index-replica-shell.app-page-shell .index-ayah-jump {
-  background: color-mix(in srgb, var(--theme-surface) 94%, transparent);
+  background: transparent;
   backdrop-filter: none;
 }
 
@@ -1335,11 +1343,15 @@
 }
 
 .index-replica-shell .index-surah-info-preview {
+  box-sizing: border-box;
   width: 100%;
   min-width: 0;
   margin: 0;
   padding: 18px 18px 8px;
+  border: 0;
   border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .index-replica-shell .index-surah-info-label {
