@@ -307,6 +307,27 @@ export default function ReflectScreen() {
     }
   }
 
+  async function reopenLesson() {
+    if (!active || busy || active.status !== 'completed') return;
+    setBusy(true);
+    setError('');
+    try {
+      await flushAnswers();
+      await saveQueue.current;
+      const updated = await updateTadabburLesson(active.id, {
+        status: 'in-progress',
+        completedAt: null,
+      });
+      if (!updated) throw new Error('Lesson not found.');
+      setActive(updated);
+      await refresh();
+    } catch (cause) {
+      setError(cause?.message || 'Unable to mark lesson as unfinished.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function removeLesson(id) {
     await flushAnswers();
     await deleteTadabburLesson(id);
@@ -378,14 +399,19 @@ export default function ReflectScreen() {
         <section className={card}>
           <div className="reflect-section-heading"><button type="button" className="reflect-section-title" aria-expanded={themesExpanded} onClick={()=>setThemesExpanded(v=>!v)}><span className="font-semibold">Themes</span></button>{themesExpanded && <button type="button" className="reflect-secondary-action inline-flex items-center gap-1 text-sm font-medium" onClick={openThemeSheet}><Plus size={15}/> Add Theme</button>}<button type="button" className="reflect-section-chevron-button" aria-label={themesExpanded ? "Collapse Themes" : "Expand Themes"} aria-expanded={themesExpanded} onClick={()=>setThemesExpanded(v=>!v)}><ChevronDown size={20} className={`reflect-section-chevron ${themesExpanded?"is-open":""}`}/></button></div>
           {themesExpanded&&<div className="reflect-section-body">
-          {assignmentsFor(active.studyThemes).length === 0 ? <button type="button" className="reflect-empty-inline mt-3" onClick={openThemeSheet}>No themes added yet. Tap to add a theme.</button> : <div className="mt-3 space-y-3">{assignmentsFor(active.studyThemes).map((item,index) => <div key={item.main}>{index > 0 && <div className="mb-3 border-t border-slate-100"/>}<p className="text-sm font-semibold">{item.main}</p>{item.sub?.length > 0 && <div className="mt-2 flex flex-wrap gap-1.5">{item.sub.map(sub => <span key={sub} className="rounded-full bg-slate-100 px-2.5 py-1 text-xs">{sub}</span>)}</div>}</div>)}</div>}
+          {assignmentsFor(active.studyThemes).length === 0 ? <button type="button" className="reflect-empty-inline mt-3" onClick={openThemeSheet}>No themes added yet. Tap to add a theme.</button> : <div className="mt-3 space-y-3">{assignmentsFor(active.studyThemes).map((item,index) => <div key={item.main}>{index > 0 && <div className="reflect-theme-divider mb-3 border-t"/>}<p className="text-sm font-semibold">{item.main}</p>{item.sub?.length > 0 && <div className="mt-2 flex flex-wrap gap-1.5">{item.sub.map(sub => <span key={sub} className="reflect-lesson-theme-chip rounded-full px-2.5 py-1 text-xs">{sub}</span>)}</div>}</div>)}</div>}
           </div>}
         </section>
         {themeSheet && <ThemeEditorSheet themeCreation={themeCreation} setThemeCreation={setThemeCreation} setThemeSheet={setThemeSheet} newThemeName={newThemeName} setNewThemeName={setNewThemeName} createTheme={createTheme} themeSearch={themeSearch} setThemeSearch={setThemeSearch} themeGroups={themeGroups} expandedTheme={expandedTheme} setExpandedTheme={setExpandedTheme} draftThemes={draftThemes} toggleThemeSub={toggleThemeSub} toggleThemeMain={toggleThemeMain} finishThemeEditing={finishThemeEditing} />}
         <FinishAndRevisit active={active} saveTadabburField={saveTadabburField} saveStudyMeta={saveStudyMeta} flushAnswers={flushAnswers} />
         {error && <p role="alert" className="text-sm text-rose-600">{error}</p>}
         {active.status !== 'completed' && <button type="button" className={action+' w-full'} disabled={busy} onClick={finishLesson}>{busy ? 'Saving…' : 'Mark as finished'}</button>}
-        {active.status === 'completed' && <p role="status" className="text-sm text-emerald-700">Lesson completed</p>}
+        {active.status === 'completed' && <div className="reflect-completion-actions">
+          <p role="status" className="reflect-completion-status">Lesson completed</p>
+          <button type="button" className="reflect-reopen-button" disabled={busy} onClick={reopenLesson}>
+            {busy ? 'Saving…' : 'Mark as unfinished'}
+          </button>
+        </div>}
         <button type="button" className={action+' w-full'} onClick={()=>{ void returnToStudies(); }}>Back to {lessonOrigin === 'Progress' ? 'Progress' : 'lessons'}</button>
       </>}
       </div>
