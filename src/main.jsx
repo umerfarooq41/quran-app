@@ -27,18 +27,9 @@ document.addEventListener('contextmenu', (event) => {
   event.preventDefault();
 });
 
-let refreshingForServiceWorker = false;
-// First-time service-worker activation must not interrupt an in-progress screen.
-// Reload only when an existing controller is replaced by an app update.
-let hadServiceWorkerController = Boolean(navigator.serviceWorker?.controller);
-
-navigator.serviceWorker?.addEventListener('controllerchange', () => {
-  const replacingExistingController = hadServiceWorkerController;
-  hadServiceWorkerController = Boolean(navigator.serviceWorker?.controller);
-  if (!replacingExistingController || refreshingForServiceWorker) return;
-  refreshingForServiceWorker = true;
-  window.location.reload();
-});
+// vite-plugin-pwa's autoUpdate registration handles activation and refresh.
+// Do not also reload on controllerchange: installed PWAs can repeatedly
+// switch controllers during an update and become stuck on a blank launch.
 
 const updateSW = registerSW({
   immediate: true,
