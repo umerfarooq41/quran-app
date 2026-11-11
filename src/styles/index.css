@@ -1074,9 +1074,9 @@
 
 .index-replica-shell.app-page-shell .index-surah-collapse {
   overflow: hidden;
-  border-radius: 24px;
+  border-radius: 0;
   padding: 12px;
-  box-shadow: 0 14px 34px rgba(70, 52, 25, .055);
+  box-shadow: none;
 }
 
 .index-replica-shell.app-page-shell .index-surah-info-preview {
@@ -1280,12 +1280,26 @@
   backdrop-filter: var(--ui-card-blur);
 }
 
+.index-replica-shell .index-surah-card:has(.index-surah-collapse) {
+  flex-wrap: wrap;
+}
+
 .index-replica-shell .index-surah-collapse {
-  background: var(--ui-card-bg);
+  flex: 0 0 100%;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--ui-divider);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .index-replica-shell.app-page-shell .index-surah-collapse {
-  background: var(--ui-card-bg);
+  background: transparent;
   backdrop-filter: none;
 }
 .index-replica-shell.app-page-shell .index-surah-info-preview,
