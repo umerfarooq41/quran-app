@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useShallow } from 'zustand/react/shallow';
 import { getLastRead, getSettings, upsertSetting } from './lib/db';
 import { getContentSyncResourcesForTranslation } from './lib/translations';
@@ -23,6 +24,19 @@ import SurahScreen from './pages/SurahScreen';
 import SurahInfoScreen from './pages/SurahInfoScreen';
 import { ShareQuranScreen } from './features/reader/components/ShareAyahSheet';
 import { ReaderAudioPanel } from './features/reader/components/ReaderAudioPanel';
+
+const pageMotion = {
+  enter: (direction) => ({
+    x: direction === 'back' ? 0 : '100%',
+    zIndex: direction === 'back' ? 0 : 2,
+  }),
+  center: (direction) => ({ x: 0, zIndex: direction === 'back' ? 0 : 2 }),
+  exit: (direction) => ({
+    x: direction === 'back' ? '100%' : '-8%',
+    zIndex: direction === 'back' ? 2 : 0,
+    pointerEvents: 'none',
+  }),
+};
 
 function allowsLandscapeOrientation() {
   const width = window.screen?.width || window.innerWidth;
@@ -130,6 +144,7 @@ export default function App() {
     tafsirTarget: state.tafsirTarget,
   })));
   const activeView = normalizeView(view);
+  const reducePageMotion = useReducedMotion();
   const [booted, setBooted] = useState(false);
   const historyReadyRef = useRef(false);
   const navigationFromPopRef = useRef(false);
@@ -422,7 +437,17 @@ export default function App() {
 
   return (
     <Shell>
-      <>
+      <AnimatePresence initial={false} custom={navDirection} mode="sync">
+        <motion.div
+          key={activeView}
+          className="app-navigation-page"
+          custom={navDirection}
+          variants={pageMotion}
+          initial={reducePageMotion ? false : 'enter'}
+          animate="center"
+          exit={reducePageMotion ? { x: 0, pointerEvents: 'none' } : 'exit'}
+          transition={{ duration: reducePageMotion ? 0 : 0.28, ease: [0.22, 1, 0.36, 1] }}
+        >
         {activeView === VIEWS.HOME && <HomeScreen key="home" />}
         {activeView === VIEWS.REFLECT && <ReflectScreen key="reflect" />}
         {activeView === VIEWS.READER && <ReaderScreen key="reader" />}
@@ -438,7 +463,8 @@ export default function App() {
         {activeView === VIEWS.SHARE_QURAN && shareTarget && (
           <ShareQuranScreen key="shareQuran" ayah={shareTarget} onClose={closeSharePage} />
         )}
-      </>
+        </motion.div>
+      </AnimatePresence>
       <ReaderAudioPanel />
    </Shell>
   );
