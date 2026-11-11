@@ -335,9 +335,9 @@
 
 .surah-banner--double::after {
   bottom: 0;
-  background-image: url('/border/Border Quran-02.svg');
-  background-position: center bottom;
-  background-size: calc(100% - 4px) 200%;
+  background-image: url('/border/surah-header-gold.svg');
+  background-position: center;
+  background-size: calc(100% - 4px) 100%;
 }
 
 .surah-banner--double .surah-banner-ayahs,
