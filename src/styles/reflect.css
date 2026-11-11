@@ -282,7 +282,6 @@
 .reflect-screen .reflect-question-answer {border-color:var(--ui-control-border);
 }
 .reflect-screen .reflect-muted { color:var(--theme-muted, #64748b); }
-.reflect-screen .reflect-progress-metric { border-radius:14px; }
 .reflect-screen .reflect-progress-ring-inner { background:var(--ui-card-bg); color:var(--theme-text, #242424); }
 .reflect-screen .reflect-progress-commitment { border:1px solid var(--theme-border, #e5e7eb); background:var(--ui-card-bg); color:var(--theme-text, #242424); }
 .reflect-screen .reflect-progress-recent > * + * { border-top:1px solid var(--theme-border, #e5e7eb); }
@@ -427,11 +426,10 @@
 .reflect-screen .reflect-range-label{display:block;margin-bottom:7px;color:var(--reflect-muted);font-size:13px}
 .reflect-screen .reflect-passage-status{margin-top:15px;font-size:13px}
 .reflect-field::placeholder { color: var(--theme-muted); opacity: 1; }
-:is(.reflect-progress-metric,.reflect-panel,.reflect-question-card) .reflect-muted {
+:is(.reflect-panel,.reflect-question-card) .reflect-muted {
   color: var(--theme-muted);
 }
 .reflect-screen .reflect-panel,
-.reflect-screen .reflect-progress-metric,
 .reflect-screen .reflect-keyword-card,
 .reflect-screen .reflect-theme-group,
 .reflect-screen .reflect-theme-picker-group {
@@ -475,8 +473,7 @@
   background: var(--ui-card-bg); color: var(--theme-text);
   border: 1px solid var(--ui-control-border);
 }
-.reflect-screen .reflect-secondary-button,
-.reflect-screen .reflect-recent-icon {
+.reflect-screen .reflect-secondary-button {
   background: var(--ui-control-bg);
   border: 1px solid var(--ui-control-border);
   color: var(--theme-text);
@@ -489,9 +486,26 @@
 
 .reflect-progress-period { width: auto; flex: 0 0 auto; }
 
-.reflect-progress-period .app-option-trigger { min-height: 40px; width: auto; padding: 7px 10px; gap: 6px; font-size: 12px; }
+ .reflect-progress-period .app-option-trigger { min-height: 34px; width: auto; padding: 5px 12px; gap: 6px; border-radius: 999px; box-shadow: none; font-size: 12px; }
 
 .reflect-progress-period .app-option-menu { left: auto; min-width: 140px; }
+
+
+/* Progress: one descriptive activity card, with quiet, reusable card styling. */
+.reflect-screen .reflect-activity-card { padding: 16px; }
+.reflect-screen .reflect-activity-title { margin: 0 0 8px; font-size: 15px; font-weight: 650; color: var(--theme-text); }
+.reflect-screen .reflect-activity-list { display: flex; flex-direction: column; }
+.reflect-screen .reflect-activity-row { display: flex; align-items: center; gap: 12px; min-width: 0; padding: 12px 0; }
+.reflect-screen .reflect-activity-row + .reflect-activity-row { border-top: 1px solid var(--ui-divider); }
+.reflect-screen .reflect-activity-icon { display: grid; flex: 0 0 44px; width: 44px; height: 44px; place-items: center; border-radius: 12px; background: var(--ui-control-bg); color: var(--ui-primary); }
+.reflect-screen .reflect-activity-copy { display: flex; flex: 1; flex-direction: column; gap: 3px; min-width: 0; }
+.reflect-screen .reflect-activity-label { font-size: 14px; font-weight: 600; line-height: 1.35; color: var(--theme-text); }
+.reflect-screen .reflect-activity-detail { font-size: 12px; line-height: 1.4; color: var(--theme-muted); }
+.reflect-screen .reflect-activity-value { flex: 0 0 auto; font-size: 21px; font-weight: 650; font-variant-numeric: tabular-nums; color: var(--theme-text); }
+.reflect-screen .reflect-progress-view-all { display: inline-flex; align-items: center; gap: 2px; padding: 6px 0 6px 8px; color: var(--ui-primary); font-size: 13px; font-weight: 600; white-space: nowrap; }
+.reflect-screen .reflect-recent-book { flex: 0 0 auto; color: var(--ui-primary); }
+.reflect-screen .reflect-recent-chevron { flex: 0 0 auto; color: var(--theme-muted); }
+.reflect-screen .reflect-progress-recent > button { min-height: 54px; }
 
 /* Passage uses the same translucent reflect-panel surface as other cards.
    Padding and rounded corners come from the shared card component. */
