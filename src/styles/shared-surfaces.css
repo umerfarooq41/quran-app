@@ -370,12 +370,12 @@
 .app-search-field input::-webkit-search-cancel-button { display:none; }
 .app-search-field button { display:grid; place-items:center; flex:0 0 32px; width:32px; height:32px; border:0; background:transparent; color:var(--theme-muted); border-radius:50%; }
 
-/* Shared swipe geometry: one clip, one moving surface, one offset. */
+/* The stationary outer rounded rectangle owns clipping. A square moving edge
+   prevents the red action layer from leaking through foreground corners. */
 .ui-swipe-actions {
   --swipe-offset: 0px;
   --swipe-action-width: 92px;
   --swipe-radius: var(--swipe-card-radius, 18px);
-  --swipe-opacity: 0;
   position: relative;
   isolation: isolate;
   overflow: hidden;
@@ -387,24 +387,19 @@
   position: absolute;
   inset: 0;
   background: var(--ui-danger-bg);
-  clip-path: var(--swipe-reveal, inset(0 0 0 100%));
+  clip-path: inset(0 0 0 calc(100% - var(--swipe-offset)));
   pointer-events: none;
 }
 .ui-swipe-actions > :is(.tab-card-surface,.home-favorite-row) {
   border-radius: var(--swipe-radius);
-  transform: translateX(calc(-1 * var(--swipe-offset)));
+  transform: translate3d(calc(-1 * var(--swipe-offset)), 0, 0);
   transition: none;
   isolation: isolate;
 }
-.ui-swipe-actions > :is(.tab-card-surface,.home-favorite-row)::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
+.ui-swipe-actions[data-revealed='true'] > :is(.tab-card-surface,.home-favorite-row) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
   background: var(--theme-surface-solid);
-  opacity: var(--swipe-opacity);
-  pointer-events: none;
 }
 .ui-swipe-actions > :is(.tab-card-remove,.home-favorite-delete) {
   position: absolute;
