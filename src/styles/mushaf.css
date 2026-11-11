@@ -816,8 +816,10 @@
   box-sizing: border-box;
   inset-block: 0;
   left: calc(var(--reader-page-x-padding) * -1);
-  right: calc(var(--reader-page-x-padding) * -1);
-  width: auto;
+  right: auto;
+  /* A fixed page-wide width prevents double headers from inheriting
+     an intrinsically narrow line box on pages with multiple Surahs. */
+  width: calc(100% + 2 * var(--reader-page-x-padding));
   height: 100%;
   margin: 0;
   direction: ltr;
@@ -829,6 +831,14 @@
   background-size: calc(100% - 4px) 100%;
   background-color: transparent;
   color: var(--mushaf-banner-text);
+}
+
+/* Two-row headings use exactly two existing Mushaf rows. The shared
+   banner base above must not reset their height to one row. */
+.surah-banner.surah-banner--double {
+  top: 0;
+  bottom: auto;
+  height: 200%;
 }
 
 .quran-line {
