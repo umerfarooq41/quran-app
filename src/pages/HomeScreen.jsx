@@ -1,7 +1,7 @@
 import { SwipeActions } from '../components/common/SwipeActions';
 import React, { useEffect, useState } from 'react';
 import { BookOpen, Library, List, Search, SlidersHorizontal, Trash2 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../store/useAppStore';
 import { findPageForReference, getMushafPageNumber, getPage, getPageMeta, getSurah } from '../lib/quran';
@@ -14,7 +14,9 @@ import { getSurahNameMeta } from '../data/surahNames';
 let homeEntranceShown = false;
 
 export default function HomeScreen() {
-  const [playEntrance] = useState(() => !homeEntranceShown);
+  const reduceMotion = useReducedMotion();
+  const [firstHomeVisit] = useState(() => !homeEntranceShown);
+  const playEntrance = firstHomeVisit && !reduceMotion;
   useEffect(() => { homeEntranceShown = true; }, []);
   const {
     page,
