@@ -139,26 +139,24 @@ function JuzIndex() {
               >
                 <ChevronDown className="index-chevron" size={20} strokeWidth={2.35} />
               </button>
+              {isOpen && (
+                <div className="index-quarter-grid" role="group" aria-label={`Quarters of ${formatJuzName(juz)}`}>
+                  {targets.map((target) => {
+                    const pressedKey = `${juz}-${target.id}`;
+                    return (
+                      <button
+                        key={target.label}
+                        className={`index-quarter-btn ${pressedQuarter === pressedKey ? 'is-pressed' : ''}`}
+                        onClick={() => selectQuarter(juz, target)}
+                        type="button"
+                      >
+                        <strong>{getQuarterPillLabel(target.id)}</strong>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
-
-            {isOpen && (
-              <div className="index-collapse-panel index-quarter-grid">
-                <div className="index-quarter-heading">Select a quarter</div>
-                {targets.map((target) => {
-                  const pressedKey = `${juz}-${target.id}`;
-                  return (
-                    <button
-                      key={target.label}
-                      className={`index-quarter-btn ${pressedQuarter === pressedKey ? 'is-pressed' : ''}`}
-                      onClick={() => selectQuarter(juz, target)}
-                      type="button"
-                    >
-                      <strong>{getQuarterPillLabel(target.id)}</strong>
-                    </button>
-                  );
-                })}
-              </div>
-            )}
           </article>
         );
       })}
