@@ -52,10 +52,9 @@ export default function IndexScreen() {
   const direction = navDirection === 'back' ? -1 : 1;
   return (
     <motion.section
-      initial={reduceMotion ? false : { x: direction * 12 }}
+      initial={reduceMotion ? false : { x: direction * 6 }}
       animate={{ x: 0 }}
-      exit={reduceMotion ? { x: 0, pointerEvents: 'none' } : { x: -direction * 12, pointerEvents: 'none' }}
-      transition={{ duration: reduceMotion ? 0 : 0.2, ease: [0.22, 1, 0.36, 1], exit: { duration: reduceMotion ? 0 : 0.1, ease: 'easeOut' } }}
+      transition={{ duration: reduceMotion ? 0 : 0.14, ease: [0.22, 1, 0.36, 1] }}
       className="index-replica-shell app-page-shell bg-fluent">
       <div className="index-replica-inner">
         <div className="app-fixed-header">
