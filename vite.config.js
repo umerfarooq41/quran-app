@@ -31,6 +31,7 @@ export default defineConfig({
       manifest: false,
       includeAssets: [
         'fonts/nastaleeq-font.woff2',
+        'fonts/Nastaleeq.ttf',
         'favicon.ico',
         'favicon-16x16.png',
         'favicon-32x32.png',
@@ -42,7 +43,7 @@ export default defineConfig({
       workbox: {
         skipWaiting: true,
         clientsClaim: true,
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,json}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,ttf,json}'],
         globIgnores: [
           'data/audio/*.json',
           'data/audio/full/**/surah.json',
