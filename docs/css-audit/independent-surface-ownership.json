@@ -1,0 +1,645 @@
+{
+  "note": "Paint declarations removed from previous card owners; layout, functional variants and shared semantic roles remain distinct.",
+  "records": [
+    {
+      "previousOwner": "src/styles/help.css",
+      "selector": ".help-intro",
+      "context": "",
+      "property": "border",
+      "previousValue": "1px solid var(--ui-card-border)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/help.css",
+      "selector": ".help-intro",
+      "context": "",
+      "property": "background",
+      "previousValue": "var(--ui-card-bg)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/help.css",
+      "selector": ".help-intro",
+      "context": "",
+      "property": "box-shadow",
+      "previousValue": "var(--ui-card-shadow)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/help.css",
+      "selector": ".about-section",
+      "context": "",
+      "property": "border",
+      "previousValue": "1px solid var(--ui-card-border)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/help.css",
+      "selector": ".about-section",
+      "context": "",
+      "property": "background",
+      "previousValue": "var(--ui-card-bg)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/help.css",
+      "selector": ".about-section",
+      "context": "",
+      "property": "box-shadow",
+      "previousValue": "var(--ui-card-shadow)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/home.css",
+      "selector": ".home-action-chip",
+      "context": "",
+      "property": "background",
+      "previousValue": "rgba(255, 255, 255, 0.72)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/home.css",
+      "selector": ".home-action-chip",
+      "context": "",
+      "property": "border",
+      "previousValue": "1px solid rgba(255, 255, 255, 0.84)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/home.css",
+      "selector": ".home-action-chip",
+      "context": "",
+      "property": "backdrop-filter",
+      "previousValue": "blur(16px)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/home.css",
+      "selector": ".home-action-chip",
+      "context": "",
+      "property": "box-shadow",
+      "previousValue": "0 4px 16px rgba(19, 54, 105, 0.07)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/home.css",
+      "selector": ".home-favorite-row",
+      "context": "",
+      "property": "border",
+      "previousValue": "1px solid rgba(255,255,255,.88)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/home.css",
+      "selector": ".home-favorite-row",
+      "context": "",
+      "property": "background",
+      "previousValue": "#fff",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/home.css",
+      "selector": ".home-favorite-row",
+      "context": "",
+      "property": "box-shadow",
+      "previousValue": "0 7px 22px rgba(38, 52, 45, .07)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/home.css",
+      "selector": ".home-favorite-row:active",
+      "context": "",
+      "property": "background",
+      "previousValue": "#fff",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/home.css",
+      "selector": ".home-favorites-empty",
+      "context": "",
+      "property": "border",
+      "previousValue": "1px solid rgba(255,255,255,.9)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/home.css",
+      "selector": ".home-favorites-empty",
+      "context": "",
+      "property": "background",
+      "previousValue": "rgba(255,255,255,.64)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/home.css",
+      "selector": ".home-favorites-empty",
+      "context": "",
+      "property": "box-shadow",
+      "previousValue": "0 7px 24px rgba(38, 52, 45, .06)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/home.css",
+      "selector": ".home-favorites-empty",
+      "context": "",
+      "property": "backdrop-filter",
+      "previousValue": "blur(14px)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/home.css",
+      "selector": ".home-actions-row.home-actions-row-spaced .home-action-chip",
+      "context": "",
+      "property": "box-shadow",
+      "previousValue": "0 6px 18px rgba(31, 61, 43, .09),\n    0 1px 3px rgba(31, 61, 43, .04)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/home.css",
+      "selector": "[data-theme='dark'] .home-action-chip",
+      "context": "",
+      "property": "border-color",
+      "previousValue": "var(--theme-border)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/home.css",
+      "selector": "[data-theme='dark'] .home-action-chip",
+      "context": "",
+      "property": "background",
+      "previousValue": "var(--theme-surface-solid)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/home.css",
+      "selector": "[data-theme='dark'] .home-action-chip",
+      "context": "",
+      "property": "box-shadow",
+      "previousValue": "0 9px 28px var(--theme-shadow)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/home.css",
+      "selector": "[data-theme='dark'] .home-favorite-row",
+      "context": "",
+      "property": "border-color",
+      "previousValue": "var(--theme-border)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/home.css",
+      "selector": "[data-theme='dark'] .home-favorite-row",
+      "context": "",
+      "property": "background",
+      "previousValue": "var(--theme-surface-solid)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/home.css",
+      "selector": "[data-theme='dark'] .home-favorite-row",
+      "context": "",
+      "property": "box-shadow",
+      "previousValue": "0 8px 22px var(--theme-shadow)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/home.css",
+      "selector": "[data-theme='dark'] .home-favorite-row:active",
+      "context": "",
+      "property": "background",
+      "previousValue": "var(--theme-soft)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/home.css",
+      "selector": "[data-theme='dark'] .home-favorites-empty",
+      "context": "",
+      "property": "border-color",
+      "previousValue": "var(--theme-border)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/home.css",
+      "selector": "[data-theme='dark'] .home-favorites-empty",
+      "context": "",
+      "property": "background",
+      "previousValue": "var(--theme-surface-solid)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/home.css",
+      "selector": "[data-theme='dark'] .home-favorites-empty",
+      "context": "",
+      "property": "box-shadow",
+      "previousValue": "0 8px 22px var(--theme-shadow)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/index.css",
+      "selector": ".index-card",
+      "context": "",
+      "property": "border",
+      "previousValue": "0",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/index.css",
+      "selector": ".index-card",
+      "context": "",
+      "property": "background",
+      "previousValue": "#fff",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/index.css",
+      "selector": ".index-card",
+      "context": "",
+      "property": "box-shadow",
+      "previousValue": "0 5px 16px rgba(42, 45, 47, .045)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/index.css",
+      "selector": "[data-theme='dark'] .index-card",
+      "context": "",
+      "property": "background",
+      "previousValue": "#202521",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/index.css",
+      "selector": "[data-theme='dark'] .index-card",
+      "context": "",
+      "property": "box-shadow",
+      "previousValue": "0 6px 18px rgba(0,0,0,.16)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/index.css",
+      "selector": ".index-card",
+      "context": "media (max-width: 639px)",
+      "property": "background",
+      "previousValue": "#fff",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/index.css",
+      "selector": "[data-theme='dark'] .index-card",
+      "context": "media (max-width: 639px)",
+      "property": "background",
+      "previousValue": "#202521",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/index.css",
+      "selector": "[data-theme='dark'] .index-card",
+      "context": "",
+      "property": "background",
+      "previousValue": "#202521",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/index.css",
+      "selector": "[data-theme='dark'] .index-card",
+      "context": "",
+      "property": "box-shadow",
+      "previousValue": "0 8px 24px rgba(0, 0, 0, .16)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/index.css",
+      "selector": ".index-card",
+      "context": "",
+      "property": "border",
+      "previousValue": "1px solid var(--theme-border)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/index.css",
+      "selector": ".index-card",
+      "context": "",
+      "property": "box-shadow",
+      "previousValue": "0 9px 28px var(--theme-shadow)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/index.css",
+      "selector": ".index-card",
+      "context": "",
+      "property": "background",
+      "previousValue": "var(--theme-surface)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/index.css",
+      "selector": ".index-card",
+      "context": "",
+      "property": "backdrop-filter",
+      "previousValue": "blur(16px)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/index.css",
+      "selector": "[data-theme='dark'] .index-card",
+      "context": "",
+      "property": "border-color",
+      "previousValue": "var(--theme-border)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/index.css",
+      "selector": "[data-theme='dark'] .index-card",
+      "context": "",
+      "property": "background",
+      "previousValue": "var(--theme-surface)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/index.css",
+      "selector": ".index-replica-shell.app-page-shell .index-card",
+      "context": "",
+      "property": "box-shadow",
+      "previousValue": "none",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/index.css",
+      "selector": "[data-theme='dark'] .index-replica-shell.app-page-shell .index-card",
+      "context": "",
+      "property": "box-shadow",
+      "previousValue": "none",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/index.css",
+      "selector": ".index-card-wrap.is-open > .index-card",
+      "context": "",
+      "property": "box-shadow",
+      "previousValue": "0 10px 28px rgba(70, 52, 25, .07)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/index.css",
+      "selector": ".index-replica-shell .index-card",
+      "context": "",
+      "property": "border",
+      "previousValue": "1px solid var(--ui-card-border)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/index.css",
+      "selector": ".index-replica-shell .index-card",
+      "context": "",
+      "property": "background",
+      "previousValue": "var(--ui-card-bg)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/index.css",
+      "selector": ".index-replica-shell .index-card",
+      "context": "",
+      "property": "box-shadow",
+      "previousValue": "var(--ui-card-shadow)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/index.css",
+      "selector": ".index-replica-shell .index-card",
+      "context": "",
+      "property": "-webkit-backdrop-filter",
+      "previousValue": "var(--ui-card-blur)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/index.css",
+      "selector": ".index-replica-shell .index-card",
+      "context": "",
+      "property": "backdrop-filter",
+      "previousValue": "var(--ui-card-blur)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/index.css",
+      "selector": ".index-replica-shell .index-card-wrap.is-open > .index-card",
+      "context": "",
+      "property": "border-color",
+      "previousValue": "var(--ui-card-border)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/index.css",
+      "selector": ".index-replica-shell .index-card-wrap.is-open > .index-card",
+      "context": "",
+      "property": "box-shadow",
+      "previousValue": "var(--ui-card-shadow)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/index.css",
+      "selector": "[data-theme='dark'] .index-replica-shell .index-card",
+      "context": "",
+      "property": "border-color",
+      "previousValue": "var(--theme-border)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/index.css",
+      "selector": "[data-theme='dark'] .index-replica-shell .index-card",
+      "context": "",
+      "property": "background",
+      "previousValue": "var(--theme-surface-solid)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/index.css",
+      "selector": "[data-theme='dark'] .index-replica-shell .index-card",
+      "context": "",
+      "property": "box-shadow",
+      "previousValue": "0 9px 24px var(--theme-shadow)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/search.css",
+      "selector": "[data-theme='dark'] .search-result-card",
+      "context": "",
+      "property": "border-color",
+      "previousValue": "var(--theme-border)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/search.css",
+      "selector": "[data-theme='dark'] .search-result-card",
+      "context": "",
+      "property": "background",
+      "previousValue": "var(--theme-surface-solid)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/search.css",
+      "selector": "[data-theme='dark'] .search-result-card",
+      "context": "",
+      "property": "box-shadow",
+      "previousValue": "0 9px 28px var(--theme-shadow)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/settings.css",
+      "selector": "[data-theme='dark'] .settings-card",
+      "context": "",
+      "property": "background",
+      "previousValue": "var(--theme-surface-solid)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/settings.css",
+      "selector": "[data-theme='dark'] .settings-card",
+      "context": "",
+      "property": "border-color",
+      "previousValue": "var(--theme-border)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/settings.css",
+      "selector": "[data-theme='dark'] .settings-card",
+      "context": "",
+      "property": "border-color",
+      "previousValue": "var(--theme-border)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/settings.css",
+      "selector": "[data-theme='dark'] .settings-card",
+      "context": "",
+      "property": "background",
+      "previousValue": "var(--theme-surface-solid)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/settings.css",
+      "selector": "[data-theme='dark'] .settings-card",
+      "context": "",
+      "property": "box-shadow",
+      "previousValue": "0 9px 28px var(--theme-shadow)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/tabs.css",
+      "selector": ".tabs-status",
+      "context": "",
+      "property": "background",
+      "previousValue": "rgba(255, 255, 255, .72)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/tabs.css",
+      "selector": "[data-theme='dark'] .tabs-status",
+      "context": "",
+      "property": "border-color",
+      "previousValue": "var(--theme-border)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/tabs.css",
+      "selector": "[data-theme='dark'] .tabs-status",
+      "context": "",
+      "property": "background",
+      "previousValue": "var(--theme-surface)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/tabs.css",
+      "selector": "[data-theme='dark'] .tabs-status",
+      "context": "",
+      "property": "box-shadow",
+      "previousValue": "0 9px 28px var(--theme-shadow)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/tabs.css",
+      "selector": "[data-theme='dark'] .tabs-status",
+      "context": "",
+      "property": "border-color",
+      "previousValue": "var(--theme-border)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/tabs.css",
+      "selector": "[data-theme='dark'] .tabs-status",
+      "context": "",
+      "property": "background",
+      "previousValue": "var(--theme-surface-solid)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/tabs.css",
+      "selector": "[data-theme='dark'] .tabs-status",
+      "context": "",
+      "property": "box-shadow",
+      "previousValue": "0 9px 28px var(--theme-shadow)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/tafsir.css",
+      "selector": ".tafsir-card",
+      "context": "",
+      "property": "background",
+      "previousValue": "var(--ui-card-bg)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/tafsir.css",
+      "selector": ".tafsir-card",
+      "context": "",
+      "property": "border",
+      "previousValue": "1px solid var(--ui-card-border)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/tafsir.css",
+      "selector": ".tafsir-card",
+      "context": "",
+      "property": "-webkit-backdrop-filter",
+      "previousValue": "var(--ui-card-blur)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/tafsir.css",
+      "selector": ".tafsir-card",
+      "context": "",
+      "property": "backdrop-filter",
+      "previousValue": "var(--ui-card-blur)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/tafsir.css",
+      "selector": ".tafsir-card",
+      "context": "",
+      "property": "box-shadow",
+      "previousValue": "var(--ui-card-shadow)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/tafsir.css",
+      "selector": "[data-theme='dark'] .tafsir-card",
+      "context": "",
+      "property": "border-color",
+      "previousValue": "var(--theme-border)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/tafsir.css",
+      "selector": "[data-theme='dark'] .tafsir-card",
+      "context": "",
+      "property": "background",
+      "previousValue": "var(--theme-surface-solid)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    },
+    {
+      "previousOwner": "src/styles/tafsir.css",
+      "selector": "[data-theme='dark'] .tafsir-card",
+      "context": "",
+      "property": "box-shadow",
+      "previousValue": "0 9px 28px var(--theme-shadow)",
+      "canonicalOwner": "src/styles/shared-surfaces.css"
+    }
+  ]
+}

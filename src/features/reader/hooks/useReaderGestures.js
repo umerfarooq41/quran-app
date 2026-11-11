@@ -11,7 +11,6 @@ export function useReaderGestures({
   onSlideEnd,
   onSlideCancel,
 }) {
-  const touchStart = useRef(null);
   const pointerStart = useRef(null);
   const pointerListeners = useRef(null);
 
@@ -34,87 +33,14 @@ export function useReaderGestures({
     return !target.closest('.reader-page-slide-viewport');
   }
 
-  function handleTouchStart(event) {
-    if (event.touches.length !== 1 || shouldIgnoreGesture(event)) {
-      touchStart.current = null;
-      return;
-    }
-
-    const touch = event.touches[0];
-    touchStart.current = {
-      x: touch.clientX,
-      y: touch.clientY,
-      startedAt: Date.now(),
-      sliding: false,
-    };
-  }
-
-  function handleTouchMove(event) {
-    if (!touchStart.current) return;
-
-    const touch = event.touches[0];
-    const deltaX = touch.clientX - touchStart.current.x;
-    const deltaY = touch.clientY - touchStart.current.y;
-    const horizontalIntent = Math.abs(deltaX) > Math.abs(deltaY) * 1.15;
-
-    if (!touchStart.current.sliding) {
-      if (Date.now() - touchStart.current.startedAt > LONG_PRESS_GUARD_MS) {
-        touchStart.current = null;
-        return;
-      }
-      if (Math.abs(deltaX) < SLIDE_START_THRESHOLD || !horizontalIntent) return;
-      touchStart.current.sliding = true;
-    }
-
-    onSlideMove?.(deltaX);
-
-    if (event.cancelable) {
-      event.preventDefault();
-    }
-  }
-
-  function handleTouchEnd(event) {
-    if (!touchStart.current) return;
-
-    const delta = event.changedTouches[0].clientX - touchStart.current.x;
-    const committed = Math.abs(delta) > PAGE_TURN_THRESHOLD;
-
-    if (touchStart.current.sliding) {
-      const handled = onSlideEnd?.({ deltaX: delta, committed });
-      touchStart.current = null;
-
-      if (committed && handled !== true) {
-        goPage(delta > 0 ? page + 1 : page - 1);
-      }
-
-      return;
-    }
-
-    if (committed) {
-      const handled = onSlideEnd?.({ deltaX: delta, committed });
-      touchStart.current = null;
-
-      if (handled === true) return;
-
-      goPage(delta > 0 ? page + 1 : page - 1);
-      return;
-    }
-
-    touchStart.current = null;
-  }
-
-  function handleTouchCancel() {
-    if (touchStart.current?.sliding) onSlideCancel?.();
-    touchStart.current = null;
-  }
-
   function handlePointerDown(event) {
-    if (event.pointerType !== 'mouse' || event.button !== 0 || !event.isPrimary || shouldIgnoreGesture(event)) {
+    if (event.button !== 0 || !event.isPrimary || shouldIgnoreGesture(event)) {
       pointerStart.current = null;
       removePointerListeners();
       return;
     }
 
+    removePointerListeners();
     pointerStart.current = {
       pointerId: event.pointerId,
       x: event.clientX,
@@ -142,6 +68,11 @@ export function useReaderGestures({
     const horizontalIntent = Math.abs(deltaX) > Math.abs(deltaY) * 1.15;
 
     if (!start.sliding) {
+      if (Math.abs(deltaY) > SLIDE_START_THRESHOLD && !horizontalIntent) {
+        pointerStart.current = null;
+        removePointerListeners();
+        return;
+      }
       if (Date.now() - start.startedAt > LONG_PRESS_GUARD_MS) {
         pointerStart.current = null;
         removePointerListeners();
@@ -190,10 +121,6 @@ export function useReaderGestures({
   }
 
   return {
-    handleTouchStart,
-    handleTouchMove,
-    handleTouchEnd,
-    handleTouchCancel,
     handlePointerDown,
   };
 }

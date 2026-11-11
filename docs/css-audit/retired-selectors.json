@@ -1,0 +1,1021 @@
+{
+  "reason": "Retired action-sheet, Index slider and tab/filter UI replaced by the current tooltip, shared pickers and segmented controls. Class references checked across every JS/JSX/TS/TSX source; dynamically constructed annotation, marker and export classes deliberately excluded.",
+  "classes": [
+    "ayah-action-backdrop",
+    "ayah-action-reference",
+    "ayah-action-sheet",
+    "ayah-action-sheet-compact",
+    "ayah-action-sheet-v2",
+    "ayah-action-status",
+    "ayah-actions-card",
+    "ayah-bookmark-types",
+    "ayah-highlight-colors",
+    "ayah-highlight-panel",
+    "ayah-highlight-toggle",
+    "ayah-inline-panel",
+    "ayah-inline-panel-title",
+    "ayah-main-action-row",
+    "ayah-main-action-row-compact",
+    "ayah-main-action-v2",
+    "ayah-main-actions-v2",
+    "ayah-note-editor",
+    "ayah-ref-pill",
+    "ayah-remove-highlight",
+    "ayah-round-action",
+    "ayah-tab-active",
+    "ayah-tab-amber",
+    "ayah-tab-emerald",
+    "ayah-tab-pill",
+    "ayah-tab-rose",
+    "ayah-tab-row",
+    "index-ayah-grid",
+    "index-ayah-slider",
+    "index-ayah-slider-labels",
+    "index-ayah-slider-progress",
+    "index-ayah-slider-track",
+    "index-ayah-slider-value",
+    "index-ayah-slider-visual",
+    "index-ayah-slider-wrap",
+    "index-close-pill",
+    "home-reflect-icon",
+    "tabs-filter-row",
+    "tabs-header",
+    "tabs-back-pill",
+    "tab-type-options",
+    "tab-type-option",
+    "tab-editor-cancel",
+    "reflect-preview-content",
+    "reflect-preview-divider",
+    "reflect-preview-heading",
+    "reflect-range-options",
+    "reflect-range-trigger",
+    "settings-rendering-lock",
+    "settings-select-row"
+  ],
+  "removed": [
+    {
+      "file": "src/styles/home.css",
+      "selector": ".home-reflect-icon"
+    },
+    {
+      "file": "src/styles/home.css",
+      "selector": ".home-reflect-icon"
+    },
+    {
+      "file": "src/styles/home.css",
+      "selector": "[data-theme='dark'] .home-reflect-icon"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-close-pill"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-ayah-grid"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-ayah-grid button"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-close-pill"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-close-pill svg"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-close-pill"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-ayah-grid"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-ayah-grid button"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-ayah-grid button"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": "[data-theme='dark'] .index-ayah-grid button"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": "[data-theme='dark'] .index-close-pill"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": "[data-theme='dark'] .index-ayah-grid button"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-ayah-grid button"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-close-pill"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-ayah-grid button"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-close-pill"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-ayah-grid button"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": "[data-theme='dark'] .index-close-pill"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": "[data-theme='dark'] .index-ayah-grid button"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": "[data-theme='dark'] .index-close-pill"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": "[data-theme='dark'] .index-ayah-grid button"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-replica-shell.app-page-shell .index-ayah-grid button"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": "[data-theme='dark'] .index-replica-shell.app-page-shell .index-ayah-grid button"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-ayah-slider-labels"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-ayah-slider-wrap"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-ayah-slider"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-ayah-slider::-webkit-slider-runnable-track"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-ayah-slider::-webkit-slider-thumb"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-ayah-slider::-moz-range-track"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-ayah-slider::-moz-range-progress"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-ayah-slider::-moz-range-thumb"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-ayah-slider-labels"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-ayah-slider"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-ayah-slider::-webkit-slider-runnable-track"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-ayah-slider::-webkit-slider-thumb"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-ayah-slider-labels"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-replica-shell.app-page-shell .index-ayah-slider-wrap"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-replica-shell.app-page-shell .index-ayah-slider"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-replica-shell.app-page-shell .index-ayah-slider"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-replica-shell.app-page-shell .index-ayah-slider::-webkit-slider-runnable-track"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-replica-shell.app-page-shell .index-ayah-slider::-moz-range-track"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-replica-shell.app-page-shell .index-ayah-slider::-moz-range-progress"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-replica-shell .index-ayah-slider-wrap"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-replica-shell .index-ayah-slider-value"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-replica-shell .index-ayah-slider-wrap.is-dragging .index-ayah-slider-value"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-replica-shell .index-ayah-slider-visual"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-replica-shell .index-ayah-slider-track"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-replica-shell .index-ayah-slider-progress"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-replica-shell .index-ayah-slider"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-replica-shell .index-ayah-slider::-webkit-slider-runnable-track"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-replica-shell .index-ayah-slider::-moz-range-track"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-replica-shell .index-ayah-slider::-moz-range-progress"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-replica-shell .index-ayah-slider::-webkit-slider-thumb"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-replica-shell .index-ayah-slider::-moz-range-thumb"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-replica-shell .index-ayah-slider:focus-visible::-webkit-slider-thumb"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-replica-shell .index-ayah-slider:focus-visible::-moz-range-thumb"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-replica-shell .index-ayah-slider-labels"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-replica-shell .index-ayah-slider-labels span:nth-child(2)"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": ".index-replica-shell .index-ayah-slider-labels span:last-child"
+    },
+    {
+      "file": "src/styles/index.css",
+      "selector": "[data-theme='dark'] .index-replica-shell .index-ayah-slider-track"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-action-backdrop"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-action-sheet"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-tab-row"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-tab-row::-webkit-scrollbar"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-tab-pill"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-tab-pill:active"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-round-action:active"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-tab-emerald"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-tab-amber"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-tab-rose"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-tab-active"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-main-action-row"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-round-action"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-round-action.active"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-round-action.gradient"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-ref-pill"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-action-status"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-highlight-panel"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-highlight-toggle"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-action-sheet-compact"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-main-action-row-compact"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-action-sheet-compact .ayah-round-action"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-action-sheet-compact .ayah-tafsir-block h3"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-action-sheet-compact .ayah-tafsir-block p"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-action-sheet-compact .ayah-tafsir-block button"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-action-sheet-compact .sheet-grabber"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-action-sheet.ayah-action-sheet-v2"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-action-reference"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-action-reference strong"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-action-reference span"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-main-actions-v2"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-main-action-v2"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-main-action-v2 > span"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-main-action-v2 small"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-main-action-v2.is-active > span"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-main-action-v2:active > span"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-inline-panel"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-inline-panel-title"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-inline-panel-title strong"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-inline-panel-title span"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-highlight-colors"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-remove-highlight"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-bookmark-types"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-note-editor"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-note-editor textarea"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-note-editor button"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-action-sheet-v2 .ayah-tafsir-block"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-action-sheet-v2 .ayah-tafsir-block h3"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-action-sheet-v2 .ayah-tafsir-block p"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-action-sheet-v2 .ayah-tafsir-block > button"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-action-sheet-v2 .ayah-action-status"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-main-actions-v2"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-main-action-v2 > span"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-main-action-v2 small"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-action-sheet.ayah-action-sheet-v2"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-action-sheet"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-tab-row"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-tab-pill"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-main-action-row"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-round-action"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-round-action svg"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-highlight-panel"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-action-backdrop"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-action-sheet"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-tab-row"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-tab-pill"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-tab-pill svg"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-main-action-row"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-round-action"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-round-action svg"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-highlight-panel"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-highlight-toggle"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-ref-pill"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": ".ayah-action-sheet"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": "[data-theme='dark'] .ayah-action-sheet"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": "[data-theme='dark'] .ayah-main-action-v2 > span"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": "[data-theme='dark'] .ayah-inline-panel"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": "[data-theme='dark'] .ayah-action-sheet-v2 .ayah-tafsir-block"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": "[data-theme='dark'] .ayah-action-reference span"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": "[data-theme='dark'] .ayah-ref-pill"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": "[data-theme='dark'] .ayah-action-status"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": "[data-theme='dark'] .ayah-action-reference"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": "[data-theme='dark'] .ayah-main-action-v2"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": "[data-theme='dark'] .ayah-inline-panel-title strong"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": "[data-theme='dark'] .ayah-inline-panel-title span"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": "[data-theme='dark'] .ayah-action-sheet-v2 .ayah-tafsir-block p"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": "[data-theme='dark'] .ayah-ref-pill"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": "[data-theme='dark'] .ayah-main-action-v2.is-active > span"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": "[data-theme='dark'] .ayah-note-editor button"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": "[data-theme='dark'] .ayah-note-editor textarea"
+    },
+    {
+      "file": "src/styles/reader.css",
+      "selector": "[data-theme='dark'] .ayah-actions-card"
+    },
+    {
+      "file": "src/styles/reflect.css",
+      "selector": ".reflect-screen .reflect-content .reflect-preview-content"
+    },
+    {
+      "file": "src/styles/reflect.css",
+      "selector": ".reflect-screen .reflect-preview-divider"
+    },
+    {
+      "file": "src/styles/reflect.css",
+      "selector": ".reflect-screen .reflect-preview-content .tab-arabic"
+    },
+    {
+      "file": "src/styles/reflect.css",
+      "selector": ".reflect-screen .reflect-range-trigger span"
+    },
+    {
+      "file": "src/styles/reflect.css",
+      "selector": ".reflect-screen .reflect-preview-heading"
+    },
+    {
+      "file": "src/styles/reflect.css",
+      "selector": ".reflect-screen .reflect-passage-selector .reflect-preview-content"
+    },
+    {
+      "file": "src/styles/reflect.css",
+      "selector": ".reflect-screen .reflect-range-trigger"
+    },
+    {
+      "file": "src/styles/reflect.css",
+      "selector": ".reflect-screen .reflect-range-trigger:focus-visible"
+    },
+    {
+      "file": "src/styles/reflect.css",
+      "selector": ".reflect-screen .reflect-range-options button:focus-visible"
+    },
+    {
+      "file": "src/styles/reflect.css",
+      "selector": ".reflect-screen .reflect-range-options"
+    },
+    {
+      "file": "src/styles/reflect.css",
+      "selector": ".reflect-screen .reflect-range-options button"
+    },
+    {
+      "file": "src/styles/reflect.css",
+      "selector": ".reflect-screen .reflect-range-options button.is-selected"
+    },
+    {
+      "file": "src/styles/settings.css",
+      "selector": ".settings-rendering-lock strong"
+    },
+    {
+      "file": "src/styles/settings.css",
+      "selector": ".settings-rendering-lock p"
+    },
+    {
+      "file": "src/styles/settings.css",
+      "selector": ".settings-select-row"
+    },
+    {
+      "file": "src/styles/settings.css",
+      "selector": ".settings-select-row select"
+    },
+    {
+      "file": "src/styles/settings.css",
+      "selector": ".settings-select-row"
+    },
+    {
+      "file": "src/styles/settings.css",
+      "selector": ".settings-select-row select"
+    },
+    {
+      "file": "src/styles/settings.css",
+      "selector": "[data-theme='dark'] .settings-rendering-lock strong"
+    },
+    {
+      "file": "src/styles/settings.css",
+      "selector": "[data-theme='dark'] .settings-rendering-lock p"
+    },
+    {
+      "file": "src/styles/settings.css",
+      "selector": "[data-theme='dark'] .settings-select-row"
+    },
+    {
+      "file": "src/styles/settings.css",
+      "selector": "[data-theme='dark'] .settings-select-row select"
+    },
+    {
+      "file": "src/styles/settings.css",
+      "selector": "[data-theme='dark'] .settings-rendering-lock"
+    },
+    {
+      "file": "src/styles/settings.css",
+      "selector": "[data-theme='dark'] .settings-select-row"
+    },
+    {
+      "file": "src/styles/settings.css",
+      "selector": "[data-theme='dark'] .settings-rendering-lock strong"
+    },
+    {
+      "file": "src/styles/settings.css",
+      "selector": "[data-theme='dark'] .settings-rendering-lock p"
+    },
+    {
+      "file": "src/styles/settings.css",
+      "selector": "[data-theme='dark'] .settings-select-row select"
+    },
+    {
+      "file": "src/styles/shared-surfaces.css",
+      "selector": ".ayah-highlight-colors .highlight-color-button"
+    },
+    {
+      "file": "src/styles/shared-surfaces.css",
+      "selector": ".ayah-highlight-colors .highlight-color-button.is-selected"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-screen .tabs-header"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-screen .tabs-header h1"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-screen .tabs-back-pill"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-header"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-header.compact"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-header h1"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-back-pill"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-filter-row"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-filter-row::-webkit-scrollbar"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-filter-row button"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-filter-row button.active"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tab-editor-cancel"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tab-editor-cancel"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tab-editor-cancel"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tab-type-options"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tab-type-option"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tab-type-option span"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-screen .tabs-filter-row"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-screen .tabs-filter-row button"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tab-type-options"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-header"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-header h1"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-back-pill"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-filter-row"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-filter-row button"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": "[data-theme='dark'] .tabs-header h1"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": "[data-theme='dark'] .tabs-back-pill"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": "[data-theme='dark'] .tabs-filter-row button"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": "[data-theme='dark'] .tabs-header h1"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": "[data-theme='dark'] .tabs-filter-row button"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": "[data-theme='dark'] .tabs-filter-row button.active"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": "[data-theme='dark'] .tabs-back-pill"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": "[data-theme='dark'] .tabs-filter-row button"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": "[data-theme='dark'] .tabs-header h1"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": "[data-theme='dark'] .tabs-filter-row button"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": "[data-theme='dark'] .tabs-filter-row button.active"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": "[data-theme='dark'] .tab-editor-cancel"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-back-pill.shared-back-button"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-back-pill.shared-back-button svg"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".app-fixed-header.tabs-header"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-screen.app-page-shell .tabs-header"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-screen.app-page-shell .tabs-back-pill"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-back-pill.shared-back-button"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-back-pill.shared-back-button:active"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-back-pill.shared-back-button svg"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": "[data-theme='dark'] .tabs-back-pill.shared-back-button"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-back-pill.shared-back-button"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-back-pill.shared-back-button:hover"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-back-pill.shared-back-button:focus-visible"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-back-pill.shared-back-button:active"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-back-pill.shared-back-button svg"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-back-pill.shared-back-button"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-back-pill.shared-back-button:focus-visible"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-back-pill.shared-back-button"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-back-pill.shared-back-button:hover"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-back-pill.shared-back-button:active"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": ".tabs-back-pill.shared-back-button svg"
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "selector": "[data-theme='dark'] .tabs-back-pill.shared-back-button"
+    }
+  ]
+}

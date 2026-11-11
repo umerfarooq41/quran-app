@@ -1,4 +1,4 @@
-import { getPage, getMushafPageNumber } from '../lib/quran';
+import { getPage } from "../lib/quran";
 import { quranRub } from '../data/quranRub';
 
 export const surahArabicNames = [

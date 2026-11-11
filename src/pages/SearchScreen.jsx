@@ -1,11 +1,13 @@
+import { SearchField } from '../components/common/SearchField';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Clock3, Search } from 'lucide-react';
+import { Clock3 } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { clearRecentSearches, getRecentSearches, saveRecentSearch } from '../lib/db';
 import { searchQuranImproved } from '../lib/quranSearch';
 import { loadTranslation } from '../lib/translations';
 import { useAppStore } from '../store/useAppStore';
 import { Header, Screen } from '../components/common/AppChrome';
+import { Card } from '../components/common/Surfaces';
 
 const RECENT_SAVE_DELAY = 900;
 
@@ -112,16 +114,8 @@ export default function SearchScreen() {
 
       <div className="app-scroll-content">
 
-      <form className="search-form" onSubmit={submitSearch}>
-        <Search size={19} aria-hidden="true" />
-        <input
-          autoFocus
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder="Surah, Arabic text, 2:255, page 12..."
-          aria-label="Search the Quran"
-        />
-        <button type="submit" disabled={!cleanQuery}>Search</button>
+      <form onSubmit={submitSearch}>
+        <SearchField autoFocus value={query} onChange={setQuery} label="Search the Quran" placeholder="Surah, Arabic text, 2:255, page 12..." />
       </form>
 
       {!cleanQuery && recentSearches.length > 0 && (
@@ -153,7 +147,7 @@ export default function SearchScreen() {
           ) : (
             <div className="search-results-list">
               {results.map((result, index) => (
-                <button
+                <Card as="button"
                   key={`${result.type}-${result.surahNumber || result.page}-${result.ayahNumber || index}`}
                   type="button"
                   className="search-result-card"
@@ -172,7 +166,7 @@ export default function SearchScreen() {
                   <span className="search-result-meta">
                     {result.matchType} · Page {result.page}
                   </span>
-                </button>
+                </Card>
               ))}
             </div>
           )}

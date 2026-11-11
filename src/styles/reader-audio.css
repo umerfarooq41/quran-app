@@ -1,0 +1,1035 @@
+
+
+html[data-theme='dark'] {
+  --audio-panel-bg: #1e2320;
+  --audio-panel-text: #f1f3ef;
+  --audio-panel-muted: #aeb5ae;
+  --audio-panel-border: #333b36;
+  --audio-control-bg: #2b312d;
+  --audio-control-active-bg: #2e3e38;
+  --audio-close-bg: #2b312d;
+  --audio-chevron-bg: #2b312d;
+  --audio-chevron-text: #f1f3ef;
+  --audio-icon: #f1f3ef;
+  --audio-main-bg: #f1f3ef;
+  --audio-main-text: #161916;
+  --audio-speed-border: #4a534d;
+  --audio-speed-text: #c5cac5;
+  --audio-wave-bg: #454d47;
+  --audio-shadow: 0 16px 40px rgba(0, 0, 0, .36);
+}
+
+
+html[data-theme='light'] {
+  --audio-panel-bg: #fffaf1;
+  --audio-panel-text: #201c15;
+  --audio-panel-muted: #756f65;
+  --audio-panel-border: #eadfce;
+  --audio-control-bg: #f0ebe2;
+  --audio-control-active-bg: #e3eee9;
+  --audio-close-bg: #f0ebe2;
+  --audio-chevron-bg: #f0ebe2;
+  --audio-chevron-text: #201c15;
+  --audio-icon: #201c15;
+  --audio-main-bg: #171510;
+  --audio-main-text: #fffaf1;
+  --audio-speed-border: #d8cdbc;
+  --audio-speed-text: #71695d;
+  --audio-wave-bg: #ded6c8;
+  --audio-shadow: 0 14px 38px rgba(35, 33, 30, .13);
+}
+
+
+html[data-theme='dark'] {
+  --audio-accent: #8BC7B4;
+  --audio-accent-soft: rgba(139, 199, 180, .16);
+  --audio-accent-border: rgba(139, 199, 180, .30);
+}
+
+
+html[data-theme='light'] {
+  --audio-accent: #2F7462;
+  --audio-accent-soft: rgba(47, 116, 98, .14);
+  --audio-accent-border: rgba(47, 116, 98, .30);
+}
+
+
+.reader-transport-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  min-width: 0;
+  gap: var(--ui-space-2);
+}
+
+
+.reader-audio-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  letter-spacing: -.01em;
+  min-width: 0;
+  font-size: var(--ui-text-md);
+  color: var(--reader-text);
+}
+
+
+/* reader-audio: canonical component/state rules. Conditional states stay with this owner. */
+
+
+.reader-audio-over-screen {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
+}
+
+.reader-audio-progress {
+  width: 100%;
+  accent-color: #16a34a;
+  direction: rtl;
+}
+
+@media (max-width: 420px) {
+  .reader-audio-panel-wrap {
+    padding-inline: 12px;
+  }
+
+  .reader-audio-over-screen,
+.reader-audio-over-reader {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
+  }
+
+  .reader-audio-panel {
+    padding: 14px;
+    border-radius: 24px;
+  }
+}
+
+[data-theme='dark'] .reader-audio-panel-modern {
+  box-shadow: var(--audio-shadow, 0 18px 48px rgba(0, 0, 0, .44));
+}
+
+.reader-audio-head-centered {
+  display: grid;
+  grid-template-columns: 50px minmax(0, 1fr) 50px;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.reader-audio-head-centered strong {
+  font-size: clamp(1.16rem, 5vw, 1.55rem);
+  font-weight: 520;
+  letter-spacing: 0;
+  color: var(--audio-panel-text, #1f2933);
+}
+
+.reader-audio-head-centered button {
+  width: 50px;
+  height: 44px;
+  border-radius: 999px;
+  backdrop-filter: none;
+  transition: transform 0.14s ease, background 0.14s ease;
+  border: 0;
+  background: var(--audio-close-bg, #eef0f0);
+  color: var(--audio-panel-text, #1f2933);
+}
+
+@keyframes reader-reciter-name-scroll {
+  0%, 16% {
+    transform: translateX(0);
+  }
+
+  84%, 100% {
+    transform: translateX(calc(var(--reciter-name-scroll, 0px) * -1));
+  }
+}
+
+.reader-audio-times-above {
+  margin: 0 0 20px;
+  font-size: clamp(.92rem, 3.8vw, 1.08rem);
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--audio-panel-muted, #64748b);
+}
+
+.reader-audio-waveform {
+  position: relative;
+  height: 42px;
+  display: grid;
+  align-items: center;
+  margin: 20px 0 0;
+  padding: 0;
+}
+
+.reader-audio-wave-line {
+  height: 42px;
+  padding: 0;
+}
+
+.reader-audio-wave-track {
+  position: relative;
+  width: 100%;
+  height: 42px;
+}
+
+.reader-audio-wave-remaining {
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  height: 5px;
+  border-radius: 999px;
+  transform: translateY(-50%);
+  background: var(--audio-wave-bg, rgba(100, 116, 139, .28));
+}
+
+.reader-audio-wave-played {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: calc(var(--audio-progress, 0) * 100%);
+  height: 5px;
+  min-width: 0;
+  border-radius: 999px;
+  transform: translateY(-50%);
+  background: var(--audio-accent, #2f7462);
+  box-shadow: none;
+  transition: width .09s cubic-bezier(.2, .8, .2, 1);
+}
+
+.reader-audio-wave-played svg,
+.reader-audio-wave-played path {
+  display: none;
+}
+
+.reader-audio-wave-thumb {
+  position: absolute;
+  top: 50%;
+  right: calc(var(--audio-progress, 0) * 100%);
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  transform: translate(50%, -50%);
+  background: var(--audio-accent, #2f7462);
+  box-shadow: 0 0 0 5px var(--audio-accent-soft, rgba(47, 116, 98, .14));
+  pointer-events: none;
+  transition:
+    right .09s cubic-bezier(.2, .8, .2, 1),
+    transform .18s cubic-bezier(.2, .8, .2, 1),
+    box-shadow .18s ease;
+}
+
+.reader-audio-waveform:active .reader-audio-wave-thumb,
+.reader-audio-waveform:focus-within .reader-audio-wave-thumb {
+  transform: translate(50%, -50%) scale(1.16);
+  box-shadow: 0 0 0 7px var(--audio-accent-soft, rgba(47, 116, 98, .14));
+}
+
+.reader-audio-progress-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 42px;
+  opacity: 0;
+  cursor: pointer;
+  touch-action: pan-y;
+}
+
+.reader-transport-modern {
+  display: grid;
+  grid-template-columns: 50px 54px minmax(94px, 112px) 54px 50px;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(11px, 4vw, 22px);
+  margin-top: 4px;
+}
+
+.reader-transport-modern button {
+  width: 50px;
+  min-width: 50px;
+  height: 50px;
+  border-radius: 999px;
+  box-shadow: none;
+  transition: transform .14s ease, background .14s ease, box-shadow .14s ease;
+  border: 0;
+  background: transparent;
+  color: var(--audio-icon, #111827);
+}
+
+.reader-transport-modern button:active,
+.reader-audio-head-centered button:active {
+  transform: scale(.92);
+}
+
+.reader-transport-modern .transport-main {
+  width: 100%;
+  min-width: 94px;
+  height: 64px;
+  border-radius: 999px;
+  box-shadow: none;
+  background: var(--audio-main-bg, #000000);
+  color: var(--audio-main-text, #ffffff);
+}
+
+.reader-transport-modern .transport-main:active {
+  transform: scale(.88);
+}
+
+.reader-transport-modern .transport-speed {
+  font-size: 1rem;
+  font-weight: 650;
+  letter-spacing: 0;
+  border: 2px solid var(--audio-speed-border, rgba(100, 116, 139, .56));
+  color: var(--audio-speed-text, #737373);
+}
+
+.reader-transport-modern .transport-active {
+  background: transparent;
+  color: var(--audio-accent, #2f7462);
+  border-color: transparent;
+}
+
+@media (max-width: 370px) {
+  .reader-audio-panel-modern {
+    padding-inline: 14px;
+  }
+
+  .reader-transport-modern {
+    grid-template-columns: 42px 46px minmax(84px, 96px) 46px 42px;
+    gap: 8px;
+  }
+
+  .reader-transport-modern button {
+    width: 42px;
+    min-width: 42px;
+    height: 42px;
+  }
+
+  .reader-transport-modern .transport-main {
+    min-width: 84px;
+    height: 58px;
+  }
+}
+
+.reader-audio-panel-modern :is(button, input):focus-visible {
+  outline: 2px solid var(--ui-primary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .reader-audio-panel.reader-audio-panel-modern {
+    background: var(--reader-surface-raised);
+  }
+}
+
+.reader-audio-panel-visible {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+.reader-audio-panel-wrap {
+  position: fixed;
+  inset-inline: 0;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 112px);
+  z-index: 80;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  padding: 0 14px;
+  transition: opacity .18s ease, transform .18s ease, visibility .18s ease;
+  max-width: 100vw;
+  padding-inline: var(--ui-space-4);
+}
+
+.reader-audio-head strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 360px) {
+
+  .reader-transport-row button {
+    width: 34px;
+    min-width: 34px;
+    height: 34px;
+  }
+
+  .reader-transport-row .transport-main {
+    width: 48px;
+    min-width: 48px;
+  }
+}
+
+[data-theme='dark'] .reader-audio-panel {
+  background: rgba(30, 35, 32, .98);
+  color: var(--theme-text);
+  box-shadow: 0 -18px 50px rgba(0, 0, 0, .3);
+}
+
+[data-theme='dark'] .reader-audio-times,
+[data-theme='dark'] .reader-audio-status {
+  color: var(--theme-muted);
+}
+
+[data-theme='dark'] .reader-transport-row .transport-main {
+  background: #f0f2ef;
+  color: #161916;
+}
+
+[data-theme='dark'] .reader-audio-head button,
+[data-theme='dark'] .reader-transport-row button {
+  background: var(--theme-soft);
+  color: #d8ddd9;
+}
+
+.reader-transport-row .transport-main {
+  border-radius: 999px;
+  width: 56px;
+  min-width: 56px;
+  background: var(--reader-primary);
+  color: var(--reader-primary-text);
+}
+
+.reader-audio-panel {
+  pointer-events: auto;
+  width: min(100%, 548px);
+  box-shadow: 0 24px 70px rgba(0,0,0,.18);
+  min-width: 0;
+  max-width: 100%;
+  border-radius: var(--ui-radius-xl);
+  padding: var(--ui-sheet-padding);
+  border-color: var(--reader-border);
+  background: var(--reader-surface-raised);
+  color: var(--reader-text);
+}
+
+.reader-audio-head button {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 999px;
+  border-color: var(--reader-border);
+  background: var(--reader-control-bg);
+  color: var(--reader-control-text);
+}
+
+.reader-transport-row button {
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
+  border-color: var(--reader-border);
+  background: var(--reader-control-bg);
+  color: var(--reader-control-text);
+}
+
+.reader-audio-status {
+  margin: 10px 0 0;
+  font-size: .8rem;
+  color: var(--reader-muted);
+}
+
+.reader-audio-times {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+  font-size: .78rem;
+  color: var(--reader-muted);
+}
+
+.reader-audio-panel.reader-audio-panel-modern {
+  border: 1px solid var(--audio-panel-border);
+  background: var(--audio-panel-bg);
+  color: var(--audio-panel-text);
+  box-shadow: var(--audio-shadow);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.reader-audio-panel-modern .reader-audio-head-centered strong {
+  color: var(--audio-panel-text);
+}
+
+.reader-audio-panel-modern .reader-audio-status {
+  text-align: center;
+  color: var(--audio-panel-muted);
+}
+
+.reader-audio-panel-modern .reader-transport-modern button {
+  border: 1px solid var(--audio-panel-border);
+  background: var(--audio-control-bg);
+  color: var(--audio-panel-text);
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.reader-audio-panel-modern .reader-audio-head-centered button {
+  color: var(--audio-panel-text);
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 0;
+  background: var(--audio-close-bg);
+}
+
+.reader-audio-panel-modern .reader-transport-modern .transport-main {
+  background: var(--audio-main-bg);
+  color: var(--audio-main-text);
+}
+
+.reader-audio-panel-modern .reader-transport-modern .transport-active {
+  background: transparent;
+  color: var(--audio-accent);
+  border-color: transparent;
+}
+
+.reader-audio-panel-modern .reader-transport-modern button:not(.transport-main) {
+  background: transparent;
+  color: var(--audio-icon);
+  box-shadow: none;
+}
+
+.reader-audio-panel-modern .reader-transport-modern button.transport-active {
+  color: var(--audio-accent);
+}
+
+.reader-audio-panel-modern .reader-transport-modern .transport-speed {
+  border: 2px solid var(--audio-speed-border);
+  color: var(--audio-speed-text);
+}
+
+.reader-audio-panel-modern .reader-audio-wave-remaining {
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  height: 5px;
+  border-radius: 999px;
+  transform: translateY(-50%);
+  background: var(--audio-wave-bg);
+}
+
+.reader-audio-panel-modern .reader-audio-wave-played {
+  background: var(--audio-accent);
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: calc(var(--audio-progress, 0) * 100%);
+  height: 5px;
+  border-radius: 999px;
+  transform: translateY(-50%);
+  box-shadow: none;
+}
+
+.reader-audio-panel-modern .reader-audio-wave-thumb {
+  background: var(--audio-accent);
+  position: absolute;
+  top: 50%;
+  right: calc(var(--audio-progress, 0) * 100%);
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  transform: translate(50%, -50%);
+  box-shadow: 0 0 0 5px var(--audio-accent-soft);
+}
+
+.reader-audio-panel-modern .reader-audio-waveform {
+  position: relative;
+  z-index: 1;
+}
+
+.reader-audio-panel-modern .reader-audio-times-above {
+  color: var(--audio-panel-muted);
+  position: relative;
+  z-index: 1;
+}
+
+.reader-audio-panel-modern .reader-transport-modern {
+  position: relative;
+  z-index: 1;
+}
+
+.reader-audio-over-reader {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 52px);
+  padding-inline: 12px;
+}
+
+.reader-audio-over-reader .reader-audio-panel-modern {
+  width: min(calc(100vw - 24px), 430px);
+  border-radius: 22px;
+  padding: 12px 14px 14px;
+  box-shadow: var(--audio-shadow);
+}
+
+.reader-audio-over-reader .reader-audio-head-centered {
+  grid-template-columns: 32px minmax(0, 1fr) 32px;
+  gap: 6px;
+}
+
+.reader-audio-over-reader .reader-audio-head-centered strong {
+  overflow: hidden;
+  font-size: clamp(.96rem, 3.9vw, 1.08rem);
+  font-weight: 620;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.reader-audio-over-reader .reader-audio-head-centered button {
+  width: 32px;
+  height: 32px;
+}
+
+.reader-audio-over-reader .reader-audio-head-centered button svg {
+  width: 17px;
+  height: 17px;
+}
+
+.reader-audio-over-reader .reader-audio-wave-line,
+.reader-audio-over-reader .reader-audio-wave-track,
+.reader-audio-over-reader .reader-audio-progress-overlay {
+  height: 30px;
+}
+
+.reader-audio-over-reader .reader-audio-waveform {
+  height: 30px;
+  margin-top: 8px;
+}
+
+.reader-audio-over-reader .reader-audio-wave-remaining,
+.reader-audio-over-reader .reader-audio-wave-played {
+  height: 3px;
+}
+
+.reader-audio-over-reader .reader-audio-wave-thumb {
+  width: 14px;
+  height: 14px;
+  box-shadow: 0 0 0 4px var(--audio-accent-soft);
+}
+
+.reader-audio-over-reader .reader-audio-times-above {
+  margin: -1px 0 10px;
+  font-size: .75rem;
+  font-weight: 520;
+}
+
+.reader-audio-over-reader .reader-transport-modern {
+  width: min(100%, 310px);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  justify-items: center;
+  gap: 0;
+  margin: 0 auto;
+}
+
+.reader-audio-over-reader .reader-transport-modern button {
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
+}
+
+.reader-audio-over-reader .reader-transport-modern button:not(.transport-main) {
+  background: transparent;
+}
+
+.reader-audio-over-reader .reader-transport-modern button svg {
+  width: 22px;
+  height: 22px;
+  stroke-width: 1.9;
+}
+
+.reader-audio-over-reader .reader-transport-modern .transport-main {
+  width: 56px;
+  min-width: 56px;
+  height: 48px;
+}
+
+.reader-audio-over-reader .reader-transport-modern .transport-main svg {
+  width: 28px;
+  height: 28px;
+}
+
+.reader-audio-over-reader .reader-transport-modern .transport-speed {
+  border-width: 1px;
+  font-size: .78rem;
+  font-weight: 700;
+}
+
+.reader-audio-over-reader .reader-audio-status {
+  display: none;
+}
+
+@media (max-width: 370px) {
+  .reader-audio-over-reader .reader-audio-panel-modern {
+    padding-inline: 12px;
+  }
+
+  .reader-audio-over-reader .reader-transport-modern {
+    width: min(100%, 286px);
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0;
+  }
+
+  .reader-audio-over-reader .reader-transport-modern button {
+    width: 36px;
+    min-width: 36px;
+    height: 36px;
+  }
+
+  .reader-audio-over-reader .reader-transport-modern .transport-main {
+    width: 54px;
+    min-width: 54px;
+    height: 46px;
+  }
+}
+
+.reader-audio-native {
+  display: none;
+}
+
+.reader-audio-panel-wrap.reader-audio-panel-visible {
+  inset: 0;
+  bottom: 0;
+  display: block;
+  opacity: 1;
+  pointer-events: none;
+  transform: translateY(0);
+  transition: opacity .18s ease, visibility .18s ease;
+  visibility: visible;
+  will-change: opacity;
+}
+
+.reader-audio-panel-wrap.reader-audio-panel-collapsed {
+  z-index: 80;
+  padding-inline: 0;
+}
+
+.reader-audio-panel-wrap.reader-audio-panel-expanded {
+  z-index: 80;
+}
+
+.reader-audio-panel-wrap .reader-audio-panel-modern {
+  position: absolute;
+  inset-inline: 0;
+  margin-inline: auto;
+  pointer-events: auto;
+}
+
+.reader-audio-panel-wrap.reader-audio-over-screen .reader-audio-expanded-panel {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
+}
+
+.reader-audio-panel-wrap.reader-audio-over-screen .reader-audio-mini-panel {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 6px);
+}
+
+.reader-audio-panel-modern {
+  width: min(100%, 548px);
+  border-radius: 30px;
+  padding: 18px 18px 20px;
+  box-shadow: var(--audio-shadow, 0 18px 48px rgba(15, 23, 42, .16));
+  border: 1px solid var(--audio-panel-border, rgba(15, 23, 42, .09));
+  background: var(--audio-panel-bg, #ffffff);
+  color: var(--audio-panel-text, #1f2933);
+  backface-visibility: hidden;
+  transform-origin: bottom center;
+}
+
+.reader-audio-panel-modern.reader-audio-expanded-panel {
+  overflow: visible;
+  transition:
+    opacity .28s ease,
+    transform .34s cubic-bezier(.22, 1, .36, 1),
+    border-color .18s ease,
+    background .18s ease,
+    box-shadow .18s ease;
+  will-change: opacity, transform;
+}
+
+.reader-audio-panel-modern.is-active {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  pointer-events: auto;
+  transition:
+    opacity .28s ease,
+    transform .34s cubic-bezier(.22, 1, .36, 1);
+  visibility: visible;
+}
+
+.reader-audio-panel-modern.is-inactive {
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity .22s ease,
+    transform .3s cubic-bezier(.22, 1, .36, 1);
+  visibility: visible;
+}
+
+.reader-audio-expanded-panel.is-inactive {
+  transform: translate3d(0, 12px, 0) scale(.992);
+}
+
+.reader-audio-mini-panel.is-inactive {
+  transform: translate3d(0, 6px, 0) scale(.992);
+}
+
+.reader-audio-panel-transitioning .reader-audio-expanded-panel.is-active {
+  animation: reader-audio-expanded-in .38s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.reader-audio-panel-transitioning .reader-audio-expanded-panel.is-inactive {
+  animation: reader-audio-expanded-out .28s cubic-bezier(.4, 0, .2, 1) both;
+}
+
+.reader-audio-panel-transitioning .reader-audio-mini-panel.is-active {
+  animation: reader-audio-mini-in .34s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.reader-audio-panel-transitioning .reader-audio-mini-panel.is-inactive {
+  animation: reader-audio-mini-out .24s cubic-bezier(.4, 0, .2, 1) both;
+}
+
+@keyframes reader-audio-expanded-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0) scale(.992);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes reader-audio-expanded-out {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0) scale(.992);
+  }
+}
+
+@keyframes reader-audio-mini-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0) scale(.992);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes reader-audio-mini-out {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0) scale(.992);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reader-audio-panel-transitioning .reader-audio-expanded-panel.is-active,
+.reader-audio-panel-transitioning .reader-audio-expanded-panel.is-inactive,
+.reader-audio-panel-transitioning .reader-audio-mini-panel.is-active,
+.reader-audio-panel-transitioning .reader-audio-mini-panel.is-inactive {
+    animation: none;
+  }
+}
+
+.reader-audio-panel-modern.reader-audio-mini-panel {
+  transition:
+    opacity .28s ease,
+    transform .34s cubic-bezier(.22, 1, .36, 1),
+    border-color .18s ease,
+    background .18s ease,
+    box-shadow .18s ease;
+  will-change: opacity, transform;
+  width: min(calc(100vw - 72px), 262px);
+  min-height: 51px;
+  border-color: transparent;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  overflow: visible;
+}
+
+.reader-audio-expanded-content {
+  width: 100%;
+}
+
+.reader-audio-mini-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.reader-audio-grabber {
+  display: grid;
+  width: 100%;
+  height: 16px;
+  min-height: 16px;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: inherit;
+  cursor: grab;
+  touch-action: none;
+}
+
+.reader-audio-expanded-content > .reader-audio-grabber {
+  margin: -5px 0 1px;
+}
+
+.reader-audio-mini-content > .reader-audio-grabber {
+  height: 10px;
+  min-height: 10px;
+  margin: -1px 0 0;
+}
+
+.reader-audio-grabber:active {
+  cursor: grabbing;
+}
+
+.reader-audio-grabber span {
+  display: block;
+  width: 38px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--audio-panel-muted);
+  opacity: .48;
+}
+
+.reader-audio-mini-content > .reader-audio-grabber span {
+  width: 30px;
+  height: 3px;
+  opacity: .42;
+}
+
+.reader-audio-mini-panel .reader-transport-modern,
+.reader-audio-over-reader .reader-audio-mini-panel .reader-transport-modern {
+  width: min(100%, 244px);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  justify-items: center;
+  gap: 0;
+  margin: 0 auto;
+}
+
+.reader-audio-mini-panel .reader-transport-modern button,
+.reader-audio-over-reader .reader-audio-mini-panel .reader-transport-modern button {
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
+}
+
+.reader-audio-mini-panel .reader-transport-modern .transport-main,
+.reader-audio-over-reader .reader-audio-mini-panel .reader-transport-modern .transport-main {
+  width: 44px;
+  min-width: 44px;
+  height: 38px;
+}
+
+.reader-audio-mini-panel .reader-transport-modern .transport-main svg,
+.reader-audio-over-reader .reader-audio-mini-panel .reader-transport-modern .transport-main svg {
+  width: 23px;
+  height: 23px;
+}
+
+.reader-audio-mini-panel .reader-transport-modern button svg,
+.reader-audio-over-reader .reader-audio-mini-panel .reader-transport-modern button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.reader-audio-mini-panel .reader-transport-modern .transport-speed,
+.reader-audio-over-reader .reader-audio-mini-panel .reader-transport-modern .transport-speed {
+  border-width: 1px;
+  font-size: .66rem;
+  font-weight: 700;
+}
+
+body:has(.ayah-translation-backdrop) .reader-audio-panel-wrap.reader-audio-panel-visible {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(12px);
+  visibility: hidden;
+}
+
+@media (max-width: 370px) {
+  .reader-audio-panel-modern.reader-audio-mini-panel {
+    width: min(calc(100vw - 56px), 250px);
+    padding-inline: 0;
+  }
+
+  .reader-audio-mini-panel .reader-transport-modern,
+.reader-audio-over-reader .reader-audio-mini-panel .reader-transport-modern {
+    width: min(100%, 232px);
+  }
+
+  .reader-audio-mini-panel .reader-transport-modern button,
+.reader-audio-over-reader .reader-audio-mini-panel .reader-transport-modern button {
+    width: 31px;
+    min-width: 31px;
+    height: 31px;
+  }
+
+  .reader-audio-mini-panel .reader-transport-modern .transport-main,
+.reader-audio-over-reader .reader-audio-mini-panel .reader-transport-modern .transport-main {
+    width: 42px;
+    min-width: 42px;
+    height: 37px;
+  }
+}
+
+.reader-audio-panel-wrap.reader-audio-panel-visible.reader-audio-over-reader {
+  left: 50%;
+  right: auto;
+  width: min(100vw, var(--app-responsive-reader-width));
+  max-width: var(--app-responsive-reader-width);
+  transform: translateX(-50%);
+}
+
+.reader-audio-panel-wrap.reader-audio-over-reader .reader-audio-expanded-panel {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 52px);
+  width: min(calc(100% - 24px), 548px);
+}
+
+.reader-audio-panel-wrap.reader-audio-over-reader .reader-audio-mini-panel {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 3px);
+  width: min(calc(100% - 72px), 262px);
+}
+
+.reader-shell-audio-active .reader-footer-meta {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity .2s ease, transform .2s ease;
+}
+
+.reader-shell-audio-collapsed .reader-footer-meta {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 6px);
+  min-height: 44px;
+  align-items: center;
+  padding-inline: 24px;
+  opacity: 1;
+  transform: translateY(0);
+  z-index: 75;
+}

@@ -1,5 +1,6 @@
+import { AppOptionPicker } from '../../../components/common/Dropdown';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Check, ChevronDown, Pause, Play, Repeat, SkipBack, SkipForward, X } from 'lucide-react';
+import { Pause, Play, Repeat, SkipBack, SkipForward, X } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { VIEWS } from '../../../app/routes';
 import { findPageForReference, findPageForWordPosition, getSurah, quranAyahs } from '../../../lib/quran';
@@ -103,6 +104,7 @@ export function ReaderAudioPanel() {
   const currentSourceRef = useRef(null);
   const audioHandlersRef = useRef(new WeakMap());
   const loadTokenRef = useRef(0);
+  const playRequestRef = useRef(0);
   const loadingRef = useRef(null);
   const playIntentRef = useRef(playing);
   const repeatRef = useRef(repeat || 'off');
@@ -114,15 +116,10 @@ export function ReaderAudioPanel() {
   const rafRef = useRef(0);
   const rafRunningRef = useRef(false);
   const lastSyncedVerseKeyRef = useRef(null);
-  const reciterPickerRef = useRef(null);
-  const reciterNameWindowRef = useRef(null);
-  const reciterNameTextRef = useRef(null);
   const panelDragRef = useRef(null);
   const panelHasMountedRef = useRef(false);
   const panelTransitionTimerRef = useRef(0);
   const [visualTime, setVisualTime] = useState(currentTime || 0);
-  const [reciterNameOverflow, setReciterNameOverflow] = useState(false);
-  const [reciterNameScroll, setReciterNameScroll] = useState(0);
   const [panelTransitioning, setPanelTransitioning] = useState(false);
 
   const reciters = useMemo(() => normalizeLocalReciters(), []);
@@ -133,7 +130,6 @@ export function ReaderAudioPanel() {
   );
   const selectedReciterName = getReciterDisplayName(selectedReciterMeta);
   const [status, setStatus] = useState('');
-  const [reciterPickerOpen, setReciterPickerOpen] = useState(false);
 
   const surah = ayah?.surahNumber ? getSurah(ayah.surahNumber) : null;
   const reference = ayah?.surahNumber && ayah?.ayahNumber
@@ -416,53 +412,6 @@ export function ReaderAudioPanel() {
     }
   }, [audioPlaybackRate, settings.playbackRate]);
 
-  useEffect(() => {
-    if (!reciterPickerOpen) return undefined;
-
-    const handlePointerDown = (event) => {
-      if (!reciterPickerRef.current?.contains(event.target)) {
-        setReciterPickerOpen(false);
-      }
-    };
-
-    document.addEventListener('pointerdown', handlePointerDown, true);
-    return () => document.removeEventListener('pointerdown', handlePointerDown, true);
-  }, [reciterPickerOpen]);
-
-  useEffect(() => {
-    const windowElement = reciterNameWindowRef.current;
-    const textElement = reciterNameTextRef.current;
-    if (!windowElement || !textElement) return undefined;
-
-    let frame = 0;
-
-    const measure = () => {
-      const distance = Math.ceil(textElement.scrollWidth - windowElement.clientWidth);
-      setReciterNameOverflow(distance > 4);
-      setReciterNameScroll(Math.max(0, distance + 18));
-    };
-
-    const scheduleMeasure = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(measure);
-    };
-
-    scheduleMeasure();
-
-    const resizeObserver = typeof ResizeObserver === 'undefined'
-      ? null
-      : new ResizeObserver(scheduleMeasure);
-    resizeObserver?.observe(windowElement);
-    resizeObserver?.observe(textElement);
-    window.addEventListener('resize', scheduleMeasure);
-
-    return () => {
-      cancelAnimationFrame(frame);
-      resizeObserver?.disconnect();
-      window.removeEventListener('resize', scheduleMeasure);
-    };
-  }, [selectedReciterName]);
-
   function bindCurrentAudio(audio) {
     const handlers = {
       loadedmetadata: () => {
@@ -511,6 +460,10 @@ export function ReaderAudioPanel() {
       },
       play: () => {
         if (audio !== currentAudioRef.current) return;
+        if (!playIntentRef.current) {
+          audio.pause();
+          return;
+        }
         syncPlaybackStateForCurrentSource();
         setAudioPlaying(true);
         setStatus('');
@@ -645,15 +598,26 @@ export function ReaderAudioPanel() {
     const audio = currentAudioRef.current;
     if (!audio || !playIntentRef.current || unmountedRef.current) return false;
 
+    const request = ++playRequestRef.current;
+    const sourceLoad = loadTokenRef.current;
+    const isCurrentRequest = () => audio === currentAudioRef.current
+      && !unmountedRef.current
+      && request === playRequestRef.current
+      && sourceLoad === loadTokenRef.current;
+
     try {
       audio.playbackRate = playbackRateRef.current;
       await audio.play();
-      if (audio !== currentAudioRef.current) return false;
+      if (!isCurrentRequest()) return false;
+      if (!playIntentRef.current) {
+        audio.pause();
+        return false;
+      }
       setAudioPlaying(true);
       setStatus('');
       return true;
     } catch (error) {
-      if (audio !== currentAudioRef.current) return false;
+      if (!isCurrentRequest() || !playIntentRef.current) return false;
       if (
         currentSourceRef.current?.mode === 'full-surah'
         && (error?.name === 'NotSupportedError' || error?.name === 'NetworkError')
@@ -1154,6 +1118,15 @@ export function ReaderAudioPanel() {
     const audio = currentAudioRef.current;
     if (!audio) return;
 
+    // The displayed Pause action also applies while a source/play promise is
+    // loading. Native paused state alone cannot represent the user's intent.
+    if (playing) {
+      playIntentRef.current = false;
+      audio.pause();
+      setAudioPlaying(false);
+      return;
+    }
+
     if (!currentSourceRef.current) {
       const target = currentTargetRef.current || normalizeTarget(ayah);
       if (target) {
@@ -1161,13 +1134,6 @@ export function ReaderAudioPanel() {
         setAudioPlaying(true);
         loadTarget(target, selectedReciter, true);
       }
-      return;
-    }
-
-    if (!audio.paused) {
-      playIntentRef.current = false;
-      audio.pause();
-      setAudioPlaying(false);
       return;
     }
 
@@ -1240,7 +1206,6 @@ export function ReaderAudioPanel() {
 
   function selectReciter(reciterId) {
     updateSettings({ reciter: reciterId });
-    setReciterPickerOpen(false);
   }
 
   function returnToCurrentRecitation(event) {
@@ -1382,71 +1347,9 @@ export function ReaderAudioPanel() {
               <button type="button" onClick={closePlayer} aria-label="Close audio player"><X size={28} /></button>
             </div>
 
-            <div
-              ref={reciterPickerRef}
-              className={reciterPickerOpen ? 'reader-reciter-picker is-open' : 'reader-reciter-picker'}
-            >
-              <button
-                className="reader-reciter-row reader-reciter-pill"
-                type="button"
-                onClick={() => setReciterPickerOpen((open) => !open)}
-                aria-haspopup="listbox"
-                aria-expanded={reciterPickerOpen}
-              >
-                <span className="reader-reciter-avatar" aria-hidden="true">
-                  <img
-                    src={getReciterImageSrc(selectedReciterMeta)}
-                    alt=""
-                    onError={(event) => { event.currentTarget.style.display = 'none'; }}
-                  />
-                </span>
-                <span ref={reciterNameWindowRef} className="reader-reciter-name-window">
-                  <span
-                    ref={reciterNameTextRef}
-                    className={reciterNameOverflow ? 'reader-reciter-name-text is-overflowing' : 'reader-reciter-name-text'}
-                    style={{ '--reciter-name-scroll': `${reciterNameScroll}px` }}
-                  >
-                    {selectedReciterName}
-                  </span>
-                </span>
-                <span className="reader-reciter-chevron" aria-hidden="true">
-                  <ChevronDown size={24} />
-                </span>
-              </button>
-
-              <div className="reader-reciter-inline-panel" aria-hidden={!reciterPickerOpen}>
-                <div className="reader-reciter-list" role="listbox" aria-label="Reciters">
-                  {reciters.map((reciter) => {
-                    const isSelected = reciter.id === selectedReciter;
-                    return (
-                      <button
-                        key={reciter.id}
-                        type="button"
-                        className={isSelected ? 'reader-reciter-list-item selected' : 'reader-reciter-list-item'}
-                        onClick={() => selectReciter(reciter.id)}
-                        role="option"
-                        aria-selected={isSelected}
-                        tabIndex={reciterPickerOpen ? 0 : -1}
-                      >
-                        <span className="reader-reciter-avatar" aria-hidden="true">
-                          <img
-                            src={getReciterImageSrc(reciter)}
-                            alt=""
-                            onError={(event) => { event.currentTarget.style.display = 'none'; }}
-                          />
-                        </span>
-                        <span>
-                          {getReciterDisplayName(reciter)}
-                        </span>
-                        <span className="reader-reciter-check" aria-hidden="true">
-                          {isSelected ? <Check size={19} /> : <span className="reader-reciter-option-radio" />}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
+            <AppOptionPicker label="Reciters" value={selectedReciter} compact
+              options={reciters.map(reciter => ({value: reciter.id, label: getReciterDisplayName(reciter), avatar: getReciterImageSrc(reciter)}))}
+              onSelect={selectReciter} />
 
             <div className="reader-audio-waveform reader-audio-wave-line" style={{ '--audio-progress': progressRatio }}>
               <div className="reader-audio-wave-track" aria-hidden="true">
@@ -1467,8 +1370,8 @@ export function ReaderAudioPanel() {
             </div>
 
             <div className="reader-audio-times reader-audio-times-above" dir="ltr">
-              <span>{formatTime(duration || 0)}</span>
-              <span>{formatTime(displayedTime)}</span>
+              <span aria-label="Total duration">{formatTime(duration || 0)}</span>
+              <span aria-label="Elapsed time">{formatTime(displayedTime)}</span>
             </div>
 
             {renderTransportControls()}

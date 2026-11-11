@@ -70,6 +70,16 @@ export function getWordAtRenderedPoint(textElement, clientX, clientY) {
     return Number.isInteger(wordIndex) ? wordIndex : null;
   }
 
+  const row = words.map(word => ({ word, rect: word.getBoundingClientRect() }))
+    .filter(({ rect }) => clientY >= rect.top && clientY <= rect.bottom)
+    .sort((a, b) => a.rect.left - b.rect.left);
+  for (let index = 1; index < row.length; index += 1) {
+    const left = row[index - 1], right = row[index];
+    if (clientX < left.rect.right || clientX > right.rect.left) continue;
+    if (!left.word.dataset.verseKey || left.word.dataset.verseKey !== right.word.dataset.verseKey) return null;
+    const nearest = clientX - left.rect.right <= right.rect.left - clientX ? left : right;
+    return Number(nearest.word.dataset.quranWordIndex);
+  }
   return null;
 }
 

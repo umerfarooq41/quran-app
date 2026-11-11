@@ -340,7 +340,7 @@ export function buildSurahTimeline(segmentsByVerse, surahNumber) {
         || first.endMs - second.endMs
         || first.sourceIndex - second.sourceIndex
       ))
-      .map(({ sourceIndex, ...segment }) => {
+      .map(({ ...segment }) => {
         const occurrenceIndex = occurrenceCounts.get(segment.position) || 0;
         occurrenceCounts.set(segment.position, occurrenceIndex + 1);
         return { ...segment, occurrenceIndex };

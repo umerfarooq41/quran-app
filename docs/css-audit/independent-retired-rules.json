@@ -1,0 +1,198 @@
+[
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": ".reader-marker-flash--reading"
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": ".reader-marker-flash--memorize"
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": ".reader-marker-flash--tadabbur"
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": ".reader-marker-flash--notes"
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": ".reader-marker-flash--quarter"
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": ".reader-ayah-highlight-segment"
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": ".reader-ayah-highlight-segment--single"
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": ".reader-ayah-highlight-segment--first"
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": ".reader-ayah-highlight-segment--last"
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": ".reader-ayah-highlight-segment--middle"
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": ".reader-bookmark-marker-ring"
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": ".reader-bookmark-marker-ring--reading"
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": ".reader-bookmark-marker-ring--memorize"
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": ".reader-bookmark-marker-ring--tadabbur"
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": ".reader-bookmark-marker-ring--notes"
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": "[data-theme='dark'] .reader-bookmark-marker-ring--reading"
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": "[data-theme='dark'] .reader-bookmark-marker-ring--memorize"
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": "[data-theme='dark'] .reader-bookmark-marker-ring--tadabbur"
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": "[data-theme='dark'] .reader-bookmark-marker-ring--notes"
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": ".reader-quarter-marker-ring"
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": "[data-theme='dark'] .reader-quarter-marker-ring"
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": ".quran-word--saved-amber"
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": ".quran-word--saved-emerald"
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": ".quran-word--saved-rose"
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": ".quran-word--saved-sky"
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": ".quran-word--saved-violet"
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": ".quran-word[class*=\"quran-word--saved-\"]"
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": ".quran-word--saved-word"
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": ".reader-quarter-marker-flash"
+  },
+  {
+    "file": "src/styles/mushaf.css",
+    "selector": ".reader-page .reader-quarter-marker-flash"
+  },
+  {
+    "file": "src/styles/reader.css",
+    "selector": "[data-theme='dark'] .audio-player-shell"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": ".highlight-color-button"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": ".highlight-color-row"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": ".bookmark-type"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": ".bookmark-type span"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": ".bookmark-type-emerald"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": ".bookmark-type-amber"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": ".bookmark-type-rose"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": ".bookmark-type-sky"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": ".bookmark-type.is-selected"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": ".bookmark-type"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": ".tab-type-option-emerald"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": ".tab-type-option-amber"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": ".tab-type-option-rose"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": ".tab-type-option-violet"
+  },
+  {
+    "file": "src/styles/tabs.css",
+    "selector": ".highlight-color-button"
+  },
+  {
+    "file": "src/styles/share.css",
+    "selector": ".share-media-range-card:has(.share-range-menu)"
+  },
+  {
+    "file": "src/styles/share.css",
+    "selector": ".share-video-preview-reference.is-translation-sized"
+  },
+  {
+    "file": "src/styles/share.css",
+    "selector": ".share-video-preview-stage.is-landscape .share-video-preview-reference.is-translation-sized"
+  }
+]

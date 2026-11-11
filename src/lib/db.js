@@ -57,6 +57,61 @@ db.version(4).stores({
   });
 });
 
+
+db.version(5).stores({
+  bookmarks: '++id, category, surahNumber, ayahNumber, page, createdAt',
+  highlights: '++id, color, surahNumber, ayahNumber, page, createdAt',
+  notes: '++id, surahNumber, ayahNumber, page, updatedAt',
+  lastRead: 'id, page, surahNumber, ayahNumber, updatedAt',
+  settings: 'id',
+  recentSearches: '++id, query, createdAt',
+  memorizationProgress: '++id, surahNumber, ayahNumber, status, updatedAt',
+  wordTranslations: '&key, language, surahNumber, ayahNumber, fetchedAt, expiresAt',
+  contentSyncRows: '&key, [resourceGroup+resourceId], [resourceGroup+resourceId+recordType], [resourceGroup+resourceId+recordType+verseKey], recordKey',
+  contentSyncState: '&id, lastSuccessfulSyncAt',
+  tadabburLessons: '&id, surahNumber, startAyah, endAyah, status, createdAt, updatedAt',
+});
+
+
+// Normalize legacy Reflect/Tadabbur bookmark categories without dropping saved
+// bookmarks. Keep the oldest record when both labels exist for the same ayah.
+db.version(6).stores({
+  bookmarks: '++id, category, surahNumber, ayahNumber, page, createdAt',
+  highlights: '++id, color, surahNumber, ayahNumber, page, createdAt',
+  notes: '++id, surahNumber, ayahNumber, page, updatedAt',
+  lastRead: 'id, page, surahNumber, ayahNumber, updatedAt',
+  settings: 'id',
+  recentSearches: '++id, query, createdAt',
+  memorizationProgress: '++id, surahNumber, ayahNumber, status, updatedAt',
+  wordTranslations: '&key, language, surahNumber, ayahNumber, fetchedAt, expiresAt',
+  contentSyncRows: '&key, [resourceGroup+resourceId], [resourceGroup+resourceId+recordType], [resourceGroup+resourceId+recordType+verseKey], recordKey',
+  contentSyncState: '&id, lastSuccessfulSyncAt',
+  tadabburLessons: '&id, surahNumber, startAyah, endAyah, status, createdAt, updatedAt',
+}).upgrade(async (tx) => {
+  const table = tx.table('bookmarks');
+  const rows = await table.toArray();
+  const seen = new Map();
+  for (const row of rows) {
+    if (row.category !== 'Reflect' && row.category !== 'Tadabbur') continue;
+    const key = String(row.surahNumber) + ':' + String(row.ayahNumber);
+    const existing = seen.get(key);
+    if (existing) {
+      const merged = {
+        ...existing,
+        note: existing.note || row.note || '',
+        preview: existing.preview || row.preview || '',
+        updatedAt: Math.max(existing.updatedAt || 0, row.updatedAt || 0),
+      };
+      await table.put(merged);
+      await table.delete(row.id);
+    } else {
+      const normalized = { ...row, category: 'Reflect' };
+      await table.put(normalized);
+      seen.set(key, normalized);
+    }
+  }
+});
+
 export async function saveLastRead(payload) {
   await db.lastRead.put({ id: 'current', updatedAt: Date.now(), ...payload });
 }
@@ -180,7 +235,7 @@ export async function saveAyahHighlight(payload) {
 export async function saveAyahBookmark(payload) {
   const surahNumber = Number(payload.surahNumber);
   const ayahNumber = Number(payload.ayahNumber);
-  const category = payload.category || 'Reading';
+  const category = payload.category === 'Tadabbur' ? 'Reflect' : (payload.category || 'Reading');
 
   return db.transaction('rw', db.bookmarks, db.notes, async () => {
     const matches = await db.bookmarks
@@ -255,7 +310,7 @@ export async function removeAyahBookmark(id) {
 }
 
 export async function changeAyahBookmarkType(id, category) {
-  const nextCategory = category || 'Reading';
+  const nextCategory = category === 'Tadabbur' ? 'Reflect' : (category || 'Reading');
 
   return db.transaction('rw', db.bookmarks, db.notes, async () => {
     const bookmark = await db.bookmarks.get(id);
@@ -350,4 +405,115 @@ export async function getAyahAnnotations(surahNumber, ayahNumber) {
   ]);
 
   return { highlight, bookmarks };
+}
+
+
+export async function saveTadabburLesson(payload) {
+  if (!payload || typeof payload !== 'object') {
+    throw new TypeError('A Tadabbur lesson is required.');
+  }
+
+  const id = String(payload.id || createLocalLessonId());
+  const existing = await db.tadabburLessons.get(id);
+  const now = Date.now();
+  const record = {
+    ...existing,
+    ...payload,
+    id,
+    createdAt: existing?.createdAt || payload.createdAt || now,
+    updatedAt: now,
+  };
+
+  await db.tadabburLessons.put(record);
+  return record;
+}
+
+export async function getTadabburLesson(id) {
+  return db.tadabburLessons.get(String(id));
+}
+
+export async function getTadabburLessons() {
+  return db.tadabburLessons.orderBy('updatedAt').reverse().toArray();
+}
+
+export async function updateTadabburLesson(id, patch) {
+  const lessonId = String(id || '');
+  if (!lessonId || !patch || typeof patch !== 'object') return null;
+
+  return db.transaction('rw', db.tadabburLessons, async () => {
+    const existing = await db.tadabburLessons.get(lessonId);
+    if (!existing) return null;
+
+    const updated = {
+      ...existing,
+      ...patch,
+      id: lessonId,
+      createdAt: existing.createdAt,
+      updatedAt: Date.now(),
+    };
+    await db.tadabburLessons.put(updated);
+    return updated;
+  });
+}
+
+/**
+ * Persist a single Reflect answer field without overwriting other fields.
+ * The read/modify/write is serialized by Dexie's transaction.
+ */
+export async function saveReflectAnswerField(id, group, index, value) {
+  const lessonId = String(id || '');
+  if (!lessonId || !['prepare', 'final', 'notes', 'tadabbur'].includes(group)) {
+    throw new Error('Invalid Reflect answer field.');
+  }
+  if (group !== 'notes' && group !== 'tadabbur' && (!Number.isInteger(index) || index < 0)) {
+    throw new Error('Invalid Reflect question index.');
+  }
+  return db.transaction('rw', db.tadabburLessons, async () => {
+    const existing = await db.tadabburLessons.get(lessonId);
+    if (!existing) throw new Error('Reflect study not found.');
+    const answers = { ...(existing.answers || {}) };
+    if (group === 'notes') {
+      answers.notes = String(value ?? '');
+    } else if (group === 'tadabbur') {
+      const allowed = ['imagine', 'dua', 'evaluate', 'commitment', 'startWhen', 'plan'];
+      if (!allowed.includes(index)) throw new Error('Invalid reflection field.');
+      answers.tadabbur = { ...(answers.tadabbur || {}), [index]: String(value ?? '') };
+    } else {
+      const entries = [...(Array.isArray(answers[group]) ? answers[group] : [])];
+      entries[index] = String(value ?? '');
+      answers[group] = entries;
+    }
+    const updated = { ...existing, answers, updatedAt: Date.now() };
+    await db.tadabburLessons.put(updated);
+    return updated;
+  });
+}
+
+export async function saveReflectKeywords(id, keywords) {
+  if (!Array.isArray(keywords)) throw new Error('Invalid keywords.');
+  return db.transaction('rw', db.tadabburLessons, async () => {
+    const existing = await db.tadabburLessons.get(String(id));
+    if (!existing) throw new Error('Reflect study not found.');
+    const updated = {
+      ...existing,
+      keywords: keywords.map((word) => ({
+        key: String(word.key),
+        ayahNumber: Number(word.ayahNumber),
+        arabic: String(word.arabic || ''),
+        meaning: String(word.meaning || ''),
+      })),
+      updatedAt: Date.now(),
+    };
+    await db.tadabburLessons.put(updated);
+    return updated;
+  });
+}
+
+export async function deleteTadabburLesson(id) {
+  return db.tadabburLessons.delete(String(id));
+}
+
+function createLocalLessonId() {
+  if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
+  return `tadabbur-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 }

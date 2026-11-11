@@ -14,6 +14,7 @@ const SCREEN_OVERLAY_BY_VIEW = {
   [VIEWS.READER]: OVERLAY_TYPES.READER,
   [VIEWS.INDEX]: OVERLAY_TYPES.INDEX,
   [VIEWS.SETTINGS]: OVERLAY_TYPES.SETTINGS,
+  [VIEWS.REFLECT]: OVERLAY_TYPES.SETTINGS,
 };
 
 const LOCAL_OVERLAY_TYPES = new Set([
@@ -62,6 +63,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
 
 export const useAppStore = create((set, get) => ({
   view: VIEWS.HOME,
+  reflectTarget: null,
   viewHistory: [],
   navDirection: 'forward',
   overlayStack: [],
@@ -174,6 +176,10 @@ export const useAppStore = create((set, get) => ({
     controlsVisible: false,
   })),
   openIndex: () => get().navigateTo(VIEWS.INDEX),
+  openReflect: (target = null) => set((state) => ({
+    ...transitionToView(state, VIEWS.REFLECT),
+    reflectTarget: target,
+  })),
   openSearch: () => get().navigateTo(VIEWS.SEARCH),
   openBookmarks: () => get().navigateTo(VIEWS.TABS),
   openSettings: () => get().navigateTo(VIEWS.SETTINGS, { direction: 'modal' }),
@@ -472,7 +478,7 @@ export const useAppStore = create((set, get) => ({
   goQuarterTarget: (target) => set((state) => {
     const markerId = target?.id || 'start';
     const sourcePage = clampPage(target?.page);
-    const nextPage = markerId === 'start' || markerId === 'bookmark'
+    const nextPage = markerId === 'start'
       ? sourcePage
       : clampPage(
           getAyahMarkerPage(target?.surah, target?.ayah) || sourcePage,

@@ -36,12 +36,12 @@ export default function SurahInfoScreen() {
   }
 
   return (
-    <main className="surah-info-screen app-page-shell bg-fluent">
+    <section className="surah-info-screen app-page-shell bg-fluent">
       <div className="app-fixed-header">
         <Header title="Surah Info" onBack={closeSurahInfo} />
       </div>
 
-      <div className="app-scroll-content surah-info-scroll-content">
+      <div className="app-scroll-content surah-info-scroll-content" tabIndex={0} role="region" aria-label="Surah introduction">
       <section className="surah-info-content">
         <div className="surah-info-title-row">
           <div>
@@ -64,6 +64,6 @@ export default function SurahInfoScreen() {
         )}
       </section>
       </div>
-    </main>
+    </section>
   );
 }

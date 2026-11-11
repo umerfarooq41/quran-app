@@ -1,4 +1,4 @@
-import React, { useMemo, useLayoutEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useLayoutEffect, useRef } from 'react';
 import { getDisplayLineText } from '../../../utils/quranLabels';
 import {
   getAyahRangeRects,
@@ -21,7 +21,7 @@ const MUSHAF_FONT_FAMILY = 'IndopakNastaleeq';
 const MUSHAF_FONT_SAMPLE = 'اللَّهُ';
 const LINE_REFIT_DELAYS = [60, 180, 420];
 
-export function QuranLine({
+export const QuranLine = React.memo(function QuranLine({
   line,
   onSelect,
   onTap,
@@ -38,19 +38,12 @@ export function QuranLine({
   playingWordOccurrenceIndex = null,
   quarterMarkers = null,
   bookmarkMarkers = null,
-  savedHighlights = null,
   markerFlashTarget = null,
 }) {
   const lineRef = useRef(null);
   const textRef = useRef(null);
-  const longPressTimer = useRef(null);
-  const longPressed = useRef(false);
-  const ignoreNextClick = useRef(false);
-  const pressMoved = useRef(false);
-  const pressPoint = useRef(null);
-  const pressedSelection = useRef(null);
-  const capturedPointer = useRef(null);
-  const blockedPress = useRef(false);
+  const press = useRef({ phase: 'idle' });
+  useEffect(() => () => window.clearTimeout(press.current.timer), []);
   const isBasmallah = line.type === 'basmallah' || line.type === 'bismillah';
   const centered = (
     forceCentered ||
@@ -262,86 +255,44 @@ export function QuranLine({
     };
   }, [centered, line.line, line.type, text]);
 
+  // Pointer Events own the entire press. Native pan-y cancellation terminates
+  // pending selection; releasing an activated press never dismisses its overlay.
   function startLongPress(event) {
-    if (line.type !== 'ayah' || !line.ayahStart) return;
-
+    if (event.button !== 0 || !event.isPrimary || line.type !== 'ayah') return;
+    window.clearTimeout(press.current.timer);
     if (interactionsBlocked) {
-      blockedPress.current = true;
-      ignoreNextClick.current = true;
+      press.current = { phase: 'cancelled' };
       onBlockedInteraction?.();
       return;
     }
-
     const selection = getSelectionFromEvent(event);
     if (!Number.isInteger(selection?.wordIndex)) return;
-
-    longPressed.current = false;
-    ignoreNextClick.current = false;
-    pressMoved.current = false;
-    pressPoint.current = { x: event.clientX, y: event.clientY };
-    pressedSelection.current = selection;
-    capturedPointer.current = event.pointerId;
+    const state = { phase: 'pending', id: event.pointerId, x: event.clientX, y: event.clientY, selection };
+    press.current = state;
     event.currentTarget.setPointerCapture?.(event.pointerId);
-    window.clearTimeout(longPressTimer.current);
-
-    longPressTimer.current = window.setTimeout(() => {
-      longPressed.current = true;
-      ignoreNextClick.current = true;
-
+    state.timer = window.setTimeout(() => {
+      if (press.current !== state || state.phase !== 'pending') return;
+      state.phase = 'activated';
       triggerHaptic('longPress');
-
-      onSelect({
-        ayahNumber: pressedSelection.current?.ayahNumber || line.ayahStart,
-        wordIndex: pressedSelection.current?.wordIndex,
-        selectedWord: pressedSelection.current?.selectedWord || '',
-        selectedWordId: pressedSelection.current?.selectedWordId || '',
-        selectedWordRect: pressedSelection.current?.selectedWordRect || null,
-        ayahRect: pressedSelection.current?.ayahRect || null,
-        pointer: pressedSelection.current?.pointer || null,
-      });
+      onSelect(state.selection);
     }, 430);
   }
 
-  function cancelLongPress(clearBlockedPress = true) {
-    window.clearTimeout(longPressTimer.current);
-    pressPoint.current = null;
-    if (clearBlockedPress && blockedPress.current) {
-      blockedPress.current = false;
-      ignoreNextClick.current = false;
+  function handlePointerMove(event) {
+    const state = press.current;
+    if (state.id !== event.pointerId || state.phase !== 'pending') return;
+    if (Math.hypot(event.clientX - state.x, event.clientY - state.y) > 12) {
+      window.clearTimeout(state.timer);
+      state.phase = 'scrolling';
     }
   }
 
   function finishPress(event) {
-    const hadLongPress = longPressed.current;
-    cancelLongPress(false);
-
-    if (capturedPointer.current !== null && event.currentTarget.hasPointerCapture?.(capturedPointer.current)) {
-      event.currentTarget.releasePointerCapture(capturedPointer.current);
-    }
-
-    capturedPointer.current = null;
-    if (hadLongPress) ignoreNextClick.current = true;
-    if (blockedPress.current) {
-      window.setTimeout(() => {
-        blockedPress.current = false;
-        ignoreNextClick.current = false;
-      }, 80);
-    }
-    window.setTimeout(() => {
-      longPressed.current = false;
-    }, 0);
-  }
-
-  function handlePointerMove(event) {
-    if (!pressPoint.current) return;
-
-    const deltaX = event.clientX - pressPoint.current.x;
-    const deltaY = event.clientY - pressPoint.current.y;
-
-    if (Math.hypot(deltaX, deltaY) > 12) {
-      pressMoved.current = true;
-      cancelLongPress();
-    }
+    const state = press.current;
+    if (state.id !== event.pointerId) return;
+    window.clearTimeout(state.timer);
+    state.phase = state.phase === 'pending' && event.type !== 'pointercancel'
+      ? 'completed' : 'cancelled';
   }
 
   function getSelectionFromEvent(event) {
@@ -411,32 +362,25 @@ export function QuranLine({
       onPointerDown={startLongPress}
       onPointerMove={handlePointerMove}
       onPointerUp={finishPress}
-      onPointerLeave={cancelLongPress}
       onPointerCancel={finishPress}
       onSelectStart={(event) => event.preventDefault()}
       onDragStart={(event) => event.preventDefault()}
       onClick={(event) => {
+        // Consume the opening gesture before consulting newly rendered overlay
+        // state: that state now blocks presses and must not dismiss itself.
+        if (['activated', 'cancelled', 'scrolling'].includes(press.current.phase)) {
+          event.preventDefault();
+          event.stopPropagation();
+          press.current = { phase: 'idle' };
+          return;
+        }
         if (interactionsBlocked) {
           event.preventDefault();
           event.stopPropagation();
-          blockedPress.current = false;
-          ignoreNextClick.current = false;
-          pressMoved.current = false;
           onBlockedInteraction?.();
           return;
         }
-
-        if (longPressed.current || ignoreNextClick.current || pressMoved.current) {
-          event.preventDefault();
-          event.stopPropagation();
-          longPressed.current = false;
-          blockedPress.current = false;
-          ignoreNextClick.current = false;
-          pressMoved.current = false;
-          return;
-        }
-
-        if (line.type === 'ayah' && line.ayahStart) {
+        if (line.type === 'ayah') {
           const selection = getSelectionFromEvent(event);
           if (!Number.isInteger(selection?.wordIndex)) return;
 
@@ -445,23 +389,11 @@ export function QuranLine({
           onTap?.(selection);
         }
       }}
-      onContextMenu={(event) => {
-        event.preventDefault();
-        ignoreNextClick.current = true;
-
-        if (interactionsBlocked) {
-          onBlockedInteraction?.();
-          return;
-        }
-
-        if (line.type === 'ayah' && line.ayahStart) {
-          const selection = getSelectionFromEvent(event);
-          if (Number.isInteger(selection?.wordIndex)) onSelect(selection);
-        }
-      }}
+      onContextMenu={(event) => event.preventDefault()}
       className={`quran-line quran-line-${isBasmallah ? 'basmallah' : line.type} ${marked ? 'quran-line-marked' : ''} ${jumped ? 'quran-line-jumped' : ''} ${isJuzStartLine ? 'quran-line--juz-start' : ''} ${line.type === 'spacer' ? 'opacity-0' : ''} ${coveredByCombinedHeader ? 'quran-line--combined-header-covered' : ''} ${centered ? 'quran-line-centered' : 'quran-line-normal'}`}
-      aria-label={line.type === 'spacer' ? 'Blank line' : text}
-      tabIndex={line.type === 'spacer' ? -1 : 0}
+      aria-label={line.type === 'spacer' ? 'Blank line' : undefined}
+      aria-hidden={coveredByCombinedHeader ? true : undefined}
+      tabIndex={line.type === 'spacer' || coveredByCombinedHeader ? -1 : 0}
     >
       {coveredByCombinedHeader ? null : line.type === 'surah_name' ? (
         <SurahHeader
@@ -503,13 +435,9 @@ export function QuranLine({
               && Number(markerFlashTarget.ayahNumber) === Number(markerAyahNumber)
             ) ? (markerFlashTarget.tone || 'quarter') : '';
             const wordMeta = wordMetadataByTokenIndex.get(token.wordIndex) || null;
-            const verseKey = !isMarker
-              ? (wordMeta?.verseKey || '')
-              : markerReference;
-            const savedHighlight = verseKey ? savedHighlights?.get(verseKey) : null;
-            const savedColor = typeof savedHighlight === 'string'
-              ? savedHighlight
-              : savedHighlight?.color || '';
+
+
+
             const isRecitedAyah = Boolean(
               !isMarker
               && wordMeta?.verseKey
@@ -542,7 +470,7 @@ export function QuranLine({
       )}
     </button>
   );
-}
+});
 
 function renderWordText(text = '', isMarkerToken = false, quarterMarkerId = null, bookmarkTone = '', markerFlashTone = '') {
   if (!isMarkerToken) return text;
@@ -580,7 +508,7 @@ function getMarkerAyahNumber(line, markerText) {
 function getBookmarkTone(category) {
   if (category === 'Reading' || category === 'Recitation') return 'reading';
   if (category === 'Memorize') return 'memorize';
-  if (category === 'Tadabbur') return 'tadabbur';
+  if (category === 'Reflect' || category === 'Tadabbur') return 'tadabbur';
   if (category === 'Notes') return 'notes';
   return '';
 }

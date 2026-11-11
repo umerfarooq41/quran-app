@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { Bookmark, Copy, Highlighter, Play, Share2 } from 'lucide-react';
+import { Bookmark, Highlighter, Lightbulb, Play, Share2 } from 'lucide-react';
 import {
   getAyahAnnotations,
   removeAyahBookmark,
@@ -9,7 +9,7 @@ import {
   saveAyahHighlight,
 } from '../../../lib/db';
 import { findPageForReference, getSurah } from '../../../lib/quran';
-import { getJuzForReference } from '../../../data/quranMeta';
+
 
 const TOOLTIP_WIDTH = 248;
 const TOOLTIP_HEIGHT = 56;
@@ -21,12 +21,13 @@ const DEFAULT_BOOKMARK = 'Reading';
 const BOOKMARK_TYPES = [
   { category: 'Reading', label: 'Recitation', tone: 'emerald' },
   { category: 'Memorize', label: 'Memorize', tone: 'amber' },
-  { category: 'Tadabbur', label: 'Tadabbur', tone: 'rose' },
+  { category: 'Reflect', label: 'Reflect', tone: 'rose' },
 ];
 const BOOKMARK_ICON_COLORS = {
   Reading: '#2f7462',
   Recitation: '#2f7462',
   Memorize: '#a46f09',
+  Reflect: '#a9365b',
   Tadabbur: '#a9365b',
 };
 const HIGHLIGHT_COLORS = [
@@ -37,14 +38,7 @@ const HIGHLIGHT_COLORS = [
   { id: 'rose', label: 'Pink', value: '#FDA4AF' },
 ];
 
-export function AyahActionSheet({
-  ayah,
-  onClose,
-  onPlay,
-  onShare,
-  onCopied,
-  onAnnotationsChanged,
-}) {
+export function AyahActionSheet({ ayah, onClose, onPlay, onShare, onReflect, onAnnotationsChanged }) {
   const [annotations, setAnnotations] = useState({ highlight: null, bookmarks: [] });
   const [highlightPaletteOpen, setHighlightPaletteOpen] = useState(false);
   const [bookmarkPickerOpen, setBookmarkPickerOpen] = useState(false);
@@ -172,31 +166,23 @@ export function AyahActionSheet({
     onShare?.(ayah);
   }
 
-  async function copyAyah() {
-    const copyText = [
-      cleanAyahText(ayah.text),
-      '',
-      `${surah?.name || 'Surah'} ${ayah.surahNumber}:${ayah.ayahNumber}`,
-      `Juz ${getJuzForReference(ayah.surahNumber, ayah.ayahNumber)}`,
-    ].join('\n');
-
-    try {
-      await navigator.clipboard.writeText(copyText);
-      onCopied?.();
-    } catch {
-      // Clipboard may be unavailable in older embedded browsers.
-    }
-
+  function reflectOnAyah() {
     onClose?.();
+    onReflect?.({
+      surahNumber: ayah.surahNumber,
+      startAyah: ayah.ayahNumber,
+      surahName: surah?.name || '',
+      arabic: ayah.text,
+    });
   }
 
   return (
-    <div className="ayah-tooltip-backdrop" data-reader-ui onClick={closeTooltip}>
+    <div className="ayah-tooltip-backdrop" data-ayah-reference={reference} data-reader-ui onPointerDown={(event) => { if (event.target === event.currentTarget) closeTooltip(); }}>
       <motion.div
-        initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: .94, y: placement.arrowPlacement === 'top' ? -4 : 4 }}
-        animate={reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
-        exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: .96 }}
-        transition={{ duration: reduceMotion ? .01 : .14, ease: 'easeOut' }}
+        initial={reduceMotion ? false : { opacity: 0, scale: .98, y: placement.arrowPlacement === 'top' ? -4 : 4 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={reduceMotion ? { opacity: 1 } : { opacity: 0, scale: .98 }}
+        transition={{ duration: reduceMotion ? 0 : .16, ease: [0.22, 1, 0.36, 1] }}
         className="ayah-action-tooltip-wrap"
         style={{
           left: `${placement.left}px`,
@@ -229,7 +215,7 @@ export function AyahActionSheet({
           />
           <TooltipButton label="Play" icon={Play} onClick={playAyah} filled />
           <TooltipButton label="Share" icon={Share2} onClick={shareAyah} />
-          <TooltipButton label="Copy" icon={Copy} onClick={copyAyah} />
+          <TooltipButton label="Reflect" icon={Lightbulb} onClick={reflectOnAyah} />
         </div>
 
         {highlightPaletteOpen && !annotations.highlight && (
@@ -384,11 +370,4 @@ function normalizeRect(rect) {
 
 function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
-}
-
-function cleanAyahText(text = '') {
-  return String(text)
-    .replace(/[\uE000-\uF8FF]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
 }

@@ -1,5 +1,7 @@
+import { SearchField } from '../components/common/SearchField';
 import React, { useEffect, useMemo, useState } from 'react';
-import { BookOpen, ChevronDown, List, Minus, Plus, Search, Star, X } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
+import { BookOpen, ChevronDown, List, Minus, Plus, Star } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../store/useAppStore';
 import { Header } from '../components/common/AppChrome';
@@ -36,21 +38,25 @@ function stripHtml(value = '') {
     .trim();
 }
 
-function previewText(surahInfo) {
-  const source = stripHtml(surahInfo?.shortText || surahInfo?.text || '');
-  if (!source) return 'Surah information will be expanded soon.';
-  return source.length > 520 ? `${source.slice(0, 520).trim()}…` : source;
-}
+
 
 export default function IndexScreen() {
-  const { tab, setTab, goBack } = useAppStore(useShallow((state) => ({
+  const reduceMotion = useReducedMotion();
+  const { tab, setTab, goBack, navDirection } = useAppStore(useShallow((state) => ({
     tab: state.indexTab || 'juz',
     setTab: state.setIndexTab,
     goBack: state.goBack,
+    navDirection: state.navDirection,
   })));
 
+  const direction = navDirection === 'back' ? -1 : 1;
   return (
-    <main className="index-replica-shell app-page-shell bg-fluent">
+    <motion.section
+      initial={reduceMotion ? false : { x: direction * 12 }}
+      animate={{ x: 0 }}
+      exit={reduceMotion ? { x: 0, pointerEvents: 'none' } : { x: -direction * 12, pointerEvents: 'none' }}
+      transition={{ duration: reduceMotion ? 0 : 0.24, ease: [0.22, 1, 0.36, 1] }}
+      className="index-replica-shell app-page-shell bg-fluent">
       <div className="index-replica-inner">
         <div className="app-fixed-header">
           <Header title="Index" onBack={() => goBack()} backLabel="Back from index" />
@@ -87,7 +93,7 @@ export default function IndexScreen() {
           {tab === 'juz' ? <JuzIndex /> : <SurahIndex />}
         </div>
       </div>
-    </main>
+    </motion.section>
   );
 }
 
@@ -369,21 +375,7 @@ function SurahIndex() {
 
   return (
     <>
-      <div className="index-surah-search" role="search">
-        <Search size={18} strokeWidth={2.1} aria-hidden="true" />
-        <input
-          type="search"
-          value={searchQuery}
-          onChange={(event) => setSearchQuery(event.target.value)}
-          placeholder="Search by name, meaning or number"
-          aria-label="Search Surahs"
-        />
-        {searchQuery && (
-          <button type="button" onClick={() => setSearchQuery('')} aria-label="Clear Surah search">
-            <X size={17} aria-hidden="true" />
-          </button>
-        )}
-      </div>
+      <SearchField value={searchQuery} onChange={setSearchQuery} label="Search Surahs" placeholder="Search by name, meaning or number" />
 
       <section id="index-panel-surahs" role="tabpanel" aria-labelledby="index-tab-surahs" className="index-list index-surah-list">
       {filteredSurahs.length === 0 && (
@@ -409,7 +401,6 @@ function SurahIndex() {
                       className="index-card-main index-surah-main"
                       onClick={() => goAyah(surah.number, 1, findPageForReference(surah.number, 1))}
                       type="button"
-                      aria-label={`Read ${surah.name} from the beginning`}
                     >
                       <NumberBadge>{surah.number}</NumberBadge>
                       <span className="index-surah-title-block">
@@ -433,25 +424,20 @@ function SurahIndex() {
                     <div id={`index-surah-panel-${surah.number}`} className="index-collapse-panel index-surah-collapse" aria-label={`${surah.name} details`}>
                       <div className="index-surah-info-preview">
                         <div className="index-surah-info-heading">
-                          <span className="index-surah-info-label">Surah Info</span>
+                          <span className="index-surah-info-label">Surah Introduction</span>
                           <p className="index-surah-info-meta">
                             {nameMeta.meaning} <span aria-hidden="true">•</span> {ayahCount} Ayahs <span aria-hidden="true">•</span> {surah.revelation}
                           </p>
                         </div>
-                        <p
-                          className={`index-surah-info-copy is-${translationLanguage}`}
-                          lang={translationLanguage}
-                          dir={translationLanguage === 'ur' ? 'rtl' : 'ltr'}
-                        >
-                          <span>{previewText(localizedInfo)} </span>
-                          <button
-                            type="button"
-                            className="inline-read-more index-surah-read-more"
-                            onClick={() => openSurahInfo(surah.number)}
-                          >
-                            Read more
-                          </button>
-                        </p>
+                        {localizedInfo?.text ? (
+                          <p className={`index-surah-introduction-preview is-${translationLanguage}`}
+                            lang={translationLanguage} dir={translationLanguage === 'ur' ? 'rtl' : 'ltr'}>
+                            {stripHtml(localizedInfo.text)}
+                          </p>
+                        ) : <p className="index-surah-info-copy">Surah introduction is unavailable in this language.</p>}
+                        {localizedInfo?.text && (
+                          <button type="button" className="index-surah-intro-more" onClick={() => openSurahInfo(surah.number)}>Read more</button>
+                        )}
 
                         <div className="index-surah-quick-actions" aria-label={`${surah.name} quick actions`}>
                           <button

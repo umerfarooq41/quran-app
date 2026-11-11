@@ -1,0 +1,418 @@
+/* shared-surfaces: component-owned styles; responsive and theme states live with their owner. */
+
+.app-segment button { min-height: 36px; }
+
+.app-header {
+  min-width: 0;
+}
+
+[data-theme='dark'] .app-header-title {
+  color: var(--theme-text);
+}
+
+[data-theme='dark'] .app-segment {
+  border-color: var(--theme-border);
+  background: var(--theme-surface);
+  color: var(--theme-text);
+  box-shadow: 0 10px 28px var(--theme-shadow);
+}
+
+.app-header-spacer {
+  justify-content: center;
+  background: transparent;
+  padding: 0;
+  transform: none;
+  transition: opacity .18s ease;
+}
+
+.app-fixed-header > .app-header {
+  background: transparent;
+  border: 0;
+  border-bottom: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.app-fixed-header > .app-header,
+.app-header {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) 40px;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+}
+
+.app-header-title,
+.app-fixed-header .app-header-title {
+  min-width: 0;
+  overflow: hidden;
+  margin: 0;
+  color: var(--theme-text);
+  font-family: var(--ui-font);
+  font-size: 2rem;
+  font-weight: 560;
+  line-height: 1;
+  letter-spacing: -.045em;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-header-spacer {
+  display: block;
+  width: 40px;
+  height: 40px;
+}
+
+@media (max-width: 380px) {
+  .app-header-title,
+.app-fixed-header .app-header-title {
+    font-size: 1.85rem;
+  }
+}
+
+.ui-card {
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-card-border);
+  border-radius: var(--ui-radius-xl, 22px);
+  box-shadow: var(--ui-card-shadow);
+  -webkit-backdrop-filter: var(--ui-card-blur);
+  backdrop-filter: var(--ui-card-blur);
+}
+
+.ui-control {
+  background: var(--ui-control-bg);
+  border: 1px solid var(--ui-control-border);
+  border-radius: var(--ui-radius-md, 14px);
+  color: var(--theme-text);
+}
+
+.ui-sheet {
+  background: var(--theme-surface-solid);
+  border: 1px solid var(--ui-card-border);
+  border-radius: var(--ui-radius-xl, 22px);
+  color: var(--theme-text);
+}
+
+.ui-disclosure-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  color: var(--theme-text);
+}
+
+.ui-control:focus-visible,
+.ui-disclosure-trigger:focus-visible {
+  outline: 2px solid var(--ui-primary);
+  outline-offset: 2px;
+}
+
+:is(.index-card,.search-result-card,.settings-card,.help-intro,.help-section,
+    .about-card,.about-section,.tab-card-surface,.tabs-status,
+    .home-action-chip,.home-favorite-row,.home-reflect-card,.home-favorites-empty,
+    .tafsir-card) {
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-card-border);
+  box-shadow: var(--ui-card-shadow);
+  -webkit-backdrop-filter: var(--ui-card-blur);
+  backdrop-filter: var(--ui-card-blur);
+}
+
+:is(.search-recent-list button,.settings-theme-picker) {
+  background: var(--ui-control-bg);
+  border: 1px solid var(--ui-control-border);
+  -webkit-backdrop-filter: var(--ui-card-blur);
+  backdrop-filter: var(--ui-card-blur);
+}
+
+:is(.search-result-card,.home-action-chip,.home-favorite-row,
+    .help-section-trigger,.tab-card-hit):active {
+  background-color: var(--ui-pressed-overlay);
+}
+
+.settings-theme-picker button.is-active {
+  background: var(--ui-primary);
+  border-color: var(--ui-primary);
+  color: #fff;
+}
+
+:is(.search-result-card,.search-result-reference strong,.search-recent-list button,
+    .settings-card,.help-section,.about-screen,.tab-card-surface,.tafsir-card) {
+  color: var(--theme-text);
+}
+
+:is(.search-result-reference small,.search-result-preview,.search-result-meta,
+    .search-results-heading span,.search-recent-list button,.settings-row-copy small) {
+  color: var(--theme-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.search-result-card,.home-action-chip,.home-favorite-row,.help-section-trigger,.tab-card-hit) {
+    transition: none;
+  }
+}
+
+.app-option-picker { position: relative; min-width: 0; }
+
+.app-option-trigger {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; width: 100%; min-height: 52px;
+  padding: 11px 14px; border-radius: var(--ui-picker-radius);
+  background: var(--ui-control-bg); border: 1px solid var(--ui-control-border);
+  color: var(--theme-text); text-align: left; font: inherit;
+}
+
+.app-option-trigger:focus-visible,
+.app-option-item:focus-visible { outline: 2px solid var(--ui-primary); outline-offset: 2px; }
+
+.app-option-chevron { flex: 0 0 auto; transition: transform .18s ease; }
+
+.app-option-chevron.is-open { transform: rotate(180deg); }
+
+.app-option-menu {
+  position: fixed; inset: auto; margin: 0; z-index: var(--z-overlay, 100);
+  max-height: min(44vh, 340px); overflow-y: auto; overscroll-behavior: contain;
+  padding: 6px; border-radius: var(--ui-picker-radius);
+  background: var(--ui-menu-bg); border: 1px solid var(--ui-control-border);
+  box-shadow: 0 14px 32px rgba(28, 35, 30, .16);
+  transform-origin: top center;
+  animation: app-option-settle .16s cubic-bezier(.22, 1, .36, 1) both;
+}
+
+@keyframes app-option-settle {
+  from { opacity: 0; transform: translateY(-4px) scale(.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-option-menu { animation: none; }
+}
+
+.app-option-item {
+  display: flex; width: 100%; min-height: 44px; align-items: center;
+  justify-content: space-between; gap: 12px; padding: 9px 12px;
+  border-radius: var(--ui-picker-option-radius); color: var(--theme-text);
+  text-align: left;
+}
+
+.app-option-item.is-selected { background: var(--ui-picker-selected); font-weight: 650; }
+
+.app-option-item:active { background: var(--ui-picker-hover); }
+
+@media (prefers-reduced-motion: reduce) { .app-option-chevron { transition: none; } }
+
+.share-like-segment {
+  display: grid;
+  grid-template-columns: repeat(var(--ui-segment-columns, 2), minmax(0, 1fr));
+  width: 100%;
+  min-height: 52px;
+  gap: 0;
+  margin: 8px 0 16px;
+  padding: 4px;
+  border: 1px solid var(--ui-segment-border);
+  border-radius: 999px;
+  background: var(--ui-segment-bg);
+  box-shadow: none;
+  overflow: hidden;
+}
+
+.share-like-segment > button {
+  display: inline-flex;
+  min-width: 0;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin: 0;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--theme-muted);
+  box-shadow: none;
+  font-family: var(--ui-font);
+  font-size: .96rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  /* Contrast must be valid on every frame, including immediately after navigation.
+     Never tween white selected text over a partially blended accent background. */
+  transition: transform .15s ease;
+}
+
+.share-like-segment > button svg {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  stroke-width: 2;
+}
+
+:is(.share-like-segment, .index-replica-shell .index-segment.share-like-segment, .tabs-screen .library-tabs.share-like-segment) > button.is-active {
+  background: var(--ui-segment-selected);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(31,61,43,.14);
+}
+
+.share-like-segment > button:active {
+  transform: scale(.985);
+}
+
+.share-like-segment > button:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--brand-gold, #b68a35) 72%, white);
+  outline-offset: 2px;
+}
+
+.index-replica-shell .index-segment.share-like-segment,
+.tabs-screen .library-tabs.share-like-segment {
+  width: 100%;
+  max-width: none;
+  min-height: 52px;
+  gap: 0;
+  margin: 8px 0 16px;
+  padding: 4px;
+  border: 1px solid var(--ui-segment-border);
+  border-radius: 999px;
+  background: var(--ui-segment-bg);
+  box-shadow: none;
+}
+
+[data-theme='dark'] .share-like-segment,
+[data-theme='dark'] .index-replica-shell .index-segment.share-like-segment,
+[data-theme='dark'] .tabs-screen .library-tabs.share-like-segment {
+  border-color: var(--theme-border);
+  background: color-mix(in srgb, var(--theme-surface-solid) 88%, transparent);
+  box-shadow: none;
+}
+
+[data-theme='dark'] .share-like-segment > button:not(.is-active),
+[data-theme='dark'] .index-replica-shell .index-segment.share-like-segment > button:not(.is-active),
+[data-theme='dark'] .tabs-screen .library-tabs.share-like-segment > button:not(.is-active) {
+  color: var(--theme-muted);
+}
+
+.shared-back-button:focus-visible {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  transform: none;
+  outline: 2px solid color-mix(in srgb, var(--gold) 68%, transparent);
+  outline-offset: 2px;
+  border-radius: 10px;
+}
+
+.shared-back-button {
+  touch-action: manipulation;
+  gap: var(--chrome-button-gap);
+  position: static;
+  display: grid;
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+  min-height: 40px;
+  place-items: center;
+  margin: 0;
+
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+  background: transparent;
+  color: #202624;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.shared-back-button:hover,
+.shared-back-button:active {
+  border: 0;
+  background: transparent;
+  color: #202624;
+  box-shadow: none;
+  transform: none;
+}
+
+.shared-back-button svg {
+  top: 12px;
+  right: 12px;
+  position: static;
+  width: 20px;
+  height: 20px;
+  stroke-width: 2.2;
+  transform: none;
+  color: inherit;
+  stroke: currentColor;
+}
+
+[data-theme='dark'] .shared-back-button {
+  border: 0;
+  background: transparent;
+  color: #f3f0e8;
+  box-shadow: none;
+}
+
+.app-option-avatar { width: 34px; height: 34px; flex: 0 0 34px; border-radius: 50%; object-fit: cover; }
+.app-option-label { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.app-option-picker-compact .app-option-trigger { border: 0; background: transparent; padding: 6px 0; min-height: 44px; }
+.app-option-description { display: block; margin-top: 4px; font-size: 11px; color: var(--theme-muted); }
+
+.app-search-field { display:flex; align-items:center; gap:10px; min-height:48px; width:100%; padding:8px 14px; border:1px solid var(--ui-control-border); border-radius:var(--ui-picker-radius); background:var(--ui-control-bg); color:var(--theme-muted); }
+.app-search-field:focus-within { border-color:var(--theme-muted); box-shadow:0 0 0 2px var(--ui-picker-hover); }
+.app-search-field input { flex:1; width:0; min-width:0; border:0; outline:none; padding:0; background:transparent; box-shadow:none; color:var(--theme-text); font:inherit; }
+.app-search-field input::placeholder { color:var(--theme-muted); opacity:1; }
+.app-search-field input::-webkit-search-cancel-button { display:none; }
+.app-search-field button { display:grid; place-items:center; flex:0 0 32px; width:32px; height:32px; border:0; background:transparent; color:var(--theme-muted); border-radius:50%; }
+
+/* The stationary outer rounded rectangle owns clipping. A square moving edge
+   prevents the red action layer from leaking through foreground corners. */
+.ui-swipe-actions {
+  --swipe-offset: 0px;
+  --swipe-action-width: 92px;
+  --swipe-radius: var(--swipe-card-radius, 18px);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: var(--swipe-radius);
+  touch-action: pan-y;
+}
+.ui-swipe-actions::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--ui-danger-bg);
+  clip-path: inset(0 0 0 calc(100% - var(--swipe-offset)));
+  pointer-events: none;
+}
+.ui-swipe-actions > :is(.tab-card-surface,.home-favorite-row) {
+  border-radius: var(--swipe-radius);
+  transform: translate3d(calc(-1 * var(--swipe-offset)), 0, 0);
+  transition: none;
+  isolation: isolate;
+}
+.ui-swipe-actions[data-revealed='true'] > :is(.tab-card-surface,.home-favorite-row) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  background: var(--theme-surface-solid);
+}
+.ui-swipe-actions > :is(.tab-card-remove,.home-favorite-delete) {
+  position: absolute;
+  inset-block: 0;
+  right: 0;
+  width: var(--swipe-action-width);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  transform: none;
+  clip-path: inset(0 0 0 max(0px, calc(var(--swipe-action-width) - var(--swipe-offset))));
+}
+.ui-swipe-actions:not([data-revealed='true']) > :is(.tab-card-remove,.home-favorite-delete) {
+  visibility: hidden;
+  pointer-events: none;
+}

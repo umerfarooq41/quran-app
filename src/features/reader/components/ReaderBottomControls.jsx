@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
-import { Play, Search, Undo2 } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
+import { ChevronLeft, ChevronRight, Play, Search, Undo2 } from 'lucide-react';
 import { PageWaveSlider } from './PageWaveSlider';
 
 export function ReaderBottomControls({
@@ -8,6 +8,11 @@ export function ReaderBottomControls({
   displayPage,
   goPage,
   onPreviousPage,
+  onNext,
+  onPrevious,
+  nextDisabled,
+  previousDisabled,
+  spread,
   onSearch,
   onAudio,
   compact = false,
@@ -16,6 +21,7 @@ export function ReaderBottomControls({
   onPreviewPageChange,
   onSliderInteractionChange,
 }) {
+  const reduceMotion = useReducedMotion();
   const [sliderPreview, setSliderPreview] = useState(null);
   const footerPage = sliderPreview?.page ?? displayPage;
   const footerProgress = sliderPreview?.juzProgress ?? juzProgress;
@@ -54,10 +60,10 @@ export function ReaderBottomControls({
 
       {!compact && (
         <motion.button
-          initial={{ opacity: 0, y: 24 }}
+          initial={reduceMotion ? false : { opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 16 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+          exit={reduceMotion ? { opacity: 1 } : { opacity: 0, y: 12 }}
+          transition={{ duration: reduceMotion ? 0 : 0.22, ease: [0.22, 1, 0.36, 1] }}
           className="reader-listen-pill"
           onClick={onAudio}
         >
@@ -69,10 +75,10 @@ export function ReaderBottomControls({
       )}
 
       <motion.div
-        initial={{ opacity: 0, y: 42 }}
+        initial={reduceMotion ? false : { opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 42 }}
-        transition={{ delay: 0.05, type: 'spring', stiffness: 340, damping: 32 }}
+        exit={reduceMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
+        transition={{ duration: reduceMotion ? 0 : 0.22, ease: [0.22, 1, 0.36, 1] }}
         className="reader-bottom-sheet"
       >
         <div className="reader-bottom-meta">
@@ -87,7 +93,8 @@ export function ReaderBottomControls({
             <Undo2 size={34} strokeWidth={1.8} />
           </button>
 
-          <span aria-hidden="true" />
+          <button onClick={onNext} disabled={nextDisabled} aria-label={spread ? 'Next spread' : 'Next page'}><ChevronLeft size={30} /></button>
+          <button onClick={onPrevious} disabled={previousDisabled} aria-label={spread ? 'Previous spread' : 'Previous page'}><ChevronRight size={30} /></button>
 
           <button onClick={onSearch} aria-label="Search">
             <Search size={34} strokeWidth={1.8} />

@@ -11,6 +11,7 @@ import { VIEWS, normalizeView } from './app/routes';
 
 const NAVIGATION_SNAPSHOT_KEY = 'quran-app-navigation-snapshot-v1';
 import HomeScreen from './pages/HomeScreen';
+import ReflectScreen from './pages/ReflectScreen';
 import ReaderScreen from './pages/ReaderScreen';
 import IndexScreen from './pages/IndexScreen';
 import SearchScreen from './pages/SearchScreen';
@@ -24,6 +25,12 @@ import SurahInfoScreen from './pages/SurahInfoScreen';
 import { ShareQuranScreen } from './features/reader/components/ShareAyahSheet';
 import { ReaderAudioPanel } from './features/reader/components/ReaderAudioPanel';
 
+function allowsLandscapeOrientation() {
+  const width = window.screen?.width || window.innerWidth;
+  const height = window.screen?.height || window.innerHeight;
+  return Math.min(width, height) >= 600;
+}
+
 function syncPortraitFallbackState() {
   const root = document.documentElement;
   const landscapeQuery = window.matchMedia?.('(orientation: landscape)');
@@ -34,7 +41,7 @@ function syncPortraitFallbackState() {
   const angle = Number(angleValue) || 0;
 
   root.dataset.appOrientation = isLandscape ? 'landscape' : 'portrait';
-  root.dataset.appLandscapeLock = isLandscape
+  root.dataset.appLandscapeLock = isLandscape && !allowsLandscapeOrientation()
     ? (angle === -90 || angle === 270 ? 'counterclockwise' : 'clockwise')
     : 'none';
 }
@@ -45,6 +52,10 @@ function requestPortraitLock() {
   if (document.visibilityState === 'hidden') return;
 
   const orientation = window.screen?.orientation;
+  if (allowsLandscapeOrientation()) {
+    orientation?.unlock?.();
+    return;
+  }
   if (!orientation?.lock) return;
 
   Promise.resolve(orientation.lock('portrait')).catch(() => {
@@ -382,7 +393,8 @@ export default function App() {
 
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if (event.key === 'Escape') goBack();
+      // Pickers and dialogs own Escape before app-level back navigation.
+      if (event.key === 'Escape' && !event.defaultPrevented) goBack();
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -411,8 +423,9 @@ export default function App() {
 
   return (
     <Shell>
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="sync" initial={false}>
         {activeView === VIEWS.HOME && <HomeScreen key="home" />}
+        {activeView === VIEWS.REFLECT && <ReflectScreen key="reflect" />}
         {activeView === VIEWS.READER && <ReaderScreen key="reader" />}
         {activeView === VIEWS.INDEX && <IndexScreen key="index" />}
         {activeView === VIEWS.SURAH && <SurahScreen key="surah" />}

@@ -21,3 +21,7 @@ yarn-error.log*
 # local dev logs
 *.log
 *.err.log
+
+# browser test output
+playwright-report/
+test-results/

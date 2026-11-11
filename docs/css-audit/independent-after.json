@@ -1,0 +1,4218 @@
+{
+  "note": "PostCSS AST audit. Conflicts are candidates, including intentional fallbacks and theme/state rules; absence from static source is not proof a selector is obsolete.",
+  "cssFiles": 19,
+  "totals": {
+    "rules": 2031,
+    "declarations": 7172,
+    "important": 0,
+    "hardcodedHex": 481,
+    "fontSizes": 279
+  },
+  "files": [
+    {
+      "file": "src/styles.css",
+      "rules": 0,
+      "declarations": 0,
+      "important": 0,
+      "hardcodedHex": 0,
+      "fontSizes": 0
+    },
+    {
+      "file": "src/styles/app.css",
+      "rules": 85,
+      "declarations": 223,
+      "important": 0,
+      "hardcodedHex": 23,
+      "fontSizes": 6
+    },
+    {
+      "file": "src/styles/base.css",
+      "rules": 18,
+      "declarations": 36,
+      "important": 0,
+      "hardcodedHex": 0,
+      "fontSizes": 3
+    },
+    {
+      "file": "src/styles/help.css",
+      "rules": 50,
+      "declarations": 176,
+      "important": 0,
+      "hardcodedHex": 2,
+      "fontSizes": 15
+    },
+    {
+      "file": "src/styles/home.css",
+      "rules": 92,
+      "declarations": 259,
+      "important": 0,
+      "hardcodedHex": 22,
+      "fontSizes": 19
+    },
+    {
+      "file": "src/styles/index.css",
+      "rules": 284,
+      "declarations": 1016,
+      "important": 0,
+      "hardcodedHex": 32,
+      "fontSizes": 46
+    },
+    {
+      "file": "src/styles/mushaf.css",
+      "rules": 196,
+      "declarations": 626,
+      "important": 0,
+      "hardcodedHex": 32,
+      "fontSizes": 11
+    },
+    {
+      "file": "src/styles/reader-audio.css",
+      "rules": 209,
+      "declarations": 843,
+      "important": 0,
+      "hardcodedHex": 57,
+      "fontSizes": 15
+    },
+    {
+      "file": "src/styles/reader.css",
+      "rules": 120,
+      "declarations": 587,
+      "important": 0,
+      "hardcodedHex": 28,
+      "fontSizes": 17
+    },
+    {
+      "file": "src/styles/reflect.css",
+      "rules": 230,
+      "declarations": 597,
+      "important": 0,
+      "hardcodedHex": 52,
+      "fontSizes": 31
+    },
+    {
+      "file": "src/styles/search.css",
+      "rules": 63,
+      "declarations": 180,
+      "important": 0,
+      "hardcodedHex": 10,
+      "fontSizes": 12
+    },
+    {
+      "file": "src/styles/settings.css",
+      "rules": 145,
+      "declarations": 460,
+      "important": 0,
+      "hardcodedHex": 26,
+      "fontSizes": 13
+    },
+    {
+      "file": "src/styles/share.css",
+      "rules": 193,
+      "declarations": 871,
+      "important": 0,
+      "hardcodedHex": 55,
+      "fontSizes": 34
+    },
+    {
+      "file": "src/styles/shared-surfaces.css",
+      "rules": 46,
+      "declarations": 227,
+      "important": 0,
+      "hardcodedHex": 6,
+      "fontSizes": 3
+    },
+    {
+      "file": "src/styles/tabs.css",
+      "rules": 102,
+      "declarations": 291,
+      "important": 0,
+      "hardcodedHex": 38,
+      "fontSizes": 14
+    },
+    {
+      "file": "src/styles/tafsir.css",
+      "rules": 118,
+      "declarations": 304,
+      "important": 0,
+      "hardcodedHex": 12,
+      "fontSizes": 23
+    },
+    {
+      "file": "src/styles/theme.css",
+      "rules": 17,
+      "declarations": 115,
+      "important": 0,
+      "hardcodedHex": 44,
+      "fontSizes": 0
+    },
+    {
+      "file": "src/styles/tokens.css",
+      "rules": 1,
+      "declarations": 63,
+      "important": 0,
+      "hardcodedHex": 9,
+      "fontSizes": 0
+    },
+    {
+      "file": "src/styles/translation.css",
+      "rules": 62,
+      "declarations": 298,
+      "important": 0,
+      "hardcodedHex": 33,
+      "fontSizes": 17
+    }
+  ],
+  "crossFileOwnership": [
+    {
+      "key": "\n:root",
+      "locations": [
+        {
+          "file": "src/styles/base.css",
+          "line": 4
+        },
+        {
+          "file": "src/styles/theme.css",
+          "line": 3
+        },
+        {
+          "file": "src/styles/theme.css",
+          "line": 26
+        },
+        {
+          "file": "src/styles/theme.css",
+          "line": 85
+        },
+        {
+          "file": "src/styles/theme.css",
+          "line": 117
+        },
+        {
+          "file": "src/styles/theme.css",
+          "line": 131
+        },
+        {
+          "file": "src/styles/theme.css",
+          "line": 168
+        },
+        {
+          "file": "src/styles/tokens.css",
+          "line": 20
+        }
+      ]
+    },
+    {
+      "key": "\n:root[data-theme='dark']",
+      "locations": [
+        {
+          "file": "src/styles/base.css",
+          "line": 9
+        },
+        {
+          "file": "src/styles/theme.css",
+          "line": 58
+        },
+        {
+          "file": "src/styles/theme.css",
+          "line": 144
+        },
+        {
+          "file": "src/styles/theme.css",
+          "line": 175
+        }
+      ]
+    }
+  ],
+  "conflictingDeclarations": [
+    {
+      "context": "@media (orientation: landscape) and (hover: none) and (pointer: coarse) and (max-height: 600px)",
+      "selector": ".app-shell",
+      "property": "width",
+      "values": [
+        {
+          "value": "100vh",
+          "important": false,
+          "file": "src/styles/app.css",
+          "line": 170
+        },
+        {
+          "value": "100dvh",
+          "important": false,
+          "file": "src/styles/app.css",
+          "line": 171
+        }
+      ]
+    },
+    {
+      "context": "@media (orientation: landscape) and (hover: none) and (pointer: coarse) and (max-height: 600px)",
+      "selector": ".app-shell",
+      "property": "min-width",
+      "values": [
+        {
+          "value": "100vh",
+          "important": false,
+          "file": "src/styles/app.css",
+          "line": 172
+        },
+        {
+          "value": "100dvh",
+          "important": false,
+          "file": "src/styles/app.css",
+          "line": 173
+        }
+      ]
+    },
+    {
+      "context": "@media (orientation: landscape) and (hover: none) and (pointer: coarse) and (max-height: 600px)",
+      "selector": ".app-shell",
+      "property": "max-width",
+      "values": [
+        {
+          "value": "100vh",
+          "important": false,
+          "file": "src/styles/app.css",
+          "line": 174
+        },
+        {
+          "value": "100dvh",
+          "important": false,
+          "file": "src/styles/app.css",
+          "line": 175
+        }
+      ]
+    },
+    {
+      "context": "@media (orientation: landscape) and (hover: none) and (pointer: coarse) and (max-height: 600px)",
+      "selector": "html",
+      "property": "height",
+      "values": [
+        {
+          "value": "100vh",
+          "important": false,
+          "file": "src/styles/base.css",
+          "line": 79
+        },
+        {
+          "value": "100dvh",
+          "important": false,
+          "file": "src/styles/base.css",
+          "line": 80
+        }
+      ]
+    },
+    {
+      "context": "@media (orientation: landscape) and (hover: none) and (pointer: coarse) and (max-height: 600px)",
+      "selector": "html",
+      "property": "min-height",
+      "values": [
+        {
+          "value": "100vh",
+          "important": false,
+          "file": "src/styles/base.css",
+          "line": 82
+        },
+        {
+          "value": "100dvh",
+          "important": false,
+          "file": "src/styles/base.css",
+          "line": 83
+        }
+      ]
+    },
+    {
+      "context": "@media (orientation: landscape) and (hover: none) and (pointer: coarse) and (max-height: 600px)",
+      "selector": "body",
+      "property": "height",
+      "values": [
+        {
+          "value": "100vh",
+          "important": false,
+          "file": "src/styles/base.css",
+          "line": 79
+        },
+        {
+          "value": "100dvh",
+          "important": false,
+          "file": "src/styles/base.css",
+          "line": 80
+        }
+      ]
+    },
+    {
+      "context": "@media (orientation: landscape) and (hover: none) and (pointer: coarse) and (max-height: 600px)",
+      "selector": "body",
+      "property": "min-height",
+      "values": [
+        {
+          "value": "100vh",
+          "important": false,
+          "file": "src/styles/base.css",
+          "line": 82
+        },
+        {
+          "value": "100dvh",
+          "important": false,
+          "file": "src/styles/base.css",
+          "line": 83
+        }
+      ]
+    },
+    {
+      "context": "@media (orientation: landscape) and (hover: none) and (pointer: coarse) and (max-height: 600px)",
+      "selector": "#root",
+      "property": "height",
+      "values": [
+        {
+          "value": "100vh",
+          "important": false,
+          "file": "src/styles/base.css",
+          "line": 79
+        },
+        {
+          "value": "100dvh",
+          "important": false,
+          "file": "src/styles/base.css",
+          "line": 80
+        }
+      ]
+    },
+    {
+      "context": "@media (orientation: landscape) and (hover: none) and (pointer: coarse) and (max-height: 600px)",
+      "selector": "#root",
+      "property": "min-height",
+      "values": [
+        {
+          "value": "100vh",
+          "important": false,
+          "file": "src/styles/base.css",
+          "line": 82
+        },
+        {
+          "value": "100dvh",
+          "important": false,
+          "file": "src/styles/base.css",
+          "line": 83
+        }
+      ]
+    },
+    {
+      "context": "",
+      "selector": ".index-surah-info-label",
+      "property": "color",
+      "values": [
+        {
+          "value": "var(--theme-muted, #9ca5b4)",
+          "important": false,
+          "file": "src/styles/index.css",
+          "line": 99
+        },
+        {
+          "value": "color-mix(in srgb, var(--theme-muted) 86%, var(--theme-text))",
+          "important": false,
+          "file": "src/styles/index.css",
+          "line": 781
+        }
+      ]
+    },
+    {
+      "context": "",
+      "selector": ".index-surah-info-preview .index-surah-text-action",
+      "property": "border",
+      "values": [
+        {
+          "value": "0",
+          "important": false,
+          "file": "src/styles/index.css",
+          "line": 132
+        },
+        {
+          "value": "1px solid color-mix(in srgb, var(--gold) 24%, var(--theme-border))",
+          "important": false,
+          "file": "src/styles/index.css",
+          "line": 816
+        }
+      ]
+    },
+    {
+      "context": "",
+      "selector": ".index-surah-info-preview .index-surah-text-action",
+      "property": "background",
+      "values": [
+        {
+          "value": "transparent",
+          "important": false,
+          "file": "src/styles/index.css",
+          "line": 133
+        },
+        {
+          "value": "color-mix(in srgb, var(--theme-surface) 86%, transparent)",
+          "important": false,
+          "file": "src/styles/index.css",
+          "line": 818
+        }
+      ]
+    },
+    {
+      "context": "",
+      "selector": ".index-ayah-input-wrap",
+      "property": "border",
+      "values": [
+        {
+          "value": "1px solid var(--theme-border)",
+          "important": false,
+          "file": "src/styles/index.css",
+          "line": 650
+        },
+        {
+          "value": "1.5px solid color-mix(in srgb, var(--gold) 38%, var(--theme-border))",
+          "important": false,
+          "file": "src/styles/index.css",
+          "line": 858
+        }
+      ]
+    },
+    {
+      "context": "",
+      "selector": ".index-ayah-input-wrap",
+      "property": "background",
+      "values": [
+        {
+          "value": "var(--theme-soft)",
+          "important": false,
+          "file": "src/styles/index.css",
+          "line": 651
+        },
+        {
+          "value": "color-mix(in srgb, var(--theme-soft) 82%, var(--theme-surface))",
+          "important": false,
+          "file": "src/styles/index.css",
+          "line": 860
+        }
+      ]
+    },
+    {
+      "context": "",
+      "selector": ".index-replica-shell.app-page-shell .index-ayah-jump",
+      "property": "background",
+      "values": [
+        {
+          "value": "transparent",
+          "important": false,
+          "file": "src/styles/index.css",
+          "line": 1153
+        },
+        {
+          "value": "color-mix(in srgb, var(--theme-surface) 94%, transparent)",
+          "important": false,
+          "file": "src/styles/index.css",
+          "line": 1384
+        }
+      ]
+    },
+    {
+      "context": "",
+      "selector": ".index-replica-shell .index-surah-collapse",
+      "property": "background",
+      "values": [
+        {
+          "value": "var(--ui-card-bg)",
+          "important": false,
+          "file": "src/styles/index.css",
+          "line": 1369
+        },
+        {
+          "value": "color-mix(in srgb, var(--theme-surface) 94%, transparent)",
+          "important": false,
+          "file": "src/styles/index.css",
+          "line": 1378
+        }
+      ]
+    },
+    {
+      "context": "",
+      "selector": ".quran-line--juz-start::before",
+      "property": "background",
+      "values": [
+        {
+          "value": "rgba(5, 5, 5, .9)",
+          "important": false,
+          "file": "src/styles/mushaf.css",
+          "line": 842
+        },
+        {
+          "value": "color-mix(in srgb, var(--reader-primary) 90%, transparent)",
+          "important": false,
+          "file": "src/styles/mushaf.css",
+          "line": 843
+        }
+      ]
+    },
+    {
+      "context": "",
+      "selector": "[data-theme='dark'] .quran-line--juz-start::before",
+      "property": "background",
+      "values": [
+        {
+          "value": "rgba(240, 242, 239, .92)",
+          "important": false,
+          "file": "src/styles/mushaf.css",
+          "line": 879
+        },
+        {
+          "value": "color-mix(in srgb, var(--reader-primary) 90%, transparent)",
+          "important": false,
+          "file": "src/styles/mushaf.css",
+          "line": 880
+        }
+      ]
+    },
+    {
+      "context": "",
+      "selector": ".share-range-menu button:active:not(.is-selected)",
+      "property": "background",
+      "values": [
+        {
+          "value": "rgba(201, 162, 75, .10)",
+          "important": false,
+          "file": "src/styles/share.css",
+          "line": 20
+        },
+        {
+          "value": "color-mix(in srgb, var(--theme-border, #dfd3b5) 30%, transparent)",
+          "important": false,
+          "file": "src/styles/share.css",
+          "line": 21
+        }
+      ]
+    },
+    {
+      "context": "",
+      "selector": ".share-range-field > span",
+      "property": "color",
+      "values": [
+        {
+          "value": "var(--theme-muted, #756f65)",
+          "important": false,
+          "file": "src/styles/share.css",
+          "line": 27
+        },
+        {
+          "value": "color-mix(in srgb, var(--theme-text, #252522) 58%, transparent)",
+          "important": false,
+          "file": "src/styles/share.css",
+          "line": 29
+        }
+      ]
+    },
+    {
+      "context": "",
+      "selector": ".share-range-trigger[aria-expanded='true']",
+      "property": "background",
+      "values": [
+        {
+          "value": "var(--theme-surface-solid, #fffdf8)",
+          "important": false,
+          "file": "src/styles/share.css",
+          "line": 35
+        },
+        {
+          "value": "color-mix(in srgb, var(--brand-gold, #b68a35) 8%, var(--theme-surface-solid, #fffdf8))",
+          "important": false,
+          "file": "src/styles/share.css",
+          "line": 37
+        }
+      ]
+    }
+  ],
+  "duplicateDeclarations": [],
+  "duplicateSelectors": [
+    {
+      "key": "\n.nav-icon-btn",
+      "locations": [
+        {
+          "file": "src/styles/app.css",
+          "line": 91
+        },
+        {
+          "file": "src/styles/app.css",
+          "line": 136
+        }
+      ]
+    },
+    {
+      "key": "\n.nav-icon-active-bg",
+      "locations": [
+        {
+          "file": "src/styles/app.css",
+          "line": 99
+        },
+        {
+          "file": "src/styles/app.css",
+          "line": 138
+        }
+      ]
+    },
+    {
+      "key": "\n.screen-shell",
+      "locations": [
+        {
+          "file": "src/styles/app.css",
+          "line": 112
+        },
+        {
+          "file": "src/styles/app.css",
+          "line": 321
+        }
+      ]
+    },
+    {
+      "key": "\n.app-shell",
+      "locations": [
+        {
+          "file": "src/styles/app.css",
+          "line": 199
+        },
+        {
+          "file": "src/styles/app.css",
+          "line": 264
+        },
+        {
+          "file": "src/styles/app.css",
+          "line": 395
+        }
+      ]
+    },
+    {
+      "key": "\n.app-page-shell",
+      "locations": [
+        {
+          "file": "src/styles/app.css",
+          "line": 327
+        },
+        {
+          "file": "src/styles/app.css",
+          "line": 412
+        }
+      ]
+    },
+    {
+      "key": "\n.app-fixed-header",
+      "locations": [
+        {
+          "file": "src/styles/app.css",
+          "line": 347
+        },
+        {
+          "file": "src/styles/app.css",
+          "line": 418
+        }
+      ]
+    },
+    {
+      "key": "\n.app-scroll-content",
+      "locations": [
+        {
+          "file": "src/styles/app.css",
+          "line": 366
+        },
+        {
+          "file": "src/styles/app.css",
+          "line": 418
+        }
+      ]
+    },
+    {
+      "key": "\n:root",
+      "locations": [
+        {
+          "file": "src/styles/base.css",
+          "line": 4
+        },
+        {
+          "file": "src/styles/theme.css",
+          "line": 3
+        },
+        {
+          "file": "src/styles/theme.css",
+          "line": 26
+        },
+        {
+          "file": "src/styles/theme.css",
+          "line": 85
+        },
+        {
+          "file": "src/styles/theme.css",
+          "line": 117
+        },
+        {
+          "file": "src/styles/theme.css",
+          "line": 131
+        },
+        {
+          "file": "src/styles/theme.css",
+          "line": 168
+        },
+        {
+          "file": "src/styles/tokens.css",
+          "line": 20
+        }
+      ]
+    },
+    {
+      "key": "\n:root[data-theme='dark']",
+      "locations": [
+        {
+          "file": "src/styles/base.css",
+          "line": 9
+        },
+        {
+          "file": "src/styles/theme.css",
+          "line": 58
+        },
+        {
+          "file": "src/styles/theme.css",
+          "line": 144
+        },
+        {
+          "file": "src/styles/theme.css",
+          "line": 175
+        }
+      ]
+    },
+    {
+      "key": "\nhtml",
+      "locations": [
+        {
+          "file": "src/styles/base.css",
+          "line": 18
+        },
+        {
+          "file": "src/styles/base.css",
+          "line": 39
+        },
+        {
+          "file": "src/styles/base.css",
+          "line": 54
+        },
+        {
+          "file": "src/styles/base.css",
+          "line": 64
+        }
+      ]
+    },
+    {
+      "key": "\nbody",
+      "locations": [
+        {
+          "file": "src/styles/base.css",
+          "line": 18
+        },
+        {
+          "file": "src/styles/base.css",
+          "line": 24
+        },
+        {
+          "file": "src/styles/base.css",
+          "line": 39
+        },
+        {
+          "file": "src/styles/base.css",
+          "line": 54
+        },
+        {
+          "file": "src/styles/base.css",
+          "line": 62
+        },
+        {
+          "file": "src/styles/base.css",
+          "line": 99
+        }
+      ]
+    },
+    {
+      "key": "\n#root",
+      "locations": [
+        {
+          "file": "src/styles/base.css",
+          "line": 18
+        },
+        {
+          "file": "src/styles/base.css",
+          "line": 39
+        },
+        {
+          "file": "src/styles/base.css",
+          "line": 54
+        },
+        {
+          "file": "src/styles/base.css",
+          "line": 99
+        }
+      ]
+    },
+    {
+      "key": "\nbutton",
+      "locations": [
+        {
+          "file": "src/styles/base.css",
+          "line": 29
+        },
+        {
+          "file": "src/styles/base.css",
+          "line": 35
+        }
+      ]
+    },
+    {
+      "key": "\ninput",
+      "locations": [
+        {
+          "file": "src/styles/base.css",
+          "line": 29
+        },
+        {
+          "file": "src/styles/base.css",
+          "line": 66
+        }
+      ]
+    },
+    {
+      "key": "\nselect",
+      "locations": [
+        {
+          "file": "src/styles/base.css",
+          "line": 29
+        },
+        {
+          "file": "src/styles/base.css",
+          "line": 66
+        },
+        {
+          "file": "src/styles/base.css",
+          "line": 105
+        }
+      ]
+    },
+    {
+      "key": "@media (orientation: landscape) and (hover: none) and (pointer: coarse) and (max-height: 600px)\nbody",
+      "locations": [
+        {
+          "file": "src/styles/base.css",
+          "line": 75
+        },
+        {
+          "file": "src/styles/base.css",
+          "line": 91
+        }
+      ]
+    },
+    {
+      "key": "@media (orientation: landscape) and (hover: none) and (pointer: coarse) and (max-height: 600px)\n#root",
+      "locations": [
+        {
+          "file": "src/styles/base.css",
+          "line": 75
+        },
+        {
+          "file": "src/styles/base.css",
+          "line": 91
+        }
+      ]
+    },
+    {
+      "key": "\n.help-section-trigger",
+      "locations": [
+        {
+          "file": "src/styles/help.css",
+          "line": 60
+        },
+        {
+          "file": "src/styles/help.css",
+          "line": 277
+        }
+      ]
+    },
+    {
+      "key": "\n.help-section-content",
+      "locations": [
+        {
+          "file": "src/styles/help.css",
+          "line": 99
+        },
+        {
+          "file": "src/styles/help.css",
+          "line": 281
+        }
+      ]
+    },
+    {
+      "key": "\n.home-subtitle",
+      "locations": [
+        {
+          "file": "src/styles/home.css",
+          "line": 4
+        },
+        {
+          "file": "src/styles/home.css",
+          "line": 306
+        },
+        {
+          "file": "src/styles/home.css",
+          "line": 330
+        }
+      ]
+    },
+    {
+      "key": "\n.home-title",
+      "locations": [
+        {
+          "file": "src/styles/home.css",
+          "line": 9
+        },
+        {
+          "file": "src/styles/home.css",
+          "line": 321
+        }
+      ]
+    },
+    {
+      "key": "\n.home-hero-card",
+      "locations": [
+        {
+          "file": "src/styles/home.css",
+          "line": 14
+        },
+        {
+          "file": "src/styles/home.css",
+          "line": 308
+        },
+        {
+          "file": "src/styles/home.css",
+          "line": 337
+        }
+      ]
+    },
+    {
+      "key": "\n.home-hero-label",
+      "locations": [
+        {
+          "file": "src/styles/home.css",
+          "line": 28
+        },
+        {
+          "file": "src/styles/home.css",
+          "line": 348
+        }
+      ]
+    },
+    {
+      "key": "\n.home-hero-meta",
+      "locations": [
+        {
+          "file": "src/styles/home.css",
+          "line": 34
+        },
+        {
+          "file": "src/styles/home.css",
+          "line": 362
+        }
+      ]
+    },
+    {
+      "key": "\n.home-hero-ornament",
+      "locations": [
+        {
+          "file": "src/styles/home.css",
+          "line": 38
+        },
+        {
+          "file": "src/styles/home.css",
+          "line": 369
+        }
+      ]
+    },
+    {
+      "key": "\n.home-actions-row",
+      "locations": [
+        {
+          "file": "src/styles/home.css",
+          "line": 46
+        },
+        {
+          "file": "src/styles/home.css",
+          "line": 379
+        }
+      ]
+    },
+    {
+      "key": "\n.home-action-chip",
+      "locations": [
+        {
+          "file": "src/styles/home.css",
+          "line": 50
+        },
+        {
+          "file": "src/styles/home.css",
+          "line": 312
+        },
+        {
+          "file": "src/styles/home.css",
+          "line": 384
+        },
+        {
+          "file": "src/styles/home.css",
+          "line": 512
+        }
+      ]
+    },
+    {
+      "key": "\n.home-favorite-row",
+      "locations": [
+        {
+          "file": "src/styles/home.css",
+          "line": 124
+        },
+        {
+          "file": "src/styles/home.css",
+          "line": 238
+        },
+        {
+          "file": "src/styles/home.css",
+          "line": 512
+        },
+        {
+          "file": "src/styles/home.css",
+          "line": 517
+        }
+      ]
+    },
+    {
+      "key": "\n.home-favorite-copy",
+      "locations": [
+        {
+          "file": "src/styles/home.css",
+          "line": 156
+        },
+        {
+          "file": "src/styles/home.css",
+          "line": 243
+        }
+      ]
+    },
+    {
+      "key": "@media (max-width: 370px)\n.home-favorite-row",
+      "locations": [
+        {
+          "file": "src/styles/home.css",
+          "line": 218
+        },
+        {
+          "file": "src/styles/home.css",
+          "line": 254
+        }
+      ]
+    },
+    {
+      "key": "\n.home-reflect-card",
+      "locations": [
+        {
+          "file": "src/styles/home.css",
+          "line": 265
+        },
+        {
+          "file": "src/styles/home.css",
+          "line": 299
+        },
+        {
+          "file": "src/styles/home.css",
+          "line": 517
+        }
+      ]
+    },
+    {
+      "key": "\n.home-reflect-card .home-reflect-copy",
+      "locations": [
+        {
+          "file": "src/styles/home.css",
+          "line": 301
+        },
+        {
+          "file": "src/styles/home.css",
+          "line": 520
+        }
+      ]
+    },
+    {
+      "key": "\n.index-replica-inner",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 3
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 233
+        }
+      ]
+    },
+    {
+      "key": "\n.index-replica-header",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 7
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 238
+        }
+      ]
+    },
+    {
+      "key": "\n.index-replica-header h1",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 11
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 248
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 467
+        }
+      ]
+    },
+    {
+      "key": "\n.index-list",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 16
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 727
+        }
+      ]
+    },
+    {
+      "key": "\n.index-card-wrap",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 16
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 259
+        }
+      ]
+    },
+    {
+      "key": "\n.index-card",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 21
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 264
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 732
+        }
+      ]
+    },
+    {
+      "key": "\n.index-juz-card",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 26
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 162
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 269
+        }
+      ]
+    },
+    {
+      "key": "\n.index-surah-card",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 26
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 162
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 276
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 967
+        }
+      ]
+    },
+    {
+      "key": "\n.index-number-badge",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 32
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 282
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 467
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 512
+        }
+      ]
+    },
+    {
+      "key": "\n.index-chevron",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 41
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 173
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 302
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 759
+        }
+      ]
+    },
+    {
+      "key": "\n.index-section-title",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 46
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 311
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 467
+        }
+      ]
+    },
+    {
+      "key": "\n.index-surah-stack",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 51
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 727
+        }
+      ]
+    },
+    {
+      "key": "\n.index-surah-text",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 55
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 167
+        }
+      ]
+    },
+    {
+      "key": "\n.index-surah-text strong",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 60
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 169
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 467
+        }
+      ]
+    },
+    {
+      "key": "\n.index-surah-text small",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 68
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 171
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 478
+        }
+      ]
+    },
+    {
+      "key": "\n.index-quarter-btn span",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 77
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 85
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 181
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 478
+        }
+      ]
+    },
+    {
+      "key": "\n.index-quarter-btn strong",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 81
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 340
+        }
+      ]
+    },
+    {
+      "key": "\n.index-surah-collapse",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 89
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 770
+        }
+      ]
+    },
+    {
+      "key": "\n.index-surah-info-preview p",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 93
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 187
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 355
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 478
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 605
+        }
+      ]
+    },
+    {
+      "key": "\n.index-surah-info-label",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 98
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 363
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 779
+        }
+      ]
+    },
+    {
+      "key": "\n.index-surah-info-preview button",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 104
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 516
+        }
+      ]
+    },
+    {
+      "key": "\n.index-surah-quick-actions",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 122
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 804
+        }
+      ]
+    },
+    {
+      "key": "\n.index-surah-info-preview .index-surah-text-action",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 128
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 812
+        }
+      ]
+    },
+    {
+      "key": "\n.index-surah-text-action span",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 149
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 831
+        }
+      ]
+    },
+    {
+      "key": "@media (max-width: 360px)\n.index-surah-quick-actions",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 155
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 911
+        }
+      ]
+    },
+    {
+      "key": "\n.index-collapse-panel",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 179
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 317
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 485
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 502
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 765
+        }
+      ]
+    },
+    {
+      "key": "\n.index-surah-info-preview",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 183
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 350
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 496
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 502
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 775
+        }
+      ]
+    },
+    {
+      "key": "\n.index-surah-info-copy",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 202
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 605
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 784
+        }
+      ]
+    },
+    {
+      "key": "@media (max-width: 639px)\n.index-collapse-panel",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 228
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 422
+        }
+      ]
+    },
+    {
+      "key": "\n.index-card-title",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 289
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 467
+        }
+      ]
+    },
+    {
+      "key": "\n.index-quarter-btn",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 330
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 467
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 490
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 508
+        }
+      ]
+    },
+    {
+      "key": "\n[data-theme='dark'] .index-quarter-btn",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 443
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 521
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 533
+        }
+      ]
+    },
+    {
+      "key": "\n[data-theme='dark'] .index-number-badge",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 443
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 453
+        }
+      ]
+    },
+    {
+      "key": "\n[data-theme='dark'] .index-collapse-panel",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 521
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 528
+        }
+      ]
+    },
+    {
+      "key": "\n[data-theme='dark'] .index-surah-info-preview",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 521
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 528
+        }
+      ]
+    },
+    {
+      "key": "\n.app-page-shell .index-replica-inner",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 537
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 585
+        }
+      ]
+    },
+    {
+      "key": "\n.index-ayah-jump",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 615
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 835
+        }
+      ]
+    },
+    {
+      "key": "\n.index-ayah-jump-heading",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 623
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 629
+        }
+      ]
+    },
+    {
+      "key": "\n.index-ayah-jump-row",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 623
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 851
+        }
+      ]
+    },
+    {
+      "key": "\n.index-ayah-jump-heading > span",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 634
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 843
+        }
+      ]
+    },
+    {
+      "key": "\n.index-ayah-jump-heading small",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 639
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 847
+        }
+      ]
+    },
+    {
+      "key": "\n.index-ayah-input-wrap",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 645
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 855
+        }
+      ]
+    },
+    {
+      "key": "\n.index-ayah-input-wrap > span",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 655
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 873
+        }
+      ]
+    },
+    {
+      "key": "\n.index-ayah-input-wrap > strong",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 655
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 873
+        }
+      ]
+    },
+    {
+      "key": "\n.index-ayah-input-wrap input",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 662
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 878
+        }
+      ]
+    },
+    {
+      "key": "\n.index-ayah-go",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 680
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 896
+        }
+      ]
+    },
+    {
+      "key": "\n.index-replica-header .shared-back-button",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 712
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 1169
+        }
+      ]
+    },
+    {
+      "key": "\n.index-replica-shell.app-page-shell .index-surah-info-preview",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 1008
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 1133
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 1381
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 1388
+        }
+      ]
+    },
+    {
+      "key": "\n.index-replica-shell.app-page-shell .index-surah-info-label",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 1013
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 1138
+        }
+      ]
+    },
+    {
+      "key": "\n.index-replica-shell.app-page-shell .index-surah-info-meta",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 1026
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 1142
+        }
+      ]
+    },
+    {
+      "key": "\n.index-replica-shell.app-page-shell .index-surah-collapse",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 1070
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 1126
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 1381
+        }
+      ]
+    },
+    {
+      "key": "\n.index-replica-shell.app-page-shell .index-ayah-jump",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 1070
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 1151
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 1381
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 1388
+        }
+      ]
+    },
+    {
+      "key": "\n.index-replica-shell.app-page-shell .index-ayah-jump-heading",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 1070
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 1080
+        }
+      ]
+    },
+    {
+      "key": "\n.index-replica-shell.app-page-shell .index-ayah-jump-row",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 1070
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 1093
+        }
+      ]
+    },
+    {
+      "key": "\n.index-replica-shell .index-surah-search",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 1191
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 1883
+        }
+      ]
+    },
+    {
+      "key": "\n.index-replica-shell .index-card",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 1259
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 1270
+        }
+      ]
+    },
+    {
+      "key": "\n.index-replica-shell .index-card-title",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 1311
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 1314
+        }
+      ]
+    },
+    {
+      "key": "\n.index-replica-shell .index-surah-collapse",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 1358
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 1377
+        }
+      ]
+    },
+    {
+      "key": "\n.index-replica-shell .index-surah-info-preview",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 1436
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 1875
+        }
+      ]
+    },
+    {
+      "key": "\n.index-replica-shell .index-surah-info-label",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 1444
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 1821
+        }
+      ]
+    },
+    {
+      "key": "\n.index-replica-shell .index-surah-info-preview .index-surah-text-action",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 1504
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 1831
+        }
+      ]
+    },
+    {
+      "key": "\n.index-replica-shell .index-ayah-stepper",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 1577
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 1831
+        }
+      ]
+    },
+    {
+      "key": "\n.index-replica-shell .index-ayah-stepper-button:first-child",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 1602
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 1844
+        }
+      ]
+    },
+    {
+      "key": "\n.index-replica-shell .index-ayah-stepper-button:last-child",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 1606
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 1846
+        }
+      ]
+    },
+    {
+      "key": "\n[data-theme='dark'] .index-replica-shell .index-collapse-panel",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 1765
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 1781
+        }
+      ]
+    },
+    {
+      "key": "\n[data-theme='dark'] .index-replica-shell .index-surah-info-preview",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 1765
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 1781
+        }
+      ]
+    },
+    {
+      "key": "\n[data-theme='dark'] .index-replica-shell .index-ayah-jump",
+      "locations": [
+        {
+          "file": "src/styles/index.css",
+          "line": 1765
+        },
+        {
+          "file": "src/styles/index.css",
+          "line": 1781
+        }
+      ]
+    },
+    {
+      "key": "\nhtml[data-theme='dark']",
+      "locations": [
+        {
+          "file": "src/styles/reader-audio.css",
+          "line": 3
+        },
+        {
+          "file": "src/styles/reader-audio.css",
+          "line": 43
+        }
+      ]
+    },
+    {
+      "key": "\nhtml[data-theme='light']",
+      "locations": [
+        {
+          "file": "src/styles/reader-audio.css",
+          "line": 23
+        },
+        {
+          "file": "src/styles/reader-audio.css",
+          "line": 50
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-header-add",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 4
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 106
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-content",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 13
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 17
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 16
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 260
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 286
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 352
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-study-summary",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 48
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 137
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 305
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-guidance-trigger",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 49
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 58
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-guidance-panel",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 54
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 282
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-study-card-meta",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 98
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 313
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-study-card-inner",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 107
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 135
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-study-card-heading",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 108
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 130
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 136
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-study-open",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 109
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 131
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-study-menu-trigger",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 111
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 132
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-study-menu",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 112
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 410
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-delete-dialog",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 115
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 410
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-passage-heading",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 121
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 240
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-passage-limit",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 122
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 242
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-passage-range",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 123
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 361
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-passage-to",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 124
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 242
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 244
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 362
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-range-field",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 125
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 363
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-range-label",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 126
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 364
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-keyword-card",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 149
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 283
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 370
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-keyword-refs",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 152
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 155
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 313
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-keyword-arrow",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 156
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 333
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-theme-group",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 157
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 283
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 370
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-theme-heading small",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 160
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 313
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-theme-chevron",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 161
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 332
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-theme-children",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 163
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 234
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-subtheme",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 164
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 234
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-subtheme-count",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 168
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 313
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-theme-study",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 169
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 233
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-lesson-ayah .reflect-ayah-reference",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 196
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 275
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 296
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-word-language",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 199
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 381
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 393
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-question-card",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 219
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 283
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-question-card .tab-card-surface",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 220
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 224
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-question-answer",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 226
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 381
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-progress-metric",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 229
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 370
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-passage-selector",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 236
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 360
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-lesson-answer",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 245
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 381
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-passage-verses > * + *",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 251
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 253
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-passage-verses",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 274
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 295
+        }
+      ]
+    },
+    {
+      "key": "\n[data-theme='dark'] .reflect-screen",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 287
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 321
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-section-heading",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 297
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 335
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 346
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-section-heading .reflect-section-toggle",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 310
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 336
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-keyword-chip",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 322
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 381
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-theme-picker-group",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 325
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 370
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-section-heading>.reflect-secondary-action",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 348
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 358
+        }
+      ]
+    },
+    {
+      "key": "\n.reflect-screen .reflect-section-heading>.reflect-section-chevron-button",
+      "locations": [
+        {
+          "file": "src/styles/reflect.css",
+          "line": 349
+        },
+        {
+          "file": "src/styles/reflect.css",
+          "line": 359
+        }
+      ]
+    },
+    {
+      "key": "\n.search-form",
+      "locations": [
+        {
+          "file": "src/styles/search.css",
+          "line": 3
+        },
+        {
+          "file": "src/styles/search.css",
+          "line": 162
+        },
+        {
+          "file": "src/styles/search.css",
+          "line": 179
+        },
+        {
+          "file": "src/styles/search.css",
+          "line": 377
+        }
+      ]
+    },
+    {
+      "key": "\n.search-form input",
+      "locations": [
+        {
+          "file": "src/styles/search.css",
+          "line": 10
+        },
+        {
+          "file": "src/styles/search.css",
+          "line": 190
+        },
+        {
+          "file": "src/styles/search.css",
+          "line": 381
+        }
+      ]
+    },
+    {
+      "key": "\n.search-form input::placeholder",
+      "locations": [
+        {
+          "file": "src/styles/search.css",
+          "line": 18
+        },
+        {
+          "file": "src/styles/search.css",
+          "line": 383
+        }
+      ]
+    },
+    {
+      "key": "\n.search-form button",
+      "locations": [
+        {
+          "file": "src/styles/search.css",
+          "line": 23
+        },
+        {
+          "file": "src/styles/search.css",
+          "line": 195
+        }
+      ]
+    },
+    {
+      "key": "\n.search-recent h2",
+      "locations": [
+        {
+          "file": "src/styles/search.css",
+          "line": 38
+        },
+        {
+          "file": "src/styles/search.css",
+          "line": 203
+        }
+      ]
+    },
+    {
+      "key": "\n.search-results-heading h2",
+      "locations": [
+        {
+          "file": "src/styles/search.css",
+          "line": 38
+        },
+        {
+          "file": "src/styles/search.css",
+          "line": 203
+        }
+      ]
+    },
+    {
+      "key": "\n.search-recent-list",
+      "locations": [
+        {
+          "file": "src/styles/search.css",
+          "line": 44
+        },
+        {
+          "file": "src/styles/search.css",
+          "line": 226
+        }
+      ]
+    },
+    {
+      "key": "\n.search-recent-list button",
+      "locations": [
+        {
+          "file": "src/styles/search.css",
+          "line": 56
+        },
+        {
+          "file": "src/styles/search.css",
+          "line": 231
+        }
+      ]
+    },
+    {
+      "key": "\n.search-results-list",
+      "locations": [
+        {
+          "file": "src/styles/search.css",
+          "line": 89
+        },
+        {
+          "file": "src/styles/search.css",
+          "line": 238
+        }
+      ]
+    },
+    {
+      "key": "\n.search-result-card",
+      "locations": [
+        {
+          "file": "src/styles/search.css",
+          "line": 93
+        },
+        {
+          "file": "src/styles/search.css",
+          "line": 242
+        },
+        {
+          "file": "src/styles/search.css",
+          "line": 390
+        }
+      ]
+    },
+    {
+      "key": "\n.search-result-reference",
+      "locations": [
+        {
+          "file": "src/styles/search.css",
+          "line": 101
+        },
+        {
+          "file": "src/styles/search.css",
+          "line": 249
+        }
+      ]
+    },
+    {
+      "key": "\n.search-result-reference strong",
+      "locations": [
+        {
+          "file": "src/styles/search.css",
+          "line": 108
+        },
+        {
+          "file": "src/styles/search.css",
+          "line": 249
+        },
+        {
+          "file": "src/styles/search.css",
+          "line": 254
+        }
+      ]
+    },
+    {
+      "key": "\n.search-result-preview",
+      "locations": [
+        {
+          "file": "src/styles/search.css",
+          "line": 120
+        },
+        {
+          "file": "src/styles/search.css",
+          "line": 259
+        }
+      ]
+    },
+    {
+      "key": "\n.search-screen",
+      "locations": [
+        {
+          "file": "src/styles/search.css",
+          "line": 175
+        },
+        {
+          "file": "src/styles/search.css",
+          "line": 265
+        }
+      ]
+    },
+    {
+      "key": "\n[data-theme='dark'] .search-recent-list button",
+      "locations": [
+        {
+          "file": "src/styles/search.css",
+          "line": 279
+        },
+        {
+          "file": "src/styles/search.css",
+          "line": 305
+        }
+      ]
+    },
+    {
+      "key": "\n[data-theme='dark'] .search-empty",
+      "locations": [
+        {
+          "file": "src/styles/search.css",
+          "line": 299
+        },
+        {
+          "file": "src/styles/search.css",
+          "line": 373
+        }
+      ]
+    },
+    {
+      "key": "\n.settings-screen .app-scroll-content",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 3
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 695
+        }
+      ]
+    },
+    {
+      "key": "\n.settings-section",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 8
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 699
+        }
+      ]
+    },
+    {
+      "key": "\n.settings-section-heading",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 12
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 703
+        }
+      ]
+    },
+    {
+      "key": "\n.settings-section-heading small",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 24
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 277
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 505
+        }
+      ]
+    },
+    {
+      "key": "\n.settings-row-copy small",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 24
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 282
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 505
+        }
+      ]
+    },
+    {
+      "key": "\n.settings-card",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 29
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 492
+        }
+      ]
+    },
+    {
+      "key": "\n.settings-theme-picker",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 34
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 510
+        }
+      ]
+    },
+    {
+      "key": "\n.settings-theme-picker button",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 42
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 515
+        }
+      ]
+    },
+    {
+      "key": "\n.settings-toggle-row",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 53
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 287
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 522
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 708
+        }
+      ]
+    },
+    {
+      "key": "\n.settings-picker-row",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 59
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 287
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 708
+        }
+      ]
+    },
+    {
+      "key": "\n.settings-row-icon",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 74
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 527
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 724
+        }
+      ]
+    },
+    {
+      "key": "\n.settings-row-copy",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 81
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 735
+        }
+      ]
+    },
+    {
+      "key": "\n.settings-row-copy strong",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 87
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 499
+        }
+      ]
+    },
+    {
+      "key": "\n.settings-picker-pill",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 128
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 437
+        }
+      ]
+    },
+    {
+      "key": "\n.settings-picker-panel",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 175
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 449
+        }
+      ]
+    },
+    {
+      "key": "\n.settings-picker-item",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 215
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 391
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 456
+        }
+      ]
+    },
+    {
+      "key": "\n.settings-picker-item-label",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 228
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 391
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 396
+        }
+      ]
+    },
+    {
+      "key": "\n.settings-reset-button",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 234
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 531
+        }
+      ]
+    },
+    {
+      "key": "\n.settings-dialog-backdrop",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 244
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 538
+        }
+      ]
+    },
+    {
+      "key": "\n.settings-dialog",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 246
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 542
+        }
+      ]
+    },
+    {
+      "key": "\n.settings-dialog h2",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 248
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 549
+        }
+      ]
+    },
+    {
+      "key": "\n.settings-dialog p",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 250
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 555
+        }
+      ]
+    },
+    {
+      "key": "\n.settings-dialog-close",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 260
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 612
+        }
+      ]
+    },
+    {
+      "key": "\n.settings-picker-row:not(.is-full-width) .settings-picker-pill",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 292
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 743
+        }
+      ]
+    },
+    {
+      "key": "\n.settings-picker-row.is-full-width .settings-picker-pill",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 336
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 765
+        }
+      ]
+    },
+    {
+      "key": "\n.settings-picker-pill:focus-visible",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 387
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 445
+        }
+      ]
+    },
+    {
+      "key": "\n.settings-screen",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 488
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 568
+        }
+      ]
+    },
+    {
+      "key": "\n[data-theme='dark'] .settings-theme-picker",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 579
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 679
+        }
+      ]
+    },
+    {
+      "key": "\n[data-theme='dark'] .settings-toggle-row",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 585
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 792
+        }
+      ]
+    },
+    {
+      "key": "\n[data-theme='dark'] .settings-picker-pill",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 662
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 679
+        }
+      ]
+    },
+    {
+      "key": "\n[data-theme='dark'] .settings-picker-panel",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 685
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 844
+        }
+      ]
+    },
+    {
+      "key": "\n[data-theme='dark'] .settings-card > .settings-toggle-row + .settings-toggle-row",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 797
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 814
+        }
+      ]
+    },
+    {
+      "key": "\n[data-theme='dark'] .settings-card > .settings-toggle-row + .settings-picker-row",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 797
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 814
+        }
+      ]
+    },
+    {
+      "key": "\n[data-theme='dark'] .settings-card > .settings-picker-row + .settings-toggle-row",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 797
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 814
+        }
+      ]
+    },
+    {
+      "key": "\n[data-theme='dark'] .settings-card > .settings-picker-row + .settings-picker-row",
+      "locations": [
+        {
+          "file": "src/styles/settings.css",
+          "line": 797
+        },
+        {
+          "file": "src/styles/settings.css",
+          "line": 814
+        }
+      ]
+    },
+    {
+      "key": "\n.app-header",
+      "locations": [
+        {
+          "file": "src/styles/shared-surfaces.css",
+          "line": 5
+        },
+        {
+          "file": "src/styles/shared-surfaces.css",
+          "line": 37
+        }
+      ]
+    },
+    {
+      "key": "\n.app-header-spacer",
+      "locations": [
+        {
+          "file": "src/styles/shared-surfaces.css",
+          "line": 20
+        },
+        {
+          "file": "src/styles/shared-surfaces.css",
+          "line": 66
+        }
+      ]
+    },
+    {
+      "key": "\n.app-fixed-header > .app-header",
+      "locations": [
+        {
+          "file": "src/styles/shared-surfaces.css",
+          "line": 28
+        },
+        {
+          "file": "src/styles/shared-surfaces.css",
+          "line": 37
+        }
+      ]
+    },
+    {
+      "key": "\n.tabs-list",
+      "locations": [
+        {
+          "file": "src/styles/tabs.css",
+          "line": 42
+        },
+        {
+          "file": "src/styles/tabs.css",
+          "line": 386
+        }
+      ]
+    },
+    {
+      "key": "\n.tab-card",
+      "locations": [
+        {
+          "file": "src/styles/tabs.css",
+          "line": 47
+        },
+        {
+          "file": "src/styles/tabs.css",
+          "line": 388
+        }
+      ]
+    },
+    {
+      "key": "\n.tab-card-surface",
+      "locations": [
+        {
+          "file": "src/styles/tabs.css",
+          "line": 75
+        },
+        {
+          "file": "src/styles/tabs.css",
+          "line": 390
+        }
+      ]
+    },
+    {
+      "key": "\n.tab-card-hit",
+      "locations": [
+        {
+          "file": "src/styles/tabs.css",
+          "line": 89
+        },
+        {
+          "file": "src/styles/tabs.css",
+          "line": 569
+        }
+      ]
+    },
+    {
+      "key": "\n.tab-card-top",
+      "locations": [
+        {
+          "file": "src/styles/tabs.css",
+          "line": 97
+        },
+        {
+          "file": "src/styles/tabs.css",
+          "line": 392
+        }
+      ]
+    },
+    {
+      "key": "\n.tab-type",
+      "locations": [
+        {
+          "file": "src/styles/tabs.css",
+          "line": 127
+        },
+        {
+          "file": "src/styles/tabs.css",
+          "line": 394
+        }
+      ]
+    },
+    {
+      "key": "\n.tab-surah",
+      "locations": [
+        {
+          "file": "src/styles/tabs.css",
+          "line": 143
+        },
+        {
+          "file": "src/styles/tabs.css",
+          "line": 396
+        }
+      ]
+    },
+    {
+      "key": "\n.tab-arabic",
+      "locations": [
+        {
+          "file": "src/styles/tabs.css",
+          "line": 176
+        },
+        {
+          "file": "src/styles/tabs.css",
+          "line": 400
+        }
+      ]
+    },
+    {
+      "key": "\n.tab-more-button",
+      "locations": [
+        {
+          "file": "src/styles/tabs.css",
+          "line": 188
+        },
+        {
+          "file": "src/styles/tabs.css",
+          "line": 398
+        }
+      ]
+    },
+    {
+      "key": "\n.tab-menu",
+      "locations": [
+        {
+          "file": "src/styles/tabs.css",
+          "line": 197
+        },
+        {
+          "file": "src/styles/tabs.css",
+          "line": 402
+        }
+      ]
+    },
+    {
+      "key": "\n.tab-menu button",
+      "locations": [
+        {
+          "file": "src/styles/tabs.css",
+          "line": 207
+        },
+        {
+          "file": "src/styles/tabs.css",
+          "line": 404
+        }
+      ]
+    },
+    {
+      "key": "\n.tab-inline-editor .primary",
+      "locations": [
+        {
+          "file": "src/styles/tabs.css",
+          "line": 265
+        },
+        {
+          "file": "src/styles/tabs.css",
+          "line": 273
+        }
+      ]
+    },
+    {
+      "key": "\n.tab-inline-editor .secondary",
+      "locations": [
+        {
+          "file": "src/styles/tabs.css",
+          "line": 265
+        },
+        {
+          "file": "src/styles/tabs.css",
+          "line": 278
+        }
+      ]
+    },
+    {
+      "key": "\n[data-theme='dark'] .tab-menu",
+      "locations": [
+        {
+          "file": "src/styles/tabs.css",
+          "line": 433
+        },
+        {
+          "file": "src/styles/tabs.css",
+          "line": 556
+        }
+      ]
+    },
+    {
+      "key": "\n[data-theme='dark'] .tab-menu button",
+      "locations": [
+        {
+          "file": "src/styles/tabs.css",
+          "line": 460
+        },
+        {
+          "file": "src/styles/tabs.css",
+          "line": 556
+        }
+      ]
+    },
+    {
+      "key": "\n.tafsir-card-head",
+      "locations": [
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 2
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 153
+        }
+      ]
+    },
+    {
+      "key": "\n.tafsir-card-head p",
+      "locations": [
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 7
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 155
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 538
+        }
+      ]
+    },
+    {
+      "key": "\n.tafsir-card-head h2",
+      "locations": [
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 10
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 154
+        }
+      ]
+    },
+    {
+      "key": "\n.tafsir-card-head button",
+      "locations": [
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 14
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 156
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 540
+        }
+      ]
+    },
+    {
+      "key": "\n.tafsir-arabic",
+      "locations": [
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 21
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 157
+        }
+      ]
+    },
+    {
+      "key": "\n.tafsir-section",
+      "locations": [
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 26
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 158
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 537
+        }
+      ]
+    },
+    {
+      "key": "\n.tafsir-section h3",
+      "locations": [
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 29
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 159
+        }
+      ]
+    },
+    {
+      "key": "\n.tafsir-section p",
+      "locations": [
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 33
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 160
+        }
+      ]
+    },
+    {
+      "key": "\n.tafsir-section div",
+      "locations": [
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 33
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 160
+        }
+      ]
+    },
+    {
+      "key": "\n.surah-info-screen",
+      "locations": [
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 46
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 162
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 302
+        }
+      ]
+    },
+    {
+      "key": "\n.surah-info-topbar",
+      "locations": [
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 50
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 183
+        }
+      ]
+    },
+    {
+      "key": "\n.surah-info-topbar button",
+      "locations": [
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 54
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 163
+        }
+      ]
+    },
+    {
+      "key": "\n.surah-info-topbar h1",
+      "locations": [
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 62
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 190
+        }
+      ]
+    },
+    {
+      "key": "\n.surah-info-content",
+      "locations": [
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 66
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 393
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 486
+        }
+      ]
+    },
+    {
+      "key": "\n.surah-info-title-row",
+      "locations": [
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 69
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 205
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 400
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 490
+        }
+      ]
+    },
+    {
+      "key": "\n.surah-info-kicker",
+      "locations": [
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 73
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 208
+        }
+      ]
+    },
+    {
+      "key": "\n.surah-info-title-row h2",
+      "locations": [
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 80
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 212
+        }
+      ]
+    },
+    {
+      "key": "\n.surah-info-meta",
+      "locations": [
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 84
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 218
+        }
+      ]
+    },
+    {
+      "key": "\n.surah-info-icon",
+      "locations": [
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 89
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 222
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 404
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 544
+        }
+      ]
+    },
+    {
+      "key": "\n.surah-info-html",
+      "locations": [
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 94
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 231
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 339
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 407
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 493
+        }
+      ]
+    },
+    {
+      "key": "\n.surah-info-html h2",
+      "locations": [
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 94
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 234
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 352
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 445
+        }
+      ]
+    },
+    {
+      "key": "\n.surah-info-html h3",
+      "locations": [
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 101
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 237
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 352
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 453
+        }
+      ]
+    },
+    {
+      "key": "\n.surah-info-html li",
+      "locations": [
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 109
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 347
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 458
+        }
+      ]
+    },
+    {
+      "key": "\n.surah-info-topbar .shared-back-button",
+      "locations": [
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 201
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 513
+        }
+      ]
+    },
+    {
+      "key": "\n.surah-info-html p",
+      "locations": [
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 240
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 347
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 458
+        }
+      ]
+    },
+    {
+      "key": "\n.tafsir-footnote-toggle",
+      "locations": [
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 249
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 365
+        }
+      ]
+    },
+    {
+      "key": "\n.tafsir-footnotes",
+      "locations": [
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 268
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 371
+        }
+      ]
+    },
+    {
+      "key": "\n.tafsir-footnotes p",
+      "locations": [
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 275
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 383
+        }
+      ]
+    },
+    {
+      "key": "\n[data-theme='dark'] .surah-info-content",
+      "locations": [
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 313
+        },
+        {
+          "file": "src/styles/tafsir.css",
+          "line": 465
+        }
+      ]
+    }
+  ]
+}

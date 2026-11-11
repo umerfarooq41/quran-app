@@ -1,3 +1,4 @@
+/* tokens: component-owned styles; responsive and theme states live with their owner. */
 @font-face {
   font-family: IndopakNastaleeq;
   src: url('/fonts/nastaleeq-font.woff2') format('woff2');
@@ -17,14 +18,13 @@
 }
 
 :root {
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color-scheme: light;
-
-  /* Compact mobile UI system. Mushaf typography uses separate protected tokens. */
+  --ui-danger-bg: #c83a35;
+  --surah-introduction-size-en: clamp(.96rem, 3.9vw, 1.05rem);
+  --surah-introduction-size-ur: clamp(1.06rem, 4.35vw, 1.22rem);
+  --surah-introduction-leading-en: 1.78;
+  --surah-introduction-leading-ur: 2.05;
   --ui-font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --translation-english-font: var(--ui-font);
-
-  /* Primary Urdu font: Jameel Khushkhati (SIL OFL 1.1) */
   --translation-urdu-font: "Jameel Khushkhati", "Noto Nastaliq Urdu", "Nafees Nastaleeq", "Urdu Typesetting", "Noto Naskh Arabic", serif;
 
   --ui-text-xs: .68rem;
@@ -54,6 +54,9 @@
   --ui-button-height: 40px;
   --ui-chip-height: 34px;
   --ui-tab-height: 42px;
+  --ui-segment-selected: #245d4e;
+  --ui-segment-bg: rgba(255, 252, 246, .72);
+  --ui-segment-border: rgba(201, 162, 75, .18);
   --ui-card-padding: 12px;
   --ui-sheet-padding: 14px;
   --ui-screen-width: 460px;
@@ -72,3 +75,6 @@
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
+
+:root { --ui-menu-bg: #fffaf1; }
+[data-theme='dark'] { --ui-menu-bg: #202521; }

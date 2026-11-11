@@ -156,11 +156,11 @@ export async function generateQuranShareVideo({
     canvasStream.getTracks().forEach((track) => track.stop());
     combinedStream.getTracks().forEach((track) => track.stop());
     audioSources.forEach((source) => {
-      try { source.disconnect(); } catch {}
+      try { source.disconnect(); } catch { /* Ended sources may already be disconnected; cleanup must stay idempotent. */ }
     });
     capturableAudio.revoke?.();
     capturableBismillah?.revoke?.();
-    try { await audioContext.close(); } catch {}
+    try { await audioContext.close(); } catch { /* An already-closed context needs no further cleanup. */ }
   };
 
   try {
@@ -318,7 +318,7 @@ export async function generateQuranShareVideo({
     return output;
   } finally {
     if (recorder.state !== 'inactive') {
-      try { recorder.stop(); } catch {}
+      try { recorder.stop(); } catch { /* The encoder can become inactive while finalization is queued. */ }
     }
     await cleanup();
   }
@@ -665,12 +665,7 @@ function wrapText(ctx, text, maxWidth) {
   return lines;
 }
 
-function truncateLines(lines, maxLines) {
-  if (lines.length <= maxLines) return lines;
-  const result = lines.slice(0, maxLines);
-  result[maxLines - 1] = `${result[maxLines - 1]}…`;
-  return result;
-}
+
 
 function roundedRect(ctx, x, y, width, height, radius) {
   const r = Math.min(radius, width / 2, height / 2);

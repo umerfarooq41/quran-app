@@ -6,6 +6,7 @@ import { getTranslationOption, loadTranslationEntry } from '../lib/translations'
 import { parseQuranInternalHref, sanitizeSurahHtml } from '../lib/sanitizeHtml';
 import { useAppStore } from '../store/useAppStore';
 import { Empty, Header, Screen } from '../components/common/AppChrome';
+import { Card } from '../components/common/Surfaces';
 
 export default function TafsirScreen() {
   const { tafsirTarget, goBack, goAyah, openSurahInfo, settings } = useAppStore(useShallow((state) => ({
@@ -80,7 +81,7 @@ export default function TafsirScreen() {
         <Header title="Translation" onBack={() => goBack('reader')} backLabel="Back to reader" />
       </div>
       <div className="app-scroll-content">
-      <article className="tafsir-card">
+      <Card as="article" className="tafsir-card">
         <div className="tafsir-card-head">
           <div>
             <p>{surah?.name}</p>
@@ -143,7 +144,7 @@ export default function TafsirScreen() {
             </div>
           </section>
         )}
-      </article>
+      </Card>
       </div>
     </Screen>
   );
