@@ -479,7 +479,7 @@ export default function App() {
           variants={pageMotion}
           initial={reducePageMotion ? false : 'enter'}
           animate="center"
-          exit={reducePageMotion ? { x: 0, pointerEvents: 'none' } : 'exit'}
+          exit={reducePageMotion || activeView === VIEWS.READER ? { x: '0%', pointerEvents: 'none' } : 'exit'}
           transition={{ duration: reducePageMotion || activeView === VIEWS.READER ? 0 : 0.28, ease: [0.22, 1, 0.36, 1] }}
         >
         {activeView === VIEWS.HOME && <HomeScreen key="home" />}
