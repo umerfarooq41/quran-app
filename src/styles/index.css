@@ -1299,7 +1299,13 @@
 }
 
 .index-replica-shell.app-page-shell .index-surah-collapse {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-top: 1px solid var(--ui-divider);
+  border-radius: 0;
   background: transparent;
+  box-shadow: none;
   backdrop-filter: none;
 }
 .index-replica-shell.app-page-shell .index-surah-info-preview,
@@ -1332,13 +1338,13 @@
 .index-replica-shell.app-page-shell .index-quarter-btn {
   width: 100%;
   max-width: 174px;
-  min-height: 40px;
-  height: 40px;
+  min-height: 44px;
+  height: 44px;
   padding: 8px 12px;
-  border: 1.3px solid color-mix(in srgb, var(--brand-gold, #b68a35) 55%, transparent);
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--theme-surface) 90%, var(--brand-gold, #b68a35) 10%);
-  box-shadow: 0 1px 3px rgba(31,61,43,.05);
+  border: 1px solid var(--ui-control-border);
+  border-radius: 14px;
+  background: var(--ui-control-bg);
+  box-shadow: none;
   color: var(--theme-text);
   text-align: center;
   transition: background-color 120ms ease, color 120ms ease, transform 120ms ease;
@@ -1703,7 +1709,11 @@
   box-shadow: none;
 }
 
-[data-theme='dark'] .index-replica-shell .index-quarter-btn,
+[data-theme='dark'] .index-replica-shell .index-quarter-btn {
+  border-color: var(--ui-control-border);
+  background: var(--ui-control-bg);
+  color: var(--theme-text);
+}
 [data-theme='dark'] .index-replica-shell .index-ayah-stepper {
   border-color: color-mix(in srgb, var(--brand-gold) 35%, var(--theme-border));
   background: var(--theme-soft);
