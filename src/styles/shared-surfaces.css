@@ -418,27 +418,10 @@
 }
 
 
-/* Both pages occupy the same grid cell throughout navigation.
-   Never switch the exiting page from flow to absolute positioning mid-slide. */
+/* Navigation layers share the same origin; outgoing pages leave normal flow. */
 .app-shell { position: relative; }
-.app-navigation-stack {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  align-items: start;
-  isolation: isolate;
-}
-.app-navigation-page {
-  grid-area: 1 / 1;
-  position: relative;
-  min-width: 0;
-  width: 100%;
-  min-height: 100dvh;
-  background: var(--theme-background, #fffaf1);
-  will-change: transform;
-}
-.app-navigation-page:has(.reader-screen) {
-  background: var(--theme-background, #fffaf1);
-}
+.app-navigation-page { position: relative; width: 100%; min-width: 0; background: var(--theme-background, transparent); }
+.app-navigation-page[style*="position: absolute"] { inset: 0 auto auto 0; width: 100%; }
 @media (prefers-reduced-motion: reduce) {
-  .app-navigation-page { will-change: auto; }
+  .app-navigation-page { scroll-behavior: auto; }
 }
