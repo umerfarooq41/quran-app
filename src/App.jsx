@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { useShallow } from 'zustand/react/shallow';
 import { getLastRead, getSettings, upsertSetting } from './lib/db';
 import { getContentSyncResourcesForTranslation } from './lib/translations';
@@ -24,19 +24,6 @@ import SurahScreen from './pages/SurahScreen';
 import SurahInfoScreen from './pages/SurahInfoScreen';
 import { ShareQuranScreen } from './features/reader/components/ShareAyahSheet';
 import { ReaderAudioPanel } from './features/reader/components/ReaderAudioPanel';
-
-const pageMotion = {
-  enter: ({ direction, view }) => ({
-    x: view === VIEWS.READER || direction === 'back' ? '0%' : '100%',
-    zIndex: direction === 'back' ? 0 : 2,
-  }),
-  center: ({ direction }) => ({ x: '0%', zIndex: direction === 'back' ? 0 : 2 }),
-  exit: ({ direction, view }) => ({
-    x: view === VIEWS.READER || direction !== 'back' ? '0%' : '100%',
-    zIndex: direction === 'back' ? 2 : 0,
-    pointerEvents: 'none',
-  }),
-};
 
 function allowsLandscapeOrientation() {
   const width = window.screen?.width || window.innerWidth;
@@ -144,7 +131,39 @@ export default function App() {
     tafsirTarget: state.tafsirTarget,
   })));
   const activeView = normalizeView(view);
-  const reducePageMotion = useReducedMotion();
+  const [displayedView, setDisplayedView] = useState(activeView);
+  const transitionRef = useRef(null);
+  const previousViewRef = useRef(activeView);
+  useLayoutEffect(() => {
+    if (displayedView === activeView) return;
+    const previousView = previousViewRef.current;
+    previousViewRef.current = activeView;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const keyboardOpen = Boolean(
+      document.activeElement?.matches?.('input, textarea, [contenteditable="true"]')
+      && window.visualViewport
+      && window.visualViewport.height < window.innerHeight * 0.75
+    );
+    const canAnimate = !reduceMotion && !keyboardOpen
+      && typeof document.startViewTransition === 'function'
+      && previousView !== VIEWS.READER && activeView !== VIEWS.READER;
+    transitionRef.current?.skipTransition?.();
+    if (!canAnimate) {
+      setDisplayedView(activeView);
+      return;
+    }
+    document.documentElement.dataset.navigationDirection = navDirection === 'back' ? 'back' : 'forward';
+    const transition = document.startViewTransition(() => {
+      flushSync(() => setDisplayedView(activeView));
+    });
+    transitionRef.current = transition;
+    transition.finished.finally(() => {
+      if (transitionRef.current === transition) {
+        transitionRef.current = null;
+        delete document.documentElement.dataset.navigationDirection;
+      }
+    }).catch(() => {});
+  }, [activeView, displayedView, navDirection]);
   // Keep focused fields visible as the mobile visual viewport contracts.
   // Scroll the nearest scrollable container, not the entire page or sheet.
   useEffect(() => {
@@ -470,35 +489,22 @@ export default function App() {
 
   return (
     <Shell>
-      <div className="app-navigation-stack">
-      <AnimatePresence initial={false} custom={{ direction: navDirection, view: activeView }} mode="sync">
-        <motion.div
-          key={activeView}
-          className="app-navigation-page"
-          custom={{ direction: navDirection, view: activeView }}
-          variants={pageMotion}
-          initial={reducePageMotion ? false : 'enter'}
-          animate="center"
-          exit={reducePageMotion || activeView === VIEWS.READER ? { x: '0%', pointerEvents: 'none' } : 'exit'}
-          transition={{ duration: reducePageMotion || activeView === VIEWS.READER ? 0 : 0.28, ease: [0.22, 1, 0.36, 1] }}
-        >
-        {activeView === VIEWS.HOME && <HomeScreen key="home" />}
-        {activeView === VIEWS.REFLECT && <ReflectScreen key="reflect" />}
-        {activeView === VIEWS.READER && <ReaderScreen key="reader" />}
-        {activeView === VIEWS.INDEX && <IndexScreen key="index" />}
-        {activeView === VIEWS.SURAH && <SurahScreen key="surah" />}
-        {activeView === VIEWS.SURAH_INFO && <SurahInfoScreen key="surahInfo" />}
-        {activeView === VIEWS.SEARCH && <SearchScreen key="search" />}
-        {activeView === VIEWS.TABS && <BookmarksScreen key="tabs" />}
-        {activeView === VIEWS.TAFSIR && <TafsirScreen key="tafsir" />}
-        {activeView === VIEWS.SETTINGS && <SettingsScreen key="settings" />}
-        {activeView === VIEWS.HELP && <HelpScreen key="help" />}
-        {activeView === VIEWS.ABOUT && <AboutScreen key="about" />}
-        {activeView === VIEWS.SHARE_QURAN && shareTarget && (
+      <div className="app-navigation-page bg-fluent" data-view={displayedView}>
+        {displayedView === VIEWS.HOME && <HomeScreen key="home" />}
+        {displayedView === VIEWS.REFLECT && <ReflectScreen key="reflect" />}
+        {displayedView === VIEWS.READER && <ReaderScreen key="reader" />}
+        {displayedView === VIEWS.INDEX && <IndexScreen key="index" />}
+        {displayedView === VIEWS.SURAH && <SurahScreen key="surah" />}
+        {displayedView === VIEWS.SURAH_INFO && <SurahInfoScreen key="surahInfo" />}
+        {displayedView === VIEWS.SEARCH && <SearchScreen key="search" />}
+        {displayedView === VIEWS.TABS && <BookmarksScreen key="tabs" />}
+        {displayedView === VIEWS.TAFSIR && <TafsirScreen key="tafsir" />}
+        {displayedView === VIEWS.SETTINGS && <SettingsScreen key="settings" />}
+        {displayedView === VIEWS.HELP && <HelpScreen key="help" />}
+        {displayedView === VIEWS.ABOUT && <AboutScreen key="about" />}
+        {displayedView === VIEWS.SHARE_QURAN && shareTarget && (
           <ShareQuranScreen key="shareQuran" ayah={shareTarget} onClose={closeSharePage} />
         )}
-        </motion.div>
-      </AnimatePresence>
       </div>
       <ReaderAudioPanel />
    </Shell>
