@@ -60,7 +60,7 @@ export default function SettingsScreen() {
         title="Appearance"
         description="Applies to app controls, not the Mushaf page"
       >
-        <div className="settings-theme-picker" role="group" aria-label="Theme">
+        <div className="settings-theme-picker index-segment share-like-segment" role="group" aria-label="Theme">
           <button
             type="button"
             className={settings.theme === 'light' ? 'is-active' : ''}

@@ -32,11 +32,7 @@
 }
 
 .settings-theme-picker {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 5px;
   margin: 8px 0;
-  background: var(--theme-soft, rgba(229, 226, 220, .78));
 }
 
 .settings-theme-picker button {
@@ -44,8 +40,6 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  color: var(--text-muted, #6d6b67);
-  transition: background .18s ease, color .18s ease, box-shadow .18s ease, transform .16s ease;
 }
 
 .settings-theme-picker button:active { transform: scale(.985); }
@@ -247,14 +241,10 @@
 }
 
 .settings-theme-picker {
-  border-radius: var(--ui-radius-md);
-  padding: var(--ui-space-1);
+  width: 100%;
 }
 
 .settings-theme-picker button {
-  min-height: var(--ui-button-height);
-  border-radius: var(--ui-radius-sm);
-  font-size: var(--ui-text-sm);
   font-weight: 560;
 }
 
