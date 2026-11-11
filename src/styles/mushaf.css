@@ -355,13 +355,14 @@
   overflow: hidden;
   text-align: center;
   box-sizing: border-box;
-  /* SVG 1 has a narrower left text compartment than SVG 2. */
-  left: 6.6%;
+  /* SVG 1's outer ornaments are not text compartments.
+     Keep the ayah count inside the central clear panel. */
+  left: 20%;
   top: 0;
   height: 46%;
   padding: 0 0.5%;
   font-size: calc(clamp(.68rem, 1.60vh, .92rem) * var(--font-scale, 1));
-  width: 10.8%;
+  width: 13%;
 }
 
 .surah-banner--double .surah-banner-name {
@@ -373,8 +374,8 @@
   overflow: hidden;
   text-align: center;
   box-sizing: border-box;
-  left: 27%;
-  right: 27%;
+  left: 34%;
+  right: 20%;
   top: 0;
   height: 46%;
   padding: 0 1%;
