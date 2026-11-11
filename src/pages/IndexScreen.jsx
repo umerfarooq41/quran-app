@@ -1,5 +1,6 @@
 import { SearchField } from '../components/common/SearchField';
 import React, { useEffect, useMemo, useState } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { BookOpen, ChevronDown, List, Minus, Plus, Star } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore } from '../store/useAppStore';
@@ -40,14 +41,22 @@ function stripHtml(value = '') {
 
 
 export default function IndexScreen() {
-  const { tab, setTab, goBack } = useAppStore(useShallow((state) => ({
+  const reduceMotion = useReducedMotion();
+  const { tab, setTab, goBack, navDirection } = useAppStore(useShallow((state) => ({
     tab: state.indexTab || 'juz',
     setTab: state.setIndexTab,
     goBack: state.goBack,
+    navDirection: state.navDirection,
   })));
 
+  const direction = navDirection === 'back' ? -1 : 1;
   return (
-    <section className="index-replica-shell app-page-shell bg-fluent">
+    <motion.section
+      initial={reduceMotion ? false : { x: direction * 12 }}
+      animate={{ x: 0 }}
+      exit={reduceMotion ? { x: 0 } : { x: -direction * 12 }}
+      transition={{ duration: reduceMotion ? 0 : 0.24, ease: [0.22, 1, 0.36, 1] }}
+      className="index-replica-shell app-page-shell bg-fluent">
       <div className="index-replica-inner">
         <div className="app-fixed-header">
           <Header title="Index" onBack={() => goBack()} backLabel="Back from index" />
@@ -84,7 +93,7 @@ export default function IndexScreen() {
           {tab === 'juz' ? <JuzIndex /> : <SurahIndex />}
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 
