@@ -1,6 +1,6 @@
 import React from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useAppStore } from '../../store/useAppStore';
 import { panel } from './ui';
 
@@ -10,6 +10,7 @@ export function Shell({ children }) {
 
 export function Screen({ children, className = '' }) {
   const navDirection = useAppStore((state) => state.navDirection);
+  const reduceMotion = useReducedMotion();
   const variants = {
     // Keep text and selected-control contrast stable during page transitions.
     // Opacity on the entire screen blended white labels into the page behind them.
@@ -20,10 +21,10 @@ export function Screen({ children, className = '' }) {
   const v = variants[navDirection] || variants.forward;
   return (
     <motion.section
-      initial={v.initial}
+      initial={reduceMotion ? false : v.initial}
       animate={v.animate}
-      exit={v.exit}
-      transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+      exit={reduceMotion ? v.animate : v.exit}
+      transition={{ duration: reduceMotion ? 0 : 0.24, ease: [0.22, 1, 0.36, 1] }}
       className={`screen-shell mx-auto max-w-5xl ${className}`}
     >
       {children}
