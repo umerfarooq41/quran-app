@@ -250,8 +250,28 @@
 @media (max-width: 360px) {
   .reflect-screen .reflect-word-language button { padding-inline: 8px; }
 }
-.reflect-screen .reflect-question-tabs { width:100%; }
-.reflect-screen .reflect-question-tabs > button { flex:1; min-width:0; }
+.reflect-screen .reflect-question-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.reflect-screen .reflect-question-filter-chip {
+  min-height: 34px;
+  padding: 6px 14px;
+  border: 1px solid var(--ui-control-border);
+  border-radius: 999px;
+  background: var(--ui-control-bg);
+  color: var(--theme-text);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+.reflect-screen .reflect-question-filter-chip.is-active {
+  border-color: var(--ui-primary);
+  background: var(--ui-primary);
+  color: #fff;
+}
 .reflect-screen .reflect-question-card { position:relative; }
 .reflect-screen .reflect-question-card .tab-card-surface {
   min-height:80px; padding:0;
