@@ -1100,7 +1100,7 @@
 .index-replica-shell.app-page-shell .index-ayah-jump {
   border-radius: 0;
   background: transparent;
-  padding: 14px 4px 4px;
+  padding: 14px 18px 18px;
   overflow: visible;
 }
 
@@ -1111,7 +1111,7 @@
   }
 
   .index-replica-shell.app-page-shell .index-ayah-jump {
-    padding: 12px 2px 2px;
+    padding: 12px 14px 16px;
   }
 }
 
