@@ -136,7 +136,7 @@ export function AyahTranslationCard({ target, translationId, onClose }) {
         initial={{ y: '100%' }}
         animate={{ y: 0 }}
         exit={{ y: '100%' }}
-        transition={{ type: 'spring', stiffness: 380, damping: 38, mass: .9 }}
+        transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
         className={wordByWordEnabled ? 'ayah-translation-card has-word-by-word' : 'ayah-translation-card'}
         role="dialog"
         aria-modal="true"
