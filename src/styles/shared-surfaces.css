@@ -93,7 +93,7 @@
 }
 
 .ui-sheet {
-  background: var(--theme-surface-solid);
+  background: var(--ui-card-bg);
   border: 1px solid var(--ui-card-border);
   border-radius: var(--ui-radius-xl, 22px);
   color: var(--theme-text);
@@ -179,7 +179,7 @@
   position: fixed; inset: auto; margin: 0; z-index: var(--z-overlay, 100);
   max-height: min(44vh, 340px); overflow-y: auto; overscroll-behavior: contain;
   padding: 6px; border-radius: var(--ui-picker-radius);
-  background: var(--ui-dropdown-solid-bg, #faf7f0); border: 1px solid var(--ui-control-border);
+  background: var(--ui-card-bg); border: 1px solid var(--ui-control-border);
   box-shadow: 0 14px 32px rgba(28, 35, 30, .16);
   transform-origin: top center;
   animation: app-option-settle .16s cubic-bezier(.22, 1, .36, 1) both;
@@ -475,6 +475,3 @@
 .reader-audio-expanded-panel .app-option-picker-compact .app-option-trigger { justify-content: center; gap: 10px; }
 .reader-audio-expanded-panel .app-option-picker-compact .app-option-label { flex: 0 1 auto; width: auto; text-align: center; }
 
-/* Dropdown menus match the solid card palette without revealing underlying content. */
-:root { --ui-dropdown-solid-bg: #faf7f0; }
-:root[data-theme='dark'] { --ui-dropdown-solid-bg: #202521; }
