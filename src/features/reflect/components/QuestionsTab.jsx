@@ -3,7 +3,6 @@ import { SearchField } from '../../../components/common/SearchField';
 import React from 'react';
 import { ChevronDown, Trash2 } from 'lucide-react';
 import { reflectCardClass as card } from '../reflectPresentation';
-import ReflectHubTabs from './ReflectHubTabs';
 
 /** Search, filter, expand and navigate saved study questions. */
 export default function QuestionsTab({ lessons, questionFilter, setQuestionFilter, questionSearch, setQuestionSearch, questionExpanded, setQuestionExpanded, questionSwiped, setQuestionSwiped, removeQuestion, setQuestionJump, setActive, setMode }) {
@@ -13,7 +12,11 @@ export default function QuestionsTab({ lessons, questionFilter, setQuestionFilte
           return <div className="space-y-3">
             <div className="flex items-center justify-between"><h2 className="font-semibold">My Questions</h2><span className="text-xs text-slate-500">{all.length} saved</span></div>
             <SearchField label="Search questions" placeholder="Search questions…" value={questionSearch} onChange={setQuestionSearch}/>
-            <ReflectHubTabs tabs={['All', 'Open', 'Answered']} active={questionFilter} onChange={setQuestionFilter} className="reflect-question-tabs" label="Question status" />
+            <div className="reflect-question-filters" role="group" aria-label="Filter questions by status">
+              {['All', 'Open', 'Answered'].map(filter => (
+                <button key={filter} type="button" className={`reflect-question-filter-chip ${questionFilter === filter ? 'is-active' : ''}`} aria-pressed={questionFilter === filter} onClick={() => setQuestionFilter(filter)}>{filter}</button>
+              ))}
+            </div>
             {visible.length?visible.map(q=>{
               const key=q.lesson.id+':'+q.id,expanded=questionExpanded===key,swiped=questionSwiped===key;
               return <SwipeActions key={key} className="tab-card reflect-question-card" open={swiped} onOpenChange={open => { setQuestionSwiped(open ? key : null); setQuestionExpanded(null); }}>
