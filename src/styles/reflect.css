@@ -11,15 +11,15 @@
   grid-template-columns: repeat(4, minmax(0, 1fr));
   width: 100%;
   min-width: 0;
-  min-height: 48px;
-  height: auto;
+  min-height: 52px;
+  height: 52px;
   margin-bottom: 16px;
   padding: 4px;
   border-radius: 999px;
 }
 .reflect-screen .reflect-tabs.share-like-segment > button {
   min-width: 0;
-  min-height: 40px;
+  min-height: 44px;
   padding: 0 4px;
   font-size: clamp(11px, 2.9vw, 13px);
   white-space: nowrap;
