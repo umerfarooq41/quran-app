@@ -130,6 +130,7 @@ export function ReaderAudioPanel() {
   );
   const selectedReciterName = getReciterDisplayName(selectedReciterMeta);
   const [status, setStatus] = useState('');
+  const OFFLINE_AUDIO_MESSAGE = 'Internet connection required to play recitation audio.';
 
   const surah = ayah?.surahNumber ? getSurah(ayah.surahNumber) : null;
   const reference = ayah?.surahNumber && ayah?.ayahNumber
@@ -213,6 +214,12 @@ export function ReaderAudioPanel() {
     }
 
     const handleUserPlayRequest = (event) => {
+      if (navigator.onLine === false) {
+        playIntentRef.current = false;
+        setAudioPlaying(false);
+        setStatus(OFFLINE_AUDIO_MESSAGE);
+        return;
+      }
       playIntentRef.current = true;
 
       // ReaderScreen commits the requested target before dispatching this
@@ -457,6 +464,7 @@ export function ReaderAudioPanel() {
           Number.isFinite(audio.duration) ? audio.duration : 0,
         );
         syncMediaSessionPosition(audio);
+        if (!sourceTransitionRef.current && !audio.paused) syncFullSurahTarget(audio.currentTime || 0);
       },
       play: () => {
         if (audio !== currentAudioRef.current) return;
@@ -465,6 +473,7 @@ export function ReaderAudioPanel() {
           return;
         }
         syncPlaybackStateForCurrentSource();
+        syncFullSurahTarget(audio.currentTime || 0);
         setAudioPlaying(true);
         setStatus('');
       },
@@ -597,6 +606,12 @@ export function ReaderAudioPanel() {
   async function startCurrentAudio() {
     const audio = currentAudioRef.current;
     if (!audio || !playIntentRef.current || unmountedRef.current) return false;
+    if (navigator.onLine === false && audio.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) {
+      playIntentRef.current = false;
+      setAudioPlaying(false);
+      setStatus(OFFLINE_AUDIO_MESSAGE);
+      return false;
+    }
 
     const request = ++playRequestRef.current;
     const sourceLoad = loadTokenRef.current;
@@ -634,6 +649,12 @@ export function ReaderAudioPanel() {
 
   async function loadTarget(target, reciterId, autoplay, options = {}) {
     if (!target || unmountedRef.current) return;
+    if (navigator.onLine === false) {
+      playIntentRef.current = false;
+      setAudioPlaying(false);
+      setStatus(OFFLINE_AUDIO_MESSAGE);
+      return;
+    }
 
     const loadToken = ++loadTokenRef.current;
     loadingRef.current = { target, reciterId, loadToken };
@@ -690,10 +711,10 @@ export function ReaderAudioPanel() {
       playIntentRef.current = false;
       setAudioPlaying(false);
       setPlayingVerseKey(null);
-      setStatus(
+      setStatus(navigator.onLine === false ? OFFLINE_AUDIO_MESSAGE : (
         error?.code === 'AUDIO_UNAVAILABLE' || fullSurahError
           ? 'Audio is not available for this ayah and reciter.'
-          : (error?.message || 'Audio could not be loaded.'),
+          : (error?.message || 'Audio could not be loaded.')),
       );
     }
   }
@@ -1117,6 +1138,13 @@ export function ReaderAudioPanel() {
   function togglePlay() {
     const audio = currentAudioRef.current;
     if (!audio) return;
+
+    if (!playing && navigator.onLine === false && audio.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) {
+      playIntentRef.current = false;
+      setAudioPlaying(false);
+      setStatus(OFFLINE_AUDIO_MESSAGE);
+      return;
+    }
 
     // The displayed Pause action also applies while a source/play promise is
     // loading. Native paused state alone cannot represent the user's intent.
