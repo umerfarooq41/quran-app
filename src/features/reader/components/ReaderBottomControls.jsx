@@ -89,7 +89,7 @@ export function ReaderBottomControls({
           </button>
 
 
-          <button onClick={onSearch} aria-label="Search">
+          <button onClick={onSearch} aria-label="Search" style={{ marginInlineStart: 'auto' }}>
             <Search size={34} strokeWidth={1.8} />
           </button>
         </div>
