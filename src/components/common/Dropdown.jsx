@@ -3,7 +3,7 @@ import { Check, ChevronDown } from 'lucide-react';
 
 /** One viewport-aware listbox. Native top-layer rendering escapes card clipping
  * and stacking contexts while preserving the DOM/focus ownership of sheets. */
-export function AppOptionPicker({ label, value, options, onSelect, className = '', description, compact = false, open: controlledOpen, onOpenChange }) {
+export function AppOptionPicker({ label, value, options, onSelect, className = '', description, compact = false, settingsStyle = false, iconOnly = false, open: controlledOpen, onOpenChange }) {
   const [localOpen, setLocalOpen] = useState(false);
   const open = controlledOpen ?? localOpen;
   const setOpen = next => { setLocalOpen(next); onOpenChange?.(next); };
@@ -31,7 +31,7 @@ export function AppOptionPicker({ label, value, options, onSelect, className = '
       const above = Math.max(0, rect.top - topEdge - 6);
       const up = below < Math.min(300, options.length * 52 + 14) && above > below;
       const maxHeight = Math.min(340, up ? above : below);
-      const width = Math.min(Math.max(rect.width, 180), rightEdge - leftEdge);
+      const width = Math.min(Math.max(rect.width, settingsStyle ? 320 : 180), rightEdge - leftEdge);
       Object.assign(panel.style, { width: `${width}px`, maxHeight: `${maxHeight}px`, left: `${Math.max(leftEdge, Math.min(rect.left, rightEdge - width))}px`, top: `${up ? Math.max(topEdge, rect.top - 6 - Math.min(panel.scrollHeight, maxHeight)) : rect.bottom + 6}px` });
     };
     position();
@@ -48,7 +48,7 @@ export function AppOptionPicker({ label, value, options, onSelect, className = '
       window.visualViewport?.removeEventListener('resize', position);
       window.visualViewport?.removeEventListener('scroll', position);
     };
-  }, [open, options.length]);
+  }, [open, options.length, settingsStyle]);
 
   useEffect(() => {
     if (!open) return undefined;
@@ -59,16 +59,16 @@ export function AppOptionPicker({ label, value, options, onSelect, className = '
     return () => { document.removeEventListener('pointerdown', outside); document.removeEventListener('keydown', escape, true); };
   }, [open]);
 
-  return <div ref={root} className={`app-option-picker ${compact ? 'app-option-picker-compact' : ''} ${className}`}>
+  return <div ref={root} className={`app-option-picker ${compact ? 'app-option-picker-compact' : ''} ${settingsStyle ? 'app-option-picker-settings' : ''} ${className}`}>
     <button ref={trigger} type="button" className="app-option-trigger" aria-label={`${label}: ${selected?.label ?? String(value)}`} aria-describedby={description ? descriptionId : undefined} aria-haspopup="listbox" aria-controls={open ? menuId : undefined} aria-expanded={open} onKeyDown={event => {
       if (event.key === 'ArrowDown' || event.key === 'ArrowUp') { event.preventDefault(); setOpen(true); }
     }} onClick={() => setOpen(!open)}>
-      {selected?.avatar && <img className="app-option-avatar" src={selected.avatar} alt="" />}
-      <span className="app-option-label">{selected?.label ?? String(value)}</span>
+      {!iconOnly && selected?.avatar && <img className="app-option-avatar" src={selected.avatar} alt="" />}
+      {!iconOnly && <span className="app-option-label">{selected?.label ?? String(value)}</span>}
       <ChevronDown size={19} aria-hidden="true" className={open ? 'app-option-chevron is-open' : 'app-option-chevron'}/>
     </button>
     {description && <small id={descriptionId} className="app-option-description">{description}</small>}
-    {open && <div ref={menu} id={menuId} popover="manual" data-reader-ui className="app-option-menu" role="listbox" aria-label={label} onKeyDown={event => handleListboxKeyDown(event, () => close(false))}>
+    {open && <div ref={menu} id={menuId} popover="manual" data-reader-ui className={`app-option-menu ${settingsStyle ? "app-option-menu-settings" : ""}`} role="listbox" aria-label={label} onKeyDown={event => handleListboxKeyDown(event, () => close(false))}>
       {options.map(option => {
         const active = String(option.value) === String(value);
         return <button key={option.value} type="button" role="option" tabIndex={active ? 0 : -1} aria-selected={active} className={'app-option-item' + (active ? ' is-selected' : '')} onClick={() => { onSelect(option.value); close(); }}>
