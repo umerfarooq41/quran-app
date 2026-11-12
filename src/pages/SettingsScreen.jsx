@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import { BookOpen, Languages, ListTree, Mic2, Moon, MonitorSmartphone, CircleHelp, Info, ChevronRight, Sun, X } from 'lucide-react';
+import { BookOpen, Languages, ListTree, Mic2, Moon, MonitorSmartphone, CircleHelp, Info, ChevronRight, Sun, X, Download, Upload } from 'lucide-react';
 import { getReciterImageUrl, normalizeLocalReciters } from '../lib/localAudio';
 import { TRANSLATION_LANGUAGES, getDefaultTranslationForLanguage, getTranslationLanguageId, getTranslationOptionsForLanguage } from '../lib/translations';
 import { WORD_BY_WORD_LANGUAGES } from '../services/quranFoundation';
@@ -8,6 +8,7 @@ import { useAppStore } from '../store/useAppStore';
 import { Header, Screen } from '../components/common/AppChrome';
 import { Card, Dialog } from '../components/common/Surfaces';
 import { AppOptionPicker } from '../components/common/Dropdown';
+import { createPersonalBackup, downloadPersonalBackup, inspectPersonalBackup, restorePersonalBackup } from '../lib/backup';
 
 export default function SettingsScreen() {
   const { settings, updateSettings, resetSettings, openHelp, openAbout } = useAppStore(useShallow((state) => ({
@@ -15,6 +16,63 @@ export default function SettingsScreen() {
     openHelp: state.openHelp, openAbout: state.openAbout,
   })));
   const [confirmReset, setConfirmReset] = useState(false);
+  const [pendingRestore, setPendingRestore] = useState(null);
+  const [backupError, setBackupError] = useState('');
+  const [backupMessage, setBackupMessage] = useState('');
+  const [backupBusy, setBackupBusy] = useState(false);
+  const backupInputRef = useRef(null);
+
+  async function exportData() {
+    if (backupBusy) return;
+    setBackupBusy(true);
+    setBackupError('');
+    setBackupMessage('');
+    try {
+      const json = await createPersonalBackup();
+      downloadPersonalBackup(json);
+      setBackupMessage('Backup file prepared. Keep it somewhere safe.');
+    } catch (error) {
+      setBackupError(error.message || 'Unable to export your data.');
+    } finally {
+      setBackupBusy(false);
+    }
+  }
+
+  async function readBackupFile(event) {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+    setBackupError('');
+    setBackupMessage('');
+    setPendingRestore(null);
+    if (file.size > 25 * 1024 * 1024 || !file.name.toLowerCase().endsWith('.json')) {
+      setBackupError('Choose a Quran App JSON backup smaller than 25 MB.');
+      return;
+    }
+    setBackupBusy(true);
+    try {
+      setPendingRestore(inspectPersonalBackup(await file.text()));
+    } catch (error) {
+      setBackupError(error.message || 'Unable to read this backup file.');
+    } finally {
+      setBackupBusy(false);
+    }
+  }
+
+  async function confirmRestoreData() {
+    if (backupBusy || !pendingRestore) return;
+    setBackupBusy(true);
+    setBackupError('');
+    try {
+      await restorePersonalBackup(pendingRestore);
+      // Reload to hydrate Settings, Favorites and Reader state from restored storage.
+      window.location.reload();
+    } catch (error) {
+      setBackupError(error.message || 'Restore failed. Please keep your backup file.');
+      setPendingRestore(null);
+      setBackupBusy(false);
+    }
+  }
   const reciters = normalizeLocalReciters();
   const translationLanguage = getTranslationLanguageId(settings.translation) || settings.translationLanguage || 'ur';
   const translationOptions = getTranslationOptionsForLanguage(translationLanguage);
@@ -64,6 +122,22 @@ export default function SettingsScreen() {
             onChange={(value) => updateSettings({ reciter: value })} showSelectionBelow />
         </SettingsSection>
 
+        <SettingsSection title="Data & backup">
+          <button type="button" className="settings-help-row" disabled={backupBusy} onClick={exportData}>
+            <span className="settings-row-icon"><Download size={19} /></span>
+            <span className="settings-row-copy"><strong>Export backup</strong><small>Save your personal data as a JSON file</small></span>
+            <ChevronRight className="settings-help-arrow" size={19} aria-hidden="true" />
+          </button>
+          <button type="button" className="settings-help-row" disabled={backupBusy} onClick={() => backupInputRef.current?.click()}>
+            <span className="settings-row-icon"><Upload size={19} /></span>
+            <span className="settings-row-copy"><strong>Restore backup</strong><small>Replace local data from a backup file</small></span>
+            <ChevronRight className="settings-help-arrow" size={19} aria-hidden="true" />
+          </button>
+          <input ref={backupInputRef} type="file" accept=".json,application/json" className="settings-backup-file-input" tabIndex={-1} aria-label="Select Quran App backup file" onChange={readBackupFile} />
+        </SettingsSection>
+        {backupError && <p className="settings-backup-feedback is-error" role="alert">{backupError}</p>}
+        {backupMessage && <p className="settings-backup-feedback" role="status">{backupMessage}</p>}
+
         <SettingsSection title="Help and about">
           <button type="button" className="settings-help-row" onClick={openHelp}>
             <span className="settings-row-icon"><CircleHelp size={19} /></span>
@@ -78,6 +152,24 @@ export default function SettingsScreen() {
         </SettingsSection>
         <button type="button" className="settings-reset-button" onClick={() => setConfirmReset(true)}>Reset settings</button>
       </div>
+
+      {pendingRestore && (
+        <div className="settings-dialog-backdrop" role="presentation" onClick={event => {
+          if (event.target === event.currentTarget && !backupBusy) setPendingRestore(null);
+        }}>
+          <Dialog className="settings-dialog" labelledBy="restore-backup-title" onClose={() => { if (!backupBusy) setPendingRestore(null); }}>
+            <button type="button" className="settings-dialog-close" disabled={backupBusy} onClick={() => setPendingRestore(null)} aria-label="Close"><X size={17} /></button>
+            <h2 id="restore-backup-title">Restore backup?</h2>
+            <p>Backup date: {new Date(pendingRestore.exportedAt).toLocaleDateString()}</p>
+            <p>{pendingRestore.counts.bookmarks} bookmarks · {pendingRestore.counts.highlights} highlights · {pendingRestore.counts.tadabburLessons} Reflect lessons · {pendingRestore.favorites.length} favorite Surahs.</p>
+            <p><strong>This replaces your current saved data</strong>, including notes, reading progress and settings. Export your current data first if you want to keep it.</p>
+            <div>
+              <button type="button" className="secondary" disabled={backupBusy} onClick={() => setPendingRestore(null)}>Cancel</button>
+              <button type="button" className="danger" disabled={backupBusy} onClick={confirmRestoreData}>{backupBusy ? 'Restoring…' : 'Replace and restore'}</button>
+            </div>
+          </Dialog>
+        </div>
+      )}
 
       {confirmReset && (
         <div className="settings-dialog-backdrop" role="presentation" onClick={event => {
