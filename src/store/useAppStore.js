@@ -524,7 +524,7 @@ export const useAppStore = create((set, get) => ({
     };
   }),
   resetSettings: () => set({
-    settings: { ...DEFAULT_SETTINGS, theme: 'light' },
+    settings: { ...DEFAULT_SETTINGS, theme: 'auto' },
     followRecitation: DEFAULT_SETTINGS.followRecitation,
     audioReciter: DEFAULT_SETTINGS.reciter,
     audioPlaybackRate: DEFAULT_SETTINGS.playbackRate,
@@ -668,7 +668,7 @@ export function sanitizeSettings(value = {}) {
 
   return {
     fontScale: 1,
-    theme: value.theme === 'dark' || value.theme === 'light'
+    theme: ['auto', 'dark', 'light'].includes(value.theme)
       ? value.theme
       : DEFAULT_SETTINGS.theme,
     translation,
@@ -692,7 +692,7 @@ function clampPlaybackRate(value) {
 }
 
 function getInitialTheme() {
-  if (typeof window === 'undefined') return 'light';
+  if (typeof window === 'undefined') return 'auto';
 
   let stored = null;
   try {
@@ -700,6 +700,6 @@ function getInitialTheme() {
   } catch {
     // Fall through to the system preference.
   }
-  if (stored === 'dark' || stored === 'light') return stored;
-  return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  if (stored === 'auto' || stored === 'dark' || stored === 'light') return stored;
+  return 'auto';
 }
