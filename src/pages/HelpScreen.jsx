@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { BookOpen, Bookmark, CircleHelp, Headphones, Home, Library, List, Search, Settings, Share2, SlidersHorizontal } from "lucide-react";
+import { BookOpen, Bookmark, Headphones, Home, Library, List, Search, Settings, Share2, SlidersHorizontal, BookHeart } from "lucide-react";
 import { Header, Screen } from '../components/common/AppChrome';
-import { Card, Disclosure } from '../components/common/Surfaces';
+import { Disclosure } from '../components/common/Surfaces';
 
 const SECTIONS = [
   {
@@ -30,7 +30,20 @@ const SECTIONS = [
   },
   {
     id: 'library', icon: Library, title: 'Library', summary: 'Bookmarks, highlights and notes',
-    content: <><p>Your saved Ayahs are collected in Library. Bookmarks can be organized under <strong>Recitation</strong>, <strong>Memorize</strong> and <strong>Tadabbur</strong>.</p><p>Tap a bookmark or highlight to return to its Ayah. Bookmark menus also let you add or edit a note, or remove the bookmark.</p></>,
+    content: <><p>Your saved Ayahs are collected in Library. Bookmarks can be organized for <strong>Reading/Recitation</strong>, <strong>Memorize</strong> and <strong>Reflect</strong>, with notes and highlights saved in Library.</p><p>Tap a bookmark or highlight to return to its Ayah. Bookmark menus also let you add or edit a note, or remove the bookmark.</p></>,
+  },
+  {
+    id: 'reflect', icon: BookHeart, title: 'Reflect', summary: 'Study, reflect, save questions and track growth',
+    content: <>
+      <p>Open <strong>Reflect</strong> from Home, or choose <strong>Copy to Reflect</strong> from an Ayah's long-press actions. Use <strong>+</strong> to create a lesson by selecting a Surah and <strong>3–15 consecutive Ayahs</strong>.</p>
+      <h3>Read and understand</h3>
+      <p>Each lesson includes the selected Arabic passage, translation, English or Urdu word-by-word meanings, and available Tafsir footnotes. You can also read the full Surah Introduction in English or Urdu. Tap a word to save it as a keyword.</p>
+      <h3>Reflect and record</h3>
+      <p>Answer the guided <strong>My Reflection</strong>, <strong>Contemplation</strong> and <strong>Remembrance</strong> prompts. Add personal questions and answers, choose Qur'anic themes or create your own, and record practical commitments. Your work saves automatically.</p>
+      <h3>Revisit your studies</h3>
+      <p><strong>My Reflect</strong> contains Lessons, Questions and Progress. Continue unfinished lessons, review completed studies, track answered questions and revisit commitments. A completed lesson can be marked unfinished again.</p>
+      <p><strong>Discover</strong> brings together saved Keywords and Themes. Tap an item to return to its related lesson.</p>
+    </>,
   },
   {
     id: 'favorites', icon: Bookmark, title: 'Favorite Surahs', summary: 'Keep frequently read Surahs on Home',
@@ -42,7 +55,7 @@ const SECTIONS = [
   },
   {
     id: 'settings', icon: Settings, title: 'Settings', summary: 'Appearance, translation and reciter',
-    content: <><p>Use Settings to switch between Light and Dark appearance, choose your translation language and translator, enable word-by-word meanings, select the word-by-word language and choose your preferred audio reciter.</p><p><strong>Reset settings</strong> restores the app's default appearance, translation, reciter, word-by-word and playback settings.</p></>,
+    content: <><p>Use Settings to choose Auto (device appearance), Light or Dark mode, choose your translation language and translator, enable word-by-word meanings, select the word-by-word language and choose your preferred audio reciter.</p><p><strong>Reset settings</strong> restores the app's default appearance, translation, reciter, word-by-word and playback settings.</p></>,
   },
   {
     id: 'gestures', icon: SlidersHorizontal, title: 'Quick Gesture Guide', summary: 'The essential Reader controls at a glance',
@@ -51,15 +64,12 @@ const SECTIONS = [
 ];
 
 export default function HelpScreen() {
-  const [openSection, setOpenSection] = useState('start');
+  const [openSection, setOpenSection] = useState(null);
   return (
     <Screen className="help-screen app-page-shell bg-fluent">
       <div className="app-fixed-header"><Header title="Help & Guide" /></div>
       <div className="app-scroll-content">
-        <Card className="help-intro">
-          <span className="help-intro-icon"><CircleHelp size={22} /></span>
-          <div><h2>How to use Al Quran</h2><p>Choose a topic below to learn about the app's features and controls.</p></div>
-        </Card>
+        <p className="help-intro-copy">Explore a topic to learn how to use each feature.</p>
         <div className="help-sections">
           {SECTIONS.map(({ id, icon: Icon, title, summary, content }) => {
             const open = openSection === id;
