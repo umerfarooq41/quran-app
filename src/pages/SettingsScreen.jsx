@@ -58,7 +58,7 @@ export default function SettingsScreen() {
       <div className="app-scroll-content">
 
       <SettingsSection title="Appearance" description="Auto follows your device theme">
-        <div className="settings-theme-picker" role="group" aria-label="Appearance mode">
+        <div className="settings-appearance-segment share-like-segment" role="group" aria-label="Appearance mode">
           {[
             { value: 'auto', label: 'Auto', Icon: MonitorSmartphone },
             { value: 'light', label: 'Light', Icon: Sun },
