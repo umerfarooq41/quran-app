@@ -6,6 +6,7 @@ import {
   ListTree,
   Mic2,
   Moon,
+  MonitorSmartphone,
   CircleHelp,
   Info,
   ChevronRight,
@@ -56,14 +57,18 @@ export default function SettingsScreen() {
 
       <div className="app-scroll-content">
 
-      <SettingsSection title="Appearance" description="Applies throughout the app">
-        <div className="settings-theme-picker" role="group" aria-label="Theme">
-          <button type="button" className={settings.theme === 'light' ? 'is-active' : ''} aria-pressed={settings.theme === 'light'} onClick={() => updateSettings({ theme: 'light' })}>
-            <Sun size={18} /> Light
-          </button>
-          <button type="button" className={settings.theme === 'dark' ? 'is-active' : ''} aria-pressed={settings.theme === 'dark'} onClick={() => updateSettings({ theme: 'dark' })}>
-            <Moon size={18} /> Dark
-          </button>
+      <SettingsSection title="Appearance" description="Auto follows your device theme">
+        <div className="settings-theme-picker" role="group" aria-label="Appearance mode">
+          {[
+            { value: 'auto', label: 'Auto', Icon: MonitorSmartphone },
+            { value: 'light', label: 'Light', Icon: Sun },
+            { value: 'dark', label: 'Dark', Icon: Moon },
+          ].map(({ value, label, Icon }) => (
+            <button key={value} type="button" className={settings.theme === value ? 'is-active' : ''}
+              aria-pressed={settings.theme === value} onClick={() => updateSettings({ theme: value })}>
+              <Icon size={15} aria-hidden="true" /> {label}
+            </button>
+          ))}
         </div>
       </SettingsSection>
 
