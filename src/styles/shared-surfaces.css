@@ -124,7 +124,7 @@
   backdrop-filter: var(--ui-card-blur);
 }
 
-:is(.search-recent-list button,.settings-theme-picker) {
+.search-recent-list button {
   background: var(--ui-control-bg);
   border: 1px solid var(--ui-control-border);
   -webkit-backdrop-filter: var(--ui-card-blur);
@@ -134,12 +134,6 @@
 :is(.search-result-card,.home-action-chip,.home-favorite-row,
     .help-section-trigger,.tab-card-hit):active {
   background-color: var(--ui-pressed-overlay);
-}
-
-.settings-theme-picker button.is-active {
-  background: var(--ui-primary);
-  border-color: var(--ui-primary);
-  color: #fff;
 }
 
 :is(.search-result-card,.search-result-reference strong,.search-recent-list button,
@@ -294,6 +288,27 @@
 [data-theme='dark'] .index-replica-shell .index-segment.share-like-segment > button:not(.is-active),
 [data-theme='dark'] .tabs-screen .library-tabs.share-like-segment > button:not(.is-active) {
   color: var(--theme-muted);
+}
+
+/* Settings Appearance uses the same segmented surface and state tokens as Index.
+   Only its density differs; keep width and theme treatment in the shared owner. */
+.settings-screen .settings-appearance-segment.share-like-segment {
+  --ui-segment-columns: 3;
+  width: 100%;
+  max-width: none;
+  min-height: 40px;
+  margin: 0;
+  padding: 3px;
+}
+.settings-screen .settings-appearance-segment.share-like-segment > button {
+  min-height: 34px;
+  gap: 6px;
+  padding-inline: 6px;
+  font-size: .82rem;
+}
+.settings-screen .settings-appearance-segment.share-like-segment > button svg {
+  width: 16px;
+  height: 16px;
 }
 
 .shared-back-button:focus-visible {
