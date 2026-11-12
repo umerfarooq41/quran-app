@@ -9,6 +9,7 @@ import {
   CircleHelp,
   Info,
   RotateCcw,
+  ChevronRight,
   Sun,
   X,
 } from 'lucide-react';
@@ -56,133 +57,56 @@ export default function SettingsScreen() {
 
       <div className="app-scroll-content">
 
-      <SettingsSection
-        title="Appearance"
-        description="Applies to app controls, not the Mushaf page"
-      >
+      <SettingsSection title="Appearance" description="Applies throughout the app">
         <div className="settings-theme-picker" role="group" aria-label="Theme">
-          <button
-            type="button"
-            className={settings.theme === 'light' ? 'is-active' : ''}
-            onClick={() => updateSettings({ theme: 'light' })}
-          >
-            <Sun size={17} />
-            Light
+          <button type="button" className={settings.theme === 'light' ? 'is-active' : ''} aria-pressed={settings.theme === 'light'} onClick={() => updateSettings({ theme: 'light' })}>
+            <Sun size={18} /> Light
           </button>
-          <button
-            type="button"
-            className={settings.theme === 'dark' ? 'is-active' : ''}
-            onClick={() => updateSettings({ theme: 'dark' })}
-          >
-            <Moon size={17} />
-            Dark
+          <button type="button" className={settings.theme === 'dark' ? 'is-active' : ''} aria-pressed={settings.theme === 'dark'} onClick={() => updateSettings({ theme: 'dark' })}>
+            <Moon size={18} /> Dark
           </button>
         </div>
       </SettingsSection>
 
-      <SettingsSection
-        title="Translation"
-        description="Choose the language and translation source used across the app"
-      >
-        <SettingPicker
-          icon={Languages}
-          label="Translation language"
-          description="Choose the language first"
-          value={translationLanguage}
-          options={TRANSLATION_LANGUAGES}
-          getLabel={(language) => language.label}
+      <SettingsSection title="Reading">
+        <SettingPicker icon={Languages} label="Translation language" value={translationLanguage}
+          options={TRANSLATION_LANGUAGES} getLabel={(language) => language.label}
           onChange={(value) => {
             const nextTranslation = getDefaultTranslationForLanguage(value);
             updateSettings({ translation: nextTranslation.id, translationLanguage: value });
-          }}
-        />
-
-        <SettingPicker
-          icon={BookOpen}
-          label="Translator"
-          description="Choose the translation source"
-          value={settings.translation}
-          options={translationOptions}
-          getLabel={(translation) => translation.shortName || translation.label}
-          onChange={(value) => updateSettings({ translation: value })}
-          fullWidth
-        />
-      </SettingsSection>
-
-      <SettingsSection
-        title="Word-by-word"
-        description="Choose English or Urdu individual word meanings"
-        className={settings.wordByWordTranslation ? 'settings-section-word-by-word is-balanced' : 'settings-section-word-by-word'}
-      >
-        <SettingSwitch
-          icon={ListTree}
-          label="Word-by-word translation"
-          description="Show a meaning for each word"
-          checked={settings.wordByWordTranslation}
-          onChange={(checked) => updateSettings({ wordByWordTranslation: checked })}
-        />
-
+          }} />
+        <SettingPicker icon={BookOpen} label="Translator" value={settings.translation}
+          options={translationOptions} getLabel={(translation) => translation.shortName || translation.label}
+          onChange={(value) => updateSettings({ translation: value })} />
+        <SettingSwitch icon={ListTree} label="Word-by-word" checked={settings.wordByWordTranslation}
+          onChange={(checked) => updateSettings({ wordByWordTranslation: checked })} />
         {settings.wordByWordTranslation && (
-          <SettingPicker
-            icon={Languages}
-            label="Word-by-word language"
-            description="Choose English or Urdu meanings"
-            value={wordByWordLanguage}
-            options={WORD_BY_WORD_LANGUAGES}
-            getLabel={(language) => language.label}
-            onChange={(value) => updateSettings({ wordByWordLanguage: value })}
-          />
+          <SettingPicker label="Word meanings in" value={wordByWordLanguage}
+            options={WORD_BY_WORD_LANGUAGES} getLabel={(language) => language.label}
+            onChange={(value) => updateSettings({ wordByWordLanguage: value })} nested />
         )}
       </SettingsSection>
 
-      <SettingsSection
-        title="Recitation"
-        description="Choose the reciter used by the persistent Quran audio player"
-      >
-        <SettingPicker
-          icon={Mic2}
-          label="Audio reciter"
-          description="Used by the persistent Quran audio player"
-          value={settings.reciter || reciters[0]?.id || ''}
-          options={reciters}
-          getLabel={getReciterDisplayName}
-          getAvatarSrc={getReciterImageSrc}
-          onChange={(value) => updateSettings({ reciter: value })}
-          fullWidth
-        />
-
+      <SettingsSection title="Recitation">
+        <SettingPicker icon={Mic2} label="Audio reciter" value={settings.reciter || reciters[0]?.id || ''}
+          options={reciters} getLabel={getReciterDisplayName} getAvatarSrc={getReciterImageSrc}
+          onChange={(value) => updateSettings({ reciter: value })} />
       </SettingsSection>
 
-      <SettingsSection
-        title="Help"
-        description="Learn how to use the reader and app features"
-      >
+      <SettingsSection title="Help and about">
         <button type="button" className="settings-help-row" onClick={openHelp}>
-          <span className="settings-row-icon"><CircleHelp size={18} /></span>
-          <span className="settings-row-copy">
-            <strong>Help & Guide</strong>
-            <small>Reader, translation, audio, library, sharing and more</small>
-          </span>
-          <span className="settings-help-arrow" aria-hidden="true">›</span>
+          <span className="settings-row-icon"><CircleHelp size={19} /></span>
+          <span className="settings-row-copy"><strong>Help and guide</strong></span>
+          <ChevronRight className="settings-help-arrow" size={19} aria-hidden="true" />
         </button>
-      </SettingsSection>
-
-      <SettingsSection
-        title="About"
-        description="Sources, licenses, privacy and app information"
-      >
         <button type="button" className="settings-help-row" onClick={openAbout}>
-          <span className="settings-row-icon"><Info size={18} /></span>
-          <span className="settings-row-copy">
-            <strong>About Al Quran</strong>
-            <small>Sources & credits, open-source licenses, privacy and terms</small>
-          </span>
-          <span className="settings-help-arrow" aria-hidden="true">›</span>
+          <span className="settings-row-icon"><Info size={19} /></span>
+          <span className="settings-row-copy"><strong>About Al Quran</strong></span>
+          <ChevronRight className="settings-help-arrow" size={19} aria-hidden="true" />
         </button>
       </SettingsSection>
 
       <button type="button" className="settings-reset-button" onClick={() => setConfirmReset(true)}>
-        <RotateCcw size={17} />
         Reset settings
       </button>
       </div>
@@ -211,56 +135,42 @@ export default function SettingsScreen() {
   );
 }
 
-function SettingsSection({ title, description, children, className = '' }) {
+function SettingsSection({ title, description, children }) {
   return (
-    <section className={['settings-section', className].filter(Boolean).join(' ')}>
+    <section className="settings-section">
       <div className="settings-section-heading">
         <strong>{title}</strong>
-        <small>{description}</small>
       </div>
-      <Card as="div" className="settings-card">{children}</Card>
+      {title === 'Appearance'
+        ? <>{children}{description && <small className="settings-appearance-note">{description}</small>}</>
+        : <Card as="div" className="settings-card">{children}</Card>}
     </section>
   );
 }
 
-function SettingSwitch({ icon: Icon, label, description, checked, onChange }) {
+function SettingSwitch({ icon: Icon, label, checked, onChange }) {
   return (
     <div className="settings-toggle-row">
-      <span className="settings-row-icon"><Icon size={18} /></span>
-      <span className="settings-row-copy">
-        <strong>{label}</strong>
-        <small>{description}</small>
-      </span>
-      <button
-        type="button"
-        className={checked ? 'settings-switch is-on' : 'settings-switch'}
-        role="switch"
-        aria-checked={checked}
-        aria-label={label}
-        onClick={() => onChange(!checked)}
-      >
+      <span className="settings-row-icon"><Icon size={19} /></span>
+      <span className="settings-row-copy"><strong>{label}</strong></span>
+      <button type="button" className={checked ? 'settings-switch is-on' : 'settings-switch'}
+        role="switch" aria-checked={checked} aria-label={label} onClick={() => onChange(!checked)}>
         <span className="settings-switch-thumb" aria-hidden="true" />
       </button>
     </div>
   );
 }
 
-function SettingPicker({
-  icon: Icon,
-  label,
-  description,
-  value,
-  options,
-  getLabel,
-  getAvatarSrc,
-  onChange,
-  fullWidth = false,
-}) {
-  return <div className={'settings-picker-row' + (fullWidth ? ' is-full-width' : '')}>
-    <span className="settings-row-icon"><Icon size={17} /></span>
-    <span className="settings-row-copy"><strong>{label}</strong><small>{description}</small></span>
-    <AppOptionPicker label={label} value={value} options={options.map(option => ({ value: option.id, label: getLabel(option), avatar: getAvatarSrc?.(option) }))} onSelect={onChange} />
-  </div>;
+function SettingPicker({ icon: Icon, label, value, options, getLabel, getAvatarSrc, onChange, nested = false }) {
+  return (
+    <div className={'settings-picker-row' + (nested ? ' is-nested' : '')}>
+      {Icon ? <span className="settings-row-icon"><Icon size={19} /></span> : <span className="settings-row-icon-placeholder" aria-hidden="true" />}
+      <span className="settings-row-copy"><strong>{label}</strong></span>
+      <AppOptionPicker label={label} value={value}
+        options={options.map(option => ({ value: option.id, label: getLabel(option), avatar: getAvatarSrc?.(option) }))}
+        onSelect={onChange} compact />
+    </div>
+  );
 }
 
 function getReciterDisplayName(reciter) {
