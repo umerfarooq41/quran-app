@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Play, Search, Undo2 } from 'lucide-react';
+import { Play, Search, Undo2 } from 'lucide-react';
 import { PageWaveSlider } from './PageWaveSlider';
 
 export function ReaderBottomControls({
@@ -8,11 +8,6 @@ export function ReaderBottomControls({
   displayPage,
   goPage,
   onPreviousPage,
-  onNext,
-  onPrevious,
-  nextDisabled,
-  previousDisabled,
-  spread,
   onSearch,
   onAudio,
   compact = false,
@@ -93,8 +88,6 @@ export function ReaderBottomControls({
             <Undo2 size={34} strokeWidth={1.8} />
           </button>
 
-          <button onClick={onNext} disabled={nextDisabled} aria-label={spread ? 'Next spread' : 'Next page'}><ChevronLeft size={30} /></button>
-          <button onClick={onPrevious} disabled={previousDisabled} aria-label={spread ? 'Previous spread' : 'Previous page'}><ChevronRight size={30} /></button>
 
           <button onClick={onSearch} aria-label="Search">
             <Search size={34} strokeWidth={1.8} />
