@@ -26,8 +26,9 @@
 .settings-picker-row.has-subtext .app-option-chevron { transform:rotate(-90deg); }
 .settings-picker-row.has-subtext .app-option-chevron.is-open { transform:rotate(0deg); }
 .settings-picker-row.has-subtext { min-height:64px; }
-.app-option-menu-settings { background:var(--ui-menu-bg); border-color:var(--ui-control-border); }
-.app-option-menu-settings .app-option-item { min-height:44px; height:auto; align-items:flex-start; }
+.app-option-menu-settings { background:var(--ui-card-bg); border:1px solid var(--ui-card-border); box-shadow:var(--ui-card-shadow); -webkit-backdrop-filter:var(--ui-card-blur); backdrop-filter:var(--ui-card-blur); }
+.app-option-menu-settings .app-option-item { min-height:44px; height:auto; align-items:center; }
+.app-option-menu-settings .app-option-avatar { width:34px; height:34px; flex:0 0 34px; object-fit:cover; border-radius:50%; }
 .app-option-menu-settings .app-option-label { flex:1; min-width:0; white-space:normal; overflow-wrap:anywhere; line-height:1.45; }
 .settings-picker-row .app-option-chevron { flex-shrink:0; width:16px; height:16px; transform:rotate(-90deg); }
 .settings-picker-row .app-option-chevron.is-open { transform:rotate(0deg); }
