@@ -8,6 +8,19 @@ const MAX_INERTIA_FRAMES = 8;
 const NEXT_PAGE_ON_RIGHT_DRAG = 1;
 const DRAG_SENSITIVITY = 6;
 
+let nativeHapticsPromise;
+function pageTick() {
+  if (window.Capacitor?.isNativePlatform?.()) {
+    nativeHapticsPromise ||= import('@capacitor/haptics').then(({ Haptics }) => Haptics).catch(() => null);
+    nativeHapticsPromise.then((haptics) => {
+      if (haptics) haptics.selectionChanged().catch(() => {});
+      else window.navigator?.vibrate?.(6);
+    });
+  } else {
+    window.navigator?.vibrate?.(6);
+  }
+}
+
 export function PageWaveSlider({ page, goPage, onPreviewChange }) {
   const [previewPage, setPreviewPage] = useState(page);
   const [dragOffset, setDragOffset] = useState(0);
@@ -65,7 +78,7 @@ export function PageWaveSlider({ page, goPage, onPreviewChange }) {
 
     if (safePage !== lastHapticPageRef.current) {
       lastHapticPageRef.current = safePage;
-      window.navigator?.vibrate?.(6);
+      if (interactionRef.current) pageTick();
     }
   }
 
