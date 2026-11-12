@@ -468,21 +468,27 @@ export default function App() {
   }, [goBack]);
 
   useEffect(() => {
-    const theme = settings.theme === 'dark' ? 'dark' : 'light';
-    document.documentElement.dataset.theme = theme;
-    document.documentElement.dataset.haptics = 'on';
-    document.documentElement.style.colorScheme = theme;
-    document.getElementById('app-theme-color')?.setAttribute(
-      'content',
-      theme === 'dark' ? '#111412' : '#2d6e5e',
-    );
+    const systemTheme = window.matchMedia?.('(prefers-color-scheme: dark)');
+    const applyTheme = () => {
+      const theme = settings.theme === 'auto'
+        ? (systemTheme?.matches ? 'dark' : 'light')
+        : settings.theme === 'dark' ? 'dark' : 'light';
+      document.documentElement.dataset.theme = theme;
+      document.documentElement.dataset.haptics = 'on';
+      document.documentElement.style.colorScheme = theme;
+      document.getElementById('app-theme-color')?.setAttribute(
+        'content', theme === 'dark' ? '#111412' : '#2d6e5e',
+      );
+    };
+    applyTheme();
+    if (settings.theme === 'auto') systemTheme?.addEventListener?.('change', applyTheme);
     try {
-      window.localStorage.setItem('quran-app-theme', theme);
+      window.localStorage.setItem('quran-app-theme', settings.theme);
     } catch {
       // IndexedDB remains the persistence fallback when localStorage is unavailable.
     }
-
     if (booted) upsertSetting('app', sanitizeSettings(settings));
+    return () => systemTheme?.removeEventListener?.('change', applyTheme);
   }, [settings, booted]);
 
   if (!booted) return <Shell><div className={`${panel} p-8 text-center`}><div className="mx-auto mb-4 h-12 w-12 animate-pulse rounded-full bg-[#d4a843]/25" /><p className="font-medium text-slate-600">Preparing your reader...</p></div></Shell>;
