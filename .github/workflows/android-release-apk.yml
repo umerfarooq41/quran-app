@@ -44,6 +44,33 @@ jobs:
         run: npx cap add android
       - name: Sync assets
         run: npx cap sync android
+      - name: Generate Android launcher icons from existing Quran App logo
+        run: |
+          python3 -m pip install --user --break-system-packages Pillow
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          source = Path("public/icons/icon-512.png")
+          if not source.is_file():
+              raise SystemExit("Missing existing Quran App icon: public/icons/icon-512.png")
+          logo = Image.open(source).convert("RGBA")
+          if logo.width < 192 or logo.height < 192:
+              raise SystemExit("Existing icon is too small for Android launcher")
+          sizes = {"mdpi": 48, "hdpi": 72, "xhdpi": 96, "xxhdpi": 144, "xxxhdpi": 192}
+          root = Path("android/app/src/main/res")
+          for density, size in sizes.items():
+              dest = root / f"mipmap-{density}"
+              dest.mkdir(parents=True, exist_ok=True)
+              icon = logo.resize((size, size), Image.Resampling.LANCZOS)
+              for name in ("ic_launcher.png", "ic_launcher_round.png", "ic_launcher_foreground.png"):
+                  icon.save(dest / name)
+          # Avoid the default Capacitor adaptive icon's foreground/background combination.
+          for directory in (root / "mipmap-anydpi", root / "mipmap-anydpi-v26"):
+              if directory.exists():
+                  for file in directory.glob("ic_launcher*.xml"):
+                      file.unlink()
+          print("Generated launcher icons using", source)
+          PY
       - name: Restore signing key
         env:
           KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
