@@ -54,6 +54,10 @@ const SECTIONS = [
     content: <><p>Press and hold an Ayah and choose <strong>Share</strong> to open Share Quran.</p><h3>Image</h3><p>Select a Surah and an Ayah range, choose a background, adjust Arabic and translation text, then export the image. Image mode supports up to 5 Ayahs.</p><h3>Video</h3><p>Video mode supports up to 10 Ayahs. Choose the Ayahs, reciter and looping background, customize the text, preview the result, then generate the video with recitation audio.</p></>,
   },
   {
+    id: 'backup', icon: Settings, title: 'Export & Restore', summary: 'Back up your saved Quran App data',
+    content: <><p>Go to <strong>Settings → Data & backup</strong> and choose <strong>Export backup</strong> to save a JSON file containing your bookmarks, highlights, notes, reading position, favorites, Reflect lessons, memorization progress and settings.</p><p>To move to another device, transfer the file securely and choose <strong>Restore backup</strong>. Review the backup details carefully before confirming. Restore <strong>replaces your existing local saved data</strong>; export the current data first if you need to keep it.</p><p>Backups are saved locally. Audio downloads and other replaceable content caches are not included. Keep your backup private and in a safe location.</p></>,
+  },
+  {
     id: 'settings', icon: Settings, title: 'Settings', summary: 'Appearance, translation and reciter',
     content: <><p>Use Settings to choose Auto (device appearance), Light or Dark mode, choose your translation language and translator, enable word-by-word meanings, select the word-by-word language and choose your preferred audio reciter.</p><p><strong>Reset settings</strong> restores the app's default appearance, translation, reciter, word-by-word and playback settings.</p></>,
   },
