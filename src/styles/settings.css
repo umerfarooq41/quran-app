@@ -50,3 +50,16 @@
 .settings-dialog-close { position:absolute; top:12px; right:12px; display:grid; place-items:center; width:32px; height:32px; border-radius:999px; background:var(--theme-soft); color:var(--theme-text); }
 @media(max-width:390px) { .settings-picker-row,.settings-toggle-row,.settings-help-row { grid-template-columns:36px minmax(0,1fr) auto; gap:9px; padding:10px 12px; } .settings-row-icon { width:36px; height:36px; } .settings-row-icon-placeholder { width:36px; } .settings-row-copy strong { font-size:.83rem; } .settings-picker-row > .app-option-picker { max-width:45vw; } }
 @media(prefers-reduced-motion:reduce) { .settings-switch,.settings-switch-thumb { transition:none; } }
+
+/* Export and restore keep the same row rhythm and themed disclosure surfaces. */
+.settings-backup-file-input { display:none; }
+.settings-backup-feedback {
+  margin: -8px 5px 0;
+  color: var(--theme-muted);
+  font-size: .78rem;
+  line-height: 1.5;
+}
+.settings-backup-feedback.is-error { color: #b34c45; }
+[data-theme='dark'] .settings-backup-feedback.is-error { color: #f09a92; }
+.settings-help-row:disabled { opacity: .6; cursor: wait; }
+.settings-dialog p strong { color: var(--theme-text); }
