@@ -389,6 +389,42 @@ export default function App() {
     tafsirTarget,
   ]);
 
+  // Capacitor's Android Back button is native: it does not reliably dispatch
+  // window.popstate. Handle it explicitly, keeping browser/PWA history intact.
+  useEffect(() => {
+    let disposed = false;
+    let listener;
+    const capacitor = window.Capacitor;
+    if (!capacitor?.isNativePlatform?.()) return undefined;
+
+    import('@capacitor/app').then(({ App: NativeApp }) => {
+      if (disposed) return;
+      return NativeApp.addListener('backButton', () => {
+        const state = useAppStore.getState();
+        if (state.audioPlayerVisible) {
+          state.hideAudioPlayer();
+        } else if (state.overlayStack.some((overlay) => overlay.type === OVERLAY_TYPES.AYAH)) {
+          state.closeTopOverlay();
+        } else if (state.view !== VIEWS.HOME) {
+          state.goBack();
+        } else {
+          NativeApp.exitApp();
+        }
+      });
+    }).then((handle) => {
+      if (!handle) return;
+      if (disposed) handle.remove();
+      else listener = handle;
+    }).catch((error) => {
+      console.error('Unable to register Android back handler:', error);
+    });
+
+    return () => {
+      disposed = true;
+      listener?.remove();
+    };
+  }, []);
+
   useEffect(() => {
     const handlePopState = () => {
       if (ignoreNextPopRef.current) {
