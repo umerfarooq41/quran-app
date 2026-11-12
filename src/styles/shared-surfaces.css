@@ -100,9 +100,8 @@
 }
 
 .ui-disclosure-trigger {
-  display: flex;
+  display: grid;
   align-items: center;
-  justify-content: space-between;
   width: 100%;
   color: var(--theme-text);
 }
