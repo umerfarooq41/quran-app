@@ -8,12 +8,11 @@ import {
   Moon,
   CircleHelp,
   Info,
-  RotateCcw,
   ChevronRight,
   Sun,
   X,
 } from 'lucide-react';
-import { getReciterImageUrl, normalizeLocalReciters } from '../lib/localAudio';
+import { normalizeLocalReciters } from '../lib/localAudio';
 import {
   TRANSLATION_LANGUAGES,
   getDefaultTranslationForLanguage,
@@ -76,8 +75,8 @@ export default function SettingsScreen() {
             updateSettings({ translation: nextTranslation.id, translationLanguage: value });
           }} />
         <SettingPicker icon={BookOpen} label="Translator" value={settings.translation}
-          options={translationOptions} getLabel={(translation) => translation.shortName || translation.label}
-          onChange={(value) => updateSettings({ translation: value })} />
+          options={translationOptions} getLabel={(translation) => translation.label || translation.shortName}
+          onChange={(value) => updateSettings({ translation: value })} showSelectionBelow />
         <SettingSwitch icon={ListTree} label="Word-by-word" checked={settings.wordByWordTranslation}
           onChange={(checked) => updateSettings({ wordByWordTranslation: checked })} />
         {settings.wordByWordTranslation && (
@@ -89,8 +88,8 @@ export default function SettingsScreen() {
 
       <SettingsSection title="Recitation">
         <SettingPicker icon={Mic2} label="Audio reciter" value={settings.reciter || reciters[0]?.id || ''}
-          options={reciters} getLabel={getReciterDisplayName} getAvatarSrc={getReciterImageSrc}
-          onChange={(value) => updateSettings({ reciter: value })} />
+          options={reciters} getLabel={getReciterDisplayName}
+          onChange={(value) => updateSettings({ reciter: value })} showSelectionBelow />
       </SettingsSection>
 
       <SettingsSection title="Help and about">
@@ -161,22 +160,18 @@ function SettingSwitch({ icon: Icon, label, checked, onChange }) {
   );
 }
 
-function SettingPicker({ icon: Icon, label, value, options, getLabel, getAvatarSrc, onChange, nested = false }) {
+function SettingPicker({ icon: Icon, label, value, options, getLabel, onChange, nested = false, showSelectionBelow = false }) {
   return (
-    <div className={'settings-picker-row' + (nested ? ' is-nested' : '')}>
+    <div className={'settings-picker-row' + (nested ? ' is-nested' : '') + (showSelectionBelow ? ' has-subtext' : '')}>
       {Icon ? <span className="settings-row-icon"><Icon size={19} /></span> : <span className="settings-row-icon-placeholder" aria-hidden="true" />}
-      <span className="settings-row-copy"><strong>{label}</strong></span>
+      <span className="settings-row-copy"><strong>{label}</strong>{showSelectionBelow && <small>{getLabel(options.find(option => String(option.id) === String(value)) || options[0])}</small>}</span>
       <AppOptionPicker label={label} value={value}
-        options={options.map(option => ({ value: option.id, label: getLabel(option), avatar: getAvatarSrc?.(option) }))}
-        onSelect={onChange} compact />
+        options={options.map(option => ({ value: option.id, label: getLabel(option) }))}
+        onSelect={onChange} compact settingsStyle iconOnly={showSelectionBelow} />
     </div>
   );
 }
 
 function getReciterDisplayName(reciter) {
   return reciter?.displayName || reciter?.reciter_name || reciter?.name || 'Reciter';
-}
-
-function getReciterImageSrc(reciter) {
-  return getReciterImageUrl(reciter);
 }
