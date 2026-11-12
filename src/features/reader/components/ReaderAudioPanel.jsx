@@ -446,6 +446,14 @@ export function ReaderAudioPanel() {
       },
       timeupdate: () => {
         if (audio !== currentAudioRef.current) return;
+        const prelude = currentSourceRef.current;
+        if (prelude?.mode === 'bismillah-prelude') {
+          if (!sourceTransitionRef.current && audio.currentTime >= prelude.endSeconds) {
+            audio.pause();
+            loadTarget(prelude.nextTarget, prelude.reciterId, true);
+          }
+          return;
+        }
 
         if (
           repeatRef.current === 'ayah'
@@ -743,7 +751,7 @@ export function ReaderAudioPanel() {
       audioUrl: playback.audioUrl,
       loadToken,
       reciterId,
-      seekSeconds: options.playSurahIntro ? 0 : timing.startMs / 1000,
+      seekSeconds: timing.startMs / 1000,
       source: {
         mode: 'full-surah',
         reciterId: playback.reciterId,
@@ -903,6 +911,10 @@ export function ReaderAudioPanel() {
 
   async function handleEnded(endedAudio) {
     const source = currentSourceRef.current;
+    if (source?.mode === 'bismillah-prelude') {
+      await loadTarget(source.nextTarget, source.reciterId, true);
+      return;
+    }
     const repeatMode = repeatRef.current || 'off';
     setPlayingVerseKey(null);
 
@@ -945,12 +957,51 @@ export function ReaderAudioPanel() {
 
     playIntentRef.current = true;
     setAudioTarget(nextTarget);
-    await loadTarget(nextTarget, currentReciterRef.current, true, {
-      // Start the next chapter recording at its actual beginning rather than
-      // skipping directly to ayah 1's timestamp. This preserves a recorded
-      // Bismillah/intro when it precedes the first timed ayah (except At-Tawbah).
-      playSurahIntro: nextTarget.ayahNumber === 1 && hasSeparateOpeningBismillah(nextTarget.surahNumber),
-    });
+    if (hasSeparateOpeningBismillah(nextTarget.surahNumber)) {
+      if (await playOpeningBismillah(nextTarget, currentReciterRef.current)) return;
+    }
+    await loadTarget(nextTarget, currentReciterRef.current, true);
+  }
+
+  async function playOpeningBismillah(nextTarget, reciterId) {
+    // Reuse the exact same-reciter Al-Fatihah ayah 1 audio as Share Quran.
+    try {
+      const playback = await getFullSurahPlayback(reciterId, 1);
+      const first = findAyahTiming(playback?.timeline, 1);
+      if (!playback?.audioUrl || !first) return false;
+      const words = first.wordSegments || [];
+      const startMs = words.length ? words[0].startMs : first.startMs;
+      const endMs = words.length ? words[words.length - 1].endMs : first.endMs;
+      if (!(endMs > startMs)) return false;
+
+      const loadToken = ++loadTokenRef.current;
+      loadingRef.current = { target: nextTarget, reciterId, loadToken };
+      currentTargetRef.current = nextTarget;
+      currentReciterRef.current = reciterId;
+      setAudioTarget(nextTarget);
+      setPlayingVerseKey(null);
+      setPlayingWord(null);
+      await installAudioSource({
+        audioUrl: playback.audioUrl,
+        loadToken,
+        reciterId,
+        seekSeconds: startMs / 1000,
+        source: {
+          mode: 'bismillah-prelude',
+          reciterId,
+          audioUrl: playback.audioUrl,
+          nextTarget,
+          endSeconds: Math.max(startMs / 1000, endMs / 1000 - 0.12),
+        },
+        target: nextTarget,
+      });
+      if (isStaleLoad(loadToken)) return true;
+      loadingRef.current = null;
+      await startCurrentAudio();
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   function syncFullSurahTarget(timeSeconds) {
@@ -1072,7 +1123,7 @@ export function ReaderAudioPanel() {
     setAudioSurahNumber(target.surahNumber);
     setSurahTimeline(isFullSurah ? source.timeline : []);
 
-    if (isFullSurah) {
+    if (isFullSurah || source?.mode === 'bismillah-prelude') {
       // A requested target is only a seek destination. Do not present it as
       // the currently recited ayah until the full-Surah timing data confirms
       // the real verse/word at audio.currentTime.
