@@ -63,7 +63,7 @@ export function AppOptionPicker({ label, value, options, onSelect, className = '
     <button ref={trigger} type="button" className="app-option-trigger" aria-label={`${label}: ${selected?.label ?? String(value)}`} aria-describedby={description ? descriptionId : undefined} aria-haspopup="listbox" aria-controls={open ? menuId : undefined} aria-expanded={open} onKeyDown={event => {
       if (event.key === 'ArrowDown' || event.key === 'ArrowUp') { event.preventDefault(); setOpen(true); }
     }} onClick={() => setOpen(!open)}>
-      {selected?.avatar && <img className="app-option-avatar" src={selected.avatar} alt="" />}
+      {!iconOnly && selected?.avatar && <img className="app-option-avatar" src={selected.avatar} alt="" />}
       {!iconOnly && <span className="app-option-label">{selected?.label ?? String(value)}</span>}
       <ChevronDown size={19} aria-hidden="true" className={open ? 'app-option-chevron is-open' : 'app-option-chevron'}/>
     </button>
