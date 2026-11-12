@@ -26,6 +26,13 @@ const REPEAT_MODES = ['off', 'ayah', 'surah'];
 const AUDIO_USER_PLAY_REQUEST_EVENT = 'quran:audio-user-play-request';
 const SILENT_AUDIO_UNLOCK_SRC = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAAAA';
 
+// Opening Bismillah is part of Al-Fatihah's first ayah; At-Tawbah
+// has no opening Bismillah. Other Surahs display it before ayah 1.
+function hasSeparateOpeningBismillah(surahNumber) {
+  const surah = Number(surahNumber);
+  return Number.isInteger(surah) && surah >= 2 && surah <= 114 && surah !== 9;
+}
+
 function formatTime(seconds = 0) {
   const safe = Math.max(0, Math.floor(Number(seconds) || 0));
   const minutes = Math.floor(safe / 60);
@@ -942,7 +949,7 @@ export function ReaderAudioPanel() {
       // Start the next chapter recording at its actual beginning rather than
       // skipping directly to ayah 1's timestamp. This preserves a recorded
       // Bismillah/intro when it precedes the first timed ayah (except At-Tawbah).
-      playSurahIntro: nextTarget.ayahNumber === 1 && nextTarget.surahNumber !== 9,
+      playSurahIntro: nextTarget.ayahNumber === 1 && hasSeparateOpeningBismillah(nextTarget.surahNumber),
     });
   }
 
