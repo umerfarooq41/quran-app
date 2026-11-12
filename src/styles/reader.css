@@ -623,7 +623,7 @@
 
 .reader-bottom-actions {
   display: grid;
-  grid-template-columns: 1fr auto auto 1fr;
+  grid-template-columns: 1fr 1fr;
   align-items: center;
   gap: 9px;
   margin-top: 0;
