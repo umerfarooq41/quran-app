@@ -327,7 +327,7 @@
   top: 0;
   background-image: url('/border/surah-header-gold.svg');
   background-position: center;
-  background-size: calc(100% + 20px) 100%;
+  background-size: 100% 100%;
   /* The lower stroke of SVG 1 duplicates the upper stroke of SVG 2.
      Trim that stroke to make the two ornaments read as one frame. */
   clip-path: inset(0 0 7% 0);
@@ -337,7 +337,7 @@
   bottom: 0;
   background-image: url('/border/surah-header-gold.svg');
   background-position: center;
-  background-size: calc(100% + 20px) 100%;
+  background-size: 100% 100%;
 }
 
 .surah-banner--double .surah-banner-ayahs,
@@ -828,9 +828,7 @@
   overflow: visible;
   background-repeat: no-repeat;
   background-position: center;
-  /* Compensate for the SVG's built-in side gutters so its outer frame
-     aligns with the full-width Juz-start highlight, not inside it. */
-  background-size: calc(100% + 20px) 100%;
+  background-size: 100% 100%;
   background-color: transparent;
   color: var(--mushaf-banner-text);
 }
