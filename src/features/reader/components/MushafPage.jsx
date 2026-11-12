@@ -82,10 +82,12 @@ export function MushafPage({
               selectedAyah.ayahNumber,
             )
           : [],
-        // The recited word already has a precise text-level highlight in QuranLine.
-        // Avoid the second rectangle-based ayah overlay: it paints fragmented
-        // boxes across justified words and shifts when line measurements settle.
-        recitation: [],
+        // Highlight the complete currently recited ayah, including portions
+        // that wrap onto another Mushaf line. The word color is a separate,
+        // more precise timing cue and must not replace the ayah background.
+        recitation: playingVerseKey
+          ? getRecitationHighlightRects(pageElement, pageData, playingVerseKey)
+          : [],
         navigation: pendingAyah
           ? getAyahHighlightRects(pageElement, pageData, pendingAyah.surahNumber, pendingAyah.ayahNumber)
           : [],
