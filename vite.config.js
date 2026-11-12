@@ -9,7 +9,7 @@ export default defineConfig({
       // The Capacitor App plugin is bundled by the Android workflow.
       // The web deployment never runs the native-only back-button listener.
       // Do not require the Android-only package in Vercel's web build.
-      external: process.env.VERCEL ? ['@capacitor/app'] : [],
+      external: process.env.VERCEL ? ['@capacitor/app', '@capacitor/haptics'] : [],
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) return 'vendor';
