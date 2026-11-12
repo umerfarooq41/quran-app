@@ -671,7 +671,7 @@ export function ReaderAudioPanel() {
     try {
       if (!options.skipFullSurah) {
         try {
-          const installed = await loadFullSurahTarget(target, reciterId, loadToken);
+          const installed = await loadFullSurahTarget(target, reciterId, loadToken, options);
           if (isStaleLoad(loadToken)) return;
           if (installed) {
             loadingRef.current = null;
@@ -719,7 +719,7 @@ export function ReaderAudioPanel() {
     }
   }
 
-  async function loadFullSurahTarget(target, reciterId, loadToken) {
+  async function loadFullSurahTarget(target, reciterId, loadToken, options = {}) {
     const playback = await getFullSurahPlayback(reciterId, target.surahNumber);
     if (
       isStaleLoad(loadToken)
@@ -736,7 +736,7 @@ export function ReaderAudioPanel() {
       audioUrl: playback.audioUrl,
       loadToken,
       reciterId,
-      seekSeconds: timing.startMs / 1000,
+      seekSeconds: options.playSurahIntro ? 0 : timing.startMs / 1000,
       source: {
         mode: 'full-surah',
         reciterId: playback.reciterId,
@@ -938,7 +938,12 @@ export function ReaderAudioPanel() {
 
     playIntentRef.current = true;
     setAudioTarget(nextTarget);
-    await loadTarget(nextTarget, currentReciterRef.current, true);
+    await loadTarget(nextTarget, currentReciterRef.current, true, {
+      // Start the next chapter recording at its actual beginning rather than
+      // skipping directly to ayah 1's timestamp. This preserves a recorded
+      // Bismillah/intro when it precedes the first timed ayah (except At-Tawbah).
+      playSurahIntro: nextTarget.ayahNumber === 1 && nextTarget.surahNumber !== 9,
+    });
   }
 
   function syncFullSurahTarget(timeSeconds) {
