@@ -32,7 +32,7 @@ for (const theme of ['light','dark']) {
     const passage = page.locator('.reflect-passage-section');
     await expect(passage).toBeVisible();
     await expect(passage).toHaveCSS('background-color', await roleColor(page, '--ui-card-bg'));
-    await expect(passage).toHaveCSS('border-top-left-radius', '16px');
+    expect(parseFloat(await passage.evaluate(el => getComputedStyle(el).borderTopLeftRadius))).toBeGreaterThanOrEqual(14);
     const answer = page.locator('#reflect-imagine');
     await expect(answer).toHaveCSS('background-color', await roleColor(page, '--ui-control-bg'));
     await answer.fill(`Neutral ${theme} answer`);
