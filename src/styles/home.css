@@ -187,7 +187,7 @@
 }
 
 .home-empty-link {
-  color: var(--ui-icon-accent);
+  color: var(--note-accent);
   font-size: .72rem;
   font-weight: 720;
   white-space: nowrap;
