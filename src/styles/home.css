@@ -120,15 +120,15 @@
 
 .home-favorite-number {
   display: grid;
-  width: 46px;
-  height: 46px;
+  width: 44px;
+  height: 44px;
   place-items: center;
-  border: 1.5px solid rgba(184, 136, 42, .38);
-  border-radius: 50%;
-  color: #8d671f;
-  font-size: .9rem;
-  font-weight: 700;
   flex-shrink: 0;
+  border: 1px solid color-mix(in srgb, var(--brand-gold, #b68a35) 52%, transparent);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--theme-text);
+  font: 600 .94rem/1 var(--ui-font);
 }
 
 .home-favorite-copy {
@@ -137,18 +137,18 @@
 }
 
 .home-favorite-copy strong {
+  display: block;
   overflow: hidden;
-  color: #2d271f;
-  font-size: 1.02rem;
-  font-weight: 730;
-  letter-spacing: -.025em;
+  color: var(--theme-text);
+  font: 680 1rem/1.2 var(--ui-font);
+  letter-spacing: normal;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .home-favorite-copy small {
   overflow: hidden;
-  color: #6f6254;
+  color: var(--theme-muted);
   font-size: .73rem;
   font-weight: 560;
   text-overflow: ellipsis;
@@ -195,11 +195,6 @@
 @media (max-width: 370px) {
   .home-favorite-row {
     padding: 12px 15px;
-  }
-
-  .home-favorite-number {
-    width: 42px;
-    height: 42px;
   }
 
   .home-empty-link { display: none; }
@@ -445,8 +440,8 @@
 
 [data-theme='dark'] .home-favorite-number {
   border-color: color-mix(in srgb, var(--brand-gold) 48%, var(--theme-border));
-  color: color-mix(in srgb, var(--brand-gold) 72%, #fff);
-  background: color-mix(in srgb, var(--brand-gold) 8%, transparent);
+  background: transparent;
+  color: var(--theme-text);
 }
 
 [data-theme='dark'] .home-favorites-empty small {
@@ -468,22 +463,6 @@
 }
 
 [data-theme='dark'] .home-reflect-copy small {
-  color: var(--theme-muted);
-}
-
-#root .home-favorite-copy strong {
-  color: #2d271f;
-}
-
-#root .home-favorite-copy small {
-  color: #6f6254;
-}
-
-[data-theme='dark'] #root .home-favorite-copy strong {
-  color: var(--theme-text);
-}
-
-[data-theme='dark'] #root .home-favorite-copy small {
   color: var(--theme-muted);
 }
 
