@@ -192,3 +192,16 @@
 :root[data-theme='dark'][data-palette='blue'] { --theme-accent:#91b8e4; }
 :root[data-theme='dark'][data-palette='burgundy'] { --theme-accent:#de9aa3; }
 :root[data-theme='dark'][data-palette='charcoal'] { --theme-accent:#c2c8cd; }
+
+/* Keep original dark hero exact; other themes supply their own dark fills. */
+:root[data-theme='dark'][data-palette='blue'],
+:root[data-theme='dark'][data-palette='burgundy'],
+:root[data-theme='dark'][data-palette='charcoal'] {
+  --home-hero-dark-start: var(--brand-green);
+  --home-hero-dark-end: var(--brand-green-dark);
+  --audio-panel-bg: var(--ui-card-bg);
+  --audio-panel-border: var(--ui-card-border);
+  --audio-control-bg: var(--theme-soft);
+  --audio-close-bg: var(--theme-soft);
+}
+:root[data-theme='dark'][data-palette='green'] { --theme-accent:#8bc7b4; }
