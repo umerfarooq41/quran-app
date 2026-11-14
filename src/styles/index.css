@@ -551,14 +551,6 @@
   align-items: center;
 }
 
-.index-replica-shell.app-page-shell {
-  background: var(--brand-bg-light);
-}
-
-[data-theme='dark'] .index-replica-shell.app-page-shell {
-  background: var(--brand-bg-dark);
-}
-
 .index-replica-shell.app-page-shell .index-replica-header {
   background: transparent;
   border: 0;
