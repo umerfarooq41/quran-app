@@ -103,7 +103,7 @@ test('Discover reveals English and Urdu for Arabic-only keyword chips', async ({
       const request = store.get('qa-reflect-lesson');
       request.onsuccess = () => resolve(request.result);
     });
-    lesson.keywords = [{ key: '3:1', ayahNumber: 3, arabic: 'الرَّحِيمِ', meaning: 'Most Merciful', language: 'en' }];
+    lesson.keywords = [{ key: '3:1', ayahNumber: 3, location: '1:3:2', arabic: 'الرَّحِيمِ', meaning: 'Most Merciful', language: 'en' }];
     store.put(lesson);
     await new Promise(resolve => { tx.oncomplete = resolve; });
     database.close();
