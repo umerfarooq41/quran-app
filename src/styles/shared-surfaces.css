@@ -421,6 +421,8 @@
   isolation: isolate;
   view-transition-name: quran-page;
 }
+/* Route snapshots are visual only. Input belongs to the live page. */
+::view-transition { pointer-events: none; }
 ::view-transition-old(root),
 ::view-transition-new(root) { animation: none; }
 ::view-transition-old(quran-page),
