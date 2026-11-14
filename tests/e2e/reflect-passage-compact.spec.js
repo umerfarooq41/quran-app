@@ -123,7 +123,7 @@ test('Discover reveals English and Urdu for Arabic-only keyword chips', async ({
   await expect(sheet.getByText('Urdu', {exact:true})).toBeVisible();
   await expect(sheet.getByText('Loading…')).toHaveCount(0);
   await expect(sheet.getByText('English meaning unavailable for this word.')).toHaveCount(0);
-  await expect(sheet.getByText('اس لفظ کا اردو معنی دستیاب نہیں ہے۔')).toHaveCount(0);
+  await expect(sheet.locator('p[lang="ur"]')).toHaveText('بار بار رحم فرمانے والا ہے');
   await sheet.getByRole('button',{name:'Jump to Ayah'}).click();
   await expect(page.locator('.reflect-passage-section')).toBeVisible();
   await expect(page.locator('[data-reflect-ayah="3"]')).toBeVisible();
