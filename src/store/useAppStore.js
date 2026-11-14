@@ -50,6 +50,7 @@ function persistFavoriteSurahs(favoriteSurahs) {
 export const DEFAULT_SETTINGS = Object.freeze({
   fontScale: 1,
   theme: getInitialTheme(),
+  palette: 'green',
   translation: DEFAULT_TRANSLATION_ID,
   translationLanguage: 'ur',
   reciter: null,
@@ -671,6 +672,7 @@ export function sanitizeSettings(value = {}) {
     theme: ['auto', 'dark', 'light'].includes(value.theme)
       ? value.theme
       : DEFAULT_SETTINGS.theme,
+    palette: ['green','blue','burgundy','charcoal'].includes(value.palette) ? value.palette : 'green',
     translation,
     translationLanguage,
     reciter: typeof value.reciter === 'string' && value.reciter
