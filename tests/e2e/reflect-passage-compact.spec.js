@@ -49,6 +49,19 @@ for (const language of ['en','ur']) for (const theme of ['light','dark']) {
     if (theme === 'light') expect(divider.actual).not.toMatch(/^rgba?\(255, 255, 255/);
     const keyword=ayahs.first().getByRole('button',{name:/Toggle keyword/});
     await keyword.click();await expect(keyword).toHaveAttribute('aria-pressed','true');
+    const savedChip=page.locator('.reflect-keyword-chip').first();
+    await expect(savedChip).toBeVisible();
+    await expect(savedChip).toHaveCSS('display','inline-flex');
+    await expect(savedChip.locator('.reflect-keyword-meaning')).toHaveText(language==='ur'?'اللہ':'Allah');
+    const dividerLayout=await ayahs.nth(1).evaluate(el=>({
+      top:getComputedStyle(el).marginTop,
+      padding:getComputedStyle(el).paddingTop,
+    }));
+    expect(dividerLayout).toEqual({top:'12px',padding:'12px'});
+    const reflectionDivider=page.locator('#reflect-my-reflection');
+    if (await reflectionDivider.count()) {
+      await expect(reflectionDivider).toHaveCSS('border-top-width','1px');
+    }
     const one=ayahs.first().getByRole('button',{name:'Toggle Tafsir footnote 1'});
     await one.scrollIntoViewIfNeeded();
     const scroll=page.locator('.reflect-content');
@@ -70,5 +83,6 @@ for (const language of ['en','ur']) for (const theme of ['light','dark']) {
       const db=await new Promise(resolve=>{const r=indexedDB.open('quranFluentLocal');r.onsuccess=()=>resolve(r.result);});
       return new Promise(resolve=>{const r=db.transaction('tadabburLessons').objectStore('tadabburLessons').get('qa-reflect-lesson');r.onsuccess=()=>{resolve(r.result.keywords);db.close();};});
     });expect(saved).toHaveLength(1);
+    expect(saved[0].language).toBe(language);
   });
 }
