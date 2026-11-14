@@ -255,7 +255,7 @@
   border: 1px solid color-mix(in srgb, var(--theme-accent) 16%, transparent);
   border-radius: 999px;
   background: color-mix(in srgb, var(--theme-accent) 8%, transparent);
-  color: #245f51;
+  color: var(--note-accent);
   font-weight: 700;
   line-height: 1;
 }
@@ -285,7 +285,7 @@
   place-items: center;
   border-radius: 50%;
   background: color-mix(in srgb, var(--theme-accent) 15%, transparent);
-  color: #245f51;
+  color: var(--note-accent);
   font-size: .62rem;
   font-weight: 800;
 }
@@ -293,11 +293,11 @@
   border-color: var(--theme-border);
 }
 [data-theme='dark'] .surah-info-icon {
-  background: rgba(54, 122, 102, .22);
-  color: #8bc7b4;
+  background: color-mix(in srgb, var(--note-accent) 22%, transparent);
+  color: var(--note-accent);
 }
 [data-theme='dark'] .surah-info-html a {
-  color: #8bc7b4;
+  color: var(--note-accent);
 }
 .tafsir-screen,
 .surah-info-screen,
@@ -324,17 +324,17 @@
   color: var(--theme-muted);
 }
 [data-theme='dark'] .tafsir-footnote-toggle {
-  border-color: rgba(87, 191, 161, .18);
-  background: rgba(87, 191, 161, .12);
-  color: #aef1dc;
+  border-color: color-mix(in srgb, var(--note-accent) 18%, transparent);
+  background: color-mix(in srgb, var(--note-accent) 12%, transparent);
+  color: var(--note-accent);
 }
 [data-theme='dark'] .tafsir-footnotes {
-  background: rgba(87, 191, 161, .12);
+  background: color-mix(in srgb, var(--note-accent) 12%, transparent);
   color: #d9dee2;
 }
 [data-theme='dark'] .tafsir-footnote-number {
-  background: rgba(87, 191, 161, .18);
-  color: #aef1dc;
+  background: color-mix(in srgb, var(--note-accent) 18%, transparent);
+  color: var(--note-accent);
 }
 .surah-info-html {
   font-family: var(--translation-urdu-font);
