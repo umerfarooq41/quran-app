@@ -65,7 +65,7 @@ export default function LessonReader({ active, verses, translationOption, toggle
                     {words?.length > 0 ? (
                       <div className="ayah-word-by-word-list" dir="rtl">
                         {words.map((word, index) => (
-                          <button type="button" data-keyword-key={verse.ayahNumber + ':' + index} className={`ayah-word-by-word-item rounded-lg px-1 ${(active.keywords || []).some((item) => item.key === verse.ayahNumber + ':' + index) ? 'reflect-keyword-selected' : ''}`} key={word.id || index} aria-pressed={(active.keywords || []).some((item) => item.key === verse.ayahNumber + ':' + index)} aria-label={`Toggle keyword ${word.arabic || ''} ${word.meaning || ''}`} onClick={() => toggleKeyword(verse.ayahNumber, word, index)}>
+                          <button type="button" data-keyword-key={verse.ayahNumber + ':' + index} className={`ayah-word-by-word-item rounded-lg px-1 ${(active.keywords || []).some((item) => item.key === verse.ayahNumber + ':' + index) ? 'reflect-keyword-selected' : ''}`} key={word.id || index} aria-pressed={(active.keywords || []).some((item) => item.key === verse.ayahNumber + ':' + index)} aria-label={`Toggle keyword ${word.arabic || ''} ${word.meaning || ''}`} onClick={() => toggleKeyword(verse.ayahNumber, word, index, wordLanguage)}>
                             <span className="ayah-word-by-word-arabic" dir="rtl" lang="ar">{word.arabic}</span>
                             <span className="ayah-word-by-word-meaning" dir={wordLanguage === 'ur' ? 'rtl' : 'ltr'} lang={wordLanguage}>{word.meaning}</span>
                           </button>
@@ -101,11 +101,11 @@ export default function LessonReader({ active, verses, translationOption, toggle
         <section className={card}>
           <h3 className="font-semibold">Keywords</h3>
           <p className="mt-1 text-xs text-slate-500">Tap a word above to save or remove it from this lesson.</p>
-          {(active.keywords || []).length ? <div className="mt-3 flex flex-wrap gap-2">
-            {active.keywords.map((keyword) => <button type="button" key={keyword.key} className="reflect-keyword-chip rounded-xl border px-3 py-2 text-sm" onClick={() => toggleKeyword(keyword.ayahNumber, keyword, Number(keyword.key.split(':')[1]))} aria-label={`Remove keyword ${keyword.arabic} ${keyword.meaning || ''}`}>
-              <span lang="ar" dir="rtl" className="font-semibold">{keyword.arabic}</span>
-              <span className="mx-2 reflect-keyword-meaning">{keyword.meaning}</span>
-              <span aria-hidden="true">×</span>
+          {(active.keywords || []).length ? <div className="reflect-keyword-list mt-3">
+            {active.keywords.map((keyword) => <button type="button" key={keyword.key} className="reflect-keyword-chip" onClick={() => toggleKeyword(keyword.ayahNumber, keyword, Number(keyword.key.split(':')[1]))} aria-label={`Remove keyword ${keyword.arabic} ${keyword.meaning || ''}`}>
+              <span lang="ar" dir="rtl" className="reflect-keyword-arabic">{keyword.arabic}</span>
+              <span className="reflect-keyword-meaning" dir={keyword.language === 'en' ? 'ltr' : 'rtl'}>{keyword.meaning}</span>
+              <span className="reflect-keyword-remove" aria-hidden="true">×</span>
             </button>)}
           </div> : <p className="mt-3 text-sm text-slate-500">No keywords selected yet.</p>}
         </section>
