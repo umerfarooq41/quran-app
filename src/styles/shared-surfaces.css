@@ -318,7 +318,7 @@
   border-radius: 0;
   outline: 0;
   background: transparent;
-  color: #202624;
+  color: var(--ui-icon-neutral);
   box-shadow: none;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
@@ -328,7 +328,7 @@
 .shared-back-button:active {
   border: 0;
   background: transparent;
-  color: #202624;
+  color: var(--ui-icon-neutral);
   box-shadow: none;
   transform: none;
 }
@@ -348,7 +348,7 @@
 [data-theme='dark'] .shared-back-button {
   border: 0;
   background: transparent;
-  color: #f3f0e8;
+  color: var(--ui-icon-neutral);
   box-shadow: none;
 }
 
