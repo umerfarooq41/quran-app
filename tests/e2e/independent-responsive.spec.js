@@ -109,6 +109,7 @@ for (const theme of ['light','dark']) for (const width of [320,375,390,430,768])
 }
 
 async function swipe(page, locator) {
+  await expect(page.locator('html')).not.toHaveAttribute('data-navigation-direction', /.+/);
   await locator.scrollIntoViewIfNeeded();
   const rect=await locator.boundingBox();
   const session=await page.context().newCDPSession(page);
