@@ -15,7 +15,7 @@ for (const language of ['en','ur']) for (const theme of ['light','dark']) {
         lesson.sourceSnapshot.wordByWordLanguage=language;
         lesson.sourceSnapshot.verses=lesson.sourceSnapshot.verses.map(verse=>({...verse,
           translation:(language==='ur'?'اللہ کے نام سے جو رحمان و رحیم ہے':'In the name of Allah, the Most Compassionate, the Most Merciful')+' [1] [2]',
-          wordByWordWords:[{arabic:'اللَّهِ',meaning:language==='ur'?'اللہ':'Allah'}],
+          wordByWordWords:[{id:verse.ayahNumber===1?'1:1:2':'1:'+verse.ayahNumber+':1',arabic:'اللَّهِ',meaning:language==='ur'?'اللہ':'Allah'}],
           tafsirNotes:[{number:1,text:('First note. ').repeat(40)},{number:2,text:'Second note.'}],
         }));store.put(lesson);
       };
@@ -85,6 +85,7 @@ for (const language of ['en','ur']) for (const theme of ['light','dark']) {
       return new Promise(resolve=>{const r=db.transaction('tadabburLessons').objectStore('tadabburLessons').get('qa-reflect-lesson');r.onsuccess=()=>{resolve(r.result.keywords);db.close();};});
     });expect(saved).toHaveLength(1);
     expect(saved[0].language).toBe(language);
+    expect(saved[0].location).toBe('1:1:2');
   });
 }
 

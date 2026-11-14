@@ -38,16 +38,24 @@ jobs:
         # resolves their modules when bundling the web app.
         run: npm install --no-save --package-lock=false @capacitor/core@7 @capacitor/app@7 @capacitor/haptics@7
 
+      # Run independent checks together so one stale contract cannot hide
+      # a separate Vite or Playwright regression.
       - name: Run unit tests
+        id: unit
+        continue-on-error: true
         run: npm test
 
       - name: Verify production build
+        id: production
+        continue-on-error: true
         run: npm run build
 
       - name: Install Playwright test runner
+        if: steps.production.outcome == 'success'
         run: npm install --no-save --package-lock=false @playwright/test @axe-core/playwright
 
       - name: Install Chromium and media inspection tools
+        if: steps.production.outcome == 'success'
         run: |
           npx playwright install --with-deps chromium
           sudo apt-get update -qq
@@ -55,6 +63,9 @@ jobs:
           command -v ffprobe
 
       - name: Run responsive UI and interaction tests
+        id: ui
+        if: steps.production.outcome == 'success'
+        continue-on-error: true
         run: npx playwright test
 
       - name: Upload Playwright report and failure artifacts
@@ -67,3 +78,24 @@ jobs:
             test-results/
           if-no-files-found: ignore
           retention-days: 14
+
+      - name: Summarize and enforce all quality gates
+        if: always()
+        env:
+          UNIT_RESULT: ${{ steps.unit.outcome }}
+          BUILD_RESULT: ${{ steps.production.outcome }}
+          UI_RESULT: ${{ steps.ui.outcome }}
+        run: |
+          {
+            echo "## Quran App quality gate"
+            echo ""
+            echo "| Check | Result |"
+            echo "|---|---|"
+            echo "| Unit and architecture tests | ${UNIT_RESULT} |"
+            echo "| Production build | ${BUILD_RESULT} |"
+            echo "| Browser, responsive and accessibility tests | ${UI_RESULT} |"
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [[ "$UNIT_RESULT" != success || "$BUILD_RESULT" != success || "$UI_RESULT" != success ]]; then
+            echo "::error::One or more quality gates failed. See the independent results."
+            exit 1
+          fi

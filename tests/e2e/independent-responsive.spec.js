@@ -119,13 +119,24 @@ async function swipe(page, locator) {
   await session.detach();
 }
 async function neutralSwipe(page, wrapper, surface, remove) {
-  const before=await surface.evaluate(el=>getComputedStyle(el).backgroundColor);
   await swipe(page,surface);
   await expect(wrapper).toHaveClass(/is-swiped/);
+  await expect(wrapper).toHaveAttribute('data-revealed','true');
   await expect(wrapper).toHaveCSS('background-color','rgba(0, 0, 0, 0)');
-  await expect(surface).toHaveCSS('background-color',before);
+  // The foreground intentionally becomes opaque while revealing the red
+  // stationary ::before layer. The action button itself stays transparent.
+  const expectedOpaque=await surface.evaluate(el=>{
+    const probe=document.createElement('span');
+    probe.style.backgroundColor='var(--theme-surface-solid)';
+    el.append(probe);
+    const color=getComputedStyle(probe).backgroundColor;
+    probe.remove();
+    return color;
+  });
+  await expect(surface).toHaveCSS('background-color',expectedOpaque);
   await expect(remove).toBeVisible();
-  await expect(remove).toHaveCSS('background-color','rgb(200, 58, 53)');
+  await expect(remove).toHaveCSS('background-color','rgba(0, 0, 0, 0)');
+  expect(await wrapper.evaluate(el=>getComputedStyle(el,'::before').backgroundColor)).not.toBe('rgba(0, 0, 0, 0)');
 }
 for(const theme of ['light','dark']) test(`Swipe exposure and lesson source surfaces ${theme}`,async({page})=>{
   test.setTimeout(120000);
@@ -152,7 +163,15 @@ for(const theme of ['light','dark']) test(`Swipe exposure and lesson source surf
   await expect(dialog.getByRole('button',{name:'Remove',exact:true})).toBeFocused();
   await page.keyboard.press('Escape');await expect(dialog).toHaveCount(0);
   await page.getByRole('button',{name:/^QA saved lesson/}).click();
-  await expect(page.locator('.reflect-passage-section')).toHaveCSS('background-color','rgba(0, 0, 0, 0)');
+  const passageColor=await page.locator('.reflect-passage-section').evaluate(el=>{
+    const probe=document.createElement('span');
+    probe.style.backgroundColor='var(--ui-card-bg)';
+    el.append(probe);
+    const color=getComputedStyle(probe).backgroundColor;
+    probe.remove();
+    return color;
+  });
+  await expect(page.locator('.reflect-passage-section')).toHaveCSS('background-color',passageColor);
   await expect(page.locator('.reflect-ayah-body').first()).toHaveCSS('background-color','rgba(0, 0, 0, 0)');
   await page.getByRole('button',{name:'Expand Surah Introduction',exact:true}).click();
   await expect(page.locator('.reflect-surah-info-html')).toBeVisible();
