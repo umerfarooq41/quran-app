@@ -92,7 +92,7 @@ test('Reflect Progress tab renders statistics without blanking the app', async (
   await expect(page.getByRole('heading', { name: 'Reflect', exact: true })).toBeVisible();
   await page.getByRole('tab', { name: 'Progress' }).click();
   await expect(page.getByRole('heading', { name: 'Lesson Progress' })).toBeVisible();
-  await expect(page.getByText('Ayahs studied')).toBeVisible();
+  await expect(page.getByText('Ayahs explored')).toBeVisible();
   await expect(page.getByText('Lessons completed')).toBeVisible();
   await expect(page.locator('#root')).not.toBeEmpty();
   expect(errors).toEqual([]);
