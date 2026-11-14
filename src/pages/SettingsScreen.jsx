@@ -130,7 +130,7 @@ export default function SettingsScreen() {
               onClick={() => setPaletteOpen((open) => !open)}>
               <Palette size={19} aria-hidden="true" className="settings-theme-icon" />
               <span>Theme Style</span>
-              <span className="settings-theme-selected" style={{ '--theme-choice': THEME_PALETTES.find((item) => item.id === (settings.palette || 'green'))?.color || THEME_PALETTES[0].color }} aria-hidden="true" />
+              <span className="settings-theme-selected" style={{ '--theme-choice': THEME_PALETTES.find((item) => item.id === (settings.palette || 'green'))?.color || THEME_PALETTES[0].color }} aria-hidden="true"><span className="settings-theme-selected-color"><Check size={13} strokeWidth={2.5} /></span></span>
             </button>
             {paletteOpen && (
               <div id="settings-theme-palette" className="settings-theme-popover" role="group" aria-label="Choose color theme">
