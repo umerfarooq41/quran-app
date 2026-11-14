@@ -10,7 +10,9 @@ export default {
     launchOptions: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE, args: ['--no-sandbox', '--disable-dev-shm-usage', '--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] } : {},
     screenshot: 'only-on-failure',
     trace: 'retain-on-failure',
-    video: 'retain-on-failure',
+    // CI failure traces already include screenshots and interaction steps.
+    // Avoid multi-gigabyte MP4 artifacts for large visual-regression matrices.
+    video: process.env.CI ? 'off' : 'retain-on-failure',
   },
   projects: [
     { name: 'responsive-audit', testMatch: /independent-responsive/, use: { browserName: 'chromium', viewport: {width:390,height:844}, hasTouch:true } },
