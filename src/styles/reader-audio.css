@@ -41,16 +41,16 @@ html[data-theme='light'] {
 
 
 html[data-theme='dark'] {
-  --audio-accent: #8BC7B4;
-  --audio-accent-soft: rgba(139, 199, 180, .16);
-  --audio-accent-border: rgba(139, 199, 180, .30);
+  --audio-accent: var(--audio-theme-accent);
+  --audio-accent-soft: color-mix(in srgb,var(--audio-theme-accent) 16%,transparent);
+  --audio-accent-border: color-mix(in srgb,var(--audio-theme-accent) 30%,transparent);
 }
 
 
 html[data-theme='light'] {
-  --audio-accent: #2F7462;
-  --audio-accent-soft: rgba(47, 116, 98, .14);
-  --audio-accent-border: rgba(47, 116, 98, .30);
+  --audio-accent: var(--audio-theme-accent);
+  --audio-accent-soft: color-mix(in srgb,var(--audio-theme-accent) 14%,transparent);
+  --audio-accent-border: color-mix(in srgb,var(--audio-theme-accent) 30%,transparent);
 }
 
 
