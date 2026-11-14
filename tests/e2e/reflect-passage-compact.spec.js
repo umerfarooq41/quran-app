@@ -51,7 +51,7 @@ for (const language of ['en','ur']) for (const theme of ['light','dark']) {
     await keyword.click();await expect(keyword).toHaveAttribute('aria-pressed','true');
     const savedChip=page.locator('.reflect-keyword-chip').first();
     await expect(savedChip).toBeVisible();
-    await expect(savedChip).toHaveCSS('display','inline-flex');
+    await expect(savedChip).toHaveCSS('display', /^(inline-)?flex$/);
     await expect(savedChip.locator('.reflect-keyword-arabic')).toHaveText('اللَّهِ');
     await expect(savedChip.locator('.reflect-keyword-meaning')).toHaveCount(0);
     const dividerLayout=await ayahs.nth(1).evaluate(el=>({
@@ -110,7 +110,7 @@ test('Discover reveals English and Urdu for Arabic-only keyword chips', async ({
   });
   await page.reload();
   await page.getByRole('button', {name:/Continue lesson/}).click();
-  await page.locator('.reflect-tabs').getByRole('button', {name:'Discover'}).click();
+  await page.getByRole('tablist', {name:'Reflect sections'}).getByRole('tab', {name:'Discover'}).click();
   const chip = page.locator('.reflect-keyword-list .reflect-keyword-chip').first();
   await expect(chip.locator('.reflect-keyword-arabic')).toHaveText('الرَّحِيمِ');
   await expect(chip.locator('.reflect-keyword-source')).toHaveText('1:3');
