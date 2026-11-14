@@ -63,7 +63,7 @@ for (const theme of ['light','dark']) for (const [width,height] of [[390,844],[7
     await expect(card).toHaveAttribute('data-revealed','false');
     await expect(card.locator('.tab-card-remove')).toBeHidden();
     // Also exercise the animated return, not just a dragged return.
-    await page.mouse.move(x,y);await page.mouse.down();await page.mouse.move(x-92,y);await page.mouse.up();
+    await page.mouse.move(x,y);await page.mouse.down();await page.mouse.move(x-92,y,{steps:8});await page.mouse.up();
     await expect(card).toHaveClass(/is-swiped/);
     await page.waitForTimeout(250);
     expect((await surface.boundingBox()).width).toBeCloseTo(initial.width,1);
