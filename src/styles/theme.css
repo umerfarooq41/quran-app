@@ -165,13 +165,7 @@
   --ui-divider: rgba(255, 255, 255, .11);
 }
 
-/* Reduced transparency changes overlay opacity, never palette selection. */
-@media (prefers-reduced-transparency: reduce) {
-  :root {
-    --surface-overlay: var(--surface-card);
-    --ui-card-blur: none;
-  }
-}
+
 
 :root {
   --ui-picker-radius: 16px;
@@ -258,3 +252,14 @@
 :root[data-theme='dark'][data-palette='blue'] { --ui-ornament: #a6bdd3; --brand-gold:#a6bdd3; --ui-gold:#a6bdd3; --gold:#a6bdd3; }
 :root[data-theme='dark'][data-palette='burgundy'] { --ui-ornament: #d9a9ad; --brand-gold:#d9a9ad; --ui-gold:#d9a9ad; --gold:#d9a9ad; }
 :root[data-theme='dark'][data-palette='charcoal'] { --ui-ornament: #b8aa96; --brand-gold:#b8aa96; --ui-gold:#b8aa96; --gold:#b8aa96; }
+
+/* Accessibility rule belongs after the palette definitions: never revert
+   Blue, Burgundy or Charcoal to the Green surface values. */
+@media (prefers-reduced-transparency: reduce) {
+  :root,
+  :root[data-theme='dark'],
+  :root[data-theme='dark'][data-palette] {
+    --surface-overlay: var(--surface-card);
+    --ui-card-blur: none;
+  }
+}
