@@ -18,6 +18,8 @@ for (const theme of ['light','dark']) {
     await page.addInitScript(theme=>localStorage.setItem('quran-app-theme',theme),theme);
     await page.goto('/');
     await page.getByRole('button',{name:'Settings',exact:true}).click();
+    await expect(page.locator('html')).not.toHaveAttribute('data-navigation-direction', /.+/);
+    await page.evaluate(() => document.fonts.ready);
     for (const label of ['Translator','Audio reciter']) {
       const trigger=page.getByRole('button',{name:new RegExp(`^${label}:`)});
       await trigger.scrollIntoViewIfNeeded();
@@ -25,9 +27,9 @@ for (const theme of ['light','dark']) {
       const scroll=page.locator('.app-scroll-content');
       const before=await scroll.evaluate(el=>el.scrollTop);
       await trigger.click();
-      await expect.poll(()=>scroll.evaluate(el=>el.scrollTop)).toBe(before);
       const menu=page.getByRole('listbox',{name:label,exact:true});
       await expect(menu).toBeVisible();
+      await expect.poll(()=>scroll.evaluate(el=>el.scrollTop)).toBe(before);
       expect(await menu.evaluate(el=>el.matches(':popover-open'))).toBe(true);
       const box=await menu.boundingBox(), viewport=page.viewportSize();
       expect(box.x).toBeGreaterThanOrEqual(0);expect(box.y).toBeGreaterThanOrEqual(0);
