@@ -51,7 +51,7 @@ for (const theme of ['light','dark']) for (const [width,height] of [[390,844],[7
     const x=box.x+box.width*.7,y=box.y+box.height*.5;
     await page.mouse.move(x,y);await page.mouse.down();
     for(const amount of [0,23,46,69,92,46,0]) {
-      await page.mouse.move(x-amount,y);
+      await page.mouse.move(x-amount,y,{steps:3});
       const front=await surface.boundingBox();
       expect(front.width).toBeCloseTo(initial.width,1);expect(front.height).toBeCloseTo(initial.height,1);
       expect(front.x).toBeCloseTo(initial.x-amount,1);
