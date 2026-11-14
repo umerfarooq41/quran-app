@@ -263,13 +263,7 @@
 
 .app-shell,
 .bg-fluent {
-  background: var(--brand-bg-light);
-  color: var(--theme-text);
-}
-
-[data-theme='dark'] .app-shell,
-[data-theme='dark'] .bg-fluent {
-  background: var(--brand-bg-dark);
+  background: var(--app-background);
   color: var(--theme-text);
 }
 
@@ -336,12 +330,8 @@
   margin: 0;
   overflow: hidden;
   padding: calc(var(--safe-top, env(safe-area-inset-top, 0px)) + var(--app-fixed-header-height)) var(--app-page-inline-right) 0 var(--app-page-inline-left);
-  background: var(--brand-bg-light);
+  background: var(--app-background);
   color: var(--theme-text);
-}
-
-[data-theme='dark'] .app-page-shell {
-  background: var(--brand-bg-dark);
 }
 
 .app-fixed-header {
