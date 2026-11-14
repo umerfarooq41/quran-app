@@ -74,8 +74,10 @@ jobs:
         with:
           name: playwright-results
           path: |
-            playwright-report/
-            test-results/
+            test-results/**/*-actual.png
+            test-results/**/*-diff.png
+            test-results/**/*-expected.png
+            test-results/**/error-context.md
           if-no-files-found: ignore
           retention-days: 14
 
