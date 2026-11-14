@@ -204,14 +204,14 @@
 
 [data-theme='dark'] .search-recent-list button {
   border-color: var(--theme-border);
-  background: var(--theme-surface-solid);
+  background: var(--surface-card);
   box-shadow: 0 9px 28px var(--theme-shadow);
 }
 
 
 [data-theme='dark'] .search-results-heading span {
   border-color: var(--theme-border);
-  background: var(--theme-surface-solid);
+  background: var(--surface-card);
   color: var(--theme-text);
   box-shadow: 0 9px 28px var(--theme-shadow);
 }
@@ -224,13 +224,16 @@
 
 [data-theme='dark'] .search-empty {
   border-color: var(--theme-border);
-  background: var(--theme-surface-solid);
+  background: var(--surface-card);
   box-shadow: 0 9px 28px var(--theme-shadow);
 }
 
 [data-theme='dark'] .search-recent h2,
 [data-theme='dark'] .search-results-heading h2,
-[data-theme='dark'] .search-result-reference strong,
+[data-theme='dark'] .search-result-reference strong {
+  color: var(--theme-text);
+}
+
 [data-theme='dark'] .search-result-preview,
 [data-theme='dark'] .search-result-reference small,
 [data-theme='dark'] .search-result-meta,
