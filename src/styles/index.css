@@ -1747,7 +1747,7 @@
 
 .index-replica-shell .index-surah-introduction :is(h1,h2,h3,p){max-width:100%}
 
- .index-replica-shell .index-surah-intro-more{display:inline-flex;margin:6px 0 0;padding:5px 0;color:var(--brand-gold,#b68a35);font-size:14px;font-weight:600;text-decoration:underline;text-underline-offset:3px}
+ .index-replica-shell .index-surah-intro-more{display:inline-flex;margin:6px 0 0;padding:5px 0;color:var(--theme-text);font-size:14px;font-weight:600;text-decoration:underline;text-underline-offset:3px}
 
 .index-replica-shell .index-card-main:active { background: var(--ui-pressed-overlay); }
 
