@@ -346,7 +346,7 @@
   flex: 0 0 auto;
   border-radius: 999px;
   background: var(--reader-primary, #2d6e5e);
-  box-shadow: 0 0 0 4px rgba(45, 110, 94, .14);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--recitation-word) 14%, transparent);
 }
 
 .reader-return-to-audio-text {
