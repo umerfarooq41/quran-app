@@ -35,7 +35,7 @@ for(const theme of ['light','dark']) {
     const toolbar=await page.locator('.reader-topbar').boundingBox();expect(toolbar.width).toBe(1365);
     await expect(page.getByRole('button',{name:/Reader layout/})).toHaveCount(0);
     await expect(page.locator('.reader-topbar').getByRole('button',{name:'Search Quran'})).toHaveCount(0);
-    await page.getByRole('button',{name:'Next spread',exact:true}).click();await expect.poll(()=>numbers(page)).toEqual([3,4]);
+    await page.keyboard.press('ArrowLeft');await expect.poll(()=>numbers(page)).toEqual([3,4]);
     await page.setViewportSize({width:820,height:1180});await expect.poll(()=>numbers(page)).toEqual([3]);
     await page.setViewportSize({width:1365,height:900});await expect.poll(()=>numbers(page)).toEqual([3,4]);
     await chrome(page);
