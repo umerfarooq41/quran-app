@@ -501,6 +501,7 @@ export async function saveReflectKeywords(id, keywords) {
         ayahNumber: Number(word.ayahNumber),
         arabic: String(word.arabic || ''),
         meaning: String(word.meaning || ''),
+        ...(word.language === 'ur' || word.language === 'en' ? { language: word.language } : {}),
       })),
       updatedAt: Date.now(),
     };
