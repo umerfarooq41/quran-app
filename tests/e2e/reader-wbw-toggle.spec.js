@@ -20,9 +20,11 @@ for(const theme of ['light','dark']) for(const enabled of [false,true]) test(`Re
   await expect(card.locator('.ayah-word-by-word-heading')).toHaveCount(0);
   await card.getByRole('button',{name:'Next Ayah'}).click();
   await expect(card.locator('.ayah-word-by-word')).toHaveCount(enabled?1:0);
-  await expect.poll(()=>page.evaluate(async()=>{
-    const db=await new Promise(resolve=>{const r=indexedDB.open('quranFluentLocal');r.onsuccess=()=>resolve(r.result);});
-    return new Promise(resolve=>{const r=db.transaction('settings').objectStore('settings').get('app');r.onsuccess=()=>{resolve(r.result.value.wordByWordTranslation);db.close();};});
-  })).toBe(enabled);
+  await page.reload();
+  const reloadedWord = page.locator('.reader-page-slide-current .quran-word[data-verse-key]').first();
+  await page.evaluate(() => document.fonts.ready);
+  await reloadedWord.click();
+  await expect(card).toBeVisible();
+  await expect(card.locator('.ayah-word-by-word')).toHaveCount(enabled ? 1 : 0);
   await page.screenshot({path:info.outputPath(`reader-wbw-${enabled}-${theme}.png`)});
 });
