@@ -8,7 +8,7 @@
 .search-recent h2,
 .search-results-heading h2 {
   margin: 0;
-  color: #3e434b;
+  color: var(--theme-text);
 }
 
 .search-recent-list {
@@ -30,8 +30,8 @@
   align-items: center;
   gap: 6px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, .74);
-  color: #565d66;
+  background: var(--surface-card);
+  color: var(--theme-muted);
 }
 
 .search-recent-list button span {
@@ -49,9 +49,9 @@
 
 .search-results-heading span {
   border-radius: 999px;
-  background: rgba(255, 255, 255, .7);
+  background: var(--surface-card);
   padding: 3px 8px;
-  color: #737983;
+  color: var(--theme-muted);
   font-size: .68rem;
   font-weight: 700;
 }
@@ -83,14 +83,14 @@
 
 .search-result-reference small {
   flex: 0 0 auto;
-  color: #68707a;
+  color: var(--theme-muted);
   font-size: .7rem;
 }
 
 .search-result-preview {
   display: -webkit-box;
   overflow: hidden;
-  color: #59616b;
+  color: var(--theme-muted);
   line-height: 1.48;
   text-align: start;
   -webkit-box-orient: vertical;
@@ -105,7 +105,7 @@
 
 .search-result-meta {
   overflow: hidden;
-  color: #959ba3;
+  color: var(--theme-subtle);
   font-size: .65rem;
   font-weight: 650;
   text-overflow: ellipsis;
@@ -115,9 +115,9 @@
 .search-empty {
   margin: 0;
   border-radius: 17px;
-  background: rgba(255, 255, 255, .7);
+  background: var(--surface-card);
   padding: 18px 12px;
-  color: #747b84;
+  color: var(--theme-muted);
   font-size: .8rem;
   text-align: center;
 }
@@ -151,7 +151,7 @@
   min-height: 30px;
   border-radius: var(--ui-radius-pill);
   padding-inline: var(--ui-space-4);
-  color: #7c6460;
+  color: var(--theme-muted);
   font-size: var(--ui-text-xs);
   font-weight: 560;
 }
