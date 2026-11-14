@@ -25,7 +25,11 @@
 
 :root {
   --brand-bg-light: radial-gradient(circle at 15% 10%, rgba(212, 168, 67, 0.18), transparent 38%), radial-gradient(circle at 85% 18%, rgba(45, 110, 94, 0.12), transparent 32%), radial-gradient(circle at 50% 90%, rgba(212, 168, 67, 0.10), transparent 40%), linear-gradient(160deg, #fdf8ef 0%, #f8f3e8 50%, #f4f0e6 100%);
-  --brand-bg-dark: radial-gradient(circle at 16% 8%, rgba(169, 129, 49, .12), transparent 34%), radial-gradient(circle at 85% 15%, rgba(50, 122, 103, .12), transparent 32%), linear-gradient(160deg, #151815 0%, #111412 58%, #171915 100%);
+  --brand-bg-dark:
+    radial-gradient(circle at 14% 10%, rgba(180, 138, 66, .16), transparent 42%),
+    radial-gradient(circle at 86% 16%, rgba(45, 110, 94, .16), transparent 36%),
+    radial-gradient(circle at 50% 86%, rgba(180, 138, 66, .08), transparent 46%),
+    linear-gradient(165deg, #131614 0%, #101311 56%, #161a17 100%);
   --brand-green: #2d6e5e;
   --brand-green-dark: #1f483d;
   --brand-gold: #b48a42;
@@ -56,10 +60,10 @@
 }
 
 :root[data-theme='dark'] {
-  --theme-bg: #111412;
-  --theme-surface: rgba(31, 36, 33, .9);
-  --theme-surface-solid: #202521;
-  --theme-soft: #292f2b;
+  --theme-bg: #101311;
+  --theme-surface: rgba(29, 34, 31, .92);
+  --theme-surface-solid: #1d221f;
+  --theme-soft: #252b27;
   --theme-border: rgba(255, 255, 255, .08);
   --theme-text: #f1f3ef;
   --theme-muted: #abb2ac;
@@ -144,9 +148,9 @@
 :root[data-theme='dark'] {
   --ui-segment-bg: color-mix(in srgb, var(--theme-surface-solid) 88%, transparent);
   --ui-segment-border: var(--theme-border);
-  --ui-card-bg: #202521;
+  --ui-card-bg: #1d221f;
   --ui-card-border: rgba(255, 255, 255, .10);
-  --ui-control-bg: #202521;
+  --ui-control-bg: #1f2522;
   --ui-control-border: rgba(255, 255, 255, .17);
   --ui-card-shadow: 0 8px 20px rgba(0, 0, 0, .14);
   --ui-pressed-overlay: rgba(255, 255, 255, .065);
@@ -183,9 +187,9 @@
 :root[data-palette='blue'] { --brand-green:#3a506b; --brand-green-dark:#273e59; --recitation-word:#3a506b; --recitation-wash:rgba(58,80,107,.15); --audio-theme-accent:#3a506b; --palette-status:#3a506b; --brand-bg-light:radial-gradient(circle at 15% 10%,rgba(212,168,67,.18),transparent 38%),radial-gradient(circle at 85% 18%,rgba(58,80,107,.14),transparent 32%),radial-gradient(circle at 50% 90%,rgba(212,168,67,.10),transparent 40%),linear-gradient(160deg,#fdf8ef,#f8f3e8 50%,#f4f0e6); }
 :root[data-palette='burgundy'] { --brand-green:#7a3035; --brand-green-dark:#5e232b; --recitation-word:#873b43; --recitation-wash:rgba(122,48,53,.13); --audio-theme-accent:#7a3035; --palette-status:#7a3035; --brand-bg-light:radial-gradient(circle at 15% 10%,rgba(212,168,67,.18),transparent 38%),radial-gradient(circle at 85% 18%,rgba(122,48,53,.12),transparent 32%),radial-gradient(circle at 50% 90%,rgba(212,168,67,.10),transparent 40%),linear-gradient(160deg,#fdf8ef,#f8f3e8 50%,#f4f0e6); }
 :root[data-palette='charcoal'] { --brand-green:#34383d; --brand-green-dark:#272b30; --recitation-word:#454b52; --recitation-wash:rgba(52,56,61,.13); --audio-theme-accent:#34383d; --palette-status:#34383d; --theme-bg:#f7f5f0; --brand-bg-light:radial-gradient(circle at 15% 10%,rgba(184,165,138,.12),transparent 38%),radial-gradient(circle at 85% 18%,rgba(52,56,61,.075),transparent 32%),linear-gradient(160deg,#fdfcf9,#f7f5f0 55%,#f2f0eb); }
-:root[data-theme='dark'][data-palette='blue'] { --brand-green:#345b83; --brand-green-dark:#223e5f; --recitation-word:#91b8e4; --recitation-wash:rgba(145,184,228,.18); --audio-theme-accent:#91b8e4; --brand-bg-dark:radial-gradient(circle at 82% 12%,rgba(75,105,143,.11),transparent 40%),linear-gradient(160deg,#17191e,#15171b 65%,#181a1f); --theme-bg:#15171b; --theme-surface:rgba(34,37,43,.92); --theme-surface-solid:#242830; --theme-soft:#2d3138; --ui-card-bg:#242830; --ui-control-bg:#242830; --palette-status:#0b132b; }
-:root[data-theme='dark'][data-palette='burgundy'] { --brand-green:#833e48; --brand-green-dark:#5b2630; --recitation-word:#de9aa3; --recitation-wash:rgba(222,154,163,.17); --audio-theme-accent:#de9aa3; --brand-bg-dark:radial-gradient(circle at 82% 12%,rgba(142,77,86,.11),transparent 40%),linear-gradient(160deg,#1b181a,#181618 65%,#1e1a1c); --theme-bg:#181618; --theme-surface:rgba(40,35,38,.92); --theme-surface-solid:#2a2528; --theme-soft:#332c30; --ui-card-bg:#2a2528; --ui-control-bg:#2a2528; --palette-status:#191214; }
-:root[data-theme='dark'][data-palette='charcoal'] { --brand-green:#454c54; --brand-green-dark:#30363d; --recitation-word:#c2c8cd; --recitation-wash:rgba(194,200,205,.16); --audio-theme-accent:#c2c8cd; --brand-bg-dark:radial-gradient(circle at 82% 12%,rgba(132,140,147,.055),transparent 40%),linear-gradient(160deg,#191a1c,#161719 65%,#1b1c1e); --theme-bg:#161719; --theme-surface:rgba(37,39,41,.92); --theme-surface-solid:#282a2d; --theme-soft:#313337; --ui-card-bg:#282a2d; --ui-control-bg:#282a2d; --palette-status:#151719; }
+:root[data-theme='dark'][data-palette='blue'] { --brand-green:#345b83; --brand-green-dark:#223e5f; --recitation-word:#91b8e4; --recitation-wash:rgba(145,184,228,.18); --audio-theme-accent:#91b8e4; --brand-bg-dark:radial-gradient(circle at 14% 10%,rgba(180,138,66,.14),transparent 42%),radial-gradient(circle at 86% 16%,rgba(77,118,168,.16),transparent 38%),radial-gradient(circle at 50% 86%,rgba(180,138,66,.07),transparent 46%),linear-gradient(165deg,#14171c 0%,#111419 56%,#181d23 100%); --theme-bg:#111419; --theme-surface:rgba(31,37,45,.92); --theme-surface-solid:#1f252d; --theme-soft:#28303a; --ui-card-bg:#1f252d; --ui-control-bg:#222a33; --palette-status:#0b132b; }
+:root[data-theme='dark'][data-palette='burgundy'] { --brand-green:#833e48; --brand-green-dark:#5b2630; --recitation-word:#de9aa3; --recitation-wash:rgba(222,154,163,.17); --audio-theme-accent:#de9aa3; --brand-bg-dark:radial-gradient(circle at 14% 10%,rgba(180,138,66,.14),transparent 42%),radial-gradient(circle at 86% 16%,rgba(142,77,86,.16),transparent 38%),radial-gradient(circle at 50% 86%,rgba(180,138,66,.07),transparent 46%),linear-gradient(165deg,#181517 0%,#151214 56%,#1c1719 100%); --theme-bg:#151214; --theme-surface:rgba(39,33,36,.92); --theme-surface-solid:#272124; --theme-soft:#31292d; --ui-card-bg:#272124; --ui-control-bg:#2b2428; --palette-status:#191214; }
+:root[data-theme='dark'][data-palette='charcoal'] { --brand-green:#454c54; --brand-green-dark:#30363d; --recitation-word:#c2c8cd; --recitation-wash:rgba(194,200,205,.16); --audio-theme-accent:#c2c8cd; --brand-bg-dark:radial-gradient(circle at 14% 10%,rgba(184,170,144,.10),transparent 42%),radial-gradient(circle at 86% 16%,rgba(112,120,128,.12),transparent 38%),radial-gradient(circle at 50% 86%,rgba(184,170,144,.05),transparent 46%),linear-gradient(165deg,#18191b 0%,#151618 56%,#1b1c1f 100%); --theme-bg:#151618; --theme-surface:rgba(38,40,43,.92); --theme-surface-solid:#26282b; --theme-soft:#303337; --ui-card-bg:#26282b; --ui-control-bg:#2b2e32; --palette-status:#151719; }
 :root { --theme-accent:var(--brand-green); --ui-primary:var(--brand-green); }
 
 /* Distinguish pale text accents from dark filled selection surfaces. */
