@@ -6,6 +6,7 @@ import { getSurah } from '../../../lib/quran';
 import { assignmentsFor } from '../reflectPresentation';
 import ThemeStudyButton from './ThemeStudyButton';
 import { getWordByWordTranslation } from '../../../services/quranFoundation/words';
+import { findMatchingMeaning } from '../keywordMatching';
 
 /** Keyword and hierarchical theme discovery across saved lessons. */
 export default function DiscoverTab({ lessons, discoverTab, setDiscoverTab, themeGroups, expandedTheme, setExpandedTheme, expandedSubtheme, setExpandedSubtheme, setKeywordJump, setActive, setMode }) {
@@ -143,29 +144,4 @@ export default function DiscoverTab({ lessons, discoverTab, setDiscoverTab, them
 
 /* The snapshot key identifies a filtered WBW position, not always a raw
    QuranWords location. Match the actual Arabic word before showing a meaning. */
-function normalizeArabic(value) {
-  return String(value || '').normalize('NFKC')
-    .replace(/\p{M}/gu, '')
-    .replace(/[ـ\u200c\u200d\u200e\u200f]/g, '')
-    .replace(/[إأآٱ]/g, 'ا').replace(/ى/g, 'ي')
-    .replace(/ؤ/g, 'و').replace(/ئ/g, 'ي')
-    .replace(/[^\p{L}]/gu, '');
-}
 
-function findMatchingMeaning(words, saved) {
-  if (!Array.isArray(words) || !words.length) return null;
-  const normalized = normalizeArabic(saved.arabic);
-  // Canonical QuranWords location survives WBW display regrouping and
-  // language changes. New keywords persist it; legacy keywords use text.
-  if (saved.location) {
-    const sameLocation = words.find(word => word.id === saved.location);
-    if (sameLocation?.meaning && normalizeArabic(sameLocation.arabic) === normalized) {
-      return sameLocation.meaning;
-    }
-  }
-  const position = Number(String(saved.key || '').split(':')[1]);
-  const atPosition = Number.isInteger(position) && position >= 0 ? words[position] : null;
-  if (atPosition?.meaning && normalizeArabic(atPosition.arabic) === normalized) return atPosition.meaning;
-  const matches = words.filter(word => normalizeArabic(word.arabic) === normalized && word.meaning);
-  return matches.length === 1 ? matches[0].meaning : null;
-}

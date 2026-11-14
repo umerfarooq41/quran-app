@@ -514,7 +514,7 @@
 .reflect-screen .reflect-activity-label { font-size: 14px; font-weight: 600; line-height: 1.35; color: var(--theme-text); }
 .reflect-screen .reflect-activity-detail { font-size: 12px; line-height: 1.4; color: var(--theme-muted); }
 .reflect-screen .reflect-activity-value { flex: 0 0 auto; font-size: 21px; font-weight: 650; font-variant-numeric: tabular-nums; color: var(--theme-text); }
-.reflect-screen .reflect-progress-view-all { display: inline-flex; align-items: center; gap: 2px; padding: 6px 0 6px 8px; color: var(--ui-primary); font-size: 13px; font-weight: 600; white-space: nowrap; }
+.reflect-screen .reflect-progress-view-all { display: inline-flex; align-items: center; gap: 2px; padding: 6px 0 6px 8px; color: var(--note-accent); font-size: 13px; font-weight: 600; white-space: nowrap; }
 .reflect-screen .reflect-recent-book { flex: 0 0 auto; color: var(--ui-primary); }
 .reflect-screen .reflect-recent-chevron { flex: 0 0 auto; color: var(--theme-muted); }
 .reflect-screen .reflect-progress-recent > button { min-height: 54px; }

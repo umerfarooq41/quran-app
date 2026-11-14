@@ -1,0 +1,42 @@
+name: QA visual reference review
+
+on:
+  push:
+    branches:
+      - qa/full-app-release-verification
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: qa-visual-reference
+  cancel-in-progress: true
+
+jobs:
+  generate:
+    if: ${{ !contains(github.event.head_commit.message, '[qa snapshots]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm install --no-save --package-lock=false @capacitor/core@7 @capacitor/app@7 @capacitor/haptics@7
+      - run: npm install --no-save --package-lock=false @playwright/test @axe-core/playwright
+      - run: npx playwright install --with-deps chromium
+      - name: Capture candidate baselines on QA branch only
+        run: npx playwright test tests/e2e/css-architecture-visual.spec.js tests/e2e/reader-ui-states.spec.js --update-snapshots
+      - name: Save images for human review (never push to main automatically)
+        run: |
+          git config user.name "quran-app-qa"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tests/e2e/*-snapshots/*.png
+          if ! git diff --cached --quiet; then
+            git commit -m "[qa snapshots] New image references for review"
+            git push origin HEAD:qa/full-app-release-verification
+          fi
