@@ -1619,10 +1619,10 @@
   padding: 0;
   border: 0;
   border-radius: 15px;
-  background: linear-gradient(135deg, var(--brand-green, #2f7a68), #185b4d);
+  background: linear-gradient(135deg, var(--brand-green), var(--brand-green-dark));
   color: #fff;
   font: 720 .93rem/1 var(--ui-font);
-  box-shadow: 0 7px 16px rgba(24,91,77,.15);
+  box-shadow: 0 7px 16px color-mix(in srgb, var(--brand-green) 15%, transparent);
 }
 
 .index-replica-shell .index-ayah-go:disabled { opacity: .4; box-shadow: none; }
