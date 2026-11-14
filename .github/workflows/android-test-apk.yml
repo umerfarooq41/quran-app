@@ -22,7 +22,7 @@ jobs:
       - name: Install web dependencies
         run: npm ci
       - name: Install Capacitor for test build
-        run: npm install --no-save --package-lock=false @capacitor/core@7 @capacitor/cli@7 @capacitor/android@7
+        run: npm install --no-save --package-lock=false @capacitor/core@7 @capacitor/cli@7 @capacitor/android@7 @capacitor/app@7 @capacitor/haptics@7
       - name: Build web app
         run: npm run build
       - name: Generate Android project
