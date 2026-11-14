@@ -198,7 +198,7 @@
 .reflect-keyword-sheet-translation { padding:12px 0; border-top:1px solid var(--ui-divider); }
 .reflect-keyword-sheet-label { display:block; margin-bottom:7px; color:var(--theme-muted); font-size:12px; font-weight:600; }
 .reflect-keyword-sheet-translation p { margin:0; color:var(--theme-text); font-size:16px; line-height:1.8; overflow-wrap:anywhere; }
-.reflect-keyword-sheet-translation p[lang='ur'] { font-family:Nastaleeq,inherit; text-align:right; }
+.reflect-keyword-sheet-translation p[lang='ur'] { font-family:var(--translation-urdu-font); text-align:right; line-height:2.1; }
 .reflect-keyword-sheet-jump { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; min-height:46px; margin-top:14px; border-radius:14px; background:var(--ui-interactive-fill); color:var(--ui-interactive-text); font-size:14px; font-weight:650; }
 .reflect-keyword-sheet :is(button):focus-visible { outline:2px solid var(--ui-primary); outline-offset:2px; }
 @media(min-width:700px) { .reflect-keyword-sheet-backdrop { align-items:center; padding:20px; } .reflect-keyword-sheet { border-radius:22px; } }
