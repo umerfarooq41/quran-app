@@ -81,6 +81,18 @@ export default function SettingsScreen() {
     <Screen className="settings-screen app-page-shell bg-fluent">
       <div className="app-fixed-header"><Header title="Settings" /></div>
       <div className="app-scroll-content">
+        <SettingsSection title="Color theme">
+          <div className="settings-palette-grid" role="group" aria-label="App color theme">
+            {[
+              { id:'green',label:'Original',color:'#2d6e5e',bg:'#f7f2e8' },
+              { id:'blue',label:'Royal Blue',color:'#3a506b',bg:'#f7f2e8' },
+              { id:'burgundy',label:'Burgundy',color:'#7a3035',bg:'#f7f2e8' },
+              { id:'charcoal',label:'Charcoal',color:'#34383d',bg:'#f7f5f0' },
+            ].map(p => <button type="button" key={p.id} className={'settings-palette-option' + ((settings.palette || 'green') === p.id ? ' is-selected' : '')} aria-pressed={(settings.palette || 'green') === p.id} onClick={() => updateSettings({ palette:p.id })}>
+              <span className="settings-palette-swatch" style={{background:p.bg}}><span style={{background:p.color}} /></span><span>{p.label}</span>
+            </button>)}
+          </div>
+        </SettingsSection>
         <SettingsSection title="Appearance" description="Auto follows your device theme">
           <div className="settings-appearance-segment share-like-segment" role="group" aria-label="Appearance mode">
             {[
