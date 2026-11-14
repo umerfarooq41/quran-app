@@ -244,6 +244,7 @@
 :root[data-theme='dark'] {
   --ui-icon-neutral: var(--theme-text);
   --ui-icon-action: var(--theme-accent);
+  --ui-audio-progress: var(--theme-accent);
   --ui-audio-inactive: color-mix(in srgb, var(--theme-muted) 60%, transparent);
   --ui-pressed-surface: color-mix(in srgb, var(--theme-accent) 12%, transparent);
 }
