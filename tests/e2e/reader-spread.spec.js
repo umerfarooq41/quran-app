@@ -82,7 +82,7 @@ test('small portrait controls fit and the page slider opens the exact last page 
   await expect(page.getByRole('button',{name:'Next spread',exact:true})).toHaveCount(0);
   await page.getByRole('slider').press('ArrowLeft');await expect.poll(()=>numbers(page)).toEqual([547,548]);
   await page.setViewportSize({width:820,height:1180});await expect.poll(()=>numbers(page)).toEqual([548]);
-  await expect(page.getByRole('button',{name:'Next page',exact:true})).toBeDisabled();
+  await expect(page.getByRole('button',{name:'Next page',exact:true})).toHaveCount(0);
   await info.attach('Last page portrait',{body:await page.screenshot(),contentType:'image/png'});
 });
 
