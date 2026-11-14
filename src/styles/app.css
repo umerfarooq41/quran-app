@@ -218,7 +218,7 @@
 
 [data-theme='dark'] body,
 [data-theme='dark'] #root {
-  background: #111412;
+  background: var(--theme-bg);
   color: var(--theme-text);
 }
 
