@@ -250,7 +250,9 @@
   font-family: var(--ui-font);
   font-size: 2rem;
   font-weight: 560;
-  line-height: 1.1;
+  line-height: 1;
+  letter-spacing: -.045em;
+  color: var(--theme-text);
   text-align: center;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1149,7 +1151,7 @@
 .index-replica-shell .index-section-title {
   margin: 17px 4px 8px;
   color: var(--theme-text);
-  font: 750 .88rem/1.2 var(--ui-font);
+  font: 700 .88rem/1.2 var(--ui-font);
   letter-spacing: .01em;
 }
 
