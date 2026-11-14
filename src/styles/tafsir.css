@@ -252,9 +252,9 @@
   align-items: center;
   justify-content: center;
   gap: 7px;
-  border: 1px solid rgba(45, 110, 94, .16);
+  border: 1px solid color-mix(in srgb, var(--theme-accent) 16%, transparent);
   border-radius: 999px;
-  background: rgba(45, 110, 94, .08);
+  background: color-mix(in srgb, var(--theme-accent) 8%, transparent);
   color: #245f51;
   font-weight: 700;
   line-height: 1;
@@ -269,7 +269,7 @@
   display: grid;
   gap: 8px;
   border-radius: 14px;
-  background: rgba(45, 110, 94, .08);
+  background: color-mix(in srgb, var(--theme-accent) 8%, transparent);
   color: #4a535b;
 }
 .tafsir-footnotes p {
@@ -284,7 +284,7 @@
   flex: 0 0 auto;
   place-items: center;
   border-radius: 50%;
-  background: rgba(45, 110, 94, .15);
+  background: color-mix(in srgb, var(--theme-accent) 15%, transparent);
   color: #245f51;
   font-size: .62rem;
   font-weight: 800;
