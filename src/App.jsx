@@ -510,10 +510,11 @@ export default function App() {
         ? (systemTheme?.matches ? 'dark' : 'light')
         : settings.theme === 'dark' ? 'dark' : 'light';
       document.documentElement.dataset.theme = theme;
+      document.documentElement.dataset.palette = ['green','blue','burgundy','charcoal'].includes(settings.palette) ? settings.palette : 'green';
       document.documentElement.dataset.haptics = 'on';
       document.documentElement.style.colorScheme = theme;
       document.getElementById('app-theme-color')?.setAttribute(
-        'content', theme === 'dark' ? '#111412' : '#2d6e5e',
+        'content', getComputedStyle(document.documentElement).getPropertyValue('--palette-status').trim() || (theme === 'dark' ? '#111412' : '#2d6e5e'),
       );
     };
     applyTheme();
