@@ -20,7 +20,7 @@ export default function ContemplationAndRemembrance({ active, contemplationOpen,
             <span><span className="block font-semibold">{group.title}</span><span className="mt-1 block text-xs text-slate-500">{group.arabic} · {group.items.filter(item=>String(active.answers?.tadabbur?.[item.key]||'').trim()).length} of {group.items.length} answered</span></span>
             <ChevronDown size={20} aria-hidden="true" className={group.open?'rotate-180 transition-transform':'transition-transform'}/>
           </button>
-          {group.open&&<div className="mt-3 border-t border-slate-200 pt-3">
+          {group.open&&<div className="reflect-lesson-divider">
             <div className="flex items-center justify-between gap-3">
               <span className="text-xs text-slate-500">Prompt {group.index+1} of {group.items.length}</span>
               <div className="flex items-center gap-2" aria-label={group.title+' prompt navigation'}>
