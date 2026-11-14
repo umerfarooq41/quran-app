@@ -3,7 +3,7 @@
 
 .home-subtitle {
   font-family: IndopakNastaleeq, serif;
-  color: rgba(176, 132, 44, 0.78);
+  color: var(--ui-ornament);
 }
 
 .home-title {
