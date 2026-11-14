@@ -328,7 +328,7 @@
 }
 
 .share-translation-toggle.is-on {
-  background: var(--theme-accent, #2f7d68);
+  background: var(--ui-interactive-fill);
 }
 
 .share-translation-toggle.is-on > span {
@@ -498,8 +498,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  border-top: 1px solid rgba(31, 61, 43, .08);
-  border-bottom: 1px solid rgba(31, 61, 43, .08);
+  border-top: 1px solid var(--ui-divider);
+  border-bottom: 1px solid var(--ui-divider);
   padding: 16px 0;
 }
 
@@ -515,7 +515,7 @@
 
 .share-translation-inline-row span,
 .share-translation-inline-row small {
-  color: var(--theme-text-muted, #777);
+  color: var(--theme-muted);
   font-size: .76rem;
 }
 
@@ -972,8 +972,8 @@
 }
 
 [data-theme='dark'] .share-sheet {
-  background: rgba(30, 35, 32, .98);
-  color: var(--theme-text);
+  background: var(--reader-surface-raised);
+  color: var(--reader-text);
   box-shadow: 0 -18px 50px rgba(0, 0, 0, .3);
 }
 
