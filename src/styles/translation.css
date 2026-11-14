@@ -193,7 +193,7 @@
 
 .ayah-translation-note-section h4 {
   margin: 0;
-  color: #245f51;
+  color: var(--note-accent);
   font-size: .72rem;
   font-weight: 800;
   letter-spacing: .01em;
@@ -213,7 +213,7 @@
   margin: 0 .18em;
   place-items: center;
   background: color-mix(in srgb, var(--theme-accent) 15%, transparent);
-  color: #245f51;
+  color: var(--note-accent);
   appearance: none;
   border: 0;
   cursor: pointer;
@@ -276,19 +276,19 @@
 }
 
 [data-theme='dark'] .ayah-translation-footnote-toggle {
-  border-color: rgba(87, 191, 161, .18);
-  background: rgba(87, 191, 161, .12);
-  color: #aef1dc;
+  border-color: color-mix(in srgb, var(--note-accent) 18%, transparent);
+  background: color-mix(in srgb, var(--note-accent) 12%, transparent);
+  color: var(--note-accent);
 }
 
 [data-theme='dark'] .ayah-translation-footnotes {
-  background: rgba(87, 191, 161, .12);
+  background: color-mix(in srgb, var(--note-accent) 12%, transparent);
   color: #d9dee2;
 }
 
 [data-theme='dark'] .ayah-translation-note-number {
-  background: rgba(87, 191, 161, .18);
-  color: #aef1dc;
+  background: color-mix(in srgb, var(--note-accent) 18%, transparent);
+  color: var(--note-accent);
 }
 
 .ayah-translation-body[data-translation-language="Ur"] .ayah-translation-text {
@@ -307,7 +307,7 @@
   border: 1px solid color-mix(in srgb, var(--theme-accent) 16%, transparent);
   border-radius: 999px;
   background: color-mix(in srgb, var(--theme-accent) 8%, transparent);
-  color: #245f51;
+  color: var(--note-accent);
   font-weight: 700;
   line-height: 1;
   min-height: 42px;
@@ -347,7 +347,7 @@
   place-items: center;
 
   background: color-mix(in srgb, var(--theme-accent) 15%, transparent);
-  color: #245f51;
+  color: var(--note-accent);
   display: inline-flex;
   box-sizing: border-box;
   inline-size: 24px;
