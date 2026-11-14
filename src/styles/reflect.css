@@ -180,15 +180,13 @@
 .reflect-screen .reflect-discover-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .reflect-screen .reflect-discover-heading h2{font-size:16px;font-weight:600}
 .reflect-screen .reflect-discover-heading span{font-size:12px;color:var(--theme-muted)}
-.reflect-screen .reflect-keyword-list{display:flex;flex-direction:column;gap:12px}
-.reflect-screen .reflect-keyword-card{border-radius:18px;padding:16px}
-.reflect-screen .reflect-keyword-row{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:15px}
-.reflect-screen .reflect-keyword-arabic{font-size:23px;line-height:1.8;text-align:right}
-.reflect-screen .reflect-keyword-refs{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:8px}
-.reflect-screen .reflect-keyword-refs button{font-size:12px;color:var(--theme-muted);text-align:left;text-decoration:underline;text-underline-offset:3px}
-.reflect-screen .reflect-keyword-link{display:block;width:100%;text-align:left;color:inherit;border:0}
-.reflect-screen .reflect-keyword-refs{justify-content:space-between;align-items:center}
-.reflect-screen .reflect-keyword-arrow{transform:rotate(-90deg);flex-shrink:0}
+.reflect-screen .reflect-keyword-list { display:flex; flex-wrap:wrap; align-items:flex-start; gap:8px; }
+.reflect-screen .reflect-keyword-chip { display:inline-flex; align-items:center; flex-wrap:wrap; justify-content:flex-start; gap:7px; max-width:100%; min-height:38px; padding:7px 11px; border:1px solid var(--ui-control-border); border-radius:14px; background:var(--ui-control-bg); color:var(--theme-text); font-size:13px; line-height:1.45; text-align:start; box-shadow:none; cursor:pointer; }
+.reflect-screen .reflect-keyword-arabic { font-size:17px; line-height:1.55; font-weight:600; }
+.reflect-screen .reflect-keyword-meaning { min-width:0; overflow-wrap:anywhere; color:var(--theme-muted); font-size:13px; }
+.reflect-screen .reflect-keyword-source { color:var(--theme-subtle); font-size:11px; font-variant-numeric:tabular-nums; }
+.reflect-screen .reflect-keyword-remove { margin-inline-start:2px; color:var(--theme-muted); font-size:16px; line-height:1; }
+.reflect-screen .reflect-keyword-chip:focus-visible { outline:2px solid var(--ui-primary); outline-offset:2px; }
 .reflect-screen .reflect-theme-group{border-radius:16px;overflow:hidden}
 .reflect-screen .reflect-theme-heading{width:100%;display:flex;justify-content:space-between;align-items:center;text-align:left;padding:15px 16px;gap:10px}
 .reflect-screen .reflect-theme-heading strong{display:block;font-size:15px;font-weight:600}
@@ -207,7 +205,7 @@
 .reflect-screen .reflect-theme-empty{padding:4px 0 12px;color:var(--theme-muted);font-size:12px}
 @media(prefers-reduced-motion:reduce){.reflect-screen .reflect-theme-chevron{transition:none}}
 .reflect-screen .reflect-lesson-ayah { padding: 0; }
-.reflect-screen .reflect-lesson-ayah + .reflect-lesson-ayah { border-top: 1px solid var(--ui-divider); padding-top: 16px; }
+.reflect-screen .reflect-lesson-ayah + .reflect-lesson-ayah { border-top: 1px solid var(--ui-divider); margin-top:12px; padding-top:12px; }
 .reflect-screen .reflect-ayah-reference {
   position: static;
   display: flex;
@@ -303,7 +301,9 @@
   border: 0;
   color: var(--theme-text);
 }
-.reflect-screen .reflect-lesson-divider { border-color: var(--theme-border, #e5e7eb); }
+.reflect-screen .reflect-lesson-divider,
+.reflect-screen .reflect-expanded-content,
+.reflect-screen .reflect-section-body { margin-top:14px; padding-top:14px; border-top:1px solid var(--ui-divider); }
 .reflect-screen .reflect-theme-sheet,
 .reflect-screen .reflect-theme-sheet-footer {
   background: var(--ui-card-bg);
@@ -324,7 +324,7 @@
 .reflect-screen .reflect-panel .reflect-lesson-inner { background:transparent; border:0; border-radius:0; padding:0; }
 .reflect-screen .reflect-panel .reflect-finish-content { background:transparent; border:0; padding:0; }
 .reflect-screen .reflect-panel .reflect-lesson-title-input { width:100%; }
-.reflect-screen .reflect-passage-verses { display: grid; gap: 16px; }
+.reflect-screen .reflect-passage-verses { display:grid; gap:0; }
 .reflect-screen .reflect-lesson-ayah .reflect-ayah-reference,
 .reflect-screen .reflect-lesson-ayah .reflect-ayah-body { background:transparent; color:var(--reflect-ink); }
 .reflect-screen .reflect-lesson-ayah .ayah-word-by-word-list { align-items:start; }
@@ -351,7 +351,7 @@
 .reflect-screen .reflect-section-toggle:focus-visible{outline:2px solid var(--reflect-link);outline-offset:3px;border-radius:6px}
 .reflect-screen .reflect-section-chevron{flex:none;color:var(--reflect-muted);transition:transform 180ms ease}
 .reflect-screen .reflect-section-chevron.is-open{transform:rotate(180deg)}
-.reflect-screen .reflect-section-body{margin-top:12px}
+.reflect-screen .reflect-section-body{margin-top:14px}
 .reflect-screen .reflect-title-editor{width:100%;min-width:0}
 .reflect-screen .reflect-title-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .reflect-screen .reflect-study-card-inner .reflect-study-summary {
@@ -378,11 +378,9 @@
 .reflect-screen .reflect-discover-heading>span,
 .reflect-screen .reflect-theme-heading small,
 .reflect-screen .reflect-subtheme-count,
-.reflect-screen .reflect-keyword-refs,
 .reflect-screen .reflect-keyword-meaning{color:var(--reflect-muted)}
 [data-theme='dark'] .reflect-screen{--reflect-muted:#b6bfba}
-.reflect-screen .reflect-keyword-chip{border-color:var(--reflect-border)}
-.reflect-screen .reflect-keyword-chip .reflect-keyword-meaning{color:var(--reflect-ink)}
+.reflect-screen .reflect-keyword-chip .reflect-keyword-meaning { color:var(--reflect-muted); }
 .reflect-screen .reflect-theme-picker-list{display:flex;flex-direction:column;gap:10px}
 .reflect-screen .reflect-theme-picker-group{border-radius:16px;overflow:hidden}
 .reflect-screen .reflect-theme-picker-heading{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:52px;padding:12px 16px;text-align:left;font-size:14px;font-weight:600;color:var(--reflect-ink)}
@@ -430,7 +428,6 @@
   color: var(--theme-muted);
 }
 .reflect-screen .reflect-panel,
-.reflect-screen .reflect-keyword-card,
 .reflect-screen .reflect-theme-group,
 .reflect-screen .reflect-theme-picker-group {
   background: var(--ui-card-bg);
@@ -445,7 +442,6 @@
 .reflect-screen .reflect-field,
 .reflect-screen textarea,
 .reflect-screen input[type='text'],
-.reflect-screen .reflect-keyword-chip,
 .reflect-screen .reflect-word-language {
   background: var(--ui-control-bg);
   border: 1px solid var(--ui-control-border);
@@ -507,7 +503,7 @@
 .reflect-screen .reflect-recent-chevron { flex: 0 0 auto; color: var(--theme-muted); }
 .reflect-screen .reflect-progress-recent > button { min-height: 54px; }
 
-/* Passage uses the same translucent reflect-panel surface as other cards.
+/* Passage follows the shared solid Reflect card surface.
    Padding and rounded corners come from the shared card component. */
 .reflect-passage-section { min-width: 0; color: var(--theme-text); }
 
