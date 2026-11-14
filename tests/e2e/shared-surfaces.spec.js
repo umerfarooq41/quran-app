@@ -73,5 +73,5 @@ test('Reflect selected tabs do not animate through low-contrast intermediate col
   expect(transition.properties).not.toContain('background-color');
   expect(transition.properties).not.toContain('color');
   expect(transition.properties).not.toContain('all');
-  expect(transition.background).toBe(await roleColor(page, '--ui-primary'));
+  expect(transition.background).toBe(await roleColor(page, '--ui-segment-selected'));
 });
