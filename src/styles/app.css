@@ -204,7 +204,7 @@
   display: inline;
   border: 0;
   background: transparent;
-  color: #256b5b;
+  color: var(--theme-accent);
   padding: 0;
   font: inherit;
   font-weight: 650;
@@ -213,7 +213,7 @@
 }
 
 [data-theme='dark'] .inline-read-more {
-  color: #8bc7b4;
+  color: var(--recitation-word);
 }
 
 [data-theme='dark'] body,
