@@ -542,8 +542,8 @@
 .reader-ayah-highlight-violet { background: rgba(124, 58, 237, .15); }
 
 .reader-ayah-highlight-selection {
-  background: rgba(218, 174, 82, .20);
-  fill: rgba(218, 174, 82, .20);
+  background: var(--ayah-selection-wash);
+  fill: var(--ayah-selection-wash);
   box-shadow: none;
 }
 
@@ -743,7 +743,7 @@
 
 .reader-ayah-highlight-shape .reader-ayah-highlight-audio { fill: var(--recitation-wash); }
 
-.reader-ayah-highlight-shape .reader-ayah-highlight-selection { fill: rgba(218, 174, 82, .20); }
+.reader-ayah-highlight-shape .reader-ayah-highlight-selection { fill: var(--ayah-selection-wash); }
 
 .reader-ayah-highlight-shape .reader-ayah-highlight-navigation { fill: rgba(218, 174, 82, .16); }
 
@@ -758,7 +758,9 @@
   position: relative;
   color: inherit;
   border-radius: 999px;
-  box-shadow: none; --marker-capsule-color: #a56d05; }
+  box-shadow: none;
+  --marker-capsule-color: var(--ui-ornament);
+}
 
 .quran-ayah-marker--bookmark-reading { color: #26725f; --marker-capsule-color: #26725f; }
 
@@ -768,7 +770,7 @@
 
 .quran-ayah-marker--bookmark-notes { color: #216d91; --marker-capsule-color: #216d91; }
 
-[data-theme='dark'] .quran-ayah-marker--quarter { color: #e6bd62; --marker-capsule-color: #e6bd62; }
+[data-theme='dark'] .quran-ayah-marker--quarter { color: inherit; --marker-capsule-color: var(--ui-ornament); }
 
 [data-theme='dark'] .quran-ayah-marker--bookmark-memorize { color: #e6bd62; --marker-capsule-color: #e6bd62; }
 
@@ -828,7 +830,7 @@
 
 .quran-ayah-marker--flash-notes { --marker-capsule-color: #216d91; }
 
-.quran-ayah-marker--flash-quarter { --marker-capsule-color: #a56d05; }
+.quran-ayah-marker--flash-quarter { --marker-capsule-color: var(--ui-ornament); }
 
 @media (max-width: 380px) {
 
@@ -1036,7 +1038,7 @@
 }
 
 [data-theme='dark'] .reader-page .reader-ayah-highlight-selection {
-  background: rgba(230, 190, 105, .20);
+  background: var(--ayah-selection-wash);
   box-shadow: none;
 }
 
