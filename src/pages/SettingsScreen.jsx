@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import { BookOpen, Languages, ListTree, Mic2, Moon, MonitorSmartphone, CircleHelp, Info, ChevronRight, ChevronDown, Check, Palette, Sun, X, Download, Upload } from 'lucide-react';
+import { BookOpen, Languages, ListTree, Mic2, Moon, MonitorSmartphone, CircleHelp, Info, ChevronRight, Check, Palette, Sun, X, Download, Upload } from 'lucide-react';
 import { getReciterImageUrl, normalizeLocalReciters } from '../lib/localAudio';
 import { TRANSLATION_LANGUAGES, getDefaultTranslationForLanguage, getTranslationLanguageId, getTranslationOptionsForLanguage } from '../lib/translations';
 import { WORD_BY_WORD_LANGUAGES } from '../services/quranFoundation';
@@ -131,7 +131,6 @@ export default function SettingsScreen() {
               <Palette size={19} aria-hidden="true" className="settings-theme-icon" />
               <span>Theme Style</span>
               <span className="settings-theme-selected" style={{ '--theme-choice': THEME_PALETTES.find((item) => item.id === (settings.palette || 'green'))?.color || THEME_PALETTES[0].color }} aria-hidden="true" />
-              <ChevronDown size={17} className={paletteOpen ? 'is-open' : ''} aria-hidden="true" />
             </button>
             {paletteOpen && (
               <div id="settings-theme-palette" className="settings-theme-popover" role="group" aria-label="Choose color theme">
