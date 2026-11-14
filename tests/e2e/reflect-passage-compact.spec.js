@@ -87,3 +87,43 @@ for (const language of ['en','ur']) for (const theme of ['light','dark']) {
     expect(saved[0].language).toBe(language);
   });
 }
+
+
+test('Discover reveals English and Urdu for Arabic-only keyword chips', async ({ page }) => {
+  await page.goto('/');
+  await seedLocalRecords(page);
+  await page.evaluate(async () => {
+    const database = await new Promise(resolve => {
+      const request = indexedDB.open('quranFluentLocal');
+      request.onsuccess = () => resolve(request.result);
+    });
+    const tx = database.transaction('tadabburLessons', 'readwrite');
+    const store = tx.objectStore('tadabburLessons');
+    const lesson = await new Promise(resolve => {
+      const request = store.get('qa-reflect-lesson');
+      request.onsuccess = () => resolve(request.result);
+    });
+    lesson.keywords = [{ key: '3:1', ayahNumber: 3, arabic: 'الرَّحِيمِ', meaning: 'Most Merciful', language: 'en' }];
+    store.put(lesson);
+    await new Promise(resolve => { tx.oncomplete = resolve; });
+    database.close();
+  });
+  await page.reload();
+  await page.getByRole('button', {name:/Continue lesson/}).click();
+  await page.locator('.reflect-tabs').getByRole('button', {name:'Discover'}).click();
+  const chip = page.locator('.reflect-keyword-list .reflect-keyword-chip').first();
+  await expect(chip.locator('.reflect-keyword-arabic')).toHaveText('الرَّحِيمِ');
+  await expect(chip.locator('.reflect-keyword-source')).toHaveText('1:3');
+  await expect(chip.locator('.reflect-keyword-meaning')).toHaveCount(0);
+  await chip.click();
+  const sheet = page.getByRole('dialog', {name:'Saved Keyword'});
+  await expect(sheet).toBeVisible();
+  await expect(sheet.getByText('English', {exact:true})).toBeVisible();
+  await expect(sheet.getByText('Urdu', {exact:true})).toBeVisible();
+  await expect(sheet.getByText('Loading…')).toHaveCount(0);
+  await expect(sheet.getByText('English meaning unavailable for this word.')).toHaveCount(0);
+  await expect(sheet.getByText('اس لفظ کا اردو معنی دستیاب نہیں ہے۔')).toHaveCount(0);
+  await sheet.getByRole('button',{name:'Jump to Ayah'}).click();
+  await expect(page.locator('.reflect-passage-section')).toBeVisible();
+  await expect(page.locator('[data-reflect-ayah="3"]')).toBeVisible();
+});
