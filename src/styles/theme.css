@@ -208,3 +208,8 @@
 
 /* Preserve original selected green exactly while allowing alternate palettes to theme shared tabs. */
 :root[data-palette='green'] { --ui-segment-selected:#245d4e; }
+
+/* Translation and Tafsir reference markers follow the palette independently of saved highlights. */
+:root { --note-accent:#245f51; --note-accent-strong:var(--brand-green); }
+:root[data-theme='dark'] { --note-accent:#aef1dc; --note-accent-strong:var(--brand-green); }
+:root[data-palette='blue'],:root[data-palette='burgundy'],:root[data-palette='charcoal'] { --note-accent:var(--theme-accent); --note-accent-strong:var(--ui-primary); }
