@@ -1717,8 +1717,8 @@
   color: var(--theme-text);
 }
 [data-theme='dark'] .index-replica-shell .index-ayah-stepper {
-  border-color: color-mix(in srgb, var(--brand-gold) 35%, var(--theme-border));
-  background: var(--theme-soft);
+  border-color: color-mix(in srgb, var(--brand-gold) 28%, var(--theme-border));
+  background: var(--ui-control-bg);
   color: var(--theme-text);
 }
 
