@@ -63,7 +63,7 @@ test('Reader Mushaf stays sixteen lines after opening from Home', async ({ page 
 test('Reflect selected tabs do not animate through low-contrast intermediate colors', async ({ page }) => {
   await home(page);
   await page.getByRole('button', { name: /Begin reflecting|Continue lesson|Explore & revisit/i }).click();
-  const tabs = page.getByRole('tablist', { name: 'Reflect sections' });
+  const tabs = page.getByRole('tablist', { name: 'Reflect sections', exact: true });
   await expect(tabs).toBeVisible();
   const selected = tabs.getByRole('tab', { selected: true });
   const transition = await selected.evaluate(element => {
