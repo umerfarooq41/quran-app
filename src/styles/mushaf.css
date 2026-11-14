@@ -167,7 +167,7 @@
 }
 
 [data-theme='dark'] .reader-page .quran-word.is-recited-word {
-  color: #69ae97;
+  color: var(--recitation-word);
   background: transparent;
 }
 
@@ -175,7 +175,7 @@
   font-size: inherit;
   font-weight: inherit;
   text-shadow: none;
-  color: #2d6e5e;
+  color: var(--recitation-word);
   background: transparent;
   background-color: transparent;
   box-shadow: none;
@@ -521,8 +521,8 @@
 }
 
 .reader-ayah-highlight-audio {
-  background: rgba(45, 110, 94, .13);
-  fill: rgba(45, 110, 94, .13);
+  background: var(--recitation-wash);
+  fill: var(--recitation-wash);
   box-shadow: none;
 }
 
@@ -714,7 +714,7 @@
 
 .reader-ayah-highlight-shape .reader-ayah-highlight-violet { fill: rgba(124, 58, 237, .15); }
 
-.reader-ayah-highlight-shape .reader-ayah-highlight-audio { fill: rgba(45, 110, 94, .13); }
+.reader-ayah-highlight-shape .reader-ayah-highlight-audio { fill: var(--recitation-wash); }
 
 .reader-ayah-highlight-shape .reader-ayah-highlight-selection { fill: rgba(218, 174, 82, .20); }
 
