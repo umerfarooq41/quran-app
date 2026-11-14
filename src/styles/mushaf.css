@@ -204,7 +204,7 @@
 .surah-banner--single {
   padding: 0;
   display: block;
-  background-image: url('/border/surah-header-gold.svg');
+  background-image: none;
 }
 
 .surah-banner--inline {
@@ -215,9 +215,28 @@
   align-items: center;
   padding-inline: 20%;
   column-gap: 0;
-  background-image: url('/border/surah-header-gold.svg');
+  background-image: none;
 }
 
+
+/* Reuse the exact existing ornamental SVG silhouette in all palettes.
+   Mask a separate pseudo-element so the Arabic name and ayah count remain
+   unmasked and precisely positioned. */
+.surah-banner--single::before,
+.surah-banner--inline::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-color: var(--ui-ornament);
+  -webkit-mask: url('/border/surah-header-gold.svg') center / 100% 100% no-repeat;
+  mask: url('/border/surah-header-gold.svg') center / 100% 100% no-repeat;
+}
+.surah-banner--single > span,
+.surah-banner--inline > span {
+  position: relative;
+  z-index: 1;
+}
 .surah-banner--inline .surah-banner-ayahs {
   position: static;
   top: auto;
@@ -325,9 +344,13 @@
 
 .surah-banner--double::before {
   top: 0;
-  background-image: url('/border/surah-header-gold.svg');
-  background-position: center;
-  background-size: 100% 100%;
+  background-color: var(--ui-ornament);
+  -webkit-mask-image: url('/border/surah-header-gold.svg');
+  mask-image: url('/border/surah-header-gold.svg');
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
   /* The lower stroke of SVG 1 duplicates the upper stroke of SVG 2.
      Trim that stroke to make the two ornaments read as one frame. */
   clip-path: inset(0 0 7% 0);
@@ -335,9 +358,13 @@
 
 .surah-banner--double::after {
   bottom: 0;
-  background-image: url('/border/surah-header-gold.svg');
-  background-position: center;
-  background-size: 100% 100%;
+  background-color: var(--ui-ornament);
+  -webkit-mask-image: url('/border/surah-header-gold.svg');
+  mask-image: url('/border/surah-header-gold.svg');
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
 }
 
 .surah-banner--double .surah-banner-ayahs,
