@@ -33,6 +33,11 @@ jobs:
       - name: Install application dependencies
         run: npm ci
 
+      - name: Install Capacitor bridge dependencies for CI build
+        # App and Haptics are imported on native-only paths, but Vite still
+        # resolves their modules when bundling the web app.
+        run: npm install --no-save --package-lock=false @capacitor/core@7 @capacitor/app@7 @capacitor/haptics@7
+
       - name: Run unit tests
         run: npm test
 
