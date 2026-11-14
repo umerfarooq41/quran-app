@@ -110,7 +110,6 @@ export default function DiscoverTab({ lessons, discoverTab, setDiscoverTab, them
             })}
           </div>}
 
-        </div>
         {selectedKeyword && createPortal(
           <div className="reflect-keyword-sheet-backdrop" onPointerDown={event => { if (event.target === event.currentTarget) setSelectedKeyword(null); }}>
             <section role="dialog" aria-modal="true" aria-labelledby="reflect-keyword-details-heading" className="reflect-keyword-sheet">
@@ -134,6 +133,7 @@ export default function DiscoverTab({ lessons, discoverTab, setDiscoverTab, them
             </section>
           </div>, document.body
         )}
+        </div>
   );
 }
 
