@@ -60,7 +60,7 @@ export function Header({ title, back = 'home', onBack, backLabel = 'Back' }) {
 }
 
 export function Segment({ value, setValue, options }) {
-  return <div className={`${panel} app-segment grid grid-cols-2 p-1`}>{options.map(([id, label]) => <button key={id} className={`rounded-[18px] px-3 py-2.5 text-sm font-semibold transition-all sm:rounded-[22px] sm:px-4 sm:py-3 sm:text-base ${value === id ? 'bg-[#2d6e5e] text-white shadow' : 'text-slate-600'}`} onClick={() => setValue(id)}>{label}</button>)}</div>;
+  return <div className={`${panel} app-segment grid grid-cols-2 p-1`}>{options.map(([id, label]) => <button key={id} className={`rounded-[18px] px-3 py-2.5 text-sm font-semibold transition-all sm:rounded-[22px] sm:px-4 sm:py-3 sm:text-base ${value === id ? 'bg-[var(--ui-primary)] text-white shadow' : 'text-slate-600'}`} onClick={() => setValue(id)}>{label}</button>)}</div>;
 }
 
 export function Empty({ text }) {
