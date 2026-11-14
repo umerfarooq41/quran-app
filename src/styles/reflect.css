@@ -336,8 +336,8 @@
 .reflect-screen .reflect-question-card,
 .reflect-screen .reflect-keyword-card,
 .reflect-screen .reflect-theme-group { color:var(--reflect-ink); }
-.reflect-screen { --reflect-link:#246957; }
-[data-theme='dark'] .reflect-screen { --reflect-link:#75d6b4; }
+.reflect-screen { --reflect-link:var(--note-accent); }
+
 .reflect-screen .reflect-secondary-action { color:var(--reflect-link); }
 .reflect-screen .reflect-secondary-action:disabled { color:var(--reflect-muted); opacity:.7; }
 .reflect-screen .reflect-empty-inline { display:block; width:100%; border:0; border-radius:0; background:transparent; color:var(--reflect-muted); padding:16px 0 3px; text-align:left; font-size:14px; }
