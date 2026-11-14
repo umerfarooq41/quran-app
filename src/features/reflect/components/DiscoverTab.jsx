@@ -147,7 +147,7 @@ function normalizeArabic(value) {
   return String(value || '').normalize('NFKC')
     .replace(/\p{M}/gu, '')
     .replace(/[ـ\u200c\u200d\u200e\u200f]/g, '')
-    .replace(/[إأآٱ]/g, 'ا').replace(/ى/g, 'ي')
+    .replace(/[إأآٱ]/g, 'ا').replace(/[ىی]/g, 'ي')
     .replace(/ؤ/g, 'و').replace(/ئ/g, 'ي')
     .replace(/[^\p{L}]/gu, '');
 }
