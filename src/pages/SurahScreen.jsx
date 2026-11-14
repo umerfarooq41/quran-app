@@ -35,7 +35,7 @@ export default function SurahScreen() {
             <h2 className="mt-2 text-3xl font-semibold text-slate-900">{surah?.name}</h2>
             <p className="mt-2 text-slate-500">{surah?.verses} ayahs · {surah?.revelation} · Juz {surah?.juz}</p>
           </div>
-          <div className="grid h-14 w-14 place-items-center rounded-3xl bg-[#2d6e5e]/10 text-[#2d6e5e]">
+          <div className="grid h-14 w-14 place-items-center rounded-3xl bg-[color-mix(in_srgb,var(--ui-primary)_10%,transparent)] text-[var(--ui-primary)]">
             <BookOpen size={24} />
           </div>
         </div>
@@ -57,7 +57,7 @@ export default function SurahScreen() {
         )}
 
         <div className="mt-6 grid gap-3">
-          <button className="rounded-2xl bg-[#2d6e5e] px-4 py-3 font-semibold text-white" onClick={() => goPage(firstPage, { surahNumber: selectedSurah, ayahNumber: 1 })}>
+          <button className="rounded-2xl bg-[var(--ui-primary)] px-4 py-3 font-semibold text-white" onClick={() => goPage(firstPage, { surahNumber: selectedSurah, ayahNumber: 1 })}>
             Open Surah
           </button>
         </div>
