@@ -73,9 +73,10 @@
 
 .home-section-heading h2 {
   margin: 0;
-  color: #2b241c;
+  color: var(--theme-text);
+  font-family: var(--ui-font);
   font-size: clamp(1.18rem, 4.8vw, 1.45rem);
-  font-weight: 760;
+  font-weight: 700;
   letter-spacing: -.035em;
 }
 
