@@ -344,6 +344,19 @@
   direction: rtl;
   text-align: right;
 }
+/* Expanded Surah introduction matches its Index preview scale, while
+   keeping full content available instead of clipping it. */
+.surah-info-screen .surah-info-html.is-ur {
+  font-size: .94rem;
+  line-height: 1.95;
+}
+.surah-info-screen .surah-info-html.is-en {
+  font-family: var(--translation-english-font);
+  font-size: .94rem;
+  line-height: 1.65;
+  direction: ltr;
+  text-align: left;
+}
 .surah-info-html p,
 .surah-info-html li {
   font-size: inherit;
