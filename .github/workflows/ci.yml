@@ -47,8 +47,12 @@ jobs:
       - name: Install Playwright test runner
         run: npm install --no-save --package-lock=false @playwright/test @axe-core/playwright
 
-      - name: Install Chromium
-        run: npx playwright install --with-deps chromium
+      - name: Install Chromium and media inspection tools
+        run: |
+          npx playwright install --with-deps chromium
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          command -v ffprobe
 
       - name: Run responsive UI and interaction tests
         run: npx playwright test
