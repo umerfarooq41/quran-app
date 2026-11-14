@@ -110,25 +110,29 @@ export default function SettingsScreen() {
     <Screen className="settings-screen app-page-shell bg-fluent">
       <div className="app-fixed-header"><Header title="Settings" /></div>
       <div className="app-scroll-content">
-        <SettingsSection title="Appearance" description="Auto follows your device theme">
-          <div className="settings-appearance-segment share-like-segment" role="group" aria-label="Appearance mode">
-            {[
-              { value: 'auto', label: 'Auto', Icon: MonitorSmartphone },
-              { value: 'light', label: 'Light', Icon: Sun },
-              { value: 'dark', label: 'Dark', Icon: Moon },
-            ].map(({ value, label, Icon }) => (
-              <button type="button" key={value} aria-pressed={settings.theme === value}
-                className={settings.theme === value ? 'is-active' : ''}
-                onClick={() => updateSettings({ theme: value })}>
-                <Icon size={16} aria-hidden="true" />{label}
-              </button>
-            ))}
+        <SettingsSection title="Appearance">
+          <div className="settings-appearance-row">
+            <span className="settings-row-icon" aria-hidden="true"><MonitorSmartphone size={19} /></span>
+            <span className="settings-row-copy"><strong>Appearance</strong></span>
+            <div className="settings-appearance-segment share-like-segment" role="group" aria-label="Appearance mode">
+              {[
+                { value: 'auto', label: 'Auto', Icon: MonitorSmartphone },
+                { value: 'light', label: 'Light', Icon: Sun },
+                { value: 'dark', label: 'Dark', Icon: Moon },
+              ].map(({ value, label, Icon }) => (
+                <button type="button" key={value} aria-pressed={settings.theme === value}
+                  className={settings.theme === value ? 'is-active' : ''}
+                  onClick={() => updateSettings({ theme: value })}>
+                  <Icon size={16} aria-hidden="true" />{label}
+                </button>
+              ))}
+            </div>
           </div>
           <div className="settings-theme-picker" ref={palettePickerRef}>
             <button type="button" className="settings-theme-trigger"
               aria-haspopup="true" aria-expanded={paletteOpen} aria-controls="settings-theme-palette"
               onClick={() => setPaletteOpen((open) => !open)}>
-              <Palette size={19} aria-hidden="true" className="settings-theme-icon" />
+              <span className="settings-row-icon" aria-hidden="true"><Palette size={19} /></span>
               <span>Theme Style</span>
               <span className="settings-theme-selected" style={{ '--theme-choice': THEME_PALETTES.find((item) => item.id === (settings.palette || 'green'))?.color || THEME_PALETTES[0].color }} aria-hidden="true"><span className="settings-theme-selected-color"><Check size={13} strokeWidth={2.5} /></span></span>
             </button>
@@ -244,12 +248,10 @@ export default function SettingsScreen() {
   );
 }
 
-function SettingsSection({ title, description, children }) {
+function SettingsSection({ title, children }) {
   return <section className="settings-section">
     <div className="settings-section-heading"><strong>{title}</strong></div>
-    {title === 'Appearance'
-      ? <>{children}{description && <small className="settings-appearance-note">{description}</small>}</>
-      : <Card as="div" className="settings-card">{children}</Card>}
+    <Card as="div" className="settings-card">{children}</Card>
   </section>;
 }
 
