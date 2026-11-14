@@ -1085,7 +1085,7 @@
 }
 
 [data-theme='dark'] .share-translation-toggle.is-on {
-  background: var(--theme-accent);
+  background: var(--ui-interactive-fill);
 }
 
 [data-theme='dark'] .share-media-live-preview,
