@@ -160,3 +160,46 @@ function hexToRgb(hex) {
   const numeric = Number.parseInt(expanded, 16);
   return `rgb(${(numeric >> 16) & 255}, ${(numeric >> 8) & 255}, ${numeric & 255})`;
 }
+
+
+test('Share Quran settings surfaces follow all eight palettes without recoloring preview', async ({ page }) => {
+  await openReader(page);
+  await wordEvent(page, 'contextmenu');
+  await page.getByRole('button', { name: 'Share', exact: true }).click();
+  const settings = page.locator('.share-media-settings-card');
+  const tabs = page.locator('.share-media-tabs');
+  const modes = page.locator('.share-media-mode-switch');
+  const preview = page.locator('.share-media-live-preview');
+  await expect(settings).toBeVisible();
+  await expect(tabs).toBeVisible();
+  await expect(modes).toBeVisible();
+  await expect(preview).toBeVisible();
+
+  for (const theme of ['light', 'dark']) {
+    for (const palette of ['green', 'blue', 'burgundy', 'charcoal']) {
+      const colors = await page.evaluate(({ theme, palette }) => {
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.dataset.palette = palette;
+        const style = element => getComputedStyle(document.querySelector(element));
+        const root = getComputedStyle(document.documentElement);
+        return {
+          card: root.getPropertyValue('--surface-card').trim(),
+          settings: style('.share-media-settings-card').backgroundColor,
+          tabs: style('.share-media-tabs').backgroundColor,
+          modes: style('.share-media-mode-switch').backgroundColor,
+          selectedMode: style('.share-media-mode-switch button.is-active').backgroundColor,
+          selectedFill: root.getPropertyValue('--ui-interactive-fill').trim(),
+          preview: style('.share-media-live-preview').backgroundColor,
+        };
+      }, { theme, palette });
+      const expected = colors.card.startsWith('#') ? hexToRgb(colors.card) : colors.card;
+      expect(colors.settings, `${theme}/${palette} Share settings card`).toBe(expected);
+      expect(colors.tabs, `${theme}/${palette} Share tabs surface`).toBe(expected);
+      expect(colors.modes, `${theme}/${palette} Share mode surface`).toBe(expected);
+      expect(colors.selectedMode, `${theme}/${palette} active media type`).toBe(
+        colors.selectedFill.startsWith('#') ? hexToRgb(colors.selectedFill) : colors.selectedFill
+      );
+      expect(colors.preview, 'export preview retains its own background').not.toBe(expected);
+    }
+  }
+});
