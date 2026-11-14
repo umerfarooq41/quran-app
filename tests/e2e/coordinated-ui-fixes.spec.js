@@ -119,3 +119,44 @@ test('Share selectors close after selection without reopening a controlled menu'
   await expect(reciters).toHaveCount(0);
 
 });
+
+
+/* Palette surface regression: verify the semantic aliases actually reach cards.
+   This guards against reintroducing fixed light colors on secondary screens. */
+test('all palettes preserve card surfaces in light and dark Settings', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Settings', exact: true }).click();
+  const card = page.locator('.settings-card').first();
+  await expect(card).toBeVisible();
+
+  for (const theme of ['light', 'dark']) {
+    for (const palette of ['green', 'blue', 'burgundy', 'charcoal']) {
+      const values = await page.evaluate(({ theme, palette }) => {
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.dataset.palette = palette;
+        const root = getComputedStyle(document.documentElement);
+        const computedCard = getComputedStyle(document.querySelector('.settings-card'));
+        return {
+          surface: root.getPropertyValue('--surface-card').trim(),
+          base: root.getPropertyValue('--surface-base').trim(),
+          alias: root.getPropertyValue('--ui-card-bg').trim(),
+          actual: computedCard.backgroundColor,
+        };
+      }, { theme, palette });
+
+      expect(values.alias, `${theme}/${palette} card alias`).toBe(values.surface);
+      expect(values.actual, `${theme}/${palette} rendered card`).toBe(
+        values.surface.startsWith('#') ? hexToRgb(values.surface) : values.surface
+      );
+      expect(values.base).not.toBe(values.surface);
+    }
+  }
+  await expect(page.getByText('Auto follows your device theme', { exact: true })).toHaveCount(0);
+});
+
+function hexToRgb(hex) {
+  const value = hex.replace('#', '');
+  const expanded = value.length === 3 ? value.split('').map(char => char + char).join('') : value;
+  const numeric = Number.parseInt(expanded, 16);
+  return `rgb(${(numeric >> 16) & 255}, ${(numeric >> 8) & 255}, ${numeric & 255})`;
+}
