@@ -46,7 +46,7 @@ for (const theme of ['light','dark']) for (const [width,height] of [[390,844],[7
     await seedLocalRecords(page);await page.getByRole('button',{name:'Library',exact:true}).click();
     const card=page.locator('.ui-swipe-actions').first(), surface=card.locator('.tab-card-surface');
     await expect(card).toBeVisible();
-    await expect(page.locator('.screen-shell').last()).toHaveCSS('transform','none');
+    await expect(page.locator('html')).not.toHaveAttribute('data-navigation-direction', /.+/);
     const box=await card.boundingBox(),initial=await surface.boundingBox();
     const x=box.x+box.width*.7,y=box.y+box.height*.5;
     await page.mouse.move(x,y);await page.mouse.down();
