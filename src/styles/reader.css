@@ -66,8 +66,8 @@
 }
 
 .ayah-action-tooltip-wrap {
-  --ayah-tooltip-bg: var(--theme-surface-solid);
-  --ayah-tooltip-border: var(--ui-card-border);
+  --ayah-tooltip-bg: var(--ui-card-bg);
+  --ayah-tooltip-border: var(--ui-border-default);
   --ayah-tooltip-color: var(--ui-icon-neutral);
   --ayah-tooltip-shadow: 0 10px 28px rgba(15,23,42,0.18);
 
@@ -91,8 +91,8 @@
   padding: 6px 8px;
   color: var(--ayah-tooltip-color);
   box-shadow: var(--ayah-tooltip-shadow);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .ayah-action-tooltip::after {
@@ -136,11 +136,12 @@
 
 .ayah-action-tooltip button:active {
   transform: scale(.94);
+  color: var(--ui-icon-action);
 }
 
 [data-theme='dark'] .ayah-action-tooltip-wrap {
-  --ayah-tooltip-bg: var(--theme-surface-solid);
-  --ayah-tooltip-border: var(--ui-card-border);
+  --ayah-tooltip-bg: var(--ui-card-bg);
+  --ayah-tooltip-border: var(--ui-border-default);
   --ayah-tooltip-color: var(--ui-icon-neutral);
   --ayah-tooltip-shadow: 0 10px 30px rgba(0,0,0,0.54);
 }
@@ -162,8 +163,8 @@
   padding: 7px 8px;
   box-shadow: var(--ayah-tooltip-shadow);
   animation: ayahTooltipPanelIn .2s ease-out both;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .ayah-highlight-chip-row button {
@@ -199,8 +200,8 @@
   color: var(--ayah-tooltip-color);
   box-shadow: var(--ayah-tooltip-shadow);
   animation: ayahTooltipPanelIn .16s ease-out both;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .ayah-bookmark-picker button {
@@ -301,7 +302,7 @@
   top: 100%;
   transform: translateX(-50%);
   border: 5px solid transparent;
-  border-top-color: rgba(17,17,17,.92);
+  border-top-color: var(--ui-interactive-fill);
 }
 
 .reader-wave-tooltip strong {
@@ -312,7 +313,7 @@
 }
 
 .reader-wave-tooltip span {
-  color: rgba(255, 255, 255, .76);
+  color: color-mix(in srgb, var(--ui-interactive-text) 78%, transparent);
 }
 
 .reader-return-to-audio-chip {
@@ -325,11 +326,11 @@
   align-items: center;
   gap: 10px;
   transform: translateX(-50%);
-  border: 1px solid var(--reader-border, rgba(44, 42, 38, .10));
+  border: 1px solid var(--ui-border-active);
   border-radius: 999px;
-  background: var(--reader-surface, rgba(255, 250, 241, .98));
+  background: var(--ui-card-bg);
   padding: 8px 14px 8px 10px;
-  color: var(--reader-text, #201c15);
+  color: var(--ui-icon-neutral);
   box-shadow: 0 10px 28px rgba(28, 23, 16, .14);
   text-align: left;
   animation: readerReturnToAudioIn .18s ease-out both;
@@ -345,8 +346,8 @@
   height: 10px;
   flex: 0 0 auto;
   border-radius: 999px;
-  background: var(--reader-primary, #2d6e5e);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--recitation-word) 14%, transparent);
+  background: var(--ui-icon-action);
+  box-shadow: 0 0 0 4px var(--ui-pressed-surface);
 }
 
 .reader-return-to-audio-text {
@@ -366,7 +367,7 @@
 
 .reader-return-to-audio-text > span {
   overflow: hidden;
-  color: var(--reader-muted, #756f65);
+  color: var(--theme-muted);
   font-size: 11px;
   font-weight: 550;
   text-overflow: ellipsis;
@@ -374,9 +375,9 @@
 }
 
 [data-theme='dark'] .reader-return-to-audio-chip {
-  border-color: var(--reader-border, rgba(255, 255, 255, .10));
-  background: var(--reader-surface, rgba(30, 35, 32, .98));
-  color: var(--reader-text, #f1f3ef);
+  border-color: var(--ui-border-active);
+  background: var(--ui-card-bg);
+  color: var(--ui-icon-neutral);
   box-shadow: 0 12px 30px rgba(0, 0, 0, .42);
 }
 
@@ -497,8 +498,8 @@
   gap: 2px;
   transform: translateX(-50%);
   border-radius: 13px;
-  background: rgba(17,17,17,.92);
-  color: #fff;
+  background: var(--ui-interactive-fill);
+  color: var(--ui-interactive-text);
   padding: 8px 11px;
   font-size: .7rem;
   line-height: 1.25;
