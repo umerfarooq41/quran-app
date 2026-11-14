@@ -162,7 +162,7 @@ export default function ReflectScreen() {
     queueAnswer(lessonId, 'tadabbur', name, value);
   }
 
-  async function toggleKeyword(ayahNumber, word, index) {
+  async function toggleKeyword(ayahNumber, word, index, language) {
     if (!active) return;
     const lessonId = active.id;
     const key = ayahNumber + ':' + index;
@@ -174,6 +174,7 @@ export default function ReflectScreen() {
           ayahNumber,
           arabic: word.arabic || '',
           meaning: word.meaning || '',
+          language: language || word.language || active.sourceSnapshot?.wordByWordLanguage || 'en',
         }];
     setActive((lesson) => lesson?.id === lessonId ? { ...lesson, keywords } : lesson);
     saveQueue.current = saveQueue.current
