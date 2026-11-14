@@ -237,6 +237,7 @@
   --ui-audio-progress: var(--ui-primary);
   --ui-audio-inactive: color-mix(in srgb, var(--theme-muted) 55%, transparent);
   --ui-pressed-surface: color-mix(in srgb, var(--ui-primary) 8%, transparent);
+  --ayah-selection-wash: color-mix(in srgb, var(--ui-primary) 15%, transparent);
 }
 :root[data-palette='blue'] { --ui-ornament: #819eba; --brand-gold:#819eba; --ui-gold:#819eba; --gold:#819eba; }
 :root[data-palette='burgundy'] { --ui-ornament: #b77b83; --brand-gold:#b77b83; --ui-gold:#b77b83; --gold:#b77b83; }
@@ -247,6 +248,7 @@
   --ui-audio-progress: var(--theme-accent);
   --ui-audio-inactive: color-mix(in srgb, var(--theme-muted) 60%, transparent);
   --ui-pressed-surface: color-mix(in srgb, var(--theme-accent) 12%, transparent);
+  --ayah-selection-wash: color-mix(in srgb, var(--theme-accent) 21%, transparent);
 }
 :root[data-theme='dark'][data-palette='green'] { --ui-ornament: #d0ad72; }
 :root[data-theme='dark'][data-palette='blue'] { --ui-ornament: #a6bdd3; --brand-gold:#a6bdd3; --ui-gold:#a6bdd3; --gold:#a6bdd3; }
