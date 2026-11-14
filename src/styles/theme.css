@@ -221,3 +221,33 @@
 /* Green uses Antique Gold for ornaments in both appearance modes. */
 :root[data-palette='green'] { --brand-gold:#b48a42; --ui-gold:#b48a42; --gold:#b48a42; }
 :root[data-theme='dark'][data-palette='green'] { --brand-gold:#d0ad72; --ui-gold:#d0ad72; --gold:#d0ad72; }
+
+/* Shared interaction roles: filled controls stay saturated; icons and ornaments
+   use separate theme-aware colors. Manual Quran highlight categories are untouched. */
+:root {
+  --ui-icon-neutral: var(--theme-text);
+  --ui-icon-action: var(--ui-primary);
+  --ui-icon-accent: var(--ui-ornament);
+  --ui-icon-disabled: var(--theme-muted);
+  --ui-interactive-fill: var(--ui-primary);
+  --ui-interactive-text: #fff;
+  --ui-border-default: var(--ui-card-border);
+  --ui-border-active: color-mix(in srgb, var(--ui-primary) 50%, var(--ui-card-border));
+  --ui-ornament: var(--brand-gold);
+  --ui-audio-progress: var(--ui-primary);
+  --ui-audio-inactive: color-mix(in srgb, var(--theme-muted) 55%, transparent);
+  --ui-pressed-surface: color-mix(in srgb, var(--ui-primary) 8%, transparent);
+}
+:root[data-palette='blue'] { --ui-ornament: #819eba; }
+:root[data-palette='burgundy'] { --ui-ornament: #b77b83; }
+:root[data-palette='charcoal'] { --ui-ornament: #918878; }
+:root[data-theme='dark'] {
+  --ui-icon-neutral: var(--theme-text);
+  --ui-icon-action: var(--theme-accent);
+  --ui-audio-inactive: color-mix(in srgb, var(--theme-muted) 60%, transparent);
+  --ui-pressed-surface: color-mix(in srgb, var(--theme-accent) 12%, transparent);
+}
+:root[data-theme='dark'][data-palette='green'] { --ui-ornament: #d0ad72; }
+:root[data-theme='dark'][data-palette='blue'] { --ui-ornament: #a6bdd3; }
+:root[data-theme='dark'][data-palette='burgundy'] { --ui-ornament: #d9a9ad; }
+:root[data-theme='dark'][data-palette='charcoal'] { --ui-ornament: #b8aa96; }
