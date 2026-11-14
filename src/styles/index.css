@@ -1740,7 +1740,7 @@
 
 [data-theme='dark'] .index-replica-shell .index-quarter-btn.is-pressed,
 [data-theme='dark'] .index-replica-shell .index-ayah-go {
-  background: var(--theme-accent);
+  background: var(--ui-primary);
   color: #fff;
 }
 
