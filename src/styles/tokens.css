@@ -48,7 +48,7 @@
   --ui-button-height: 40px;
   --ui-chip-height: 34px;
   --ui-tab-height: 42px;
-  --ui-segment-selected: #245d4e;
+  --ui-segment-selected: var(--ui-primary);
   --ui-segment-bg: rgba(255, 252, 246, .72);
   --ui-segment-border: rgba(201, 162, 75, .18);
   --ui-card-padding: 12px;
