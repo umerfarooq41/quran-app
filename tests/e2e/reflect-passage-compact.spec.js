@@ -52,7 +52,8 @@ for (const language of ['en','ur']) for (const theme of ['light','dark']) {
     const savedChip=page.locator('.reflect-keyword-chip').first();
     await expect(savedChip).toBeVisible();
     await expect(savedChip).toHaveCSS('display','inline-flex');
-    await expect(savedChip.locator('.reflect-keyword-meaning')).toHaveText(language==='ur'?'اللہ':'Allah');
+    await expect(savedChip.locator('.reflect-keyword-arabic')).toHaveText('اللَّهِ');
+    await expect(savedChip.locator('.reflect-keyword-meaning')).toHaveCount(0);
     const dividerLayout=await ayahs.nth(1).evaluate(el=>({
       top:getComputedStyle(el).marginTop,
       padding:getComputedStyle(el).paddingTop,
