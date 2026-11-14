@@ -140,7 +140,7 @@ export default function DiscoverTab({ lessons, discoverTab, setDiscoverTab, them
 /* The snapshot key identifies a filtered WBW position, not always a raw
    QuranWords location. Match the actual Arabic word before showing a meaning. */
 function normalizeArabic(value) {
-  return String(value || '').normalize('NFKC').replace(/[\\u064b-\\u065f\\u0670\\u06d6-\\u06ed\\u0640]/g, '')
+  return String(value || '').normalize('NFKC').replace(/[\u064b-\u065f\u0670\u06d6-\u06ed\u0640]/g, '')
     .replace(/[إأآٱ]/g, 'ا').replace(/ى/g, 'ي').replace(/ؤ/g, 'و').replace(/ئ/g, 'ي').trim();
 }
 
