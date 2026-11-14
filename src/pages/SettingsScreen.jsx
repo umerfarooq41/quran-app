@@ -1,6 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import { BookOpen, Languages, ListTree, Mic2, Moon, MonitorSmartphone, CircleHelp, Info, ChevronRight, Sun, X, Download, Upload } from 'lucide-react';
+import { BookOpen, Languages, ListTree, Mic2, Moon, MonitorSmartphone, CircleHelp, Info, ChevronRight, ChevronDown, Check, Palette, Sun, X, Download, Upload } from 'lucide-react';
 import { getReciterImageUrl, normalizeLocalReciters } from '../lib/localAudio';
 import { TRANSLATION_LANGUAGES, getDefaultTranslationForLanguage, getTranslationLanguageId, getTranslationOptionsForLanguage } from '../lib/translations';
 import { WORD_BY_WORD_LANGUAGES } from '../services/quranFoundation';
@@ -9,6 +9,13 @@ import { Header, Screen } from '../components/common/AppChrome';
 import { Card, Dialog } from '../components/common/Surfaces';
 import { AppOptionPicker } from '../components/common/Dropdown';
 import { createPersonalBackup, downloadPersonalBackup, inspectPersonalBackup, restorePersonalBackup } from '../lib/backup';
+
+const THEME_PALETTES = [
+  { id: 'green', label: 'Original Green', color: '#2d6e5e' },
+  { id: 'blue', label: 'Royal Blue', color: '#3a506b' },
+  { id: 'burgundy', label: 'Burgundy', color: '#7a3035' },
+  { id: 'charcoal', label: 'Charcoal', color: '#34383d' },
+];
 
 export default function SettingsScreen() {
   const { settings, updateSettings, resetSettings, openHelp, openAbout } = useAppStore(useShallow((state) => ({
@@ -21,6 +28,28 @@ export default function SettingsScreen() {
   const [backupMessage, setBackupMessage] = useState('');
   const [backupBusy, setBackupBusy] = useState(false);
   const backupInputRef = useRef(null);
+  const palettePickerRef = useRef(null);
+  const [paletteOpen, setPaletteOpen] = useState(false);
+
+  useEffect(() => {
+    if (!paletteOpen) return undefined;
+    const closeOutside = (event) => {
+      if (!palettePickerRef.current?.contains(event.target)) setPaletteOpen(false);
+    };
+    const closeEscape = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        event.stopPropagation();
+        setPaletteOpen(false);
+      }
+    };
+    document.addEventListener('pointerdown', closeOutside);
+    document.addEventListener('keydown', closeEscape, true);
+    return () => {
+      document.removeEventListener('pointerdown', closeOutside);
+      document.removeEventListener('keydown', closeEscape, true);
+    };
+  }, [paletteOpen]);
 
   async function exportData() {
     if (backupBusy) return;
@@ -81,18 +110,6 @@ export default function SettingsScreen() {
     <Screen className="settings-screen app-page-shell bg-fluent">
       <div className="app-fixed-header"><Header title="Settings" /></div>
       <div className="app-scroll-content">
-        <SettingsSection title="Color theme">
-          <div className="settings-palette-grid" role="group" aria-label="App color theme">
-            {[
-              { id:'green',label:'Original',color:'#2d6e5e',bg:'#f7f2e8' },
-              { id:'blue',label:'Royal Blue',color:'#3a506b',bg:'#f7f2e8' },
-              { id:'burgundy',label:'Burgundy',color:'#7a3035',bg:'#f7f2e8' },
-              { id:'charcoal',label:'Charcoal',color:'#34383d',bg:'#f7f5f0' },
-            ].map(p => <button type="button" key={p.id} className={'settings-palette-option' + ((settings.palette || 'green') === p.id ? ' is-selected' : '')} aria-pressed={(settings.palette || 'green') === p.id} onClick={() => updateSettings({ palette:p.id })}>
-              <span className="settings-palette-swatch" style={{background:p.bg}}><span style={{background:p.color}} /></span><span>{p.label}</span>
-            </button>)}
-          </div>
-        </SettingsSection>
         <SettingsSection title="Appearance" description="Auto follows your device theme">
           <div className="settings-appearance-segment share-like-segment" role="group" aria-label="Appearance mode">
             {[
@@ -106,6 +123,30 @@ export default function SettingsScreen() {
                 <Icon size={16} aria-hidden="true" />{label}
               </button>
             ))}
+          </div>
+          <div className="settings-theme-picker" ref={palettePickerRef}>
+            <button type="button" className="settings-theme-trigger"
+              aria-haspopup="true" aria-expanded={paletteOpen} aria-controls="settings-theme-palette"
+              onClick={() => setPaletteOpen((open) => !open)}>
+              <Palette size={19} aria-hidden="true" className="settings-theme-icon" />
+              <span>Theme Style</span>
+              <span className="settings-theme-selected" style={{ '--theme-choice': THEME_PALETTES.find((item) => item.id === (settings.palette || 'green'))?.color || THEME_PALETTES[0].color }} aria-hidden="true" />
+              <ChevronDown size={17} className={paletteOpen ? 'is-open' : ''} aria-hidden="true" />
+            </button>
+            {paletteOpen && (
+              <div id="settings-theme-palette" className="settings-theme-popover" role="group" aria-label="Choose color theme">
+                {THEME_PALETTES.map((item) => (
+                  <button type="button" key={item.id} className="settings-theme-choice"
+                    aria-label={item.label} aria-pressed={(settings.palette || 'green') === item.id}
+                    title={item.label}
+                    onClick={() => { updateSettings({ palette: item.id }); setPaletteOpen(false); }}>
+                    <span style={{ background: item.color }} aria-hidden="true">
+                      {(settings.palette || 'green') === item.id && <Check size={14} strokeWidth={2.5} />}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </SettingsSection>
 
