@@ -21,7 +21,7 @@ for(const theme of ['light','dark']) test(`shared swipe consumers ${theme}`,asyn
     const initial=await front.boundingBox(),box=await card.boundingBox();
     expect(await front.evaluate(el=>getComputedStyle(el).borderTopRightRadius)).toBe(await card.evaluate(el=>getComputedStyle(el).borderTopRightRadius));
     const x=box.x+box.width*.7,y=box.y+box.height*.5;
-    await page.mouse.move(x,y);await page.mouse.down();await page.mouse.move(x-92,y);await page.mouse.up();
+    await page.mouse.move(x,y);await page.mouse.down();await page.mouse.move(x-92,y,{steps:8});await page.mouse.up();
     await expect(card).toHaveClass(/is-swiped/);await page.waitForTimeout(250);
     expect((await front.boundingBox()).width).toBeCloseTo(initial.width,1);
     await card.screenshot({path:info.outputPath(`${name}-${theme}-open.png`)});
