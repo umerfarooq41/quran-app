@@ -33,7 +33,7 @@ export default function LessonIntroduction({ active, saveStudyMeta, guidanceOpen
             </div>}
             <button type="button" className="reflect-section-chevron-button" aria-label={introOpen ? 'Collapse Surah Introduction' : 'Expand Surah Introduction'} aria-expanded={introOpen} onClick={() => setIntroOpen(value => !value)}><ChevronDown size={20} aria-hidden="true" className={`reflect-section-chevron ${introOpen ? "is-open" : ""}`}/></button>
           </div>
-          {introOpen && <div id="reflect-surah-introduction" className="reflect-intro-content">
+          {introOpen && <div id="reflect-surah-introduction" className="reflect-intro-content reflect-expanded-content">
             {surahIntro ? <div className={`surah-info-html reflect-surah-info-html is-${displayedIntroLanguage} mt-4`} lang={displayedIntroLanguage} dir={displayedIntroLanguage === 'ur' ? 'rtl' : 'ltr'} dangerouslySetInnerHTML={{ __html: surahIntro }} /> : <p className="mt-4 text-sm text-slate-500">Surah introduction is unavailable in this language.</p>}
           </div>}
         </section>
