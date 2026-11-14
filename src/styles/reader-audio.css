@@ -85,7 +85,7 @@ html[data-theme='light'] {
 
 .reader-audio-progress {
   width: 100%;
-  accent-color: #16a34a;
+  accent-color: var(--ui-audio-progress);
   direction: rtl;
 }
 
