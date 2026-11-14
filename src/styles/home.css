@@ -399,7 +399,7 @@
 [data-theme='dark'] .home-hero-card {
   background:
     radial-gradient(circle at 12% 0%, rgba(255,255,255,.1), transparent 36%),
-    linear-gradient(135deg, var(--brand-green) 0%, var(--brand-green-dark) 100%);
+    linear-gradient(135deg, var(--home-hero-dark-start, #286454) 0%, var(--home-hero-dark-end, #173b32) 100%);
 }
 
 [data-theme='dark'] .home-action-chip {
