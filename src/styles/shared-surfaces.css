@@ -255,7 +255,7 @@
 :is(.share-like-segment, .index-replica-shell .index-segment.share-like-segment, .tabs-screen .library-tabs.share-like-segment) > button.is-active {
   background: var(--ui-segment-selected);
   color: #fff;
-  box-shadow: 0 4px 14px rgba(31,61,43,.14);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--ui-segment-selected) 14%, transparent);
 }
 
 .share-like-segment > button:active {
