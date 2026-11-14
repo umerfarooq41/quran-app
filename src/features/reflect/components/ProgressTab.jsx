@@ -48,7 +48,7 @@ export default function ProgressTab({ lessons, progressPeriod, setProgressPeriod
                 const commitment = lesson.answers?.tadabbur?.commitment || lesson.answers?.tadabbur?.plan;
                 return <div key={lesson.id} className="reflect-progress-commitment rounded-xl p-3">
                   <button type="button" className="flex w-full items-start justify-between gap-2 text-left" aria-expanded={open} onClick={()=>setProgressCommitment(open?null:lesson.id)}>
-                    <span className="min-w-0"><span className="block text-xs text-[#2d6e5e]">{lesson.surahName || getSurah(lesson.surahNumber)?.name || 'Surah '+lesson.surahNumber} · {lesson.startAyah}–{lesson.endAyah}</span><span className="mt-2 block whitespace-pre-wrap text-sm text-slate-800">{commitment}</span></span><ChevronDown size={17} className={'mt-1 shrink-0 text-slate-500 transition-transform '+(open?'rotate-180':'')}/>
+                    <span className="min-w-0"><span className="block text-xs text-[var(--ui-primary)]">{lesson.surahName || getSurah(lesson.surahNumber)?.name || 'Surah '+lesson.surahNumber} · {lesson.startAyah}–{lesson.endAyah}</span><span className="mt-2 block whitespace-pre-wrap text-sm text-slate-800">{commitment}</span></span><ChevronDown size={17} className={'mt-1 shrink-0 text-slate-500 transition-transform '+(open?'rotate-180':'')}/>
                   </button>
                   {open && <div className="mt-3 space-y-3 border-t border-slate-200 pt-3">
                     <p className="text-sm font-semibold">How is your commitment going?</p>
