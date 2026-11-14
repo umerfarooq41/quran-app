@@ -126,7 +126,7 @@
   height: 44px;
   place-items: center;
   border-radius: 22px;
-  color: var(--ayah-tooltip-color);
+  color: var(--ui-icon-action);
 }
 
 .ayah-action-tooltip button.is-active {
@@ -432,6 +432,10 @@
   letter-spacing: inherit;
 }
 
+.reader-footer-meta .reader-meta-progress {
+  color: var(--ui-ornament);
+}
+
 .reader-top-hit-zone {
   position: absolute;
   inset-inline: 0;
@@ -646,6 +650,10 @@
   font-weight: 500;
   font-size: .72rem;
   color: var(--reader-muted);
+}
+
+.reader-bottom-meta span:last-child {
+  color: var(--ui-ornament);
 }
 
 .reader-listen-play {
