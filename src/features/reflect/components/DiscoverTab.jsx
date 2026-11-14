@@ -18,9 +18,10 @@ export default function DiscoverTab({ lessons, discoverTab, setDiscoverTab, them
               <div className="reflect-discover-heading"><h2>Saved Keywords</h2><span>{saved.length} saved</span></div>
               {saved.length ? <div className="reflect-keyword-list">{saved.map(word =>
                 <button type="button" key={word.lesson.id + ':' + (word.key ?? word.ayahNumber + ':' + word.index)}
-                  className="reflect-keyword-card reflect-keyword-link" onClick={() => {setKeywordJump({lessonId:word.lesson.id,ayahNumber:word.ayahNumber,key:word.key || ''});setActive(word.lesson);setMode('lesson');}}>
-                  <div className="reflect-keyword-row"><span>{word.meaning}</span><span lang="ar" dir="rtl" className="reflect-keyword-arabic">{word.arabic}</span></div>
-                  <div className="reflect-keyword-refs"><span>{word.lesson.surahName || getSurah(word.lesson.surahNumber)?.name} · {word.ref}</span><ChevronDown size={15} className="reflect-keyword-arrow" aria-hidden="true"/></div>
+                  className="reflect-keyword-chip reflect-keyword-link" onClick={() => {setKeywordJump({lessonId:word.lesson.id,ayahNumber:word.ayahNumber,key:word.key || ''});setActive(word.lesson);setMode('lesson');}} aria-label={`Open ${word.arabic} in ${word.lesson.surahName || getSurah(word.lesson.surahNumber)?.name || 'Surah'} ${word.ref}`}>
+                  <span lang="ar" dir="rtl" className="reflect-keyword-arabic">{word.arabic}</span>
+                  <span className="reflect-keyword-meaning" dir={word.language === 'en' ? 'ltr' : 'rtl'}>{word.meaning}</span>
+                  <span className="reflect-keyword-source" dir="ltr">{word.ref}</span>
                 </button>)}</div> : <Empty text="Tap words in a Reflect lesson to save them here."/>}
             </div>;
           })()}
