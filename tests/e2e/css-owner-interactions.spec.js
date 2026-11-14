@@ -41,7 +41,7 @@ for (const theme of ['light','dark']) {
   test(`Help disclosures use shared ${theme} surfaces`, async ({ page }) => {
     await home(page);
     await page.getByRole('button', { name: 'Settings', exact: true }).click();
-    await page.getByRole('button', { name: /Help & Guide/ }).click();
+    await page.getByRole('button', { name: /Help and guide/i }).click();
     await page.evaluate(t => document.documentElement.dataset.theme = t, theme);
     await expect(page.locator('.help-section').first()).toHaveCSS('background-color', await roleColor(page, '--ui-card-bg'));
     const trigger = page.locator('.help-section-trigger').first();
