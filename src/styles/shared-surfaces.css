@@ -123,7 +123,7 @@
   backdrop-filter: var(--ui-card-blur);
 }
 
-:is(.search-recent-list button,.settings-theme-picker) {
+.search-recent-list button {
   background: var(--ui-control-bg);
   border: 1px solid var(--ui-control-border);
   -webkit-backdrop-filter: var(--ui-card-blur);
@@ -135,11 +135,6 @@
   background-color: var(--ui-pressed-overlay);
 }
 
-.settings-theme-picker button.is-active {
-  background: var(--ui-primary);
-  border-color: var(--ui-primary);
-  color: #fff;
-}
 
 :is(.search-result-card,.search-result-reference strong,.search-recent-list button,
     .settings-card,.help-section,.about-screen,.tab-card-surface,.tafsir-card) {
