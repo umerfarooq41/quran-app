@@ -55,10 +55,20 @@ export function SwipeActions({ as: Element = 'article', open, onOpenChange, clas
       event.preventDefault();
       paint(Math.max(0, Math.min(ACTION_WIDTH, start.initial - dx)));
     }}
-    onPointerUp={() => {
+    onPointerUp={event => {
       const start = gesture.current;
       gesture.current = null;
-      if (!start?.dragging) { settle(open ? ACTION_WIDTH : 0); return; }
+      if (!start || start.id !== event.pointerId) return;
+      // Some browsers coalesce a fast drag into pointerup without delivering
+      // the last pointermove. Complete it using the final pointer position.
+      const dx = event.clientX - start.x;
+      const dy = event.clientY - start.y;
+      const horizontal = Math.abs(dx) >= 10 && Math.abs(dx) >= Math.abs(dy) * 1.3;
+      if (!start.dragging && !horizontal) {
+        settle(open ? ACTION_WIDTH : 0);
+        return;
+      }
+      if (horizontal) paint(Math.max(0, Math.min(ACTION_WIDTH, start.initial - dx)));
       suppressClick.current = true;
       const next = offset.current >= ACTION_WIDTH / 2;
       onOpenChange(next);
