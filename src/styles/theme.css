@@ -238,9 +238,9 @@
   --ui-audio-inactive: color-mix(in srgb, var(--theme-muted) 55%, transparent);
   --ui-pressed-surface: color-mix(in srgb, var(--ui-primary) 8%, transparent);
 }
-:root[data-palette='blue'] { --ui-ornament: #819eba; }
-:root[data-palette='burgundy'] { --ui-ornament: #b77b83; }
-:root[data-palette='charcoal'] { --ui-ornament: #918878; }
+:root[data-palette='blue'] { --ui-ornament: #819eba; --brand-gold:#819eba; --ui-gold:#819eba; --gold:#819eba; }
+:root[data-palette='burgundy'] { --ui-ornament: #b77b83; --brand-gold:#b77b83; --ui-gold:#b77b83; --gold:#b77b83; }
+:root[data-palette='charcoal'] { --ui-ornament: #918878; --brand-gold:#918878; --ui-gold:#918878; --gold:#918878; }
 :root[data-theme='dark'] {
   --ui-icon-neutral: var(--theme-text);
   --ui-icon-action: var(--theme-accent);
@@ -249,6 +249,6 @@
   --ui-pressed-surface: color-mix(in srgb, var(--theme-accent) 12%, transparent);
 }
 :root[data-theme='dark'][data-palette='green'] { --ui-ornament: #d0ad72; }
-:root[data-theme='dark'][data-palette='blue'] { --ui-ornament: #a6bdd3; }
-:root[data-theme='dark'][data-palette='burgundy'] { --ui-ornament: #d9a9ad; }
-:root[data-theme='dark'][data-palette='charcoal'] { --ui-ornament: #b8aa96; }
+:root[data-theme='dark'][data-palette='blue'] { --ui-ornament: #a6bdd3; --brand-gold:#a6bdd3; --ui-gold:#a6bdd3; --gold:#a6bdd3; }
+:root[data-theme='dark'][data-palette='burgundy'] { --ui-ornament: #d9a9ad; --brand-gold:#d9a9ad; --ui-gold:#d9a9ad; --gold:#d9a9ad; }
+:root[data-theme='dark'][data-palette='charcoal'] { --ui-ornament: #b8aa96; --brand-gold:#b8aa96; --ui-gold:#b8aa96; --gold:#b8aa96; }
