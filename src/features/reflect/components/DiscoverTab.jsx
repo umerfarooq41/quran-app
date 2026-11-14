@@ -26,7 +26,11 @@ export default function DiscoverTab({ lessons, discoverTab, setDiscoverTab, them
         const result = await getWordByWordTranslation(selectedKeyword.lesson.surahNumber, selectedKeyword.ayahNumber, {
           language, signal: controller.signal,
         });
-        return [language, findMatchingMeaning(result?.words, selectedKeyword)];
+        const matched = findMatchingMeaning(result?.words, selectedKeyword);
+        // Existing keywords may only carry the meaning saved in one language.
+        // Preserve that verified meaning if the corresponding source lookup fails.
+        const savedMeaning = selectedKeyword.language === language ? selectedKeyword.meaning : null;
+        return [language, matched || savedMeaning || null];
       } catch {
         return [language, null];
       }
@@ -140,16 +144,28 @@ export default function DiscoverTab({ lessons, discoverTab, setDiscoverTab, them
 /* The snapshot key identifies a filtered WBW position, not always a raw
    QuranWords location. Match the actual Arabic word before showing a meaning. */
 function normalizeArabic(value) {
-  return String(value || '').normalize('NFKC').replace(/[\u064b-\u065f\u0670\u06d6-\u06ed\u0640]/g, '')
-    .replace(/[إأآٱ]/g, 'ا').replace(/ى/g, 'ي').replace(/ؤ/g, 'و').replace(/ئ/g, 'ي').trim();
+  return String(value || '').normalize('NFKC')
+    .replace(/\p{M}/gu, '')
+    .replace(/[ـ\u200c\u200d\u200e\u200f]/g, '')
+    .replace(/[إأآٱ]/g, 'ا').replace(/ى/g, 'ي')
+    .replace(/ؤ/g, 'و').replace(/ئ/g, 'ي')
+    .replace(/[^\p{L}]/gu, '');
 }
 
 function findMatchingMeaning(words, saved) {
-  if (!Array.isArray(words)) return null;
+  if (!Array.isArray(words) || !words.length) return null;
   const normalized = normalizeArabic(saved.arabic);
+  // Canonical QuranWords location survives WBW display regrouping and
+  // language changes. New keywords persist it; legacy keywords use text.
+  if (saved.location) {
+    const sameLocation = words.find(word => word.id === saved.location);
+    if (sameLocation?.meaning && normalizeArabic(sameLocation.arabic) === normalized) {
+      return sameLocation.meaning;
+    }
+  }
   const position = Number(String(saved.key || '').split(':')[1]);
   const atPosition = Number.isInteger(position) && position >= 0 ? words[position] : null;
-  if (atPosition && normalizeArabic(atPosition.arabic) === normalized) return atPosition.meaning || null;
-  const matches = words.filter(word => normalizeArabic(word.arabic) === normalized);
-  return matches.length === 1 ? matches[0].meaning || null : null;
+  if (atPosition?.meaning && normalizeArabic(atPosition.arabic) === normalized) return atPosition.meaning;
+  const matches = words.filter(word => normalizeArabic(word.arabic) === normalized && word.meaning);
+  return matches.length === 1 ? matches[0].meaning : null;
 }
