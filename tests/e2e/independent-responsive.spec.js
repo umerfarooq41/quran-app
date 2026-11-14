@@ -72,7 +72,7 @@ for (const theme of ['light','dark']) for (const width of [320,375,390,430,768])
         await healthy(page,'Search results',info,width===390);
       }
       if (screen==='Settings') {
-        await page.getByRole('button',{name:/Help & Guide/}).click();
+        await page.getByRole('button',{name:/Help and guide/i}).click();
         await expect(page.getByRole('heading',{name:'Help & Guide',exact:true})).toBeVisible();
         await healthy(page,'Help',info,width===390);
         await page.locator('.help-section-trigger').first().click();
@@ -202,6 +202,7 @@ test('new lesson saves questions, themes, reflection and completed review',async
   if(await mainTheme.getAttribute('aria-expanded')!=='true')await mainTheme.click();
   await page.getByRole('button',{name:/^Other Studies/}).click();
   await expect(page.locator('.reflect-theme-study')).toHaveCount(1);
+  await page.getByRole('tablist',{name:'Reflect sections',exact:true}).getByRole('tab',{name:'My Reflect'}).click();
   await page.getByRole('tab',{name:'Questions',exact:true}).click();
   const question=page.locator('.reflect-question-card').first();
   await neutralSwipe(page,question,question.locator('.tab-card-surface'),question.locator('.tab-card-remove'));
