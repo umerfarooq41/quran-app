@@ -54,7 +54,7 @@
   color: #3a3228;
 }
 
-.home-action-icon { color: #b8882a; }
+.home-action-icon { color: var(--ui-icon-accent); }
 
 @media (max-width: 420px) {
   .home-actions-row { gap: 7px; }
@@ -386,10 +386,7 @@
   color: var(--theme-text);
 }
 
-[data-theme='dark'] .home-subtitle,
-[data-theme='dark'] .home-action-icon {
-  color: #d6ad58;
-}
+[data-theme='dark'] .home-subtitle { color: var(--ui-ornament); }
 
 [data-theme='dark'] .home-hero-card {
   background:
