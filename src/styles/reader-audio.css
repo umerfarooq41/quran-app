@@ -11,8 +11,8 @@ html[data-theme='dark'] {
   --audio-chevron-bg: #2b312d;
   --audio-chevron-text: #f1f3ef;
   --audio-icon: #f1f3ef;
-  --audio-main-bg: #f1f3ef;
-  --audio-main-text: #161916;
+  --audio-main-bg: var(--ui-interactive-fill);
+  --audio-main-text: var(--ui-interactive-text);
   --audio-speed-border: #4a534d;
   --audio-speed-text: #c5cac5;
   --audio-wave-bg: #454d47;
@@ -31,8 +31,8 @@ html[data-theme='light'] {
   --audio-chevron-bg: #f0ebe2;
   --audio-chevron-text: #201c15;
   --audio-icon: #201c15;
-  --audio-main-bg: #171510;
-  --audio-main-text: #fffaf1;
+  --audio-main-bg: var(--ui-interactive-fill);
+  --audio-main-text: var(--ui-interactive-text);
   --audio-speed-border: #d8cdbc;
   --audio-speed-text: #71695d;
   --audio-wave-bg: #ded6c8;
@@ -41,14 +41,14 @@ html[data-theme='light'] {
 
 
 html[data-theme='dark'] {
-  --audio-accent: var(--audio-theme-accent);
+  --audio-accent: var(--ui-audio-progress);
   --audio-accent-soft: color-mix(in srgb,var(--audio-theme-accent) 16%,transparent);
   --audio-accent-border: color-mix(in srgb,var(--audio-theme-accent) 30%,transparent);
 }
 
 
 html[data-theme='light'] {
-  --audio-accent: var(--audio-theme-accent);
+  --audio-accent: var(--ui-audio-progress);
   --audio-accent-soft: color-mix(in srgb,var(--audio-theme-accent) 14%,transparent);
   --audio-accent-border: color-mix(in srgb,var(--audio-theme-accent) 30%,transparent);
 }
@@ -375,8 +375,8 @@ html[data-theme='light'] {
 }
 
 [data-theme='dark'] .reader-transport-row .transport-main {
-  background: #f0f2ef;
-  color: #161916;
+  background: var(--ui-interactive-fill);
+  color: var(--ui-interactive-text);
 }
 
 [data-theme='dark'] .reader-audio-head button,
@@ -481,8 +481,8 @@ html[data-theme='light'] {
 }
 
 .reader-audio-panel-modern .reader-transport-modern .transport-main {
-  background: var(--audio-main-bg);
-  color: var(--audio-main-text);
+  background: var(--ui-interactive-fill);
+  color: var(--ui-interactive-text);
 }
 
 .reader-audio-panel-modern .reader-transport-modern .transport-active {
