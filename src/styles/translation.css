@@ -187,7 +187,7 @@
 
 .ayah-translation-note-section + .ayah-translation-note-section {
   margin-top: 4px;
-  border-top: 1px solid rgba(45, 110, 94, .14);
+  border-top: 1px solid color-mix(in srgb, var(--theme-accent) 14%, transparent);
   padding-top: 11px;
 }
 
@@ -212,7 +212,7 @@
   height: 1.18em;
   margin: 0 .18em;
   place-items: center;
-  background: rgba(45, 110, 94, .15);
+  background: color-mix(in srgb, var(--theme-accent) 15%, transparent);
   color: #245f51;
   appearance: none;
   border: 0;
@@ -239,7 +239,7 @@
 
 .ayah-translation-inline-footnote.is-active,
 .ayah-translation-inline-footnote[aria-pressed="true"] {
-  background: #2d6e5e;
+  background: var(--theme-accent);
   color: #fff;
 }
 
@@ -304,9 +304,9 @@
   align-items: center;
   justify-content: center;
   gap: 7px;
-  border: 1px solid rgba(45, 110, 94, .16);
+  border: 1px solid color-mix(in srgb, var(--theme-accent) 16%, transparent);
   border-radius: 999px;
-  background: rgba(45, 110, 94, .08);
+  background: color-mix(in srgb, var(--theme-accent) 8%, transparent);
   color: #245f51;
   font-weight: 700;
   line-height: 1;
@@ -319,7 +319,7 @@
 .ayah-translation-footnotes {
   display: grid;
   gap: 7px;
-  background: rgba(45, 110, 94, .08);
+  background: color-mix(in srgb, var(--theme-accent) 8%, transparent);
   color: #4a535b;box-sizing:border-box;width:100%;max-width:none;min-width:0;border-radius:18px;
   font-size: clamp(.98rem, 4vw, 1.08rem);
   line-height: 1.85;
@@ -346,7 +346,7 @@
 .ayah-translation-note-number {
   place-items: center;
 
-  background: rgba(45, 110, 94, .15);
+  background: color-mix(in srgb, var(--theme-accent) 15%, transparent);
   color: #245f51;
   display: inline-flex;
   box-sizing: border-box;
