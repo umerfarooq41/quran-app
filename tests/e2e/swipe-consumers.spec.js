@@ -16,7 +16,7 @@ for(const theme of ['light','dark']) test(`shared swipe consumers ${theme}`,asyn
   });
   async function check(name) {
     const card=page.locator('.ui-swipe-actions').first();await expect(card).toBeVisible();
-    await expect(page.locator('.screen-shell').last()).toHaveCSS('transform','none');
+    await expect(page.locator('html')).not.toHaveAttribute('data-navigation-direction', /.+/);
     const front=card.locator(':scope > .tab-card-surface,:scope > .home-favorite-row');
     const initial=await front.boundingBox(),box=await card.boundingBox();
     expect(await front.evaluate(el=>getComputedStyle(el).borderTopRightRadius)).toBe(await card.evaluate(el=>getComputedStyle(el).borderTopRightRadius));
