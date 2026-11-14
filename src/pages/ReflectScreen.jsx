@@ -175,6 +175,7 @@ export default function ReflectScreen() {
           arabic: word.arabic || '',
           meaning: word.meaning || '',
           language: language || word.language || active.sourceSnapshot?.wordByWordLanguage || 'en',
+          ...(word.location || word.id ? { location: word.location || word.id } : {}),
         }];
     setActive((lesson) => lesson?.id === lessonId ? { ...lesson, keywords } : lesson);
     saveQueue.current = saveQueue.current
