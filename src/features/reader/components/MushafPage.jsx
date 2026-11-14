@@ -279,7 +279,6 @@ export function MushafPage({
           <svg className="reader-ayah-highlight-shape" width="100%" height="100%" preserveAspectRatio="none">
             <path
               className="reader-ayah-highlight-audio"
-              fill="rgba(45, 110, 94, 0.13)"
               d={buildContinuousHighlightPath(highlightRects.recitation)}
             />
           </svg>
