@@ -40,6 +40,8 @@ export function SwipeActions({ as: Element = 'article', open, onOpenChange, clas
       suppressClick.current = false;
       if (event.button !== 0 || !event.isPrimary || event.target.closest('.tab-card-remove,.home-favorite-delete,input,textarea')) return;
       cancelAnimationFrame(frame.current);
+      // Keep subsequent movement on this card even if the pointer leaves its surface.
+      event.target.setPointerCapture(event.pointerId);
       gesture.current = { id: event.pointerId, x: event.clientX, y: event.clientY, initial: offset.current, dragging: false };
     }}
     onPointerMove={event => {
@@ -57,8 +59,8 @@ export function SwipeActions({ as: Element = 'article', open, onOpenChange, clas
     }}
     onPointerUp={event => {
       const start = gesture.current;
-      gesture.current = null;
       if (!start || start.id !== event.pointerId) return;
+      gesture.current = null;
       // Some browsers coalesce a fast drag into pointerup without delivering
       // the last pointermove. Complete it using the final pointer position.
       const dx = event.clientX - start.x;
@@ -74,7 +76,11 @@ export function SwipeActions({ as: Element = 'article', open, onOpenChange, clas
       onOpenChange(next);
       settle(next ? ACTION_WIDTH : 0);
     }}
-    onPointerCancel={() => { gesture.current = null; settle(open ? ACTION_WIDTH : 0); }}
+    onPointerCancel={event => {
+      if (gesture.current?.id !== event.pointerId) return;
+      gesture.current = null;
+      settle(open ? ACTION_WIDTH : 0);
+    }}
     onClickCapture={event => {
       if (suppressClick.current) { suppressClick.current = false; event.preventDefault(); event.stopPropagation(); return; }
       if (open && !event.target.closest('.tab-card-remove,.home-favorite-delete')) { onOpenChange(false); event.preventDefault(); event.stopPropagation(); }
