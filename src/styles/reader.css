@@ -433,7 +433,7 @@
 }
 
 .reader-footer-meta .reader-meta-progress {
-  color: var(--ui-ornament);
+  color: var(--reader-muted);
 }
 
 .reader-top-hit-zone {
@@ -653,7 +653,7 @@
 }
 
 .reader-bottom-meta span:last-child {
-  color: var(--ui-ornament);
+  color: var(--reader-muted);
 }
 
 .reader-listen-play {
