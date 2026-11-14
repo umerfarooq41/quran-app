@@ -205,3 +205,6 @@
   --audio-close-bg: var(--theme-soft);
 }
 :root[data-theme='dark'][data-palette='green'] { --theme-accent:#8bc7b4; }
+
+/* Preserve original selected green exactly while allowing alternate palettes to theme shared tabs. */
+:root[data-palette='green'] { --ui-segment-selected:#245d4e; }
